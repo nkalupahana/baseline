@@ -1,0 +1,7 @@
+{
+  "name": "moody",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
