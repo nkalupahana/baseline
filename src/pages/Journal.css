@@ -1,0 +1,11 @@
+.container {
+    width: 55%;
+    margin: 0 auto;
+    overflow: scroll;
+}
+
+@media only screen and (max-width: 600px) {
+    .container {
+        width: 90%;
+    }
+  }

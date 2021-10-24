@@ -1,0 +1,6 @@
+{
+	"appId": "la.nisa.moody",
+	"appName": "moody",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

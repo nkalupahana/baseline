@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'la.nisa.moody',
   appName: 'moody',
   webDir: 'build',
   bundledWebRuntime: false
