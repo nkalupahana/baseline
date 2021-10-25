@@ -5,7 +5,7 @@ import { Route } from "react-router-dom";
 import WriteJournal from "../components/WriteJournal";
 import FinishJournal from "../components/FinishJournal";
 import { useState } from "react";
-import "./Journal.css";
+import "./Container.css";
 
 const Journal = () => {
     const [text, setText] = useState("");
