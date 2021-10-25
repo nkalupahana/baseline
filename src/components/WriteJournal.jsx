@@ -1,5 +1,5 @@
 import { withRouter } from "react-router-dom";
-import "./Journal.css";
+import "./JournalComponents.css";
 import { IonTextarea } from "@ionic/react";
 
 const WriteJournal = withRouter(props => {
@@ -12,6 +12,8 @@ const WriteJournal = withRouter(props => {
             next();
         }
     };
+
+    props.setMoodRead(props.moodWrite);
 
     return (
         <div className="center-main">

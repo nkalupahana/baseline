@@ -1,12 +1,9 @@
 import { withRouter } from "react-router-dom";
-import "./Journal.css";
+import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
 import { IonSegment, IonSegmentButton, IonLabel, IonTextarea } from "@ionic/react";
 
 const FinishJournal = withRouter((props) => {
-    // TODO: jerky, not sure what to do about this
-    const initVal = Number(props.mood);
-
     return (
         <div className="center-main">
             <div className="title">
@@ -29,10 +26,10 @@ const FinishJournal = withRouter((props) => {
                 min={-5}
                 max={5}
                 direction={-1}
-                dataIndex={initVal + 5}
+                dataIndex={props.moodRead + 5}
                 animateKnob={false}
                 verticalOffset="0.2em"
-                onChange={ v => props.setMood(v) }
+                onChange={ v => props.setMoodWrite(v) }
             />
 
             <br /><br />
