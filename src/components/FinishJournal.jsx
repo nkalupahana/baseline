@@ -2,8 +2,63 @@ import { withRouter } from "react-router-dom";
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
 import { IonSegment, IonSegmentButton, IonLabel, IonTextarea } from "@ionic/react";
+import { getIdToken } from "@firebase/auth";
+import { auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useState } from "react";
+import { useIonToast } from "@ionic/react";
 
 const FinishJournal = withRouter((props) => {
+    const [user, loading, error] = useAuthState(auth);
+    const [submitting, setSubmitting] = useState(false);
+    const [present, dismiss] = useIonToast();
+
+    const errorToast = message => {
+        present({
+            message: `Something went wrong, please try again! Error: ${message}`,
+            position: "top",
+            duration: 3000
+        });
+    };
+
+    const submit = async () => {
+        if (submitting) return;
+        setSubmitting(true);
+
+        const token = await getIdToken(user);
+        const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/moodLog",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    timestamp: Date.now(),
+                    mood: props.moodWrite,
+                    journal: props.text,
+                    average: props.average
+                }),
+            }
+        ).catch(e => {
+            errorToast(e.message);
+            setSubmitting(false);
+        });
+
+        if (response) {
+            if (response.ok) {
+                present({
+                    message: `Mood log saved!`,
+                    position: "top",
+                    duration: 3000
+                });
+                props.history.push("/summary");
+            } else {
+                errorToast(await response.text());
+                setSubmitting(false);
+            }
+        }
+    };
+
     return (
         <div className="center-main">
             <div className="title">
@@ -51,7 +106,9 @@ const FinishJournal = withRouter((props) => {
             <br /><br /><br /><br /><br /><br /><br /><br /><br />
             <div className="bottom-bar">
                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => props.history.goBack()} />
-                <div className="finish-button">Done!</div>
+                <div onClick={submit} className="finish-button">
+                    { !submitting && "Done!" }
+                    { submitting && <div className="loader"></div> }</div>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 
 const Summary: React.FC = () => {
   return (

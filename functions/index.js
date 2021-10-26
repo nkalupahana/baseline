@@ -42,7 +42,13 @@ exports.moodLog = functions.https.onRequest(async (req, res) => {
 
     await validateAuth(req, res);
     if (!req.user) return;
-    console.log(req.body);
-    await admin.database().ref(`/${req.user.user_id}/logs`).push(req.body.data);
+    const data = JSON.parse(req.body);
+    await admin.database().ref(`/${req.user.user_id}/logs`).push({
+        timestamp: data.timestamp,
+        mood: data.mood,
+        journal: data.journal,
+        average: data.average
+    });
+    
     res.send(200);
 });

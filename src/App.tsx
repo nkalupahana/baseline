@@ -1,7 +1,7 @@
 import { Redirect, Route } from "react-router-dom";
 import { IonApp } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import MoodLog from "./pages/MoodLog";
+import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import { Switch } from "react-router";
@@ -38,7 +38,7 @@ const App: React.FC = () => {
             { !loading && user && <IonReactRouter>
                 <Switch>
                     <Route path="/journal" component={Journal} />
-                    <Route path="/log" component={MoodLog} />
+                    <Route path="/summary" component={Summary} />
                     <Redirect from="/" to="/journal" />
                 </Switch>
             </IonReactRouter> }

@@ -15,18 +15,16 @@ const Journal = () => {
 
     return (
         <IonPage>
-            <IonReactRouter>
-                <div className="container">
-                    <Switch>
-                        <Route exact path="/journal">
-                            <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
-                        </Route>
-                        <Route exact path="/journal/finish">
-                            <FinishJournal text={text} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
-                        </Route>
-                    </Switch>
-                </div>
-            </IonReactRouter>
+            <div className="container">
+                <Switch>
+                    <Route exact path="/journal">
+                        <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
+                    </Route>
+                    <Route exact path="/journal/finish">
+                        <FinishJournal text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
+                    </Route>
+                </Switch>
+            </div>
         </IonPage>
     );
 };

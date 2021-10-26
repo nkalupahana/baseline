@@ -83,3 +83,20 @@
     margin: 0 auto;
     border-radius: 10px;
 }
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 4px solid gray;
+    width: 25px;
+    height: 25px;
+    animation: spin 2s linear infinite;
+    position: absolute;
+    left: calc(50% - 12.5px);
+    top: 64%;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
