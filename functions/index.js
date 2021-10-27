@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const { DateTime } = require("luxon");
 admin.initializeApp();
 
 const validateAuth = async (req, res) => {
@@ -64,12 +65,30 @@ exports.moodLog = functions.https.onRequest(async (req, res) => {
         return;
     }
 
-    await admin.database().ref(`/${req.user.user_id}/logs`).push({
-        timestamp: Date.now(),
+    const globalNow = DateTime.utc();
+
+    // Timezone validation
+    if (typeof data.timezone !== "string" || !globalNow.setZone(data.timezone).isValid) {
+        res.send(400);
+        return;
+    }
+
+    const userNow = globalNow.setZone(data.timezone);
+
+    const db = admin.database();
+    await db.ref(`/${req.user.user_id}/logs`).push({
+        timestamp: globalNow.toMillis(),
+        year: userNow.year,
+        month: userNow.month,
+        day: userNow.day,
+        time: userNow.toLocaleString(DateTime.TIME_SIMPLE),
+        zone: userNow.zone.offsetName(userNow.toMillis(), {format: "short"}),
         mood: data.mood,
         journal: data.journal,
         average: data.average
     });
+
+    await db.ref(`/${req.user.user_id}/lastUpdated`).set(globalNow.toMillis());
     
     res.send(200);
 });

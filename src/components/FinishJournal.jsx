@@ -7,6 +7,7 @@ import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from "react";
 import { useIonToast } from "@ionic/react";
+import { DateTime } from "luxon";
 
 const FinishJournal = withRouter((props) => {
     const [user, loading, error] = useAuthState(auth);
@@ -33,6 +34,7 @@ const FinishJournal = withRouter((props) => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
+                    timezone: DateTime.local().zoneName,
                     mood: props.moodWrite,
                     journal: props.text,
                     average: props.average
