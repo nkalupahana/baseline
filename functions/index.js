@@ -43,8 +43,29 @@ exports.moodLog = functions.https.onRequest(async (req, res) => {
     await validateAuth(req, res);
     if (!req.user) return;
     const data = JSON.parse(req.body);
+
+    // Mood validation
+    if (typeof data.mood !== "number" || data.mood < -5 || data.mood > 5 || data.mood !== parseInt(data.mood)) {
+        res.send(400);
+        return;
+    }
+
+    // Journal validation
+    const MAX_CHARS = 10000;
+    if (typeof data.journal !== "string" || data.journal.length > MAX_CHARS) {
+        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters.`);
+        return;
+    }
+
+    // Average validation
+    const acceptedAverages = ["below", "average", "above"];
+    if (typeof data.average !== "string" || !acceptedAverages.includes(data.average)) {
+        res.send(400);
+        return;
+    }
+
     await admin.database().ref(`/${req.user.user_id}/logs`).push({
-        timestamp: data.timestamp,
+        timestamp: Date.now(),
         mood: data.mood,
         journal: data.journal,
         average: data.average

@@ -33,7 +33,6 @@ const FinishJournal = withRouter((props) => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    timestamp: Date.now(),
                     mood: props.moodWrite,
                     journal: props.text,
                     average: props.average
