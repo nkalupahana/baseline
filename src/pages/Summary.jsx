@@ -28,7 +28,6 @@ const Summary = () => {
                 for (let key in newData) {
                     newData[key].timestamp = Number(key);
                 }
-                console.log(newData);
 
                 ldb.logs.bulkAdd(Object.values(newData));
             }
