@@ -2,6 +2,12 @@
     width: 55%;
     margin: 0 auto;
     overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
 }
 
 @media only screen and (max-width: 600px) {

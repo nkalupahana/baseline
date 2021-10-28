@@ -14,6 +14,7 @@
 
 .title {
     font-size: 2em;
+    text-align: center;
 }
 
 .fakeTextArea {
@@ -91,9 +92,10 @@
     width: 25px;
     height: 25px;
     animation: spin 2s linear infinite;
-    position: absolute;
+    position: relative;
     left: calc(50% - 12.5px);
-    top: 64%;
+    top: 7px;
+    
 }
 
 @keyframes spin {

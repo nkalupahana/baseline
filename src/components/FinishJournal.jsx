@@ -106,7 +106,7 @@ const FinishJournal = withRouter((props) => {
             </div>
             <br /><br /><br /><br /><br /><br /><br /><br /><br />
             <div className="bottom-bar">
-                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => props.history.goBack()} />
+                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) props.history.goBack() }} />
                 <div onClick={submit} className="finish-button">
                     { !submitting && "Done!" }
                     { submitting && <div className="loader"></div> }</div>

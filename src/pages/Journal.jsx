@@ -1,5 +1,4 @@
-import { IonContent, IonPage } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { IonPage } from "@ionic/react";
 import { Switch } from "react-router";
 import { Route } from "react-router-dom";
 import WriteJournal from "../components/WriteJournal";
