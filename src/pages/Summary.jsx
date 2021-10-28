@@ -5,19 +5,15 @@ import { getDatabase, ref, get, query, startAt, orderByChild } from "firebase/da
 import { auth } from "../firebase";
 
 const Summary = () => {
+    // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
         (async () => {
             let lastUpdated = 0;
-            const count = await ldb.logs.count();
-            console.log(count);
+            const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
             const db = getDatabase();
-            if (count !== 0) {
-                const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
+            if (lastLog) {
                 lastUpdated = lastLog.timestamp;
-                console.log(lastUpdated);
-
                 const trueLastUpdated = (await get(ref(db, `/${auth.currentUser.uid}/lastUpdated`))).val();
-                console.log(trueLastUpdated);
 
                 if (lastUpdated == trueLastUpdated) {
                     console.log("Up to date!");
@@ -27,8 +23,7 @@ const Summary = () => {
             
             console.log("Updating...");
             const newData = (await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByChild("timestamp"), startAt(lastUpdated, "timestamp")))).val();
-            console.log(newData);
-            ldb.logs.bulkPut(Object.values(newData));
+            if (newData) ldb.logs.bulkPut(Object.values(newData));
         })();
     }, []);
 
