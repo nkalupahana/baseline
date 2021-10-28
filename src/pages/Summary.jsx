@@ -1,7 +1,7 @@
 import { IonContent, IonPage } from "@ionic/react";
 import { useEffect } from "react";
 import ldb from "../db";
-import { getDatabase, ref, get, query, startAt, orderByChild } from "firebase/database";
+import { getDatabase, ref, get, query, startAt, orderByKey } from "firebase/database";
 import { auth } from "../firebase";
 
 const Summary = () => {
@@ -22,8 +22,16 @@ const Summary = () => {
             }
             
             console.log("Updating...");
-            const newData = (await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByChild("timestamp"), startAt(lastUpdated, "timestamp")))).val();
-            if (newData) ldb.logs.bulkPut(Object.values(newData));
+            let newData = (await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByKey("timestamp"), startAt(String(lastUpdated))))).val();
+            if (newData) {
+                // Add timestamp to data object
+                for (let key in newData) {
+                    newData[key].timestamp = Number(key);
+                }
+                console.log(newData);
+
+                ldb.logs.bulkAdd(Object.values(newData));
+            }
         })();
     }, []);
 

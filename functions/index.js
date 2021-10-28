@@ -76,8 +76,7 @@ exports.moodLog = functions.https.onRequest(async (req, res) => {
     const userNow = globalNow.setZone(data.timezone);
 
     const db = admin.database();
-    await db.ref(`/${req.user.user_id}/logs`).push({
-        timestamp: globalNow.toMillis(),
+    await db.ref(`/${req.user.user_id}/logs/${globalNow.toMillis()}`).set({
         year: userNow.year,
         month: userNow.month,
         day: userNow.day,
