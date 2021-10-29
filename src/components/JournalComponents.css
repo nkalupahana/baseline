@@ -59,15 +59,13 @@
 .bottom-bar {
     z-index: 9000;
     position: absolute;
-    bottom: 0;
     left: 22.5%;
     width: 55%;
-    height: 140px;
     background-color: lightgray;
     border-radius: 10px 10px 0 0;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 700px) {
     .bottom-bar {
         left: 2.5%;
         width: 95%;

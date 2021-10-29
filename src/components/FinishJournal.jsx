@@ -8,11 +8,18 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from "react";
 import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
+import { Capacitor } from "@capacitor/core";
 
 const FinishJournal = withRouter((props) => {
     const [user, loading, error] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [present, dismiss] = useIonToast();
+    const BOTTOM_BAR_HEIGHT = 140;
+    const [scheduled, setScheduled] = useState(false);
+    const [bottomBarStyle, setBottomBarStyle] = useState({
+        height: BOTTOM_BAR_HEIGHT + "px",
+        bottom: "0px"
+    });
 
     const errorToast = message => {
         present({
@@ -60,6 +67,23 @@ const FinishJournal = withRouter((props) => {
         }
     };
 
+    if (Capacitor.getPlatform() === 'ios' && !scheduled) {
+        setBottomBarStyle({
+            height: BOTTOM_BAR_HEIGHT + "px",
+            top: window.screen.height - BOTTOM_BAR_HEIGHT + "px"
+        });
+
+        setTimeout(() => {
+            console.log("timeout");
+            setBottomBarStyle({
+                height: BOTTOM_BAR_HEIGHT + "px",
+                bottom: "0px"
+            });
+        }, 1000);
+
+        setScheduled(true);
+    }
+
     return (
         <div className="center-main">
             <div className="title">
@@ -105,7 +129,7 @@ const FinishJournal = withRouter((props) => {
                 </IonSegment>
             </div>
             <br /><br /><br /><br /><br /><br /><br /><br /><br />
-            <div className="bottom-bar">
+            <div style={bottomBarStyle} className="bottom-bar">
                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) props.history.goBack() }} />
                 <div onClick={submit} className="finish-button">
                     { !submitting && "Done!" }
