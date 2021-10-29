@@ -1,11 +1,11 @@
 import { withRouter } from "react-router-dom";
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
-import { IonSegment, IonSegmentButton, IonLabel, IonTextarea } from "@ionic/react";
+import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner } from "@ionic/react";
 import { getIdToken } from "@firebase/auth";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
@@ -15,7 +15,6 @@ const FinishJournal = withRouter((props) => {
     const [submitting, setSubmitting] = useState(false);
     const [present, dismiss] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 140;
-    const [scheduled, setScheduled] = useState(false);
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
         bottom: "0px"
@@ -67,22 +66,21 @@ const FinishJournal = withRouter((props) => {
         }
     };
 
-    if (Capacitor.getPlatform() === 'ios' && !scheduled) {
-        setBottomBarStyle({
-            height: BOTTOM_BAR_HEIGHT + "px",
-            top: window.screen.height - BOTTOM_BAR_HEIGHT + "px"
-        });
-
-        setTimeout(() => {
-            console.log("timeout");
+    useEffect(() => {
+        if (Capacitor.getPlatform() === 'ios') {
             setBottomBarStyle({
                 height: BOTTOM_BAR_HEIGHT + "px",
-                bottom: "0px"
+                top: window.screen.height - BOTTOM_BAR_HEIGHT + "px"
             });
-        }, 1000);
-
-        setScheduled(true);
-    }
+    
+            setTimeout(() => {
+                setBottomBarStyle({
+                    height: BOTTOM_BAR_HEIGHT + "px",
+                    bottom: "0px"
+                });
+            }, 1000);
+        }
+    }, []);
 
     return (
         <div className="center-main">
@@ -133,7 +131,7 @@ const FinishJournal = withRouter((props) => {
                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) props.history.goBack() }} />
                 <div onClick={submit} className="finish-button">
                     { !submitting && "Done!" }
-                    { submitting && <div className="loader"></div> }</div>
+                    { submitting && <IonSpinner className="loader" name="crescent" /> }</div>
             </div>
         </div>
     );

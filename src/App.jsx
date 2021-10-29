@@ -27,19 +27,32 @@ import "./theme/variables.css";
 
 import { auth } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import Dexie from "dexie";
+import { useEffect, useState } from "react";
+import history from "./history";
+import "./lifecycle";
 
-const App: React.FC = () => {
+const App = () => {
     const [user, loading, error] = useAuthState(auth);
+    const [authLikely, setAuthLikely] = useState(false);
+    
+    useEffect(() => {
+        (async () => {
+            if (await Dexie.exists("ldb")) {
+                setAuthLikely(true);
+            }
+        })();
+    }, []);
 
     return (
         <IonApp>
-            { loading && <p>Loading... { error } </p> }
+            { loading && !authLikely && <p>Loading... { error } </p> }
             { !loading && !user && <Login></Login> }
-            { !loading && user && <IonReactRouter>
+            { ((!loading && user) || (loading && authLikely)) && <IonReactRouter history={history}>
                 <Switch>
                     <Route path="/journal" component={Journal} />
-                    <Route path="/summary" component={Summary} />
-                    <Redirect from="/" to="/journal" />
+                    <Route path="/" component={Summary} />
+                    <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }
         </IonApp>
