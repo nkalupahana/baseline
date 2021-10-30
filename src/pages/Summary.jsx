@@ -8,7 +8,7 @@ import { pencil } from "ionicons/icons";
 import history from "../history"
 
 const Summary = () => {
-    const [user, loading, error] = useAuthState(auth);
+    const [_, loading, _] = useAuthState(auth);
 
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
