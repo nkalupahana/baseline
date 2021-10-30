@@ -1,6 +1,5 @@
 .center-main {
-    font-family: "Helvetica Neue", Arial, sans-serif !important;
-    font-weight: 600;
+    font-weight: bold;
     padding-top: 50px;
     display: flex;
     justify-content: center;
@@ -30,8 +29,8 @@
 }
 
 .tx {
+    font-weight: normal;
     width: 90%;
-    font-weight: 400 !important;
     padding: 8px;
     padding-left: 12px;
     border-radius: 20px;
