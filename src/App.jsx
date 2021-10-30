@@ -51,7 +51,7 @@ const App = () => {
             { ((!loading && user) || (loading && authLikely)) && <IonReactRouter history={history}>
                 <Switch>
                     <Route path="/journal" component={Journal} />
-                    <Route path="/" component={Summary} />
+                    <Route path="/summary" component={Summary} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }
