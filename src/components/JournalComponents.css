@@ -37,7 +37,8 @@
     border-radius: 20px;
 }
 
-.tx .tx-display {
+.tx.tx-display {
+    margin-top: 0px !important;
     width: 100%;   
 }
 

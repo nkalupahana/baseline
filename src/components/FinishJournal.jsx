@@ -14,15 +14,15 @@ const FinishJournal = withRouter((props) => {
     const [user, loading, error] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [present, dismiss] = useIonToast();
-    const BOTTOM_BAR_HEIGHT = 140;
+    const BOTTOM_BAR_HEIGHT = 125;
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
         bottom: "0px"
     });
 
-    const errorToast = message => {
+    const toast = message => {
         present({
-            message: `Something went wrong, please try again! Error: ${message}`,
+            message,
             position: "top",
             duration: 3000
         });
@@ -30,6 +30,7 @@ const FinishJournal = withRouter((props) => {
 
     const submit = async () => {
         if (submitting) return;
+        if (loading) toast("No internet connectivity -- please try again.");
         setSubmitting(true);
 
         const token = await getIdToken(user);
@@ -47,7 +48,7 @@ const FinishJournal = withRouter((props) => {
                 }),
             }
         ).catch(e => {
-            errorToast(e.message);
+            toast(`Something went wrong, please try again! Error: ${e.message}`);
             setSubmitting(false);
         });
 
@@ -60,7 +61,7 @@ const FinishJournal = withRouter((props) => {
                 });
                 props.history.push("/summary");
             } else {
-                errorToast(await response.text());
+                toast(`Something went wrong, please try again! Error: ${await response.text()}`);
                 setSubmitting(false);
             }
         }
