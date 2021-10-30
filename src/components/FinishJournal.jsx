@@ -13,7 +13,7 @@ import { Capacitor } from "@capacitor/core";
 const FinishJournal = withRouter((props) => {
     const [user, loading, _] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
-    const [present, _] = useIonToast();
+    const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 125;
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
@@ -30,7 +30,10 @@ const FinishJournal = withRouter((props) => {
 
     const submit = async () => {
         if (submitting) return;
-        if (loading) toast("No internet connectivity -- please try again.");
+        if (loading) {
+            toast("No internet connectivity -- please try again.");
+            return;
+        }
         setSubmitting(true);
 
         const token = await getIdToken(user);
