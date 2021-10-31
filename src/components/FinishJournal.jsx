@@ -67,6 +67,9 @@ const FinishJournal = withRouter((props) => {
                 toast(`Something went wrong, please try again! Error: ${await response.text()}`);
                 setSubmitting(false);
             }
+        } else if (submitting) {
+            toast(`Something went wrong, please try again!`);
+            setSubmitting(false);
         }
     };
 

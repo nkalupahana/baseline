@@ -4,6 +4,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
+import Preloader from "./pages/Preloader";
 import { Switch } from "react-router";
 
 /* Core CSS required for Ionic components to work properly */
@@ -46,7 +47,7 @@ const App = () => {
 
     return (
         <IonApp>
-            { loading && !authLikely && <p>Loading... { error } </p> }
+            { loading && !authLikely && <Preloader></Preloader> }
             { !loading && !user && <Login></Login> }
             { ((!loading && user) || (loading && authLikely)) && <IonReactRouter history={history}>
                 <Switch>
