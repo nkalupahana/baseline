@@ -1,9 +1,10 @@
 import history from "./history";
 
-document.addEventListener("resume", () => {
-    history.push("/journal");
-});
+function check() {
+    if (!window.location.pathname.startsWith("/journal")) {
+        history.push("/journal");
+    }
+}
 
-document.addEventListener("deviceready", () => {
-    history.push("/journal");
-});
+document.addEventListener("resume", check);
+document.addEventListener("deviceready", check);

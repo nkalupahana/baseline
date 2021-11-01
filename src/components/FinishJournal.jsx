@@ -14,7 +14,7 @@ const FinishJournal = withRouter((props) => {
     const [user, loading, _] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [present] = useIonToast();
-    const BOTTOM_BAR_HEIGHT = 125;
+    const BOTTOM_BAR_HEIGHT = 140;
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
         bottom: "0px"
