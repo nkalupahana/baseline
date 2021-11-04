@@ -11,7 +11,7 @@ import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 
 const FinishJournal = withRouter((props) => {
-    const [user, loading, _] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 140;

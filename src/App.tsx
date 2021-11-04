@@ -34,7 +34,7 @@ import history from "./history";
 import "./lifecycle";
 
 const App = () => {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [authLikely, setAuthLikely] = useState(false);
     
     useEffect(() => {
