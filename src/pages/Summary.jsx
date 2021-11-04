@@ -5,7 +5,8 @@ import { getDatabase, ref, get, query, startAfter, orderByKey } from "firebase/d
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { pencil } from "ionicons/icons";
-import history from "../history"
+import history from "../history";
+import "./Container.css";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -50,7 +51,10 @@ const Summary = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                Summary
+                <div className="container">
+                    <br/><br/>
+                    Summary
+                </div>
                 <IonFab vertical="bottom" horizontal="end" slot="fixed" onClick={() => { history.push("/journal") }}>
                     <IonFabButton>
                         <IonIcon icon={pencil} />

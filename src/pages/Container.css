@@ -27,3 +27,17 @@
     width: 70px;
     height: 70px;
 }
+
+.top-corner {
+    position: relative;
+    top: 40px;
+    left: 40px;
+    font-size: 30px;
+}
+
+@media only screen and (max-width: 800px) {
+    .top-corner {
+        top: 30px;
+        left: 0px;
+    }
+}
