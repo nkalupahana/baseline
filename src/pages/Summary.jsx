@@ -34,7 +34,7 @@ const Summary = () => {
 
             console.log("Updating...");
             let newData = (
-                await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByKey("timestamp"), startAfter(String(lastUpdated))))
+                await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))
             ).val();
             
             if (newData) {

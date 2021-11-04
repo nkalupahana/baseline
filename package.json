@@ -74,5 +74,6 @@
   "devDependencies": {
     "@capacitor/cli": "3.2.5"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "license": "AGPL-3.0"
 }
