@@ -58,7 +58,7 @@ const Summary = () => {
                     <Media
                         queries={{
                             week: "(max-width: 700px)",
-                            month: "(min-width: 700px)",
+                            month: "(min-width: 701px)",
                         }}
                     >
                         {(matches) => (
