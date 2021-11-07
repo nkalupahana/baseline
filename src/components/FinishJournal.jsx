@@ -90,7 +90,7 @@ const FinishJournal = withRouter((props) => {
     }, []);
 
     return (
-        <div className="center-main">
+        <div className="center-journal">
             <div className="title">
                 Let's summarize.
             </div>

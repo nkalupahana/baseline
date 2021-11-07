@@ -36,8 +36,13 @@
 }
 
 @media only screen and (max-width: 800px) {
-    .top-corner {
+    .top-corner.x {
         top: 30px;
         left: 0px;
     }
+}
+
+.title {
+    font-size: 2em;
+    text-align: center;
 }

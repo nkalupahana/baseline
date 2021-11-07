@@ -16,6 +16,15 @@
     text-align: center;
 }
 
+.center-journal {
+    font-weight: bold;
+    padding-top: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .fakeTextArea {
     width: 80%;
     height: 300px;

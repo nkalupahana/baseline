@@ -17,7 +17,7 @@ const Journal = () => {
     return (
         <IonPage>
             <div className="container">
-                <IonIcon class="top-corner" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
+                <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
                 <Switch>
                     <Route exact path="/journal">
                         <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
