@@ -1,4 +1,3 @@
-import { withRouter } from "react-router-dom";
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
 import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner } from "@ionic/react";
@@ -9,8 +8,9 @@ import { useEffect, useState } from "react";
 import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
+import history from "../history";
 
-const FinishJournal = withRouter((props) => {
+const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [present] = useIonToast();
@@ -62,7 +62,7 @@ const FinishJournal = withRouter((props) => {
                     position: "top",
                     duration: 3000
                 });
-                props.history.push("/summary");
+                history.push("/summary");
             } else {
                 toast(`Something went wrong, please try again! Error: ${await response.text()}`);
                 setSubmitting(false);
@@ -135,13 +135,13 @@ const FinishJournal = withRouter((props) => {
             </div>
             <br /><br /><br /><br /><br /><br /><br /><br /><br />
             <div style={bottomBarStyle} className="bottom-bar">
-                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) props.history.goBack() }} />
+                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
                 <div onClick={submit} className="finish-button">
                     { !submitting && "Done!" }
                     { submitting && <IonSpinner className="loader" name="crescent" /> }</div>
             </div>
         </div>
     );
-});
+};
 
 export default FinishJournal;

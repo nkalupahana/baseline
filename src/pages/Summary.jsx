@@ -50,6 +50,12 @@ const Summary = () => {
         })();
     }, [loading]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            document.getElementById("journal-fab").style.opacity = 1;
+        }, 500);
+    }, []);
+
     return (
         <IonPage>
             <IonContent fullscreen>
@@ -76,6 +82,8 @@ const Summary = () => {
                     onClick={() => {
                         history.push("/journal");
                     }}
+                    class="journal-fab"
+                    id="journal-fab"
                 >
                     <IonFabButton>
                         <IonIcon icon={pencil} />

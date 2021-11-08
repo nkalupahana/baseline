@@ -1,10 +1,11 @@
 import "./JournalComponents.css";
 import { IonTextarea } from "@ionic/react";
 import { useEffect } from "react";
+import history from "../history";
 
 const WriteJournal = props => {
     const next = () => {
-        props.history.push("/journal/finish");
+        history.push("/journal/finish");
     };
 
     const loseFocus = () => {

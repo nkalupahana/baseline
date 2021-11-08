@@ -6,3 +6,17 @@
     align-items: center;
     flex-direction: column;
 }
+
+.journal-fab {
+    bottom: 30px;
+    right: calc(30px + var(--ion-safe-area-right, 0px));
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+@media only screen and (max-width: 800px) {
+    .journal-fab {
+        bottom: 20px;
+        right: calc(20px + var(--ion-safe-area-right, 0px));
+    }
+}
