@@ -1,10 +1,10 @@
-import { IonContent, IonPage, IonFab, IonFabButton, IonIcon } from "@ionic/react";
+import { IonContent, IonPage, IonFab, IonFabButton, IonIcon, IonFabList } from "@ionic/react";
 import { useEffect, Fragment } from "react";
 import ldb from "../db";
 import { getDatabase, ref, get, query, startAfter, orderByKey } from "firebase/database";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { cogOutline, pencil } from "ionicons/icons";
+import { cog, pencil } from "ionicons/icons";
 import Media from "react-media";
 import WeekSummary from "../components/WeekSummary";
 import MonthSummary from "../components/MonthSummary";
@@ -60,7 +60,6 @@ const Summary = () => {
         <IonPage>
             <IonContent fullscreen>
                 <div className="container">
-                    <IonIcon class="top-corner" icon={cogOutline} onClick={() => history.push("/summary")}></IonIcon>
                     <Media
                         queries={{
                             week: "(max-width: 700px)",
@@ -79,15 +78,22 @@ const Summary = () => {
                     vertical="bottom"
                     horizontal="end"
                     slot="fixed"
-                    onClick={() => {
-                        history.push("/journal");
-                    }}
                     class="journal-fab"
                     id="journal-fab"
+                    activated={true}
                 >
-                    <IonFabButton>
+                    <IonFabButton activated={false} onClick={() => {
+                        history.push("/journal");
+                    }}>
                         <IonIcon icon={pencil} />
                     </IonFabButton>
+                    <IonFabList side="top">
+                        <IonFabButton onClick={() => {
+                            history.push("/settings");
+                        }}>
+                            <IonIcon icon={cog} />
+                        </IonFabButton>
+                    </IonFabList>
                 </IonFab>
             </IonContent>
         </IonPage>
