@@ -82,7 +82,7 @@ const Summary = () => {
                     id="journal-fab"
                     activated={true}
                 >
-                    <IonFabButton activated={false} onClick={() => {
+                    <IonFabButton closeIcon={pencil} activated={false} onClick={() => {
                         history.push("/journal");
                     }}>
                         <IonIcon icon={pencil} />
