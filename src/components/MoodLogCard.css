@@ -1,0 +1,22 @@
+.mood-card {
+    background-color: rgb(221, 219, 219);
+    width: 80%;
+    min-height: 100px;
+    border-radius: 10px;
+    padding: 15px;
+
+    display: grid;
+    grid-template-columns: 90% 5% 5%;
+    grid-template-rows: auto;
+    grid-template-areas: 
+      "time labels labels"
+      "log log spacer";
+}
+
+.tx-card {
+    padding: 0px !important;
+}
+
+.tx-card > div > textarea {
+    overflow: none;
+}

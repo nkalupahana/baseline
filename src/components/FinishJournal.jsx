@@ -59,7 +59,7 @@ const FinishJournal = props => {
             if (response.ok) {
                 present({
                     message: `Mood log saved!`,
-                    position: "top",
+                    position: "bottom",
                     duration: 3000
                 });
                 history.push("/summary");
@@ -95,6 +95,7 @@ const FinishJournal = props => {
                 Let's summarize.
             </div>
             <p className="text-center">On a scale from -5 to 5, how are you?</p>
+            <p>Try not to think too hard about this -- just give your gut instinct.</p>
             <br />
             <CircularSlider
                 width={230}

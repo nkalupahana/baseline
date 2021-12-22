@@ -11,6 +11,7 @@ import MonthSummary from "../components/MonthSummary";
 import history from "../history";
 import "./Container.css";
 import "./Summary.css";
+import SummaryHeader from "../components/SummaryHeader";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -60,13 +61,14 @@ const Summary = () => {
         <IonPage>
             <IonContent fullscreen>
                 <div className="container">
+                    <SummaryHeader></SummaryHeader>
                     <Media
                         queries={{
                             week: "(max-width: 700px)",
                             month: "(min-width: 701px)",
                         }}
                     >
-                        {(matches) => (
+                        {matches => (
                             <Fragment>
                                 {matches.week && <WeekSummary />}
                                 {matches.month && <MonthSummary />}

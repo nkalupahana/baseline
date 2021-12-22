@@ -1,0 +1,34 @@
+.card {
+    width: 300px;
+    height: 75px;
+    background-color: lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    display: grid;
+    grid-template-columns: 100px 200px;
+    grid-template-rows: auto;
+    grid-template-areas: 
+      "number label"
+      "number change";
+}
+
+.stat {
+    font-size: 40px;
+    color: black;
+    margin-right: 5px;
+    grid-area: number;
+    text-align: center;
+    line-height: 55px;
+}
+
+.label {
+    font-size: 20px;
+    grid-area: label;
+}
+
+.change {
+    font-size: 20px;
+    grid-area: change;
+    font-weight: normal;
+}

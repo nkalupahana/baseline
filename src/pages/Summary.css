@@ -20,3 +20,9 @@
         right: calc(20px + var(--ion-safe-area-right, 0px));
     }
 }
+
+.mood-log-list {
+    gap: 10px;
+    padding-top: 0px;
+    overflow-y: scroll;
+}
