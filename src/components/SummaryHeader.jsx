@@ -1,4 +1,3 @@
-import StatCard from "./StatCard";
 import "./SummaryHeader.css";
 
 const SummaryHeader = props => {
