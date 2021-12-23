@@ -1,6 +1,7 @@
 import Dexie from 'dexie';
 
 interface Item {
+    timestamp: number;
     year: number,
     month: number,
     day: number,

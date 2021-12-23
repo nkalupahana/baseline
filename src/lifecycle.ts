@@ -7,17 +7,14 @@ function getTime() {
 }
 
 function setLastOpenedTime() {
-    window.localStorage.setItem("lastOpenedTime", getTime());
+    window.localStorage.setItem("lastOpenedTime", String(getTime()));
 }
 
 function redirect() {
     if (!window.location.pathname.startsWith("/journal")) {
-        let lastOpenedTime = window.localStorage.getItem("lastOpenedTime");
-        if (lastOpenedTime !== null) {
-            lastOpenedTime = Number(lastOpenedTime);
-            if (getTime() - lastOpenedTime > THRESHOLD_SEC) {
-                history.push("/journal");
-            }
+        let lastOpenedTime = Number(window.localStorage.getItem("lastOpenedTime"));
+        if (getTime() - lastOpenedTime > THRESHOLD_SEC) {
+            history.push("/journal");
         }
     }
 
