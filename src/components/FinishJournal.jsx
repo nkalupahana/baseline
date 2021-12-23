@@ -52,7 +52,7 @@ const FinishJournal = props => {
                 }),
             }
         ).catch(e => {
-            if (e.message == "Load failed") {
+            if (e.message === "Load failed") {
                 toast(`We can't reach our servers. Check your internet connection and try again.`);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);

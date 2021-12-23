@@ -30,7 +30,7 @@ const Summary = () => {
                 lastUpdated = lastLog.timestamp;
                 const trueLastUpdated = (await get(ref(db, `/${auth.currentUser.uid}/lastUpdated`))).val();
 
-                if (lastUpdated == trueLastUpdated) {
+                if (lastUpdated === trueLastUpdated) {
                     console.log("Up to date!");
                     return;
                 }

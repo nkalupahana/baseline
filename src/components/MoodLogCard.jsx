@@ -11,9 +11,9 @@ const MoodLogCard = ({ log }) => {
 
     // TODO: temp, need to be turned into official symbols
     let symbol;
-    if (log.average == "average") symbol = "~";
-    if (log.average == "above") symbol = "↑";
-    if (log.average == "below") symbol = "↓";
+    if (log.average === "average") symbol = "~";
+    if (log.average === "above") symbol = "↑";
+    if (log.average === "below") symbol = "↓";
 
     return (
         <div className="mood-card">

@@ -17,7 +17,7 @@ const WriteJournal = props => {
 
     useEffect(() => {
         props.setMoodRead(props.moodWrite);
-    }, []);
+    }, [props.moodWrite]);
 
     return (
         <div className="center-journal">
