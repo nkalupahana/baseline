@@ -1,5 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
-import { IonApp } from "@ionic/react";
+import { IonApp, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
@@ -32,6 +32,8 @@ import Dexie from "dexie";
 import { useEffect, useState } from "react";
 import history from "./history";
 import "./lifecycle";
+
+setupIonicReact();
 
 const App = () => {
     const [user, loading] = useAuthState(auth);
