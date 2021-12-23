@@ -94,8 +94,8 @@ const FinishJournal = props => {
             <div className="title">
                 Let's summarize.
             </div>
-            <p className="text-center">On a scale from -5 to 5, how are you?</p>
-            <p>Try not to think too hard about this -- just give your gut instinct.</p>
+            <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
+            <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
             <br />
             <CircularSlider
                 width={230}

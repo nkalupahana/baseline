@@ -18,7 +18,7 @@
 
 .center-journal {
     font-weight: bold;
-    padding-top: 35px;
+    padding-top: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -95,4 +95,12 @@
 .loader {
     position: relative;
     top: 7px;
+}
+
+.line1 {
+    margin: 16px 0px 5px 0px;
+}
+
+.line2 {
+    margin: 0px 25px 15px 25px;
 }

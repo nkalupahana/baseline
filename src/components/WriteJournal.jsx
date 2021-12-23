@@ -2,7 +2,7 @@ import "./JournalComponents.css";
 import { IonTextarea } from "@ionic/react";
 import { useEffect } from "react";
 import history from "../history";
-import { auth, signOutAndCleanUp } from "../firebase";
+import { signOutAndCleanUp } from "../firebase";
 
 const WriteJournal = props => {
     const next = () => {
