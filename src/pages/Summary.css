@@ -32,3 +32,15 @@
 .mood-log-list::-webkit-scrollbar {
     display: none;
 }
+
+.week-summary-grid {
+    display: grid;
+    grid-template-rows: auto 270px auto;
+    grid-template-columns: auto;
+    grid-template-areas:
+        "heading"
+        "graph"
+        "logs";
+    height: 100vh;
+    overflow: hidden;
+}

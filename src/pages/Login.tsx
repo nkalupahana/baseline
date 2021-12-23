@@ -17,16 +17,10 @@ const Login = () => {
             const google = new GoogleAuthProvider();
             signInWithPopup(auth, google);
         } else {
-            console.log("SIGNING IN")
             GooglePlus.login({
                 webClientId: "257064314002-kvgrr0turlhatbpvtin7foru6g2h1704"                    
             }).then(res => {
-                console.log("RET")
-                console.log(res);
                 signInWithCredential(auth, GoogleAuthProvider.credential(res.idToken, res.accessToken));
-            }).catch(err => {
-                console.log("ERR")
-                console.log(err);
             });
         }
     }

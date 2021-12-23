@@ -29,20 +29,8 @@ const WeekSummary = () => {
         return els;
     }
 
-    let grid = {
-        display: "grid",
-        gridTemplateRows: "auto 270px auto",
-        gridTemplateColumns: "auto",
-        gridTemplateAreas:
-        `"heading"
-        "graph"
-        "logs"`,
-        height: "100vh",
-        overflow: "hidden"
-    }
-
     return (
-        <div style={grid}>
+        <div className="week-summary-grid">
             <SummaryHeader style={{"gridArea": "heading"}}></SummaryHeader>
             <div style={{"gridArea": "graph"}}>Graph goes here!</div>
             { logs && <div className="mood-log-list">
