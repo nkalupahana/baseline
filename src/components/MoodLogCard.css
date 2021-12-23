@@ -7,15 +7,16 @@
     margin: 10px 0; 
 
     display: grid;
-    grid-template-columns: 90% 5% 5%;
+    grid-template-columns: 75% 25%;
     grid-template-rows: auto;
     grid-template-areas: 
-      "time labels labels"
-      "log log spacer";
+      "time labels"
+      "log log";
 }
 
 .tx.tx-card {
     padding: 0px;
+    padding-right: 12px;
 }
 
 .tx-card > div > textarea {

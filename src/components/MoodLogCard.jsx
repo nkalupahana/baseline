@@ -18,7 +18,7 @@ const MoodLogCard = ({ log }) => {
     return (
         <div className="mood-card">
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
-            <span className="bold" style={{"gridArea": "labels"}}>{ symbol } { log.mood }</span>
+            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}>{ symbol } { log.mood }</span>
             { !grow && <IonTextarea style={{"gridArea": "log"}} rows={2} readonly autoGrow={false} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} /> }
             { grow && <IonTextarea style={{"gridArea": "log"}} readonly autoGrow={true} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} /> }
         </div>

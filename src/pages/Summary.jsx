@@ -4,7 +4,7 @@ import ldb from "../db";
 import { getDatabase, ref, get, query, startAfter, orderByKey } from "firebase/database";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { cog, pencil } from "ionicons/icons";
+import { cogOutline, pencil } from "ionicons/icons";
 import Media from "react-media";
 import WeekSummary from "../components/WeekSummary";
 import MonthSummary from "../components/MonthSummary";
@@ -87,7 +87,7 @@ const Summary = () => {
                 <IonFabButton size="small" color="light" style={{"marginBottom": "16px"}} onClick={() => {
                     history.push("/settings");
                 }}>
-                    <IonIcon icon={cog} />
+                    <IonIcon icon={cogOutline} />
                 </IonFabButton>
                 <IonFabButton closeIcon={pencil} activated={true} onClick={() => {
                     history.push("/journal");
