@@ -95,3 +95,11 @@ http://ionicframework.com/docs/theming/ */
 textarea {
     line-height: 21px;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}

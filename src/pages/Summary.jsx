@@ -58,47 +58,44 @@ const Summary = () => {
     }, []);
 
     return (
-        <IonPage>
-            <IonContent fullscreen>
-                <div className="container">
-                    <SummaryHeader></SummaryHeader>
-                    <Media
-                        queries={{
-                            week: "(max-width: 700px)",
-                            month: "(min-width: 701px)",
-                        }}
-                    >
-                        {matches => (
-                            <Fragment>
-                                {matches.week && <WeekSummary />}
-                                {matches.month && <MonthSummary />}
-                            </Fragment>
-                        )}
-                    </Media>
-                </div>
-                <IonFab
-                    vertical="bottom"
-                    horizontal="end"
-                    slot="fixed"
-                    class="journal-fab"
-                    id="journal-fab"
-                    activated={true}
+        <div>
+            <div className="container">
+                <Media
+                    queries={{
+                        week: "(max-width: 700px)",
+                        month: "(min-width: 701px)",
+                    }}
                 >
-                    <IonFabButton closeIcon={pencil} activated={false} onClick={() => {
-                        history.push("/journal");
+                    {matches => (
+                        <Fragment>
+                            {matches.week && <WeekSummary />}
+                            {matches.month && <MonthSummary />}
+                        </Fragment>
+                    )}
+                </Media>
+            </div>
+            <IonFab
+                vertical="bottom"
+                horizontal="end"
+                slot="fixed"
+                class="journal-fab"
+                id="journal-fab"
+                activated={true}
+            >
+                <IonFabButton closeIcon={pencil} activated={false} onClick={() => {
+                    history.push("/journal");
+                }}>
+                    <IonIcon icon={pencil} />
+                </IonFabButton>
+                <IonFabList side="top">
+                    <IonFabButton onClick={() => {
+                        history.push("/settings");
                     }}>
-                        <IonIcon icon={pencil} />
+                        <IonIcon icon={cog} />
                     </IonFabButton>
-                    <IonFabList side="top">
-                        <IonFabButton onClick={() => {
-                            history.push("/settings");
-                        }}>
-                            <IonIcon icon={cog} />
-                        </IonFabButton>
-                    </IonFabList>
-                </IonFab>
-            </IonContent>
-        </IonPage>
+                </IonFabList>
+            </IonFab>
+        </div>
     );
 };
 

@@ -1,9 +1,10 @@
 .mood-card {
     background-color: rgb(221, 219, 219);
-    width: 80%;
-    min-height: 100px;
+    width: 100%;
     border-radius: 10px;
     padding: 15px;
+    min-height: initial;
+    margin: 10px 0; 
 
     display: grid;
     grid-template-columns: 90% 5% 5%;
@@ -13,10 +14,11 @@
       "log log spacer";
 }
 
-.tx-card {
-    padding: 0px !important;
+.tx.tx-card {
+    padding: 0px;
 }
 
 .tx-card > div > textarea {
     overflow: hidden;
+    padding-left: 8px !important;
 }
