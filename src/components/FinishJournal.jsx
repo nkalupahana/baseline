@@ -37,6 +37,7 @@ const FinishJournal = props => {
         setSubmitting(true);
 
         const token = await getIdToken(user);
+        let errored = false;
         const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/moodLog",
             {
                 method: "POST",
@@ -51,7 +52,12 @@ const FinishJournal = props => {
                 }),
             }
         ).catch(e => {
-            toast(`Something went wrong, please try again! Error: ${e.message}`);
+            if (e.message == "Load failed") {
+                toast(`We can't reach our servers. Check your internet connection and try again.`);
+            } else {
+                toast(`Something went wrong, please try again! \nError: ${e.message}`);
+            }
+            errored = true;
             setSubmitting(false);
         });
 
@@ -64,11 +70,11 @@ const FinishJournal = props => {
                 });
                 history.push("/summary");
             } else {
-                toast(`Something went wrong, please try again! Error: ${await response.text()}`);
+                if (!errored) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
                 setSubmitting(false);
             }
         } else {
-            toast(`Something went wrong, please try again!`);
+            if (!errored) toast(`Something went wrong, please try again!`);
             setSubmitting(false);
         }
     };
@@ -114,6 +120,7 @@ const FinishJournal = props => {
                 direction={-1}
                 dataIndex={props.moodRead + 5}
                 animateKnob={false}
+                knobDraggable={!submitting}
                 verticalOffset="0.2em"
                 onChange={ v => props.setMoodWrite(v) }
             />
@@ -122,7 +129,7 @@ const FinishJournal = props => {
 
             <p className="text-center">And finally, would you say that you're feeling:</p>
             <div className="container">
-                <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)}>
+                <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
                     <IonSegmentButton value="below">
                         <IonLabel>Below Average</IonLabel>
                     </IonSegmentButton>
