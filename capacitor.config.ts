@@ -4,7 +4,12 @@ const config: CapacitorConfig = {
   appId: 'la.nisa.moody',
   appName: 'moody',
   webDir: 'build',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  cordova: {
+    staticPlugins: [
+      'cordova-plugin-googleplus',
+    ]
+  }
 };
 
 export default config;

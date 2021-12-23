@@ -18,5 +18,5 @@
 }
 
 .tx-card > div > textarea {
-    overflow: none;
+    overflow: hidden;
 }

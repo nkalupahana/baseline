@@ -2,6 +2,7 @@ import "./JournalComponents.css";
 import { IonTextarea } from "@ionic/react";
 import { useEffect } from "react";
 import history from "../history";
+import { auth, signOutAndCleanUp } from "../firebase";
 
 const WriteJournal = props => {
     const next = () => {
@@ -20,7 +21,7 @@ const WriteJournal = props => {
 
     return (
         <div className="center-journal">
-            <div className="title">What's happening?</div>
+            <div className="title" onClick={signOutAndCleanUp}>What's happening?</div>
             <p className="text-center" onClick={next}>If you don't want to write right now, tap here to jump to mood logging.</p>
             <IonTextarea autofocus auto-grow={true} className="tx" value={props.text} placeholder="Start typing here!" onIonBlur={loseFocus} onIonChange={e => props.setText(e.detail.value)}/>
             { props.text && <div onClick={next} className="fake-button">Continue</div> }
