@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonFab, IonFabButton, IonIcon, IonFabList } from "@ionic/react";
+import { IonFab, IonFabButton, IonIcon, IonFabList } from "@ionic/react";
 import { useEffect, Fragment } from "react";
 import ldb from "../db";
 import { getDatabase, ref, get, query, startAfter, orderByKey } from "firebase/database";
@@ -11,7 +11,6 @@ import MonthSummary from "../components/MonthSummary";
 import history from "../history";
 import "./Container.css";
 import "./Summary.css";
-import SummaryHeader from "../components/SummaryHeader";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -51,6 +50,10 @@ const Summary = () => {
         })();
     }, [loading]);
 
+    // Little hack to make the fab fade in on load after a delay.
+    // This is done because on mobile, if the fab is there at the beginning,
+    // it jumps when the keyboard goes down. To get around this, we just fade it
+    // in after the keyboard goes down.
     useEffect(() => {
         setTimeout(() => {
             document.getElementById("journal-fab").style.opacity = 1;
@@ -80,20 +83,17 @@ const Summary = () => {
                 slot="fixed"
                 class="journal-fab"
                 id="journal-fab"
-                activated={true}
             >
-                <IonFabButton closeIcon={pencil} activated={false} onClick={() => {
+                <IonFabButton size="small" color="light" style={{"marginBottom": "16px"}} onClick={() => {
+                    history.push("/settings");
+                }}>
+                    <IonIcon icon={cog} />
+                </IonFabButton>
+                <IonFabButton closeIcon={pencil} activated={true} onClick={() => {
                     history.push("/journal");
                 }}>
                     <IonIcon icon={pencil} />
                 </IonFabButton>
-                <IonFabList side="top">
-                    <IonFabButton onClick={() => {
-                        history.push("/settings");
-                    }}>
-                        <IonIcon icon={cog} />
-                    </IonFabButton>
-                </IonFabList>
             </IonFab>
         </div>
     );
