@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import history from "../history";
 import { signOutAndCleanUp } from "../firebase";
 
-const WriteJournal = props => {
+const WriteJournal = ({setMoodRead, moodWrite, ...props}) => {
     const next = () => {
         history.push("/journal/finish");
     };
@@ -16,8 +16,8 @@ const WriteJournal = props => {
     };
 
     useEffect(() => {
-        props.setMoodRead(props.moodWrite);
-    }, [props.moodWrite]);
+        setMoodRead(moodWrite);
+    }, [setMoodRead, moodWrite]);
 
     return (
         <div className="center-journal">
