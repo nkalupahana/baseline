@@ -14,7 +14,7 @@ const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [present] = useIonToast();
-    const BOTTOM_BAR_HEIGHT = 140;
+    const BOTTOM_BAR_HEIGHT = 148;
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
         bottom: "0px"
@@ -102,10 +102,10 @@ const FinishJournal = props => {
                 label="nice find!"
                 labelFontSize={0}
                 valueFontSize="5rem"
-                labelColor="#005a58"
-                knobColor="#005a58"
-                progressColorFrom="#c8e6c9"
-                progressColorTo="#388e3c"
+                labelColor="#020856"
+                knobColor="#020856"
+                progressColorFrom="#1c88e3"
+                progressColorTo="#1975e6"
                 progressSize={24}
                 trackColor="#eeeeee"
                 trackSize={24}
