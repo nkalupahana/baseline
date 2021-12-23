@@ -1,8 +1,9 @@
 import "./MoodLogCard.css";
 import { IonTextarea } from "@ionic/react";
 import { useState } from "react";
+import { Log } from "../db";
 
-const MoodLogCard = ({ log }) => {
+const MoodLogCard = ({ log } : { log: Log }) => {
     const [grow, setGrow] = useState(false);
 
     function toggleGrow() {

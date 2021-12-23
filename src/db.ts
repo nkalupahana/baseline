@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
 
-interface Item {
+export interface Log {
     timestamp: number;
     year: number,
     month: number,
@@ -13,7 +13,7 @@ interface Item {
 }
 
 interface DB extends Dexie {
-    logs: Dexie.Table<Item, number>;
+    logs: Dexie.Table<Log, number>;
 }
 
 const ldb = new Dexie('ldb');

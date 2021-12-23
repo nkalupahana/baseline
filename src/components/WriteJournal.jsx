@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import history from "../history";
 import { signOutAndCleanUp } from "../firebase";
 
-const WriteJournal = ({setMoodRead, moodWrite, ...props}) => {
+const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
     const next = () => {
         history.push("/journal/finish");
     };

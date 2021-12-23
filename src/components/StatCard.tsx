@@ -1,6 +1,12 @@
 import "./StatCard.css";
 
-const StatCard = props => {
+interface Stat {
+    stat: number;
+    label: string;
+    change: number;
+}
+
+const StatCard = (props: Stat) => {
     return (
         <div className="card">
             <span className="stat">{ props.stat }</span> 
