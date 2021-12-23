@@ -50,16 +50,6 @@ const Summary = () => {
         })();
     }, [loading]);
 
-    // Little hack to make the fab fade in on load after a delay.
-    // This is done because on mobile, if the fab is there at the beginning,
-    // it jumps when the keyboard goes down. To get around this, we just fade it
-    // in after the keyboard goes down.
-    useEffect(() => {
-        setTimeout(() => {
-            document.getElementById("journal-fab").style.opacity = 1;
-        }, 500);
-    }, []);
-
     return (
         <div>
             <div className="container">

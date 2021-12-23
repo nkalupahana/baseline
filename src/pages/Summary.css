@@ -7,11 +7,25 @@
     flex-direction: column;
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    63% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 .journal-fab {
     bottom: 30px;
     right: calc(30px + var(--ion-safe-area-right, 0px));
-    opacity: 0;
-    transition: all 0.3s;
+    opacity: 1;
+    animation: fadeIn 0.8s;
 }
 
 @media only screen and (max-width: 800px) {
