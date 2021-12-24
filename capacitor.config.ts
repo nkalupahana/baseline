@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: 'moody',
   webDir: 'build',
   bundledWebRuntime: false,
+  ios: {
+    scheme: "moody"
+  },
   cordova: {
     staticPlugins: [
       'cordova-plugin-googleplus',

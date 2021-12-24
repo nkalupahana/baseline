@@ -7,7 +7,13 @@ import ldb from './db';
 import { Auth } from '@firebase/auth';
 
 enableLogging(true);
-export const firebase = initializeApp(JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG as string));
+let params = {};
+if (process.env.REACT_APP_FIREBASE_CONFIG) {
+    params = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
+}
+// else, data will be fetched from Firebase directly
+
+export const firebase = initializeApp(params);
 export let auth: Auth;
 if (Capacitor.isNativePlatform()) {
     auth = initializeAuth(firebase, {
