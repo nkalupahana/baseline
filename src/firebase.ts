@@ -7,7 +7,7 @@ import ldb from './db';
 import { Auth } from '@firebase/auth';
 
 enableLogging(true);
-let params = {};
+let params = undefined;
 if (process.env.REACT_APP_FIREBASE_CONFIG) {
     params = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
 }
