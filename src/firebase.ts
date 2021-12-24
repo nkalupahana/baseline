@@ -7,13 +7,15 @@ import ldb from './db';
 import { Auth } from '@firebase/auth';
 
 enableLogging(true);
-let params = undefined;
-if (process.env.REACT_APP_FIREBASE_CONFIG) {
-    params = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
-}
-// else, data will be fetched from Firebase directly
+export const firebase = initializeApp({
+    "apiKey": "AIzaSyAlYsMV0bXEum2jytDPKe4uD17g8do4WaQ", 
+    "authDomain": "moody-ionic.firebaseapp.com", 
+    "projectId": "moody-ionic", 
+    "storageBucket": "moody-ionic.appspot.com", 
+    "messagingSenderId": "257064314002", 
+    "appId": "1:257064314002:web:bf10991ebeb4d6df18724b"
+});
 
-export const firebase = initializeApp(params);
 export let auth: Auth;
 if (Capacitor.isNativePlatform()) {
     auth = initializeAuth(firebase, {
