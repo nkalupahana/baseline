@@ -65,6 +65,9 @@
     "cypress:open": "cypress open"
   },
   "eslintConfig": {
+    "plugins": [
+      "cypress"
+    ],
     "extends": [
       "react-app",
       "react-app/jest",
@@ -87,6 +90,7 @@
   "devDependencies": {
     "@capacitor/cli": "^3.3.3",
     "cypress": "^8.7.0",
+    "eslint-plugin-cypress": "^2.12.1",
     "faker": "^5.5.3"
   },
   "description": "An Ionic project",
