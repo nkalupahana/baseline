@@ -14,9 +14,15 @@ jobs:
         node-version: "16.x"
         cache: "npm"
     - run: npm ci
-    - run: npm install -g ionic && ionic cap sync
-    - name: Run Tests
-      run: ionic serve &; npm run test
+    - name: Build Tests
+      run: |
+        npm install -g ionic
+        npm run build
+        ionic cap sync
+    - name: Integration Tests
+      run: |
+        ionic serve &
+        npm run test
     - name: Upload Test Video
       uses: actions/upload-artifact@v2
       with:

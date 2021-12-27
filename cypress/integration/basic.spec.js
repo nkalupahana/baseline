@@ -1,3 +1,5 @@
+const cy = require("cypress")
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
