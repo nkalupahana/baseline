@@ -22,7 +22,7 @@ jobs:
     - name: Integration Tests
       run: |
         npm install -g serve
-        serve -s build -p 8100
+        serve -s build -p 8100 &
         npm run test
     - name: Upload Test Video
       uses: actions/upload-artifact@v2
