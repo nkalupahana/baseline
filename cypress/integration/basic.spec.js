@@ -5,9 +5,11 @@ describe("Mobile Flow", () => {
 
     it("Load Main Page", () => {
         cy.visit("/")
-        if (cy.contains("What's happening")) {
-            cy.contains("What's happening").click()
-        }
+        cy.get("body").then(($body) => {
+            if ($body.text().includes("What's happening")) {
+              cy.contains("What's happening").click()
+            }
+        })
 
         cy.contains("Anonymous").should("exist")
         cy.contains("Google").should("exist")
@@ -15,10 +17,10 @@ describe("Mobile Flow", () => {
 
     it("Login as Anonymous", () => {
         cy.contains("Anonymous").click()
-        expect(cy.contains("What's happening")).to.exist
+        cy.contains("What's happening").should("exist")
     })
 
-    it("Check Mobile Datapage", () => {
+    it("Check Mobile Summary Page", () => {
         cy.get(".top-corner").click()
         cy.contains("week").should("exist")
         cy.contains("no more logs").should("exist")
