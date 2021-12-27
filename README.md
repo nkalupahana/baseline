@@ -4,5 +4,3 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody?ref=badge_small)
 
 A better, universal, journaling and mood tracking platform.
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody?ref=badge_large)
