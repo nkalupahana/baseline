@@ -1,3 +1,5 @@
+/* global cy */
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
