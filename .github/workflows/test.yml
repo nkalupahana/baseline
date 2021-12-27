@@ -16,7 +16,7 @@ jobs:
     - run: npm ci
     - run: npm install -g ionic && ionic cap sync
     - name: Run Tests
-      run: ionic serve; npm run test
+      run: ionic serve &; npm run test
     - name: Upload Test Video
       uses: actions/upload-artifact@v2
       with:
