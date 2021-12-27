@@ -30,14 +30,13 @@
 
 .top-corner {
     position: relative;
-    top: 40px;
+    top: calc(max(env(safe-area-inset-top), 20px) + 7px);
     left: 40px;
     font-size: 30px;
 }
 
 @media only screen and (max-width: 800px) {
     .top-corner.x {
-        top: 50px;
         left: 0px;
     }
 }

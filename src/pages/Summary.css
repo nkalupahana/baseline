@@ -1,8 +1,7 @@
 .center-summary {
     font-weight: bold;
-    padding-top: 70px;
+    padding-top: calc(max(env(safe-area-inset-top), 20px) + 20px);
     display: flex;
-    /*justify-content: center;*/
     align-items: center;
     flex-direction: column;
 }
