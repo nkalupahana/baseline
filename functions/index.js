@@ -113,7 +113,7 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
                 reject(err);
                 return;
             }
-            
+
             resolve([fields, files]);
         });
     });
@@ -173,7 +173,7 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
                     return admin.storage().bucket().file(`user/${req.user.user_id}/${fileName}`).save(buf);
                 }));
             } catch (e) {
-                res.status(400).send(e);
+                res.status(400).send(e.message);
                 return;
             }
         }
@@ -182,7 +182,7 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
         try {
             await Promise.all(promises);
         } catch (e) {
-            res.status(400).send(e);
+            res.status(400).send(e.message);
             return;
         }
     }
