@@ -13,6 +13,7 @@ import history from "../history";
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
+    const [files, setFiles] = useState([]);
     const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 148;
     const [bottomBarStyle, setBottomBarStyle] = useState({
@@ -38,18 +39,23 @@ const FinishJournal = props => {
 
         const token = await getIdToken(user);
         let errored = false;
-        const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/moodLog",
+
+        var data = new FormData();
+        data.append("timezone", DateTime.local().zoneName);
+        data.append("mood", props.moodWrite);
+        data.append("journal", props.text);
+        data.append("average", props.average);
+        for (let file of files) {
+            data.append("file", file);
+        }
+
+        const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/moodLogNext",
             {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    timezone: DateTime.local().zoneName,
-                    mood: props.moodWrite,
-                    journal: props.text,
-                    average: props.average
-                }),
+                body: data
             }
         ).catch(e => {
             if (e.message === "Load failed") {
@@ -94,6 +100,19 @@ const FinishJournal = props => {
             }, 1000);
         }
     }, []);
+
+    const attachFiles = () => {
+        const fileEl = document.getElementById("files");
+        if (fileEl.files.length == 0) return;
+        let newFiles = [...files];
+        for (let f of fileEl.files) {
+            if (newFiles.filter(file => file.name === f.name).length === 0) newFiles.push(f);
+            if (newFiles.length > 3) newFiles.shift();
+        }
+
+        setFiles(newFiles);
+        fileEl.value = "";
+    }
 
     return (
         <div className="center-journal">
@@ -141,7 +160,10 @@ const FinishJournal = props => {
                     </IonSegmentButton>
                 </IonSegment>
             </div>
-            <br /><br /><br /><br /><br /><br /><br /><br /><br />
+            <br /><br />
+            { files.map(file => <p key={file.name}>{file.name}</p>)}
+            { files.length < 3 && <input id="files" type="file" multiple accept="image/*" onChange={attachFiles} /> }
+            <br /><br /><br /><br /><br /><br />
             <div style={bottomBarStyle} className="bottom-bar">
                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
                 <div onClick={submit} className="finish-button">
