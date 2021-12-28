@@ -113,6 +113,7 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
                 reject(err);
                 return;
             }
+            
             resolve([fields, files]);
         });
     });

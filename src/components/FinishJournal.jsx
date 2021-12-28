@@ -103,7 +103,7 @@ const FinishJournal = props => {
 
     const attachFiles = () => {
         const fileEl = document.getElementById("files");
-        if (fileEl.files.length == 0) return;
+        if (fileEl.files.length === 0) return;
         let newFiles = [...files];
         for (let f of fileEl.files) {
             if (newFiles.filter(file => file.name === f.name).length === 0) newFiles.push(f);
