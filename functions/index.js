@@ -109,7 +109,10 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
     const formidable = require("formidable-serverless");
     let [data, files] = await new Promise((resolve, reject) => {
         new formidable.IncomingForm({ keepExtensions: true, multiples: true }).parse(req, (err, fields, files) => {
-            if (err) reject(err);
+            if (err) {
+                reject(err);
+                return;
+            }
             resolve([fields, files]);
         });
     });
