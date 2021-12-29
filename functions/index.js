@@ -167,7 +167,7 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
             // Convert file to WEBP (with compression), and then save
             // Promises array for parallel processing
             try {
-                promises.push(sharp(file.path).webp().toBuffer().then(buf => {
+                promises.push(sharp(file.path).rotate().webp().toBuffer().then(buf => {
                     const fileName = `${uuidv4()}.webp`;
                     filePaths.push(fileName);
                     return admin.storage().bucket().file(`user/${req.user.user_id}/${fileName}`).save(buf);

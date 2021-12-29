@@ -115,7 +115,7 @@ const FinishJournal = props => {
     }
 
     const truncate = str => {
-        if (str.length > 40) return str.substring(0, 15) + "..." + str.substring(str.length - 25);
+        if (str.length > 40) return str.substring(0, 15) + " ... " + str.substring(str.length - 25);
         return str;
     }
 
@@ -132,17 +132,17 @@ const FinishJournal = props => {
             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
             <br />
             <CircularSlider
-                width={230}
+                width={190}
                 label="nice find!"
                 labelFontSize={0}
-                valueFontSize="5rem"
+                valueFontSize="4rem"
                 labelColor="#020856"
                 knobColor="#020856"
                 progressColorFrom="#1c88e3"
                 progressColorTo="#1975e6"
-                progressSize={24}
+                progressSize={20}
                 trackColor="#eeeeee"
-                trackSize={24}
+                trackSize={20}
                 min={-5}
                 max={5}
                 direction={-1}
@@ -155,7 +155,7 @@ const FinishJournal = props => {
 
             <br /><br />
 
-            <p className="text-center">And finally, would you say that you're feeling:</p>
+            <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
             <div className="container">
                 <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
                     <IonSegmentButton value="below">
@@ -170,7 +170,7 @@ const FinishJournal = props => {
                 </IonSegment>
             </div>
             <br /><br />
-            { props.files.map(file => <span key={file.name}><IonIcon onClick={() => {removeFile(file.name)}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
+            { props.files.map(file => <span key={file.name} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(file.name)}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
             { props.files.length < 3 && 
                 <>
                     <label htmlFor="files">
@@ -179,7 +179,7 @@ const FinishJournal = props => {
                     <input id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                 </> 
             }
-            <br /><br /><br /><br /><br /><br />
+            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             <div style={bottomBarStyle} className="bottom-bar">
                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
                 <div onClick={submit} className="finish-button">
