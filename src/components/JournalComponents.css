@@ -105,3 +105,7 @@
     margin: 0px 25px 15px 25px;
     font-weight: normal;
 }
+
+#files {
+    display: none;
+}

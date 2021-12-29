@@ -10,6 +10,7 @@ import "./Container.css";
 
 const Journal = () => {
     const [text, setText] = useState("");
+    const [files, setFiles] = useState([]);
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
     const [average, setAverage] = useState("average");
@@ -23,7 +24,7 @@ const Journal = () => {
                         <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
                     </Route>
                     <Route exact path="/journal/finish">
-                        <FinishJournal text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
+                        <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
                     </Route>
                 </Switch>
             </div>

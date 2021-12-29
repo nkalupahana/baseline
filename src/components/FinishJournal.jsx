@@ -1,6 +1,6 @@
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
-import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner } from "@ionic/react";
+import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIcon } from "@ionic/react";
 import { getIdToken } from "@firebase/auth";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -9,11 +9,11 @@ import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../history";
+import { attach, trashOutline } from "ionicons/icons";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
-    const [files, setFiles] = useState([]);
     const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 148;
     const [bottomBarStyle, setBottomBarStyle] = useState({
@@ -45,7 +45,7 @@ const FinishJournal = props => {
         data.append("mood", props.moodWrite);
         data.append("journal", props.text);
         data.append("average", props.average);
-        for (let file of files) {
+        for (let file of props.files) {
             data.append("file", file);
         }
 
@@ -104,14 +104,23 @@ const FinishJournal = props => {
     const attachFiles = () => {
         const fileEl = document.getElementById("files");
         if (fileEl.files.length === 0) return;
-        let newFiles = [...files];
+        let newFiles = [...props.files];
         for (let f of fileEl.files) {
             if (newFiles.filter(file => file.name === f.name).length === 0) newFiles.push(f);
             if (newFiles.length > 3) newFiles.shift();
         }
 
-        setFiles(newFiles);
+        props.setFiles(newFiles);
         fileEl.value = "";
+    }
+
+    const truncate = str => {
+        if (str.length > 40) return str.substring(0, 15) + "..." + str.substring(str.length - 25);
+        return str;
+    }
+
+    const removeFile = name => {
+        props.setFiles(props.files.filter(file => file.name !== name));
     }
 
     return (
@@ -161,8 +170,15 @@ const FinishJournal = props => {
                 </IonSegment>
             </div>
             <br /><br />
-            { files.map(file => <p key={file.name}>{file.name}</p>)}
-            { files.length < 3 && <input id="files" type="file" multiple accept="image/*" onChange={attachFiles} /> }
+            { props.files.map(file => <span key={file.name}><IonIcon onClick={() => {removeFile(file.name)}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
+            { props.files.length < 3 && 
+                <>
+                    <label htmlFor="files">
+                        <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
+                    </label>
+                    <input id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
+                </> 
+            }
             <br /><br /><br /><br /><br /><br />
             <div style={bottomBarStyle} className="bottom-bar">
                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
