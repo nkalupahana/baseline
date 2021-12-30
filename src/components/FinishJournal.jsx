@@ -101,12 +101,16 @@ const FinishJournal = props => {
         }
     }, []);
 
+    const fileDesc = file => {
+        return file.name + file.lastModified + file.size;
+    }
+
     const attachFiles = () => {
         const fileEl = document.getElementById("files");
         if (fileEl.files.length === 0) return;
         let newFiles = [...props.files];
         for (let f of fileEl.files) {
-            if (newFiles.filter(file => file.name === f.name).length === 0) newFiles.push(f);
+            if (newFiles.filter(file => fileDesc(file) === fileDesc(f)).length === 0) newFiles.push(f);
             if (newFiles.length > 3) newFiles.shift();
         }
 
@@ -119,8 +123,8 @@ const FinishJournal = props => {
         return str;
     }
 
-    const removeFile = name => {
-        props.setFiles(props.files.filter(file => file.name !== name));
+    const removeFile = desc => {
+        props.setFiles(props.files.filter(file => fileDesc(file) !== desc));
     }
 
     return (
@@ -170,7 +174,7 @@ const FinishJournal = props => {
                 </IonSegment>
             </div>
             <br /><br />
-            { props.files.map(file => <span key={file.name} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(file.name)}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
+            { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
             { props.files.length < 3 && 
                 <>
                     <label htmlFor="files">
