@@ -59,7 +59,7 @@ const FinishJournal = props => {
             }
         ).catch(e => {
             if (e.message === "Load failed") {
-                toast(`We can't reach our servers. Check your internet connection and try again.`);
+                toast(`We can't reach our servers. Check your internet connection and try again.${props.files.length > 0 ? " Your images might also be too big." : ""}`);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }

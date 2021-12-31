@@ -92,7 +92,7 @@ exports.moodLog = functions.https.onRequest(async (req, res) => {
     res.send(200);
 });
 
-exports.moodLogNext = functions.https.onRequest(async (req, res) => {
+exports.moodLogNext = functions.runWith({memory: "2GB"}).https.onRequest(async (req, res) => {
     res.set('Access-Control-Allow-Origin', "*");
     res.set('Access-Control-Allow-Methods', 'POST');
     res.set('Access-Control-Allow-Headers', 'Authorization');
@@ -160,6 +160,7 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
             return;
         }
 
+        const fs = require("fs");
         const sharp = require("sharp");
         const { v4: uuidv4 } = require("uuid");
         let promises = [];
@@ -168,6 +169,10 @@ exports.moodLogNext = functions.https.onRequest(async (req, res) => {
             // Promises array for parallel processing
             try {
                 promises.push(sharp(file.path).rotate().webp().toBuffer().then(buf => {
+                    // Clean up temp file: https://firebase.google.com/docs/functions/tips#always_delete_temporary_files
+                    fs.rmSync(file.path);
+                    
+                    // Upload
                     const fileName = `${uuidv4()}.webp`;
                     filePaths.push(fileName);
                     return admin.storage().bucket().file(`user/${req.user.user_id}/${fileName}`).save(buf);
