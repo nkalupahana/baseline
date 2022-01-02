@@ -92,6 +92,7 @@ exports.moodLog = functions.https.onRequest(async (req, res) => {
     res.send(200);
 });
 
+// TODO: in production, set minInstances
 exports.moodLogNext = functions.runWith({memory: "2GB"}).https.onRequest(async (req, res) => {
     res.set('Access-Control-Allow-Origin', "*");
     res.set('Access-Control-Allow-Methods', 'POST');
