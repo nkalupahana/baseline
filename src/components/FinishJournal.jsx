@@ -49,7 +49,7 @@ const FinishJournal = props => {
             data.append("file", file);
         }
 
-        const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/moodLogNext",
+        const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/moodLog",
             {
                 method: "POST",
                 headers: {
