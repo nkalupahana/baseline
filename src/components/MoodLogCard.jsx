@@ -1,20 +1,20 @@
 import "./MoodLogCard.css";
 import { IonIcon, IonTextarea } from "@ionic/react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { car, chevronDown, chevronUp, text } from "ionicons/icons";
+import {  useRef, useState } from "react";
+import { chevronUp, imagesOutline } from "ionicons/icons";
 
 const MoodLogCard = ({ log }) => {
-    const [grow, setGrow] = useState({
-        grow: false,
-        height: 0
-    });
+    const [grow, setGrow] = useState(false);
     const card = useRef();
 
     function toggleGrow() {
-        setGrow({
-            grow: !grow.grow,
-            close: card.current.offsetHeight !== card.current.children[0].children[0].scrollHeight
-        });
+        if (!grow) {
+            if (log.files || card.current.offsetHeight !== card.current.children[0].children[0].scrollHeight) {
+                setGrow(true)
+            }
+        } else {
+            setGrow(false)
+        }
     }
 
     // TODO: temp, need to be turned into official symbols
@@ -29,11 +29,15 @@ const MoodLogCard = ({ log }) => {
             <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}>{ symbol } { log.mood }</span>
             { log.journal && 
                 <>
-                    { !grow.grow && <IonTextarea ref={card} style={{"gridArea": "log"}} rows={2} readonly autoGrow={false} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} />}
-                    { grow.grow && 
+                    { !grow && 
+                        <>
+                            <IonTextarea ref={card} style={{"gridArea": "log"}} rows={2} readonly autoGrow={false} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} />
+                            { log.files && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
+                        </> }
+                    { grow && 
                     <>
                         <IonTextarea ref={card} style={{"gridArea": "log"}} readonly autoGrow={true} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" /> 
-                        { grow.close && <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} /> }
+                        <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
                     </> }
                 </>
             }
