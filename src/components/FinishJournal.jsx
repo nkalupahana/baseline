@@ -124,6 +124,7 @@ const FinishJournal = props => {
     }
 
     const removeFile = desc => {
+        if (submitting) return;
         props.setFiles(props.files.filter(file => fileDesc(file) !== desc));
     }
 
@@ -180,7 +181,7 @@ const FinishJournal = props => {
                     <label htmlFor="files">
                         <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
                     </label>
-                    <input id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
+                    <input disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                 </> 
             }
             <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

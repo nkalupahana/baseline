@@ -10,10 +10,10 @@ const MoodLogCard = ({ log }) => {
     function toggleGrow() {
         if (!grow) {
             if (log.files || card.current.offsetHeight !== card.current.children[0].children[0].scrollHeight) {
-                setGrow(true)
+                setGrow(true);
             }
         } else {
-            setGrow(false)
+            setGrow(false);
         }
     }
 
