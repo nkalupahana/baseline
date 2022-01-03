@@ -27,7 +27,7 @@ const MoodLogCard = ({ log }) => {
         <div className="mood-card">
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
             <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}>{ symbol } { log.mood }</span>
-            { log.journal && 
+            { (log.journal || log.files) && 
                 <>
                     { !grow && 
                     <>
