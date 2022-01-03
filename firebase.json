@@ -9,6 +9,10 @@
     "public": "build",
     "rewrites": [
       {
+        "source": "/moodLog",
+        "function": "moodLog"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

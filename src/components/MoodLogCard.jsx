@@ -30,10 +30,10 @@ const MoodLogCard = ({ log }) => {
             { log.journal && 
                 <>
                     { !grow && 
-                        <>
-                            <IonTextarea ref={card} style={{"gridArea": "log"}} rows={2} readonly autoGrow={false} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} />
-                            { log.files && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
-                        </> }
+                    <>
+                        <IonTextarea ref={card} style={{"gridArea": "log"}} rows={2} readonly autoGrow={false} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} />
+                        { log.files && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
+                    </> }
                     { grow && 
                     <>
                         <IonTextarea ref={card} style={{"gridArea": "log"}} readonly autoGrow={true} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" /> 
