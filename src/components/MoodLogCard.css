@@ -12,6 +12,8 @@
     grid-template-areas: 
       "time labels"
       "log log";
+
+    position: relative;
 }
 
 .tx.tx-card {
@@ -22,4 +24,13 @@
 .tx-card > div > textarea {
     overflow: hidden;
     padding-left: 8px !important;
+}
+
+.close-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 20px;
+    z-index: 10;
+    font-size: 1.2em;
+    animation: fadeIn 0.3s;
 }
