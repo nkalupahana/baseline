@@ -32,6 +32,7 @@ import Dexie from "dexie";
 import { useEffect, useState } from "react";
 import history from "./history";
 import "./lifecycle";
+import smoothscroll from "smoothscroll-polyfill";
 
 setupIonicReact();
 
@@ -40,6 +41,8 @@ const App = () => {
     const [authLikely, setAuthLikely] = useState(false);
     
     useEffect(() => {
+        smoothscroll.polyfill();
+        
         (async () => {
             if (await Dexie.exists("ldb")) {
                 setAuthLikely(true);

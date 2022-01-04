@@ -17,8 +17,6 @@ const MoodLogCard = ({ log }) => {
         } else {
             setGrow(false);
             if (card.current.parentElement.getBoundingClientRect().y > card.current.getBoundingClientRect().y) {
-                console.log("SCROLL")
-                console.log(card.current.scrollTop);
                 card.current.parentElement.scrollTo({
                     top: card.current.offsetTop - card.current.parentElement.offsetTop - 50,
                     left: 0,
