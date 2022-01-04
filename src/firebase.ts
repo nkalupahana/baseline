@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { enableLogging } from '@firebase/database';
 import ldb from './db';
 import { Auth } from '@firebase/auth';
+import { getStorage } from '@firebase/storage';
 
 enableLogging(true);
 export const firebase = initializeApp({
@@ -24,6 +25,8 @@ if (Capacitor.isNativePlatform()) {
 } else {
     auth = getAuth();
 }
+
+export let storage = getStorage();
 
 export const signOutAndCleanUp = () => {
     ldb.logs.clear();
