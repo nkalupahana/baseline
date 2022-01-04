@@ -23,7 +23,7 @@ const ImageCarousel = ({ files }) => {
     return (
         <>
             { accessURLs && <Flickity className="carousel-mods" reloadOnUpdate={true} options={{"wrapAround": true, "adaptiveHeight": true, "fullscreen": true}}>
-                { accessURLs.map(url => <div key={url} style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}><img alt="User-attached image for mood log" src={url} /></div>)}
+                { accessURLs.map(url => <div key={url} style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}><img alt="User-attached for mood log" src={url} /></div>)}
             </Flickity> }
         </>
     )
