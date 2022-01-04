@@ -1,6 +1,6 @@
 import { getDownloadURL, ref } from "@firebase/storage";
 import { storage, auth } from "../firebase";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Flickity from 'react-flickity-component';
 import "flickity/dist/flickity.min.css";
 import "flickity-fullscreen/fullscreen.css";
