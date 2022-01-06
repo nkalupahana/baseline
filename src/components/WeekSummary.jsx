@@ -26,8 +26,9 @@ const WeekSummary = () => {
     return (
         <div className="week-summary-grid">
             <SummaryHeader style={{ gridArea: "heading" }}></SummaryHeader>
-            <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs} style={{ gridArea: "graph" }}></WeekMoodGraph>
-            { logs && <MoodLogList logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}></MoodLogList> }
+            { logs && logs.length > 0 && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs} style={{ gridArea: "graph" }}></WeekMoodGraph> }
+            { logs && logs.length > 0 && <MoodLogList logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}></MoodLogList> }
+            { logs && logs.length === 0 && <p className="text-center">Write your first mood log by clicking on the pencil in the bottom right!</p> }
         </div>
     );
 };

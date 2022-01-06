@@ -25,7 +25,7 @@ describe("Mobile Flow", () => {
     it("Check Mobile Summary Page", () => {
         cy.get(".top-corner").click()
         cy.contains("week").should("exist")
-        cy.contains("no more logs").should("exist")
+        cy.contains("first mood log").should("exist")
         cy.get(".mood-card").should("not.exist")
     })
 
@@ -53,5 +53,6 @@ describe("Mobile Flow", () => {
 
     it("Verify Mood Log on Summary", () => {
         cy.contains("Hello world!").should("exist")
+        cy.contains("no more logs").should("exist")
     })
 })
