@@ -1,21 +1,21 @@
 import { DateTime } from "luxon";
-import { useEffect, useRef } from "react";
+import { useEffect, useCallback } from "react";
+import useCallbackRef from "../useCallbackRef";
 import MoodLogCard from "./MoodLogCard";
 
 const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
-    const container = useRef();
 
     // Confirm final position
-    useEffect(() => {
-        if (!container.current) return;
+    const container = useCallbackRef(useCallback(node => {
+        if (!node) return;
         const listener = e => {
-            const parentBox = container.current.getBoundingClientRect();
+            const parentBox = node.getBoundingClientRect();
             if (requestedDate.el && requestedDate.el[0] === "g") {
                 // Computer-generated scroll event
                 const id = "i" + requestedDate.el.slice(1);
-                const el = container.current.querySelector("#" + id);
+                const el = node.querySelector("#" + id);
                 if (el) {
-                    const bound = container.current.offsetTop - el.getBoundingClientRect().y + 30;
+                    const bound = node.offsetTop - el.getBoundingClientRect().y + 30;
                     if (bound < 15 && bound > -15) {
                         setRequestedDate({
                             el: undefined,
@@ -29,7 +29,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                 }
             } else {
                 if (requestedDate.list.trustRegion) {
-                    const bound = container.current.offsetTop - requestedDate.list.trustRegion.getBoundingClientRect().y + 30;
+                    const bound = node.offsetTop - requestedDate.list.trustRegion.getBoundingClientRect().y + 30;
                     if (bound < 15 && bound > -15) {
                         return;
                     } else {
@@ -44,7 +44,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                     }
                 }
 
-                for (let child of container.current.children) {
+                for (let child of node.children) {
                     if (child.tagName !== "P") continue;
                     const childBox = child.getBoundingClientRect();
                     if (childBox.y > parentBox.top && childBox.y < parentBox.top + (parentBox.height / 3)) {
@@ -67,20 +67,26 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
             }
         };
 
-        container.current.addEventListener("scroll", listener);
+        node.addEventListener("scroll", listener);
+        console.log("list - attach");
         return () => {
-            if (container.current) container.current.removeEventListener("scroll", listener);
+            if (node) {
+                console.log("list - detach");
+                node.removeEventListener("scroll", listener);
+            }
         }
-    }, [container.current, requestedDate]);
+    }, [requestedDate, setRequestedDate]));
 
     // Scroll to final position
     useEffect(() => {
+        const node = document.getElementById("moodLogList");
+        if (!node) return;
         if (requestedDate.el && requestedDate.el[0] === "g") {
             const id = "i" + requestedDate.el.slice(1);
-            const el = container.current.querySelector("#" + id);
+            const el = node.querySelector("#" + id);
             if (el) {
-                container.current.scrollTo({
-                    top: el.offsetTop - container.current.offsetTop - 30,
+                node.scrollTo({
+                    top: el.offsetTop - node.offsetTop - 30,
                     left: 0,
                     behavior: "smooth"
                 })
@@ -118,7 +124,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
     );
 
     return (
-        <div ref={container} className="mood-log-list">
+        <div ref={container} id="moodLogList" className="mood-log-list">
             { els }
         </div>
     );

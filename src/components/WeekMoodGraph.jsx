@@ -1,6 +1,7 @@
 import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
-import { useEffect, useRef } from "react";
+import { useEffect, useCallback } from "react";
+import useCallbackRef from "../useCallbackRef";
 
 function getDate(log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
@@ -9,17 +10,16 @@ function getDate(log) {
 // TODO: fallback timeout
 const ARROW_OFFSET = 20;
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
-    const container = useRef();
-    useEffect(() => {
-        if (!container.current) return;
+    const container = useCallbackRef(useCallback(node => {
+        if (!node) return;
         const listener = e => {
-            if (requestedDate.el && requestedDate.el[0] == "i") {
+            if (requestedDate.el && requestedDate.el[0] === "i") {
                 // Computer-generated scroll event
                 const id = "g" + requestedDate.el.slice(1);
-                const el = container.current.querySelector("#" + id);
+                const el = node.querySelector("#" + id);
                 if (el) {
                     const elBox = el.getBoundingClientRect();
-                    const bound = (elBox.x + elBox.width) - (container.current.offsetLeft + container.current.offsetWidth) + 8
+                    const bound = (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
                     if (bound < 20 && bound > -20) {
                         setRequestedDate({
                             el: undefined,
@@ -34,7 +34,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             } else {
                 if (requestedDate.trustRegionGraph) {
                     const elBox = requestedDate.trustRegionGraph.getBoundingClientRect();
-                    const bound = (elBox.x + elBox.width) - (container.current.offsetLeft + container.current.offsetWidth) + 8
+                    const bound = (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
                     if (bound < 20 && bound > -20) {
                         return;
                     } else {
@@ -49,9 +49,9 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     }
                 }
 
-                for (let i = 0; i < container.current.children.length; i++) {
-                    if (container.current.children[i].getBoundingClientRect().x < container.current.getBoundingClientRect().right - ARROW_OFFSET) {
-                        const locator = container.current.children[i].id;
+                for (let i = 0; i < node.children.length; i++) {
+                    if (node.children[i].getBoundingClientRect().x < node.getBoundingClientRect().right - ARROW_OFFSET) {
+                        const locator = node.children[i].id;
                         if (locator !== requestedDate.el && locator !== requestedDate.graph.last) {
                             setRequestedDate({
                                 el: locator,
@@ -71,21 +71,27 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             }
         };
 
-        container.current.addEventListener("scroll", listener);
+        node.addEventListener("scroll", listener);
+        console.log("graph - attach");
         return () => {
-            if (container.current) container.current.removeEventListener("scroll", listener);
+            if (node) {
+                console.log("graph - detach");
+                node.removeEventListener("scroll", listener);
+            }
         }
-    }, [container.current, requestedDate]);
+    }, [requestedDate, setRequestedDate]));
 
     // Scroll to final position
     useEffect(() => {
-        if (requestedDate.el && requestedDate.el[0] == "i") {
+        const node = document.getElementById("weekMoodGraph");
+        if (!node) return;
+        if (requestedDate.el && requestedDate.el[0] === "i") {
             const id = "g" + requestedDate.el.slice(1);
-            const el = container.current.querySelector("#" + id);
+            const el = node.querySelector("#" + id);
             if (el) {
-                container.current.scrollTo({
+                node.scrollTo({
                     top: 0,
-                    left: (el.offsetLeft + el.offsetWidth) - (container.current.offsetLeft + container.current.offsetWidth) + 8,
+                    left: (el.offsetLeft + el.offsetWidth) - (node.offsetLeft + node.offsetWidth) + 8,
                     behavior: "smooth"
                 })
             }
@@ -105,7 +111,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         }
 
         els.push(el);
-        if (i == logs.length) break;
+        if (i === logs.length) break;
 
         let next = getDate(logs[i]);
         while (!current.equals(next)) {
@@ -119,7 +125,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     }
 
     return (
-        <div ref={container} style={{"display": "flex", "flexDirection": "row-reverse", "overflowX": "scroll", "overflowY": "hidden", "gap": "2px"}}>
+        <div id="weekMoodGraph" ref={container} style={{"display": "flex", "flexDirection": "row-reverse", "overflowX": "scroll", "overflowY": "hidden", "gap": "2px"}}>
             { els }
         </div>
     );
