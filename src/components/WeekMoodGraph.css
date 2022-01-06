@@ -1,0 +1,10 @@
+.graph-card {
+    background-color: grey;
+    height: 100%;
+}
+
+.graph-card-date {
+    width: 12.5vw;
+    font-size: 0.8em;
+    text-align: center;
+}
