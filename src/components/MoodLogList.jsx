@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import { useEffect, useCallback } from "react";
 import useCallbackRef from "../useCallbackRef";
 import MoodLogCard from "./MoodLogCard";
+import { getTime } from "../helpers";
 
 const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
 
@@ -10,7 +11,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
         if (!node) return;
         const listener = e => {
             const parentBox = node.getBoundingClientRect();
-            if (requestedDate.el && requestedDate.el[0] === "g") {
+            if (requestedDate.el && requestedDate.el[0] === "g" && requestedDate.timeout > getTime()) {
                 // Computer-generated scroll event
                 const id = "i" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
@@ -19,6 +20,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                     if (bound < 15 && bound > -15) {
                         setRequestedDate({
                             el: undefined,
+                            timeout: requestedDate.timeout,
                             list: {
                                 trustRegion: el,
                                 last: id
@@ -35,6 +37,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                     } else {
                         setRequestedDate({
                             el: requestedDate.el,
+                            timeout: requestedDate.timeout,
                             list: {
                                 trustRegion: undefined,
                                 last: requestedDate.list.last
@@ -51,6 +54,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                         if (child.id !== requestedDate.el && child.id !== requestedDate.list.last) {
                             setRequestedDate({
                                 el: child.id,
+                                timeout: getTime() + 5,
                                 list: {
                                     trustRegion: undefined,
                                     last: child.id

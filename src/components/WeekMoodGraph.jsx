@@ -2,9 +2,14 @@ import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
 import { useEffect, useCallback } from "react";
 import useCallbackRef from "../useCallbackRef";
+import { getTime } from "../helpers";
 
 function getDate(log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
+}
+
+function createGraphCard(date) {
+    return <div key={"g-locator-" + date.toISODate()} id={"g-locator-" + date.toISODate()} className="graph-card"><div className="graph-card-date">{date.toISODate()}</div></div>;
 }
 
 // TODO: fallback timeout
@@ -13,7 +18,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
         const listener = e => {
-            if (requestedDate.el && requestedDate.el[0] === "i") {
+            if (requestedDate.el && requestedDate.el[0] === "i" && requestedDate.timeout > getTime()) {
                 // Computer-generated scroll event
                 const id = "g" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
@@ -23,6 +28,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     if (bound < 20 && bound > -20) {
                         setRequestedDate({
                             el: undefined,
+                            timeout: requestedDate.timeout,
                             list: requestedDate.list,
                             graph: {
                                 trustRegion: el,
@@ -40,6 +46,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     } else {
                         setRequestedDate({
                             el: requestedDate.el,
+                            timeout: requestedDate.timeout,
                             list: requestedDate.list,
                             graph: {
                                 trustRegion: undefined,
@@ -49,12 +56,13 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     }
                 }
 
-                for (let i = 0; i < node.children.length; i++) {
-                    if (node.children[i].getBoundingClientRect().x < node.getBoundingClientRect().right - ARROW_OFFSET) {
-                        const locator = node.children[i].id;
+                for (let child of node.children) {
+                    if (child.getBoundingClientRect().x < node.getBoundingClientRect().right - ARROW_OFFSET) {
+                        const locator = child.id;
                         if (locator !== requestedDate.el && locator !== requestedDate.graph.last) {
                             setRequestedDate({
                                 el: locator,
+                                timeout: getTime() + 5,
                                 list: {
                                     trustRegion: undefined,
                                     last: undefined
@@ -98,30 +106,39 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         }
     }, [requestedDate]);
 
-    if (!logs) return <></>;
-
-    // TODO: add days up to today at the front
     let els = [];
     let i = 0;
     let current = getDate(logs[0]);
+
+    // Create cards from today to first entry
+    let now = DateTime.now();
+    now = DateTime.fromObject({year: now.year, month: now.month, day: now.day});
+    while (!now.equals(current) && !now.isBefore(current)) {
+        els.push(createGraphCard(current));
+        now = now.minus({days: 1});
+    }
+
     while (i < logs.length) {
-        let el = <div key={"g-locator-" + current.toISODate()} id={"g-locator-" + current.toISODate()} className="graph-card"><div className="graph-card-date">{current.toISODate()}</div></div>;
         while (i < logs.length && getDate(logs[i]).equals(current)) {
             i++;
         }
 
-        els.push(el);
+        // Create card for current day
+        els.push(createGraphCard(current));
         if (i === logs.length) break;
 
+        // Create cards back to next populated day
         let next = getDate(logs[i]);
         while (!current.equals(next)) {
             current = current.minus({ days: 1 });
-            if (!current.equals(next)) els.push(<div key={"g-locator-" + current.toISODate()} id={"g-locator-" + current.toISODate()} className="graph-card"><div className="graph-card-date">{current.toISODate()}</div></div>);
+            if (!current.equals(next)) els.push(createGraphCard(current));
         }
     }
+
+    // Create empty cards for final week
     for (let i = 0; i < 6; i++) {
         current = current.minus({ days: 1 });
-        els.push(<div key={"g-locator-" + current.toISODate()} id={"g-locator-" + current.toISODate()} className="graph-card"><div className="graph-card-date">{current.toISODate()}</div></div>);
+        els.push(createGraphCard(current));
     }
 
     return (

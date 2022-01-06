@@ -9,6 +9,7 @@ const WeekSummary = () => {
     let logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
+        timeout: undefined,
         list: {
             trustRegion: undefined,
             last: undefined
