@@ -29,4 +29,4 @@ jobs:
       with:
         name: test-video
         path: cypress/videos
-        if: ${{ failure() }}
+        if: ${{ job.status == 'failure' }}
