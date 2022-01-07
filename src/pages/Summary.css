@@ -56,4 +56,5 @@
         "logs";
     height: 100vh;
     overflow: hidden;
+    align-content: start;
 }

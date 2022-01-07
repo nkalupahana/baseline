@@ -9,6 +9,20 @@ function getDate(log) {
 }
 
 const SECONDS_IN_DAY = 86400;
+// https://materializecss.com/color
+const COLORS = {
+    "-5": "black",
+    "-4": "#d50000", // red accent-4
+    "-3": "#fb8c00", // orange darken-1
+    "-2": "#ffca28", // amber lighten-1
+    "-1": "#ffeb3b", // yellow
+    "0": "#03a9f4",  // light-blue
+    "1": "#4fc3f7",  // light-blue lighten-2
+    "2": "#cddc39",  // lime
+    "3": "#8bc34a",  // light-green
+    "4": "#43a047",  // green darken-1
+    "5": "black"
+}
 
 function createGraphCard(date, data=[]) {
     let points = [];
@@ -22,27 +36,36 @@ function createGraphCard(date, data=[]) {
         const seconds = (time.toSeconds() - time.startOf("day").toSeconds());
         const style = {
             left: `${seconds / SECONDS_IN_DAY * 100}%`,
-            top: `${(10 - (point.mood + 5)) * 9 + 5}%`
+            top: `${(10 - (point.mood + 5)) * 6.5 + 25}%`,
+            backgroundColor: COLORS[point.mood]
         }
         points.push(<div id={point.time} className="marker" key={point.timestamp} style={style}></div>);
     }
 
-    return <div key={"g-locator-" + date.toISODate()} id={"g-locator-" + date.toISODate()} className="graph-card"><div className="graph-card-date">{date.toFormat("ccc")}</div><div className="graph-card-date">{date.toFormat("L/d")}</div>{points}</div>;
+    const locator = "g-locator-" + date.toISODate();
+    return (<div key={locator} id={locator} className="graph-card">
+                <div className="graph-card-date">{date.toFormat("ccc")}</div>
+                <div className="graph-card-date">{date.toFormat("L/d")}</div>
+                <div className="graph-card-line"></div>
+                {points}
+            </div>);
 }
 
-// TODO: fallback timeout
 const ARROW_OFFSET = 20;
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
-        const listener = e => {
+        const listener = _ => {
             if (requestedDate.el && requestedDate.el[0] === "i" && requestedDate.timeout > getTime()) {
-                // Computer-generated scroll event
+                // Computer-generated scroll event -- so we're checking to see
+                // if we've made it to the requested element
                 const id = "g" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
                     const elBox = el.getBoundingClientRect();
                     const bound = (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
+                    // If we have, remove it
+                    // and set it to the trust region
                     if (bound < 20 && bound > -20) {
                         setRequestedDate({
                             el: undefined,
@@ -56,12 +79,16 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     }
                 }
             } else {
+                // It's a user scroll (probably)
                 if (requestedDate.trustRegionGraph) {
+                    // If we're in the trust region, it might not be a user scroll,
+                    // so let's check for that
                     const elBox = requestedDate.trustRegionGraph.getBoundingClientRect();
                     const bound = (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
                     if (bound < 20 && bound > -20) {
                         return;
                     } else {
+                        // And if we've left the trust region, remove it
                         setRequestedDate({
                             el: requestedDate.el,
                             timeout: requestedDate.timeout,
@@ -74,6 +101,8 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     }
                 }
 
+                // Otherwise, let's get the new position the user
+                // has scrolled to, and if it's a new place sync the list to it
                 for (let child of node.children) {
                     if (child.getBoundingClientRect().x < node.getBoundingClientRect().right - ARROW_OFFSET) {
                         const locator = child.id;
@@ -105,7 +134,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         }
     }, [requestedDate, setRequestedDate]));
 
-    // Scroll to final position
+    // Scroll to position if we get a request
     useEffect(() => {
         const node = document.getElementById("weekMoodGraph");
         if (!node) return;

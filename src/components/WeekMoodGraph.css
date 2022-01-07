@@ -1,5 +1,5 @@
 .graph-card {
-    border-left: 1px solid rgb(173, 171, 171);
+    border-left: 1px solid rgb(221, 221, 221);
     height: 90%;
     position: relative;
 }
@@ -8,6 +8,15 @@
     width: 12.5vw;
     font-size: 0.8em;
     text-align: center;
+}
+
+.graph-card-line {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 57.5%;
+    height: 3.5px;
+    border-bottom: 1px dashed rgb(212, 212, 212);
 }
 
 .week-mood-graph::-webkit-scrollbar {
@@ -24,8 +33,8 @@
 }
 
 .marker {
-    height: 5px;
-    width: 5px;
+    height: 6px;
+    width: 6px;
     position: absolute;
     border-radius: 2px;
     background-color: black;
