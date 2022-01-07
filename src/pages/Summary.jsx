@@ -18,10 +18,7 @@ const Summary = () => {
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
         (async () => {
-            if (loading) {
-                console.log("no auth yet");
-                return;
-            }
+            if (loading) return;
 
             let lastUpdated = 0;
             const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();

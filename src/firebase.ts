@@ -2,12 +2,16 @@ import { getAuth, signOut } from '@firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, indexedDBLocalPersistence } from '@firebase/auth';
 import { Capacitor } from '@capacitor/core';
-import { enableLogging } from '@firebase/database';
 import ldb from './db';
 import { Auth } from '@firebase/auth';
 import { getStorage } from '@firebase/storage';
 
+/*
+FIREBASE DB DEBUG
+import { enableLogging } from '@firebase/database';
 enableLogging(true);
+*/
+
 export const firebase = initializeApp({
     "apiKey": "AIzaSyAlYsMV0bXEum2jytDPKe4uD17g8do4WaQ", 
     "authDomain": "moody-ionic.firebaseapp.com", 
