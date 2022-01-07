@@ -161,10 +161,9 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     let current = getDate(logs[0]);
 
     // Create cards from today to first entry
-    let now = DateTime.now();
-    now = DateTime.fromObject({year: now.year, month: now.month, day: now.day});
-    while (!now.equals(current) && !now.isBefore(current)) {
-        els.push(createGraphCard(current));
+    let now = DateTime.now().startOf("day");
+    while (!now.equals(current) && now > current) {
+        els.push(createGraphCard(now));
         now = now.minus({days: 1});
     }
 
