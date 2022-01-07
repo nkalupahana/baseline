@@ -4,7 +4,6 @@ const SummaryHeader = props => {
     return (
         <div className="center-summary">
             <div className="title">Here's how your week has been looking.</div>
-            <br />
         </div>
     );
 
