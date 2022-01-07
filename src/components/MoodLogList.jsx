@@ -72,10 +72,8 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
         };
 
         node.addEventListener("scroll", listener);
-        console.log("list - attach");
         return () => {
             if (node) {
-                console.log("list - detach");
                 node.removeEventListener("scroll", listener);
             }
         }
@@ -102,13 +100,16 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
     let top = false;
     const now = DateTime.now();
     const zone = now.zone.offsetName(now.toMillis(), { format: "short" });
+    let today = [];
     for (let log of logs) {
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
+            els.push(today.reverse());
+            today = [];
             top = log;
             const t = DateTime.fromObject({ year: log.year, month: log.month, day: log.day });
             els.push(
                 <p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${top.month}${top.day}${top.year}`}>
-                    {top.month}/{top.day}/{top.year}
+                    { t.toFormat("DDDD") }
                 </p>
             );
         }
@@ -117,9 +118,10 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
             log.time += " " + log.zone;
         }
 
-        els.push(<MoodLogCard key={log.timestamp} log={log} />);
+        today.push(<MoodLogCard key={log.timestamp} log={log} />)
     }
 
+    els.push(today.reverse());
     els.push(
         <div className="bold text-center" key="end">
             <p>no more logs</p>

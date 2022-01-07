@@ -3,7 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import SummaryHeader from "./SummaryHeader";
 import MoodLogList from "./MoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const WeekSummary = () => {
     let logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
@@ -20,9 +20,13 @@ const WeekSummary = () => {
         }
     });
 
+
+    /*
+    SCROLL DEBUG LOGGER
     useEffect(() => {
         console.log(requestedDate);
     }, [requestedDate]);
+    */
 
     return (
         <div className="week-summary-grid">

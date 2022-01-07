@@ -1,10 +1,32 @@
 .graph-card {
-    background-color: grey;
-    height: 100%;
+    border-left: 1px solid rgb(173, 171, 171);
+    height: 90%;
+    position: relative;
 }
 
 .graph-card-date {
     width: 12.5vw;
     font-size: 0.8em;
     text-align: center;
+}
+
+.week-mood-graph::-webkit-scrollbar {
+    display: none;
+}
+
+.week-mood-graph {
+    display: flex;
+    flex-direction: row-reverse;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.marker {
+    height: 5px;
+    width: 5px;
+    position: absolute;
+    border-radius: 2px;
+    background-color: black;
 }

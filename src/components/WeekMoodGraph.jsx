@@ -8,8 +8,26 @@ function getDate(log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
 }
 
-function createGraphCard(date) {
-    return <div key={"g-locator-" + date.toISODate()} id={"g-locator-" + date.toISODate()} className="graph-card"><div className="graph-card-date">{date.toISODate()}</div></div>;
+const SECONDS_IN_DAY = 86400;
+
+function createGraphCard(date, data=[]) {
+    let points = [];
+    for (let point of data) {
+        let [hour, rest] = point.time.split(":");
+        hour = Number(hour);
+        if (hour === 12) hour = 0;
+        let [minute, meridiem] = rest.split(" ");
+        minute = Number(minute);
+        const time = DateTime.fromObject({hour: (meridiem === "AM" ? hour : hour + 12), minute}, {zone: point.zone});
+        const seconds = (time.toSeconds() - time.startOf("day").toSeconds());
+        const style = {
+            left: `${seconds / SECONDS_IN_DAY * 100}%`,
+            top: `${(10 - (point.mood + 5)) * 9 + 5}%`
+        }
+        points.push(<div id={point.time} className="marker" key={point.timestamp} style={style}></div>);
+    }
+
+    return <div key={"g-locator-" + date.toISODate()} id={"g-locator-" + date.toISODate()} className="graph-card"><div className="graph-card-date">{date.toFormat("ccc")}</div><div className="graph-card-date">{date.toFormat("L/d")}</div>{points}</div>;
 }
 
 // TODO: fallback timeout
@@ -80,10 +98,8 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         };
 
         node.addEventListener("scroll", listener);
-        console.log("graph - attach");
         return () => {
             if (node) {
-                console.log("graph - detach");
                 node.removeEventListener("scroll", listener);
             }
         }
@@ -119,12 +135,14 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     }
 
     while (i < logs.length) {
+        let todaysLogs = [];
         while (i < logs.length && getDate(logs[i]).equals(current)) {
+            todaysLogs.push(logs[i]);
             i++;
         }
 
         // Create card for current day
-        els.push(createGraphCard(current));
+        els.push(createGraphCard(current, todaysLogs));
         if (i === logs.length) break;
 
         // Create cards back to next populated day
@@ -142,7 +160,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     }
 
     return (
-        <div id="weekMoodGraph" ref={container} style={{"display": "flex", "flexDirection": "row-reverse", "overflowX": "scroll", "overflowY": "hidden", "gap": "2px"}}>
+        <div id="weekMoodGraph" ref={container} className="week-mood-graph">
             { els }
         </div>
     );
