@@ -52,21 +52,27 @@ function createGraphCard(date, data=[]) {
 }
 
 const ARROW_OFFSET = 20;
+const TRUST_BOUND = 20;
+function getBound(el, node) {
+    const elBox = el.getBoundingClientRect();
+    return (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
+}
+
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
-        const listener = _ => {
+        const listener = e => {
+            if (e.timeStamp < 1000) return;
             if (requestedDate.el && requestedDate.el[0] === "i" && requestedDate.timeout > getTime()) {
                 // Computer-generated scroll event -- so we're checking to see
                 // if we've made it to the requested element
                 const id = "g" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
-                    const elBox = el.getBoundingClientRect();
-                    const bound = (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
+                    const bound = getBound(el, node);
                     // If we have, remove it
                     // and set it to the trust region
-                    if (bound < 20 && bound > -20) {
+                    if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         setRequestedDate({
                             el: undefined,
                             timeout: requestedDate.timeout,
@@ -80,12 +86,11 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                 }
             } else {
                 // It's a user scroll (probably)
-                if (requestedDate.trustRegionGraph) {
+                if (requestedDate.graph.trustRegion) {
                     // If we're in the trust region, it might not be a user scroll,
                     // so let's check for that
-                    const elBox = requestedDate.trustRegionGraph.getBoundingClientRect();
-                    const bound = (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
-                    if (bound < 20 && bound > -20) {
+                    const bound = getBound(requestedDate.graph.trustRegion, node);
+                    if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
                         // And if we've left the trust region, remove it

@@ -20,7 +20,6 @@ const WeekSummary = () => {
         }
     });
 
-
     /*
     SCROLL DEBUG LOGGER
     useEffect(() => {

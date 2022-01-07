@@ -4,10 +4,17 @@ import useCallbackRef from "../useCallbackRef";
 import MoodLogCard from "./MoodLogCard";
 import { getTime } from "../helpers";
 
+const TRUST_BOUND = 15;
+
+function getBound(el, node) {
+    return node.offsetTop - el.getBoundingClientRect().y + 30;
+}
+
 const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
-        const listener = _ => {
+        const listener = e => {
+            if (e.timestamp < 1000) return;
             const parentBox = node.getBoundingClientRect();
             if (requestedDate.el && requestedDate.el[0] === "g" && requestedDate.timeout > getTime()) {
                 // Computer-generated scroll event -- so we're checking to see
@@ -15,10 +22,10 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                 const id = "i" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
-                    const bound = node.offsetTop - el.getBoundingClientRect().y + 30;
+                    const bound = getBound(el, node);
                     // If we have, remove it
                     // and set it to the trust region
-                    if (bound < 15 && bound > -15) {
+                    if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         setRequestedDate({
                             el: undefined,
                             timeout: requestedDate.timeout,
@@ -35,8 +42,8 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                 if (requestedDate.list.trustRegion) {
                     // If we're in the trust region, it might not be a user scroll,
                     // so let's check for that
-                    const bound = node.offsetTop - requestedDate.list.trustRegion.getBoundingClientRect().y + 30;
-                    if (bound < 15 && bound > -15) {
+                    const bound = getBound(requestedDate.list.trustRegion, node);
+                    if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
                         // And if we've left the trust region, remove it
