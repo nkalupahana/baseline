@@ -21,6 +21,10 @@
     white-space: pre-wrap;
     padding: 8px;
     line-height: 19px;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 .tx.tx-card {
