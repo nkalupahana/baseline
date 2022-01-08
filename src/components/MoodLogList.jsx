@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { useEffect, useCallback, useState, useRef } from "react";
+import { useEffect, useCallback, useState } from "react";
 import useCallbackRef from "../useCallbackRef";
 import MoodLogCard from "./MoodLogCard";
 import { getTime } from "../helpers";
