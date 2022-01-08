@@ -1,5 +1,5 @@
 import "./MoodLogCard.css";
-import { IonIcon, IonTextarea } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
 import { chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
