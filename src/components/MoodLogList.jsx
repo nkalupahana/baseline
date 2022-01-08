@@ -109,7 +109,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                 node.removeEventListener("scroll", listener);
             }
         }
-    }, [requestedDate, setRequestedDate, showSearch, setShowSearch]));
+    }, [requestedDate, setRequestedDate, setShowSearch]));
 
     // Scroll to position if we get a request
     useEffect(() => {
