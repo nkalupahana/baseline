@@ -1,8 +1,10 @@
 import { DateTime } from "luxon";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import useCallbackRef from "../useCallbackRef";
 import MoodLogCard from "./MoodLogCard";
 import { getTime } from "../helpers";
+import { IonIcon } from "@ionic/react";
+import { searchOutline } from "ionicons/icons";
 
 const TRUST_BOUND = 15;
 
@@ -11,10 +13,26 @@ function getBound(el, node) {
 }
 
 const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
+    const [showSearch, setShowSearch] = useState(true);
+
     const container = useCallbackRef(useCallback(node => {
+        const lastPositions = [];
         if (!node) return;
         const listener = e => {
             if (e.timestamp < 1000) return;
+            lastPositions.push(node.scrollTop);
+            if (lastPositions.length > 3) lastPositions.shift();
+            if (lastPositions.length === 3) {
+                const [first, second, third] = lastPositions;
+                if (first <= 0 || second <= 0 || third <= 0) {
+                    setShowSearch(true);
+                } else if (first > second && second > third) {
+                    setShowSearch(true);
+                } else if (first < second && second < third) {
+                    setShowSearch(false);
+                }
+            }
+
             const parentBox = node.getBoundingClientRect();
             if (requestedDate.el && requestedDate.el[0] === "g" && requestedDate.timeout > getTime()) {
                 // Computer-generated scroll event -- so we're checking to see
@@ -91,7 +109,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                 node.removeEventListener("scroll", listener);
             }
         }
-    }, [requestedDate, setRequestedDate]));
+    }, [requestedDate, setRequestedDate, showSearch, setShowSearch]));
 
     // Scroll to position if we get a request
     useEffect(() => {
@@ -110,7 +128,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
         }
     }, [requestedDate]);
 
-    let els = [];
+    let els = [<br key="begin"/>];
     let top = false;
     const now = DateTime.now();
     const zone = now.zone.offsetName(now.toMillis(), { format: "short" });
@@ -144,9 +162,14 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
     );
 
     return (
-        <div ref={container} id="moodLogList" className="mood-log-list">
-            { els }
-        </div>
+        <>
+            <div style={showSearch ? {height: "30px"} : {height: "0px", overflow: "hidden"}} className="log-list-expand">
+                <IonIcon icon={searchOutline} ></IonIcon> <span style={{fontSize: "14px", position: "relative", bottom: "5px"}}>Search and filter logs</span>
+            </div>
+            <div ref={container} id="moodLogList" className="mood-log-list">
+                { els }
+            </div>
+        </>
     );
 }
 

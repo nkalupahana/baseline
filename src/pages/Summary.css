@@ -36,15 +36,26 @@
 }
 
 .mood-log-list {
-    grid-area: logs;
     overflow: auto;
     margin: 0 20px;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    grid-area: logs;
 }
 
 .mood-log-list::-webkit-scrollbar {
     display: none;
+}
+
+.log-list-expand {
+    font-size: 20px;
+    place-self: stretch center;
+    transition: height 0.3s;
+    grid-area: logs;
+    z-index: 3;
+    width: 100%;
+    text-align: center;
+    background-color: white;
 }
 
 .week-summary-grid {
