@@ -6,12 +6,13 @@ import ImageCarousel from "./ImageCarousel";
 
 const MoodLogCard = ({ log }) => {
     const [grow, setGrow] = useState(false);
-    const textarea = useRef();
     const card = useRef();
+    const logContainer = useRef();
+    const NOGROW_HEIGHT = 58;
 
     function toggleGrow() {
         if (!grow) {
-            if (log.files || textarea.current.offsetHeight !== textarea.current.children[0].children[0].scrollHeight) {
+            if (log.files || logContainer.current.offsetHeight === NOGROW_HEIGHT) {
                 setGrow(true);
             }
         } else {
@@ -36,21 +37,18 @@ const MoodLogCard = ({ log }) => {
         <div className="mood-card" ref={card}>
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
             <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}>{ symbol } { log.mood }</span>
-            { (log.journal || log.files) && 
-                <>
-                    { !grow && 
-                    <>
-                        <IonTextarea ref={textarea} style={{"gridArea": "log"}} rows={2} readonly autoGrow={false} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" onClick={toggleGrow} />
-                        { log.files && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
-                    </> }
-                    { grow && 
-                    <>
-                        <IonTextarea ref={textarea} style={{"gridArea": "log"}} readonly autoGrow={true} className="tx tx-display tx-card" value={log.journal} placeholder="No mood log" /> 
-                        { log.files && <ImageCarousel files={log.files}></ImageCarousel>}
-                        <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
-                    </> }
-                </>
-            }
+            { log.journal && <div ref={logContainer} onClick={grow ? () => {} : toggleGrow} className="mood-card-log" style={grow ? {"height": "auto"} : {"maxHeight": `${NOGROW_HEIGHT}px`, "overflow": "hidden"}}>{ log.journal }</div> }
+            
+            { !grow && 
+            <>
+                { log.files && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
+            </> }
+
+            { grow && 
+            <>
+                { log.files && <ImageCarousel files={log.files}></ImageCarousel>}
+                <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
+            </> }
         </div>
     );
 };

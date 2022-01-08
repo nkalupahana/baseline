@@ -16,6 +16,13 @@
     position: relative;
 }
 
+.mood-card-log {
+    grid-area: log;
+    white-space: pre-wrap;
+    padding: 8px;
+    line-height: 19px;
+}
+
 .tx.tx-card {
     padding: 0px;
     padding-right: 12px;
