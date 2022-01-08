@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import ldb from './db';
 import { Auth } from '@firebase/auth';
 import { getStorage } from '@firebase/storage';
+import { getDatabase } from 'firebase/database';
 
 /*
 FIREBASE DB DEBUG
@@ -31,6 +32,7 @@ if (Capacitor.isNativePlatform()) {
 }
 
 export let storage = getStorage();
+export let db = getDatabase();
 
 export const signOutAndCleanUp = () => {
     ldb.logs.clear();

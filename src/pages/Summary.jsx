@@ -1,10 +1,10 @@
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { useEffect, Fragment } from "react";
 import ldb from "../db";
-import { getDatabase, ref, get, query, startAfter, orderByKey } from "firebase/database";
-import { auth } from "../firebase";
+import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
+import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { cogOutline, pencil } from "ionicons/icons";
+import { cogOutline, list, pencil } from "ionicons/icons";
 import Media from "react-media";
 import WeekSummary from "../components/WeekSummary";
 import MonthSummary from "../components/MonthSummary";
@@ -17,17 +17,14 @@ const Summary = () => {
 
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
-        (async () => {
-            if (loading) return;
-
+        if (loading) return;
+        const listener = async snap => {
             let lastUpdated = 0;
-            const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
-            const db = getDatabase();
-            if (lastLog) {
+            const trueLastUpdated = snap.val();
+            if (trueLastUpdated) {
+                const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
                 lastUpdated = lastLog.timestamp;
-                const trueLastUpdated = (await get(ref(db, `/${auth.currentUser.uid}/lastUpdated`))).val();
-
-                if (lastUpdated === trueLastUpdated) {
+                if (lastLog && lastUpdated === trueLastUpdated) {
                     console.log("Up to date!");
                     return;
                 }
@@ -44,7 +41,13 @@ const Summary = () => {
 
                 ldb.logs.bulkAdd(Object.values(newData));
             }
-        })();
+        };
+        const lastUpdatedRef = ref(db, `/${auth.currentUser.uid}/lastUpdated`);
+        onValue(lastUpdatedRef, listener);
+
+        return () => { 
+            off(lastUpdatedRef, "value", listener)
+        };
     }, [loading]);
 
     return (
