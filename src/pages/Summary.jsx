@@ -4,7 +4,7 @@ import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { cogOutline, list, pencil } from "ionicons/icons";
+import { cogOutline, pencil } from "ionicons/icons";
 import Media from "react-media";
 import WeekSummary from "../components/WeekSummary";
 import MonthSummary from "../components/MonthSummary";
