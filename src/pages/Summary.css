@@ -36,7 +36,7 @@
 }
 
 .mood-log-list {
-    grid-area: "logs";
+    grid-area: logs;
     overflow: auto;
     margin: 0 20px;
     -ms-overflow-style: none;
@@ -58,4 +58,5 @@
     height: 100vh;
     overflow: hidden;
     align-content: start;
+    position: relative;
 }

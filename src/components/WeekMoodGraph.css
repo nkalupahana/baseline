@@ -39,3 +39,10 @@
     border-radius: 2px;
     background-color: black;
 }
+
+.graph-arrow {
+    position: absolute;
+    bottom: 10px;
+    right: calc(6.25vw - 10px);
+    grid-area: graph;
+}

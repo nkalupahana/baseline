@@ -55,7 +55,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
                                 last: requestedDate.list.last
                             },
                             graph: requestedDate.graph
-                        })
+                        });
                     }
                 }
 
@@ -132,7 +132,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
             log.time += " " + log.zone;
         }
 
-        today.push(<MoodLogCard key={log.timestamp} log={log} />)
+        today.push(<MoodLogCard key={log.timestamp} log={log} />);
     }
 
     els.push(today.reverse());

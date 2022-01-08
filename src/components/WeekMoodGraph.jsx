@@ -3,6 +3,8 @@ import { DateTime } from "luxon";
 import { useEffect, useCallback } from "react";
 import useCallbackRef from "../useCallbackRef";
 import { getTime } from "../helpers";
+import { IonIcon } from "@ionic/react";
+import { caretUp } from "ionicons/icons";
 
 function getDate(log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
@@ -22,7 +24,7 @@ const COLORS = {
     "3": "#8bc34a",  // light-green
     "4": "#43a047",  // green darken-1
     "5": "black"
-}
+};
 
 function createGraphCard(date, data=[]) {
     let points = [];
@@ -38,7 +40,7 @@ function createGraphCard(date, data=[]) {
             left: `${seconds / SECONDS_IN_DAY * 100}%`,
             top: `${(10 - (point.mood + 5)) * 6.5 + 25}%`,
             backgroundColor: COLORS[point.mood]
-        }
+        };
         points.push(<div id={point.time} className="marker" key={point.timestamp} style={style}></div>);
     }
 
@@ -51,7 +53,6 @@ function createGraphCard(date, data=[]) {
             </div>);
 }
 
-const ARROW_OFFSET = 20;
 const TRUST_BOUND = 20;
 function getBound(el, node) {
     const elBox = el.getBoundingClientRect();
@@ -102,14 +103,16 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                                 trustRegion: undefined,
                                 last: requestedDate.graph.last
                             }
-                        })
+                        });
                     }
                 }
 
                 // Otherwise, let's get the new position the user
                 // has scrolled to, and if it's a new place sync the list to it
                 for (let child of node.children) {
-                    if (child.getBoundingClientRect().x < node.getBoundingClientRect().right - ARROW_OFFSET) {
+                    // node.offsetWidth / 15 accounts for the arrow,
+                    // so we only scroll over when the arrow on the graph moves over
+                    if (child.getBoundingClientRect().x < node.getBoundingClientRect().right - (node.offsetWidth / 15)) {
                         const locator = child.id;
                         if (locator !== requestedDate.el && locator !== requestedDate.graph.last) {
                             setRequestedDate({
@@ -149,9 +152,9 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             if (el) {
                 node.scrollTo({
                     top: 0,
-                    left: (el.offsetLeft + el.offsetWidth) - (node.offsetLeft + node.offsetWidth) + 8,
+                    left: (el.offsetLeft + el.offsetWidth) - (node.offsetLeft + node.offsetWidth),
                     behavior: "smooth"
-                })
+                });
             }
         }
     }, [requestedDate]);
@@ -193,9 +196,12 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     }
 
     return (
-        <div id="weekMoodGraph" ref={container} className="week-mood-graph">
-            { els }
-        </div>
+        <>
+            <div id="weekMoodGraph" ref={container} style={{ gridArea: "graph" }} className="week-mood-graph">
+                { els }
+            </div>
+            <IonIcon className="graph-arrow" icon={caretUp}></IonIcon>
+        </>
     );
 };
 
