@@ -21,10 +21,10 @@ const Summary = () => {
         const listener = async snap => {
             let lastUpdated = 0;
             const trueLastUpdated = snap.val();
-            if (trueLastUpdated) {
-                const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
+            const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
+            if (trueLastUpdated && lastLog) {
                 lastUpdated = lastLog.timestamp;
-                if (lastLog && lastUpdated === trueLastUpdated) {
+                if (lastUpdated === trueLastUpdated) {
                     console.log("Up to date!");
                     return;
                 }
