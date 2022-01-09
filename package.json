@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@awesome-cordova-plugins/google-plus": "^5.37.3",
+    "@awesome-cordova-plugins/local-notifications": "^5.37.3",
     "@capacitor/android": "^3.3.3",
     "@capacitor/app": "1.0.5",
     "@capacitor/core": "^3.3.3",
@@ -28,6 +29,7 @@
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-googleplus": "^8.5.2",
+    "cordova-plugin-local-notification": "github:nkalupahana/cordova-plugin-local-notifications",
     "dexie": "^3.0.3",
     "dexie-react-hooks": "^1.1.1",
     "firebase": "^9.1.3",
