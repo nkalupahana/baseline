@@ -5,6 +5,7 @@ import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Preloader from "./pages/Preloader";
+import Notifications from "./pages/Notifications";
 import { Switch } from "react-router";
 
 /* Core CSS required for Ionic components to work properly */
@@ -58,6 +59,7 @@ const App = () => {
                 <Switch>
                     <Route path="/journal" component={Journal} />
                     <Route path="/summary" component={Summary} />
+                    <Route path="/notifications" component={Notifications} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }

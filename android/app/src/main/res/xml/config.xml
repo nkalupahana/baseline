@@ -15,9 +15,5 @@
     <param name="onload" value="true"/>
   </feature>
 
-  <feature name="LocalNotification">
-    <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification"/>
-  </feature>
-
   
 </widget>
