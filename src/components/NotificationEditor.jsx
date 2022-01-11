@@ -1,12 +1,54 @@
-import { IonDatetime } from "@ionic/react";
+import { IonDatetime, IonIcon } from "@ionic/react";
 import { LocalNotifications } from "capacitor-local-notifications";
-import { useState } from "react";
+import { checkmarkOutline, closeOutline, pencil, trashOutline } from "ionicons/icons";
+import { useEffect, useState } from "react";
+import "./NotificationEditor.css";
+
+const WEEKDAY_TO_DAY = {
+    1: "Sun",
+    2: "Mon",
+    3: "Tue",
+    4: "Wed",
+    5: "Thu",
+    6: "Fri",
+    7: "Sat"
+};
+
+const WEEKDAY_TO_LETTER = {
+    1: "S",
+    2: "M",
+    3: "T",
+    4: "W",
+    5: "T",
+    6: "F",
+    7: "S"
+}
+
+function formatTime(time) {
+    let [hour, minute] = time.split(":");
+    hour = Number(hour);
+    let meridiem = hour < 12 ? "AM" : "PM";
+    if (hour == 0) hour += 12;
+    if (hour > 12) hour -= 12;
+    return `${hour}:${minute} ${meridiem} `;
+}
 
 const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGlobalEditing }) => {
     const [editing, setEditing] = useState(oldTime === "");
     let newTime = oldTime;
     if (newTime.length === 0) newTime = "12:00";
     const [time, setTime] = useState(newTime);
+    const [weekdays, setWeekdays] = useState(oldTime ? notificationData[oldTime].map(n => n.weekday) : [1, 2, 3, 4, 5, 6, 7]);
+
+    // Reset to defaults when editing view opened
+    useEffect(() => {
+        if (!editing) return;
+
+        let newTime = oldTime;
+        if (newTime.length === 0) newTime = "12:00";
+        setTime(newTime);
+        setWeekdays(oldTime ? notificationData[oldTime].map(n => n.weekday) : [1, 2, 3, 4, 5, 6, 7]);
+    }, [editing]);
 
     const edit = () => {
         if (!globalEditing) {
@@ -16,16 +58,15 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
     }
     
     const cancelNotifications = async notifications => {
+        if (!oldTime) return;
+
         let toCancel = [];
-        for (let t of [time, oldTime]) {
-            if (t === "") continue;
-            const split = t.split(":");
-            const hour = parseInt(split[0]);
-            const minute = parseInt(split[1]);
-            for (let notification of notifications) {
-                if (notification.schedule.on.hour === hour && notification.schedule.on.minute === minute) {
-                    toCancel.push({ id: notification.id });
-                }
+        const split = oldTime.split(":");
+        const hour = parseInt(split[0]);
+        const minute = parseInt(split[1]);
+        for (let notification of notifications) {
+            if (notification.schedule.on.hour === hour && notification.schedule.on.minute === minute) {
+                toCancel.push({ id: notification.id });
             }
         }
 
@@ -37,30 +78,34 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
 
     const cancel = () => {
         setGlobalEditing(false);
-        setEditing(false);
+        if (oldTime) setEditing(false);
     }
 
     const done = () => {
         LocalNotifications.getPending().then(async ({ notifications }) => {
             await cancelNotifications(notifications);
-
-            await LocalNotifications.schedule({
-                notifications: [
-                    {
-                        id: Math.round(Math.random() * 10000000000),
-                        title: "What's happening?",
-                        body: "Take a minute to journal.",
-                        schedule: {
-                            allowWhileIdle: true,
-                            on: {
-                                weekday: 2,
-                                hour: parseInt(time.split(":")[0]),
-                                minute: parseInt(time.split(":")[1]),
+            let promises = [];
+            for (let weekday of weekdays) {
+                promises.push(LocalNotifications.schedule({
+                    notifications: [
+                        {
+                            id: Math.round(Math.random() * 10000000000),
+                            title: "What's happening?",
+                            body: "Take a minute to journal.",
+                            schedule: {
+                                allowWhileIdle: true,
+                                on: {
+                                    weekday,
+                                    hour: parseInt(time.split(":")[0]),
+                                    minute: parseInt(time.split(":")[1]),
+                                }
                             }
                         }
-                    }
-                ]
-            });
+                    ]
+                }));
+            }
+
+            await Promise.all(promises);
 
             setGlobalEditing(false);
             setEditing(false);
@@ -72,19 +117,53 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
             await cancelNotifications(notifications);
 
             setGlobalEditing(false);
-            setEditing(false);
+            if (oldTime) setEditing(false);
         });
     };
 
-    return <>
-    { !editing && <p>{ oldTime } - <span onClick={edit}>click to edit</span></p>}
+    const weekdaySelectors = () => {
+        let ret = [];
+        const toggle = (weekday) => {
+            if (weekdays.includes(weekday)) {
+                setWeekdays(weekdays.filter(w => w !== weekday));
+            } else {
+                setWeekdays([...weekdays, weekday]);
+            }
+        }
+
+        for (let weekday in WEEKDAY_TO_LETTER) {
+            weekday = Number(weekday);
+            ret.push(<div key={weekday} onClick={() => toggle(weekday)} className="weekday-selector" style={weekdays.includes(weekday) ? {backgroundColor: "#81c784"} : {backgroundColor: "#ef5350"}}>{ WEEKDAY_TO_LETTER[weekday] }</div>)
+        }
+
+        return ret;
+    };
+
+    return <div className="notification-editor">
+    { !editing && <>
+        <p style={{marginBottom: "0px"}}>
+            { formatTime(oldTime) } 
+            { !globalEditing && <IonIcon style={{transform: "translateY(2px)"}} icon={pencil} onClick={edit} /> }
+        </p>
+        <p style={{marginTop: "4px"}}>
+            { notificationData[oldTime].length === 7 ? 
+                "Every Day" : 
+                notificationData[oldTime].sort((a, b) => a.weekday - b.weekday).map(n => WEEKDAY_TO_DAY[n.weekday]).join(", ") }
+        </p>
+    </> }
+
     { editing && <>
         <IonDatetime presentation="time" value={time} onIonChange={e => setTime(e.detail.value)} />
-        <p onClick={cancel}>Cancel</p>
-        <p onClick={done}>Done</p>
-        <p onClick={del}>Delete</p>
-        </>}
-    </>
+        <div style={{display: "flex", justifyContent: "space-evenly", margin: "12px 6px"}}>
+            { weekdaySelectors() }
+        </div>
+        <div style={{display: "flex", justifyContent: "space-evenly", fontSize: "24px", margin: "6px"}}>
+            <IonIcon onClick={cancel} icon={closeOutline} /> 
+            <IonIcon onClick={del} icon={trashOutline} /> 
+            { weekdays.length !== 0 && <IonIcon onClick={done} icon={checkmarkOutline} /> }
+        </div>
+    </>}
+    </div>
 };
 
 export default NotificationEditor;

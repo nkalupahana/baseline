@@ -1,0 +1,15 @@
+.notification-editor {
+    width: 90%;
+    background-color: rgb(221, 219, 219);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.weekday-selector {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    line-height: 24px;
+    font-size: 15px;
+}

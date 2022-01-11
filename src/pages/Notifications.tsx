@@ -25,7 +25,22 @@ function getTime(schedule: Schedule) {
 
 function notificationList(data: NotificationData, globalEditing: boolean, setGlobalEditing: Dispatch<SetStateAction<boolean>>) {
     let list = [];
-    for (let time in data) {
+    let keys = Object.keys(data);
+    keys.sort((a, b) => {
+        // Put new notification at end of list
+        if (a === "") return 1;
+        if (b === "") return -1;
+
+        const [hourA, minuteA] = a.split(":");
+        const [hourB, minuteB] = b.split(":");
+        if (hourA === hourB) {
+            return Number(minuteA) - Number(minuteB);
+        } else {
+            return Number(hourA) - Number(hourB);
+        }
+    });
+
+    for (let time of keys) {
         list.push(<NotificationEditor key={time} oldTime={time} notificationData={data} globalEditing={globalEditing} setGlobalEditing={setGlobalEditing}></NotificationEditor>);
     }
 
@@ -82,15 +97,16 @@ const Notifications = () => {
                 { Capacitor.getPlatform() !== "web" && notificationsEnabled && 
                     <>
                         { notificationList(notificationData, globalEditing, setGlobalEditing) }
-                        <div onClick={() => {
+                        { !globalEditing && <div onClick={() => {
                             setGlobalEditing(true);
                             setNotificationData({...notificationData, "": []})
-                        }} className="finish-button">Add Notification</div> 
+                        }} className="finish-button">Add Notification</div> }
                     </>
                 }
                 { Capacitor.getPlatform() === "web" && <p className="text-center" style={{"fontStyle": "italic"}}>Notifications are not supported on web. Please get the iOS/Android app.</p> }
                 { !notificationsEnabled && <p className="text-center" style={{"fontStyle": "italic"}}>You haven't allowed this app to send notifications. Go to Settings and enable notifications for moody in order to use this feature.</p> }
             </div>
+            <br/><br/><br/><br/><br/><br/><br/><br/>
         </div>
     </>)
 };
