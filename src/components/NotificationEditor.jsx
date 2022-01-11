@@ -1,5 +1,5 @@
 import { IonDatetime, IonIcon } from "@ionic/react";
-import { LocalNotifications } from "capacitor-local-notifications";
+import { LocalNotifications } from "capacitor-local-notifications2";
 import { checkmarkOutline, closeOutline, pencil, trashOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import "./NotificationEditor.css";
@@ -28,7 +28,7 @@ function formatTime(time) {
     let [hour, minute] = time.split(":");
     hour = Number(hour);
     let meridiem = hour < 12 ? "AM" : "PM";
-    if (hour == 0) hour += 12;
+    if (hour === 0) hour += 12;
     if (hour > 12) hour -= 12;
     return `${hour}:${minute} ${meridiem} `;
 }
@@ -48,7 +48,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
         if (newTime.length === 0) newTime = "12:00";
         setTime(newTime);
         setWeekdays(oldTime ? notificationData[oldTime].map(n => n.weekday) : [1, 2, 3, 4, 5, 6, 7]);
-    }, [editing]);
+    }, [editing, notificationData, oldTime]);
 
     const edit = () => {
         if (!globalEditing) {
