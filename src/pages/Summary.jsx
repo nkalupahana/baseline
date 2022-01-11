@@ -90,7 +90,7 @@ const Summary = () => {
             <IonMenu ref={menuRef} side="end" contentId="mainContent" menuId="mainMenu">
                 <IonContent>
                     <IonList>
-                        <br />
+                        <div style={{"height": "25px", "width": "100%"}}></div>
                         <IonItem onClick={() => history.push("/notifications")}>
                             <IonIcon icon={notifications} slot="start" />
                             <IonLabel>Notifications</IonLabel>
