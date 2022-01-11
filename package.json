@@ -10,7 +10,6 @@
     "@capacitor/haptics": "1.1.2",
     "@capacitor/ios": "^3.3.3",
     "@capacitor/keyboard": "1.1.2",
-    "@capacitor/local-notifications": "^1.0.9",
     "@capacitor/status-bar": "1.0.5",
     "@ionic-native/google-plus": "^5.36.0",
     "@ionic/core": "^6.0.1",
@@ -26,6 +25,7 @@
     "@types/react-dom": "^16.9.10",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
+    "capacitor-local-notifications": "^1.0.10",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-googleplus": "^8.5.2",
@@ -95,7 +95,7 @@
     "@types/smoothscroll-polyfill": "^0.3.1",
     "cypress": "^8.7.0",
     "eslint-plugin-cypress": "^2.12.1",
-    "faker": "^5.5.3"
+    "faker": "5.5.3"
   },
   "description": "A better, universal, journaling and mood tracking platform",
   "license": "AGPL-3.0"

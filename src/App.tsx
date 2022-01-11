@@ -34,8 +34,11 @@ import { useEffect, useState } from "react";
 import history from "./history";
 import "./lifecycle";
 import smoothscroll from "smoothscroll-polyfill";
+import { Capacitor } from "@capacitor/core";
 
-setupIonicReact();
+setupIonicReact({
+    mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
+});
 
 const App = () => {
     const [user, loading] = useAuthState(auth);
