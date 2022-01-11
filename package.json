@@ -25,7 +25,7 @@
     "@types/react-dom": "^16.9.10",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
-    "capacitor-local-notifications2": "^1.0.10",
+    "capacitor-local-notifications2": "^1.0.11",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-googleplus": "^8.5.2",
