@@ -1,5 +1,5 @@
 import { IonContent, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonMenu } from "@ionic/react";
-import { useEffect, useRef, Fragment } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db } from "../firebase";
@@ -14,6 +14,7 @@ import "./Summary.css";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
+    const [menuDisabled, setMenuDisabled] = useState(false);
     const menuRef = useRef();
 
     // Data refresh -- check timestamp and pull in new data
@@ -62,7 +63,7 @@ const Summary = () => {
                 >
                     {matches => (
                         <Fragment>
-                            {matches.week && <WeekSummary />}
+                            {matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} />}
                             {matches.month && <MonthSummary />}
                         </Fragment>
                     )}
@@ -87,7 +88,7 @@ const Summary = () => {
                     <IonIcon icon={pencil} />
                 </IonFabButton>
             </IonFab>
-            <IonMenu ref={menuRef} side="end" contentId="mainContent" menuId="mainMenu">
+            <IonMenu ref={menuRef} disabled={menuDisabled} side="end" contentId="mainContent" menuId="mainMenu">
                 <IonContent>
                     <IonList>
                         <div style={{"height": "25px", "width": "100%"}}></div>

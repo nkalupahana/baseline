@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 
-const MoodLogCard = ({ log }) => {
+const MoodLogCard = ({ log, setMenuDisabled }) => {
     const [grow, setGrow] = useState(false);
     const card = useRef();
     const logContainer = useRef();
@@ -46,7 +46,7 @@ const MoodLogCard = ({ log }) => {
 
             { grow && 
             <>
-                { log.files && <ImageCarousel files={log.files}></ImageCarousel>}
+                { log.files && <ImageCarousel setMenuDisabled={setMenuDisabled} files={log.files}></ImageCarousel>}
                 <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
             </> }
         </div>
