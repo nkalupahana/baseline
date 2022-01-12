@@ -1,5 +1,5 @@
 import { IonDatetime, IonIcon } from "@ionic/react";
-import { LocalNotifications } from "capacitor-local-notifications2";
+import { LocalNotifications } from "capacitor-local-notifications";
 import { checkmarkOutline, closeOutline, pencil, trashOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import "./NotificationEditor.css";

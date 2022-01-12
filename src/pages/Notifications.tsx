@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
-import { LocalNotifications, Schedule } from "capacitor-local-notifications2";
+import { LocalNotifications, Schedule } from "capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/NotificationEditor";
 

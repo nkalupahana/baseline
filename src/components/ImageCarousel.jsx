@@ -6,6 +6,9 @@ import "flickity/dist/flickity.min.css";
 import "flickity-fullscreen/fullscreen.css";
 import "flickity-fullscreen/fullscreen";
 
+// TODO: event that determines whether the menu gesture is on
+// with flickity
+
 const ImageCarousel = ({ files }) => {
     const [accessURLs, setAccessURLs] = useState([]);
 
