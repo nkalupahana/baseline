@@ -75,7 +75,10 @@
       "react-app/jest",
       "plugin:react/jsx-runtime",
       "plugin:cypress/recommended"
-    ]
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off"
+    }
   },
   "browserslist": {
     "production": [
