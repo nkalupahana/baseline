@@ -56,7 +56,7 @@ function createGraphCard(date, data=[]) {
 const TRUST_BOUND = 20;
 function getBound(el, node) {
     const elBox = el.getBoundingClientRect();
-    return (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) + 8
+    return (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) - 8;
 }
 
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {

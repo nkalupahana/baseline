@@ -24,7 +24,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate, setMenuDisabled })
             if (lastPositions.length > 3) lastPositions.shift();
             if (lastPositions.length === 3) {
                 const [first, second, third] = lastPositions;
-                if (first <= 0 || second <= 0 || third <= 0) {
+                if (first <= 10 || second <= 10 || third <= 10) {
                     setShowSearch(true);
                 } else if (first > second && second > third) {
                     setShowSearch(true);
