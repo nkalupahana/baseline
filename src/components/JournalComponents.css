@@ -14,10 +14,10 @@
 .title {
     font-size: 2em;
     text-align: center;
+    font-weight: bold;
 }
 
 .center-journal {
-    font-weight: bold;
     padding-top: calc(max(env(safe-area-inset-top), 20px) + 10px);
     display: flex;
     justify-content: center;

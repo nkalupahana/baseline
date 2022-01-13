@@ -71,3 +71,7 @@
     align-content: start;
     position: relative;
 }
+
+.container.menu-content {
+    transform: none;
+}

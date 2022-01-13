@@ -5,8 +5,9 @@ import Flickity from 'react-flickity-component';
 import "flickity/dist/flickity.min.css";
 import "flickity-fullscreen/fullscreen.css";
 import "flickity-fullscreen/fullscreen";
+import useCallbackRef from "../useCallbackRef";
 
-const ImageCarousel = ({ files }) => {
+const ImageCarousel = ({ files, setMenuDisabled }) => {
     const [accessURLs, setAccessURLs] = useState([]);
 
     useEffect(() => {
@@ -19,10 +20,23 @@ const ImageCarousel = ({ files }) => {
             await Promise.all(promises).then(setAccessURLs);
         })();
     }, [files]);
+    
+    const flkty = useCallbackRef(useCallbackRef(node => {
+        if (!node) return;
+        const listener = isFullscreen => {
+            setMenuDisabled(isFullscreen);
+        }
+
+        node.on("fullscreenChange", listener);
+
+        return () => {
+            node.off("fullscreenChange", listener);
+        }
+    }));
 
     return (
         <>
-            { accessURLs && <Flickity className="carousel-mods" reloadOnUpdate={false} options={{"wrapAround": true, "adaptiveHeight": true, "fullscreen": true}}>
+            { accessURLs && <Flickity flickityRef={flkty} className="carousel-mods" reloadOnUpdate={false} options={{"wrapAround": true, "adaptiveHeight": true, "fullscreen": true}}>
                 { accessURLs.map(url => <div key={url} style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}><img alt="User-attached for mood log" src={url} /></div>)}
             </Flickity> }
         </>

@@ -12,7 +12,7 @@ function getBound(el, node) {
     return node.offsetTop - el.getBoundingClientRect().y + 30;
 }
 
-const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
+const MoodLogList = ({ logs, requestedDate, setRequestedDate, setMenuDisabled }) => {
     const [showSearch, setShowSearch] = useState(true);
 
     const container = useCallbackRef(useCallback(node => {
@@ -150,7 +150,7 @@ const MoodLogList = ({ logs, requestedDate, setRequestedDate }) => {
             log.time += " " + log.zone;
         }
 
-        today.push(<MoodLogCard key={log.timestamp} log={log} />);
+        today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
     }
 
     els.push(today.reverse());
