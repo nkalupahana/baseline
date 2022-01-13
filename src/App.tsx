@@ -56,7 +56,7 @@ const App = () => {
 
     return (
         <IonApp>
-            { loading && !authLikely && <Preloader></Preloader> }
+            { loading && !authLikely && <Preloader /> }
             { !loading && !user && <Login></Login> }
             { ((!loading && user) || (loading && authLikely)) && <IonReactRouter history={history}>
                 <Switch>

@@ -133,7 +133,13 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
 
         for (let weekday in WEEKDAY_TO_LETTER) {
             weekday = Number(weekday);
-            ret.push(<div key={weekday} onClick={() => toggle(weekday)} className="weekday-selector" style={weekdays.includes(weekday) ? {backgroundColor: "#81c784"} : {backgroundColor: "#ef5350"}}>{ WEEKDAY_TO_LETTER[weekday] }</div>)
+            ret.push(<div 
+                        key={weekday} 
+                        onClick={() => toggle(weekday)} 
+                        className="weekday-selector" 
+                        style={weekdays.includes(weekday) ? {backgroundColor: "#81c784"} : {backgroundColor: "#ef5350"}}>
+                            { WEEKDAY_TO_LETTER[weekday] }
+                    </div>)
         }
 
         return ret;
@@ -141,7 +147,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
 
     return <div className="notification-editor">
     { !editing && <>
-        <p style={{marginBottom: "0px"}}>
+        <p className="margin-bottom-0">
             { formatTime(oldTime) } 
             { !globalEditing && <IonIcon style={{transform: "translateY(2px)"}} icon={pencil} onClick={edit} /> }
         </p>
@@ -154,10 +160,10 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
 
     { editing && <>
         <IonDatetime presentation="time" value={time} onIonChange={e => setTime(e.detail.value)} />
-        <div style={{display: "flex", justifyContent: "space-evenly", margin: "12px 6px"}}>
+        <div className="weekday-selectors">
             { weekdaySelectors() }
         </div>
-        <div style={{display: "flex", justifyContent: "space-evenly", fontSize: "24px", margin: "6px"}}>
+        <div className="notification-edit-buttons">
             <IonIcon onClick={cancel} icon={closeOutline} /> 
             <IonIcon onClick={del} icon={trashOutline} /> 
             { weekdays.length !== 0 && <IonIcon onClick={done} icon={checkmarkOutline} /> }

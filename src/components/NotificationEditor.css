@@ -13,3 +13,24 @@
     line-height: 24px;
     font-size: 15px;
 }
+
+.italics {
+    font-style: italic;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0;
+}
+
+.weekday-selectors {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 12px 6px;
+}
+
+.notification-edit-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 24px;
+    margin: 6px;
+}

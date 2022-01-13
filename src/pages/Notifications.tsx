@@ -92,8 +92,8 @@ const Notifications = () => {
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal container">
                 <div className="title">Customize Notifications</div>
-                <p className="text-center">Notifications are a great way to ensure you mood log consistently, so you can build up an accurate picture of your mood over time.</p>
-                <p className="text-center" style={{marginTop: "0px"}}>We recommend setting at least two per day, especially if you're just getting started and need reminders.</p>
+                <p className="text-center margin-bottom-0">Notifications are a great way to ensure you mood log consistently, so you can build up an accurate picture of your mood over time.</p>
+                <p className="text-center">We recommend setting at least two per day, especially if you're just getting started and need reminders.</p>
                 { Capacitor.getPlatform() !== "web" && notificationsEnabled && 
                     <>
                         { notificationList(notificationData, globalEditing, setGlobalEditing) }
@@ -103,8 +103,8 @@ const Notifications = () => {
                         }} className="finish-button">Add Notification</div> }
                     </>
                 }
-                { Capacitor.getPlatform() === "web" && <p className="text-center" style={{"fontStyle": "italic"}}>Notifications are not supported on web. Please get the iOS/Android app.</p> }
-                { !notificationsEnabled && <p className="text-center" style={{"fontStyle": "italic"}}>You haven't allowed this app to send notifications. Go to Settings and enable notifications for moody in order to use this feature.</p> }
+                { Capacitor.getPlatform() === "web" && <p className="text-center italics">Notifications are not supported on web. Please get the iOS/Android app.</p> }
+                { !notificationsEnabled && <p className="text-center italics">You haven't allowed this app to send notifications. Go to Settings and enable notifications for moody in order to use this feature.</p> }
             </div>
             <br/><br/><br/><br/><br/><br/><br/><br/>
         </div>
