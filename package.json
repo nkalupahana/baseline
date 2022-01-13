@@ -72,7 +72,6 @@
     ],
     "extends": [
       "react-app",
-      "react-app/jest",
       "plugin:react/jsx-runtime",
       "plugin:cypress/recommended"
     ],
