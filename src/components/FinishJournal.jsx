@@ -136,27 +136,29 @@ const FinishJournal = props => {
             <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
             <br />
-            <CircularSlider
-                width={190}
-                label="nice find!"
-                labelFontSize={0}
-                valueFontSize="4rem"
-                labelColor="#020856"
-                knobColor="#020856"
-                progressColorFrom="#1c88e3"
-                progressColorTo="#1975e6"
-                progressSize={20}
-                trackColor="#eeeeee"
-                trackSize={20}
-                min={-5}
-                max={5}
-                direction={-1}
-                dataIndex={props.moodRead + 5}
-                animateKnob={false}
-                knobDraggable={!submitting}
-                verticalOffset="0.2em"
-                onChange={ v => props.setMoodWrite(v) }
-            />
+            <span className="bold">
+                <CircularSlider
+                    width={190}
+                    label="nice find!"
+                    labelFontSize={0}
+                    valueFontSize="4rem"
+                    labelColor="#020856"
+                    knobColor="#020856"
+                    progressColorFrom="#1c88e3"
+                    progressColorTo="#1975e6"
+                    progressSize={20}
+                    trackColor="#eeeeee"
+                    trackSize={20}
+                    min={-5}
+                    max={5}
+                    direction={-1}
+                    dataIndex={props.moodRead + 5}
+                    animateKnob={false}
+                    knobDraggable={!submitting}
+                    verticalOffset="0.2em"
+                    onChange={ v => props.setMoodWrite(v) }
+                />
+            </span>
 
             <br /><br />
 
