@@ -1,4 +1,4 @@
-import { IonSpinner, IonPage } from "@ionic/react";
+import { IonSpinner } from "@ionic/react";
 import "./Container.css";
 
 const Preloader = () => {
