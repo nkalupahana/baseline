@@ -17,7 +17,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:15.0.1"
     implementation "com.google.android.gms:play-services-identity:15.0.1"
 }
-apply from: "../../node_modules/cordova-plugin-badge/src/android/badge.gradle"
+
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

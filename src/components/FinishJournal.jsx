@@ -10,6 +10,7 @@ import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../history";
 import { attach, trashOutline } from "ionicons/icons";
+import { LocalNotifications } from "capacitor-local-notifications";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
@@ -69,6 +70,7 @@ const FinishJournal = props => {
 
         if (response) {
             if (response.ok) {
+                LocalNotifications.clearDeliveredNotifications();
                 present({
                     message: `Mood log saved!`,
                     position: "bottom",

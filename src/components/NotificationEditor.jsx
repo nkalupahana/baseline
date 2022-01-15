@@ -92,6 +92,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
                             id: Math.round(Math.random() * 10000000000),
                             title: "What's happening?",
                             body: "Take a minute to journal.",
+                            threadIdentifier: "reminder",
                             schedule: {
                                 allowWhileIdle: true,
                                 on: {

@@ -6,6 +6,7 @@ import ldb from './db';
 import { Auth } from '@firebase/auth';
 import { getStorage } from '@firebase/storage';
 import { getDatabase } from 'firebase/database';
+import { LocalNotifications } from 'capacitor-local-notifications';
 
 /*
 FIREBASE DB DEBUG
@@ -35,6 +36,21 @@ export let storage = getStorage();
 export let db = getDatabase();
 
 export const signOutAndCleanUp = () => {
+    // Clear DB
     ldb.logs.clear();
+    // Remove local notifications
+    LocalNotifications.getPending().then(({ notifications }) => {
+        let toCancel = [];
+        for (let notification of notifications) {
+            toCancel.push({ id: notification.id });
+        }
+
+        if (toCancel.length > 0) {
+            LocalNotifications.cancel({
+                notifications: toCancel
+            });
+        }
+    });
+    // Sign out of Firebase
     signOut(auth);
 }
