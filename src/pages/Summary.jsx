@@ -11,6 +11,7 @@ import MonthSummary from "../components/MonthSummary";
 import history from "../history";
 import "./Container.css";
 import "./Summary.css";
+import PromptWeekInReview from "../components/PromptWeekInReview";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -103,6 +104,7 @@ const Summary = () => {
                     </IonList>
                 </IonContent>
             </IonMenu>
+            <PromptWeekInReview />
         </div>
     );
 };

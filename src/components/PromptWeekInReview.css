@@ -1,0 +1,33 @@
+.prompt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.prompt-container {
+    display: flex;
+    height: 100%;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+
+.prompt-prompt {
+    z-index: 1001;
+    background-color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    padding-top: 20px;
+    transition: height 0.5s;
+}
+
+.finish-button.secondary {
+    margin-top: 5px;
+    background-color: white;
+    color: black;
+}
