@@ -4,8 +4,9 @@ import SummaryHeader from "./SummaryHeader";
 import MoodLogList from "./MoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
 import { useState } from "react";
+import Preloader from "../pages/Preloader";
 
-const WeekSummary = ({ setMenuDisabled }) => {
+const WeekSummary = ({ gettingData, setMenuDisabled }) => {
     let logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
@@ -33,6 +34,7 @@ const WeekSummary = ({ setMenuDisabled }) => {
             { logs && logs.length > 0 && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
             { logs && logs.length > 0 && <MoodLogList setMenuDisabled={setMenuDisabled} style={{"gridArea": "logs"}} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}></MoodLogList> }
             { logs && logs.length === 0 && <p className="text-center">Write your first mood log by clicking on the pencil in the bottom right!</p> }
+            { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
         </div>
     );
 };

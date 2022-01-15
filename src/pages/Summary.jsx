@@ -15,12 +15,14 @@ import "./Summary.css";
 const Summary = () => {
     const [, loading] = useAuthState(auth);
     const [menuDisabled, setMenuDisabled] = useState(false);
+    const [gettingData, setGettingData] = useState(true);
     const menuRef = useRef();
 
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
         if (loading) return;
         const listener = async snap => {
+            setGettingData(true);
             let lastUpdated = 0;
             const trueLastUpdated = snap.val();
             const lastLog = await ldb.logs.orderBy("timestamp").reverse().limit(1).first();
@@ -28,6 +30,7 @@ const Summary = () => {
                 lastUpdated = lastLog.timestamp;
                 if (lastUpdated === trueLastUpdated) {
                     console.log("Up to date!");
+                    setGettingData(false);
                     return;
                 }
             }
@@ -41,8 +44,9 @@ const Summary = () => {
                     newData[key].timestamp = Number(key);
                 }
 
-                ldb.logs.bulkAdd(Object.values(newData));
+                await ldb.logs.bulkAdd(Object.values(newData));
             }
+            setGettingData(false);
         };
         const lastUpdatedRef = ref(db, `/${auth.currentUser.uid}/lastUpdated`);
         onValue(lastUpdatedRef, listener);
@@ -50,7 +54,7 @@ const Summary = () => {
         return () => {
             off(lastUpdatedRef, "value", listener);
         };
-    }, [loading]);
+    }, [loading, setGettingData]);
 
     return (
         <div>
@@ -63,7 +67,7 @@ const Summary = () => {
                 >
                     {matches => (
                         <Fragment>
-                            {matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} />}
+                            {matches.week && <WeekSummary gettingData={gettingData} setMenuDisabled={setMenuDisabled} />}
                             {matches.month && <MonthSummary />}
                         </Fragment>
                     )}
