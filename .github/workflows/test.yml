@@ -25,8 +25,8 @@ jobs:
         serve -s build -p 8100 &
         npm run test
     - name: Upload Test Video
+      if: failure()
       uses: actions/upload-artifact@v2
       with:
         name: test-video
         path: cypress/videos
-        if: ${{ job.status == 'failure' }}
