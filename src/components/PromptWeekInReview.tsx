@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ldb, { Log } from "../db";
 import { auth, db } from "../firebase";
+import history from "../history";
 import "./PromptWeekInReview.css";
 
 const PromptWeekInReview = () => {
@@ -48,7 +49,7 @@ const PromptWeekInReview = () => {
                 <div className="prompt-prompt">
                     <div className="title">Week In Review!</div>
                     <p className="text-center">Take a minute to answer a few questions about your mental health and get an overview of how you felt this week.</p>
-                    <div className="finish-button">Start</div>
+                    <div onClick={() => {history.push("/review")}} className="finish-button">Start</div>
                     <div onClick={() => {setShow(false)}} className="finish-button secondary">Remind Me Later</div>
                 </div>
             </div>

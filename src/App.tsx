@@ -1,12 +1,14 @@
 import { Redirect, Route } from "react-router-dom";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+import { Switch } from "react-router";
+
 import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Preloader from "./pages/Preloader";
 import Notifications from "./pages/Notifications";
-import { Switch } from "react-router";
+import WeekInReview from "./pages/WeekInReview";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -63,6 +65,7 @@ const App = () => {
                     <Route path="/journal" component={Journal} />
                     <Route path="/summary" component={Summary} />
                     <Route path="/notifications" component={Notifications} />
+                    <Route path="/review" component={WeekInReview} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }
