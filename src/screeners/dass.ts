@@ -98,13 +98,12 @@ export default class DASS implements Screener {
         }
     ]
 
+    currentQuestion = 0;
     results: Results = {
         d: 0,
         a: 0,
         s: 0
     }
-
-    currentQuestion = 0;
 
     nextQuestion: (answer: number | null) => DisplayQuestion | null = answer => {
         if (answer) {
@@ -112,9 +111,7 @@ export default class DASS implements Screener {
             ++this.currentQuestion;
         }
 
-        if (this.currentQuestion >= DASS.questions.length) {
-            return null;
-        }
+        if (this.currentQuestion >= DASS.questions.length) return null;
 
         return {
             question: DASS.questions[this.currentQuestion].question,
