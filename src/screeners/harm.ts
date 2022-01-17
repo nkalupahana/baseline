@@ -31,7 +31,7 @@ export default class HARM implements Screener {
             this.currentQuestion = 0;
         }
 
-        if (this.currentSection >= HARM.questions.length) {
+        if (this.currentSection >= HARM.questions.length || (this.currentSection === 3 && this.results[1] === 0)) {
             return null;
         }
 
@@ -62,6 +62,6 @@ export default class HARM implements Screener {
     }
 
     getClinicalInformation: () => string = () => {
-        return `Self-Harm ${this.results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this.results[1] ? "present" : "not present"}, ${this.results[2] ? "acute" : "not acute"}. Screened with asQ (questions 1-3, question 5 for acuity).`;
+        return `Self-Harm ${this.results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this.results[1] ? "present" : "not present"}, ${this.results[2] ? "acute" : "non-acute"}. Screened with asQ (questions 1-3, question 5 for acuity).`;
     }
 }
