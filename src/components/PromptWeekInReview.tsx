@@ -2,7 +2,7 @@ import { get, ref } from "firebase/database";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import ldb, { Log } from "../db";
+import ldb from "../db";
 import { auth, db } from "../firebase";
 import history from "../history";
 import "./PromptWeekInReview.css";
@@ -19,7 +19,7 @@ const PromptWeekInReview = () => {
             if (lastWeekInReview) {
                 let last = DateTime.fromMillis(lastWeekInReview);
                 let change = 0;
-                while (last.weekday != 5) {
+                while (last.weekday !== 5) {
                     last = last.plus({ days: 1 });
                     change += 1;
                 }
