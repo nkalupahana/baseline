@@ -2,7 +2,7 @@ import { DisplayQuestion, DisplayResult, Screener } from "./screener"
 
 export default class CAGE_AID implements Screener {
     static clinicalName = "CAGE-AID (with sensitivity and question modifications)";
-    static questions: string[] = [
+    static _questions: string[] = [
         "Have you ever felt you ought to cut down on your drinking or drug use?",
         "Have people annoyed you by criticizing your drinking or drug use?",
         "Have you felt bad or guilty about your drinking or drug use?",
@@ -10,6 +10,15 @@ export default class CAGE_AID implements Screener {
         // Below are unvalidated questions, which are designed to add extra dimensions to this screening.
         "Have you ever been around people you know and been the only one drinking or using drugs?",
         "Have you regularly used unprescribed drugs or alcohol to cope with problems in your life?"
+    ];
+
+    static questions: string[] = [
+        "I have felt that I ought to cut down on my drinking or drug use",
+        "People have annoyed me by criticizing my drinking or drug use.",
+        "I have felt bad or guilty about my drinking or drug use.",
+        "I have had a drink or used drugs first thing in the morning to steady my nerves or to get rid of a hangover (eye-opener).",
+        "I have been around people I know and been the only one drinking or using drugs.",
+        "I have regularly used unprescribed drugs or alcohol to cope with problems in my life."
     ];
 
     currentQuestion = 0;
