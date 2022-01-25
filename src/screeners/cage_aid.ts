@@ -2,6 +2,7 @@ import Screener from "./screener";
 
 export default function CAGE_AID(): Screener {
     return {
+        _key: "cagev1",
         _currentQuestion: 0,
         _clinicalName: "CAGE-AID (with sensitivity and question modifications)",
         // Unmodified questions (for yes/no answers)

@@ -2,6 +2,7 @@ import Screener from "./screener";
 
 export default function HARM(): Screener {
     return {
+        _key: "harmv1",
         _currentQuestion: 0,
         _currentSection: 0,
         _clinicalName: "Single Question Self-Harm Screening and modified asQ",

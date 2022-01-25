@@ -2,6 +2,7 @@ import Screener from "./screener";
 
 export default function SPF(): Screener {
     return {
+        _key: "spfv1",
         _currentQuestion: 0,
         _clinicalName: "SPF-12",
         _questions: [

@@ -2,6 +2,7 @@ import Screener from "./screener";
 
 export default function EDE_QS(): Screener {
     return {
+        _key: "edev1",
         _currentQuestion: 0,
         _clinicalName: "EDE-QS",
         _questions: [

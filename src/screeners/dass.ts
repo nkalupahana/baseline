@@ -2,6 +2,7 @@ import Screener from "./screener"
 
 export default function DASS(): Screener {
     return {
+        _key: "dassv1",
         _currentQuestion: 0,
         _clinicalName: "DASS-21",
         _questions: [
