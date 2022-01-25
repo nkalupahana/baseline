@@ -8,7 +8,7 @@ import SPF from "../screeners/spf";
 import EDE_QS from "../screeners/ede_qs";
 import HARM from "../screeners/harm";
 import { auth, db } from "../firebase";
-import { get, limitToFirst, orderByKey, query, ref } from "firebase/database";
+import { get, limitToLast, orderByKey, query, ref } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
 
@@ -41,7 +41,7 @@ const WeekInReview = () => {
 
     useEffect(() => {
         if (loading || !auth.currentUser) return;
-        get(query(ref(db, `${auth.currentUser.uid}/surveys`), orderByKey(), limitToFirst(3))).then(snap => {
+        get(query(ref(db, `${auth.currentUser.uid}/surveys`), orderByKey(), limitToLast(3))).then(snap => {
             const val = snap.val();
             let keys = Object.keys(KEY_MAP);
             if (val) {
