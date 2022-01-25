@@ -1,20 +1,46 @@
+import { useState } from "react";
+import WeekInReviewInitial from "../components/WeekInReviewInitial";
+import Surveyer from "../components/Surveyer";
+import DASS from "../screeners/dass";
 import "./WeekInReview.css";
+import CAGE_AID from "../screeners/cage_aid";
+import SPF from "../screeners/spf";
+import EDE_QS from "../screeners/ede_qs";
+import HARM from "../screeners/harm";
+
+enum Stage {
+    Initial,
+    Primary,
+    Secondary,
+    Review
+};
 
 const WeekInReview = () => {
-    return <div className="container">
-        <div className="center-summary container" style={{display: "flex", flexDirection: "column"}}>
-            <div className="title">Let's get started.</div>
-            <p style={{marginBottom: "8px"}} className="text-center">Week in Review is a quick weekly check-in for you and your mental health. Don't worry, it shouldn't take more than a few minutes.</p>
-            <p className="text-center p-inner">This week's review has three parts:</p>
-            <p className="p-inner">1. &nbsp;<b>A primary survey</b>, which will give you insight into your current levels of depression, anxiety, and stress.</p>
-            <p className="p-inner">2. &nbsp;<b>A secondary survey</b>, which is different from week to week and will help you better understand any other mental health issues you might be struggling with.</p>
-            <p className="p-inner">3. &nbsp;<b>A review of your mood logs</b> this week, which will help you compare your health this week with previous weeks.</p>
-            <p className="text-center p-inner">The purpose of this is to give you some insight into your mental health, especially over time. It's often difficult to step back and think about these things, and we hope this review will give you a chance to do just that.</p>
-            <br />
-            <div className="finish-button">Continue</div>
-            <br /><br /><br /><br />
-        </div>
-    </div>
+    const [stage, setStage] = useState(Stage.Initial);
+    const incrementStage = function() {
+        setStage(stage + 1);
+    };
+    const [primary, setPrimary] = useState(DASS());
+    const [secondary, setSecondary] = useState(SPF());
+
+    return <>
+        { stage === Stage.Initial && <WeekInReviewInitial incrementStage={() => {
+            setPrimary({
+                ...primary,
+                ...primary.nextQuestion()
+            });
+            incrementStage();
+        }} /> }
+        { stage === Stage.Primary && <Surveyer stage="Primary" survey={primary} setSurvey={setPrimary} incrementStage={() => {
+            setSecondary({
+                ...secondary,
+                ...secondary.nextQuestion()
+            });
+            incrementStage();
+        }} /> }
+        { stage === Stage.Secondary && <Surveyer stage="Secondary" survey={secondary} setSurvey={setSecondary} incrementStage={incrementStage} /> }
+        { stage === Stage.Review && <div>Roll tide</div>}
+    </>
 };
 
 export default WeekInReview;

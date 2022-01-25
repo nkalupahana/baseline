@@ -1,24 +1,32 @@
-export interface DisplayQuestion {
+interface Modifier {
+    _currentQuestion: number;
+    _results: any;
+    progress: string;
     question: string;
-    answers: Array<{
-        answer: string;
-        value: number;
-    }>
+    answers: Answer[];
 }
 
-export interface DisplayResult {
-    scoreName: string;
-    score: number;
+interface Done {
+    done: boolean;
+    _results: any;
 }
 
-export abstract class Screener {
-    static clinicalName: string;
-    static questions: any[];
+interface Answer {
+    answer: string;
+    value: number;
+}
 
-    currentQuestion: number;
-    results: any;
-    nextQuestion: (answer: number | null) => DisplayQuestion | null;
-    getResults: () => DisplayResult[];
+export default interface Screener {
+    _currentQuestion: number;
+    _clinicalName: string;
+    _questions: any[];
+    _results: any;
+    progress?: string;
+    nextQuestion: (answer?: number) => Modifier | Done;
     getRecommendation: () => string;
     getClinicalInformation: () => string;
+    question?: string;
+    answers?: Answer[];
+    done?: boolean;
+    [additionalProps: string]: unknown;
 }

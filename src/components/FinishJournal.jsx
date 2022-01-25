@@ -70,7 +70,7 @@ const FinishJournal = props => {
 
         if (response) {
             if (response.ok) {
-                LocalNotifications.clearDeliveredNotifications();
+                if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
                 present({
                     message: `Mood log saved!`,
                     position: "bottom",
