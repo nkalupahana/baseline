@@ -11,6 +11,7 @@ import { auth, db } from "../firebase";
 import { get, limitToLast, orderByKey, query, ref } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
+import WeekInReviewReview from "../components/WeekInReviewReview";
 
 enum Stage {
     Initial,
@@ -52,7 +53,6 @@ const WeekInReview = () => {
                     }
                 }
             }
-            console.log(keys);
             setSecondary(KEY_MAP[keys[Math.floor(Math.random() * keys.length)]]());
         });
     }, [loading]);
@@ -73,7 +73,7 @@ const WeekInReview = () => {
             incrementStage();
         }} /> }
         { stage === Stage.Secondary && <Surveyer stage="Secondary" survey={secondary} setSurvey={setSecondary} incrementStage={incrementStage} /> }
-        { stage === Stage.Review && <div>Roll tide</div>}
+        { stage === Stage.Review && <WeekInReviewReview />}
     </>
 };
 

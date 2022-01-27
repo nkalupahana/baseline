@@ -2,7 +2,11 @@
   "rules": {
     "$uid": {
       ".read": "auth != null && auth.uid == $uid",
-      ".write": false
+      ".write": false,
+      "lastWeekInReview": {
+        ".write": "auth != null && auth.uid == $uid",
+        ".validate": "newData.isNumber() && newData.val() >= 1643312089694"
+      }
     },
     ".read": false,
     ".write": false

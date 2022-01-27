@@ -204,13 +204,13 @@ exports.survey = functions.https.onRequest(async (req, res) => {
         }
     };
 
-    if (!body.key || typeof body.key !== "string" || !(body.key in VALIDATION)) {
+    if (!("key" in body) || typeof body.key !== "string" || !(body.key in VALIDATION)) {
         console.log(1);
         res.send(400);
         return;
     }
 
-    if (!body.results) {
+    if (!("results" in body)) {
         console.log(2);
         res.send(400);
         return;
@@ -259,9 +259,8 @@ exports.survey = functions.https.onRequest(async (req, res) => {
     }
 
     // Add survey to database
-    const globalNow = DateTime.utc();
     const db = admin.database();
-    await db.ref(`/${req.user.user_id}/surveys/${globalNow.toMillis()}`).set({
+    await db.ref(`/${req.user.user_id}/surveys/${DateTime.utc().toMillis()}`).set({
         key: body.key,
         results: body.results
     });
