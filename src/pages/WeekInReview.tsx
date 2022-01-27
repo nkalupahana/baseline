@@ -41,14 +41,18 @@ const WeekInReview = () => {
 
     useEffect(() => {
         if (loading || !auth.currentUser) return;
-        get(query(ref(db, `${auth.currentUser.uid}/surveys`), orderByKey(), limitToLast(3))).then(snap => {
+        get(query(ref(db, `${auth.currentUser.uid}/surveys`), orderByKey(), limitToLast(6))).then(snap => {
             const val = snap.val();
             let keys = Object.keys(KEY_MAP);
             if (val) {
-                for (let survey of val) {
-                    delete keys[keys.indexOf(survey.key)];
+                for (let surveyKey in val) {
+                    const idx = keys.indexOf(val[surveyKey].key);
+                    if (keys.length > 1 && idx !== -1) {
+                        keys.splice(idx, 1);
+                    }
                 }
             }
+            console.log(keys);
             setSecondary(KEY_MAP[keys[Math.floor(Math.random() * keys.length)]]());
         });
     }, [loading]);

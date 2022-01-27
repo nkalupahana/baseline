@@ -17,6 +17,7 @@ interface Answer {
 }
 
 export default interface Screener {
+    _key: string;
     _currentQuestion: number;
     _clinicalName: string;
     _questions: any[];
