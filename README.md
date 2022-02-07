@@ -5,3 +5,13 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody?ref=badge_small)
 
 A better, universal, journaling and mood tracking platform.
+
+## Contribute
+
+```
+npm install
+npm install -g @ionic/cli
+ionic serve # Web development server
+ionic cap sync # Sync changes for iOS/Android
+ionic cap open [ios|android] # Open iOS/Android project for development
+```
