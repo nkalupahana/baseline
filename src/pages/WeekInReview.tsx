@@ -40,6 +40,7 @@ const WeekInReview = () => {
     const [primary, setPrimary] = useState(DASS());
     const [secondary, setSecondary] = useState(SPF());
 
+    // Figure out secondary survey based on past surveys
     useEffect(() => {
         if (loading || !auth.currentUser) return;
         get(query(ref(db, `${auth.currentUser.uid}/surveys`), orderByKey(), limitToLast(6))).then(snap => {
