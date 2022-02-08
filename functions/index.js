@@ -204,14 +204,14 @@ exports.survey = functions.https.onRequest(async (req, res) => {
         }
     };
 
+    // Validate survey key (is it one we know about/still accept?)
     if (!("key" in body) || typeof body.key !== "string" || !(body.key in VALIDATION)) {
-        console.log(1);
         res.send(400);
         return;
     }
 
+    // Validate presence of results of survey
     if (!("results" in body)) {
-        console.log(2);
         res.send(400);
         return;
     }
@@ -219,23 +219,27 @@ exports.survey = functions.https.onRequest(async (req, res) => {
     const RESULT_VAL = VALIDATION[body.key];
     const results = body.results;
     if (RESULT_VAL.type === "number") {
+        // Result should be a number
+
+        // Validate that result is a number, and that it's within bounds
         if (typeof results !== "number" || isNaN(results) || results < RESULT_VAL.min || results > RESULT_VAL.max) {
-            console.log(3);
             res.send(400);
             return;
         }
     } else if (RESULT_VAL.type === "object") {
+        // Result should be an object with keys and numeric values
+
+        // Validate that result is an object
         if (typeof results !== "object") {
-            console.log(4);
             res.send(400);
             return;
         }
 
+        // Validate that result has the right keys
         let keys = JSON.parse(JSON.stringify(RESULT_VAL.keys));
         for (let key in results) {
             if (!isNaN(Number(key))) key = Number(key);
             if (!keys.includes(key)) {
-                console.log(5);
                 res.send(400);
                 return;
             }
@@ -244,14 +248,13 @@ exports.survey = functions.https.onRequest(async (req, res) => {
         }
 
         if (keys.length !== 0) {
-            console.log(6);
             res.send(400);
             return;
         }
 
+        // Validate that result values are numbers, and that they're within bounds
         for (let key of RESULT_VAL.keys) {
             if (typeof results[key] !== "number" || isNaN(results[key]) || results[key] < RESULT_VAL.min[key] || results[key] > RESULT_VAL.max[key]) {
-                console.log(7);
                 res.send(400);
                 return;
             }
