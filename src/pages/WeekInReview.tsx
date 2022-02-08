@@ -47,9 +47,12 @@ const WeekInReview = () => {
             let keys = Object.keys(KEY_MAP);
             if (val) {
                 for (let surveyKey in val) {
-                    const idx = keys.indexOf(val[surveyKey].key);
-                    if (keys.length > 1 && idx !== -1) {
-                        keys.splice(idx, 1);
+                    // https://eslint.org/docs/rules/guard-for-in
+                    if (Object.prototype.hasOwnProperty.call(val, surveyKey)) {
+                        const idx = keys.indexOf(val[surveyKey].key);
+                        if (keys.length > 1 && idx !== -1) {
+                            keys.splice(idx, 1);
+                        }
                     }
                 }
             }

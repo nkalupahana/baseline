@@ -5,8 +5,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import Screener, { Answer, Done, Modifier } from "../screeners/screener";
 
-const Surveyer = ({ survey, setSurvey, incrementStage, stage } : 
-                { survey: Screener, setSurvey: (arg: Screener) => void, incrementStage: () => void, stage: string }) => {
+interface Props {
+    survey: Screener,
+    setSurvey: (survey: Screener) => void,
+    incrementStage: () => void,
+    stage: string
+}
+
+const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
     
     const [submitting, setSubmitting] = useState(-1);
     const [user, loading] = useAuthState(auth);
