@@ -92,6 +92,10 @@
     border-radius: 10px;
 }
 
+.finish-button:active {
+    background-color: #2E6CFC;
+}
+
 .loader {
     position: relative;
     top: 7px;

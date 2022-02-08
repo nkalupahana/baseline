@@ -11,6 +11,9 @@ import MonthSummary from "../components/MonthSummary";
 import history from "../history";
 import "./Container.css";
 import "./Summary.css";
+import PromptWeekInReview from "../components/PromptWeekInReview";
+import { LocalNotifications } from "capacitor-local-notifications";
+import { Capacitor } from "@capacitor/core";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -39,6 +42,8 @@ const Summary = () => {
             let newData = (await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
 
             if (newData) {
+                if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
+
                 // Add timestamp to data object
                 for (let key in newData) {
                     newData[key].timestamp = Number(key);
@@ -103,6 +108,7 @@ const Summary = () => {
                     </IonList>
                 </IonContent>
             </IonMenu>
+            <PromptWeekInReview />
         </div>
     );
 };

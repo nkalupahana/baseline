@@ -1,0 +1,19 @@
+.p-inner {
+    margin: 8px 0;
+}
+
+.question {
+    font-size: 19px;
+}
+
+.screener-button {
+    margin: 6px 0;
+}
+
+.screener-container {
+    height: 100%;
+}
+
+.screener-container div:first-of-type {
+    margin-top: auto;
+}

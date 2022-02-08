@@ -155,6 +155,122 @@ exports.moodLog = functions.runWith({ memory: "2GB" }).https.onRequest(async (re
     res.sendStatus(200);
 });
 
+exports.survey = functions.https.onRequest(async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Authorization");
+
+    // Preflight? Stop here.
+    if (req.method === "OPTIONS") {
+        res.status(204).send("");
+        return;
+    }
+
+    await validateAuth(req, res);
+    if (!req.user) return;
+
+    const body = JSON.parse(req.body);
+
+    // Valid surveys, and
+    // validation parameters for each one
+    const VALIDATION = {
+        dassv1: {
+            type: "object",
+            keys: ["d", "a", "s"],
+            min: [0, 0, 0],
+            max: [21, 21, 21]
+        },
+        edev1: {
+            type: "number",
+            min: 0,
+            max: 36
+        },
+        harmv1: {
+            type: "object",
+            keys: [0, 1, 2],
+            min: [0, 0, 0],
+            max: [1, 1, 1]
+        },
+        cagev1: {
+            type: "number",
+            min: 0,
+            max: 12
+        },
+        spfv1: {
+            type: "object",
+            keys: ["Social-Interpersonal", "Cognitive-Individual"],
+            min: [6, 6],
+            max: [30, 30]
+        }
+    };
+
+    // Validate survey key (is it one we know about/still accept?)
+    if (!("key" in body) || typeof body.key !== "string" || !(body.key in VALIDATION)) {
+        res.send(400);
+        return;
+    }
+
+    // Validate presence of results of survey
+    if (!("results" in body)) {
+        res.send(400);
+        return;
+    }
+
+    const RESULT_VAL = VALIDATION[body.key];
+    const results = body.results;
+    if (RESULT_VAL.type === "number") {
+        // Result should be a number
+
+        // Validate that result is a number, and that it's within bounds
+        if (typeof results !== "number" || isNaN(results) || results < RESULT_VAL.min || results > RESULT_VAL.max) {
+            res.send(400);
+            return;
+        }
+    } else if (RESULT_VAL.type === "object") {
+        // Result should be an object with keys and numeric values
+
+        // Validate that result is an object
+        if (typeof results !== "object") {
+            res.send(400);
+            return;
+        }
+
+        // Validate that result has the right keys
+        let keys = JSON.parse(JSON.stringify(RESULT_VAL.keys));
+        for (let key in results) {
+            if (!isNaN(Number(key))) key = Number(key);
+            if (!keys.includes(key)) {
+                res.send(400);
+                return;
+            }
+
+            keys.splice(keys.indexOf(key), 1);
+        }
+
+        if (keys.length !== 0) {
+            res.send(400);
+            return;
+        }
+
+        // Validate that result values are numbers, and that they're within bounds
+        for (let key of RESULT_VAL.keys) {
+            if (typeof results[key] !== "number" || isNaN(results[key]) || results[key] < RESULT_VAL.min[key] || results[key] > RESULT_VAL.max[key]) {
+                res.send(400);
+                return;
+            }
+        }
+    }
+
+    // Add survey to database
+    const db = admin.database();
+    await db.ref(`/${req.user.user_id}/surveys/${DateTime.utc().toMillis()}`).set({
+        key: body.key,
+        results: body.results
+    });
+
+    res.send(200);
+});
+
 exports.cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsub.schedule('0 0 * * SUN').timeZone('America/Chicago').onRun(async _ => {
     let promises = [];
     let usersToDelete = [];

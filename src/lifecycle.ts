@@ -11,7 +11,7 @@ function setLastOpenedTime() {
 }
 
 function redirect() {
-    if (!window.location.pathname.startsWith("/journal")) {
+    if (!window.location.pathname.startsWith("/journal") && !window.location.pathname.startsWith("/review")) {
         let lastOpenedTime = Number(window.localStorage.getItem("lastOpenedTime"));
         if (getTime() - lastOpenedTime > THRESHOLD_SEC) {
             history.push("/journal");
