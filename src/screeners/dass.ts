@@ -7,87 +7,87 @@ export default function DASS(): Screener {
         _clinicalName: "DASS-21",
         _questions: [
             {
-                question: "I found it hard to wind down",
+                question: "Over the past week, I found it hard to wind down",
                 affects: "s"
             },
             {
-                question: "I was aware of dryness of my mouth",
+                question: "Over the past week, I was aware of dryness of my mouth",
                 affects: "a"
             },
             {
-                question: "I couldn't seem to experience any positive feeling at all",
+                question: "Over the past week, I couldn't seem to experience any positive feeling at all",
                 affects: "d"
             },
             {
-                question: "I experienced breathing difficulty (e.g., excessively rapid breathing, breathlessness in the absence of physical exertion)",
+                question: "Over the past week, I experienced breathing difficulty (e.g., excessively rapid breathing, breathlessness in the absence of physical exertion)",
                 affects: "a"
             },
             {
-                question: "I found it difficult to work up the initiative to do things",
+                question: "Over the past week, I found it difficult to work up the initiative to do things",
                 affects: "d"
             },
             {
-                question: "I tended to over-react to situations",
+                question: "Over the past week, I tended to over-react to situations",
                 affects: "s"
             },
             {
-                question: "I experienced trembling (e.g., in the hands)",
+                question: "Over the past week, I experienced trembling (e.g., in the hands)",
                 affects: "a"
             },
             {
-                question: "I felt that I was using a lot of nervous energy",
+                question: "Over the past week, I felt that I was using a lot of nervous energy",
                 affects: "s"
             },
             {
-                question: "I was worried about situations in which I might panic and make a fool of myself",
+                question: "Over the past week, I was worried about situations in which I might panic and make a fool of myself",
                 affects: "a"
             },
             {
-                question: "I felt that I had nothing to look forward to",
+                question: "Over the past week, I felt that I had nothing to look forward to",
                 affects: "d"
             },
             {
-                question: "I found myself getting agitated",
+                question: "Over the past week, I found myself getting agitated",
                 affects: "s"
             },
             {
-                question: "I found it difficult to relax",
+                question: "Over the past week, I found it difficult to relax",
                 affects: "s"
             },
             {
-                question: "I felt down-hearted and blue",
+                question: "Over the past week, I felt down-hearted and blue",
                 affects: "d"
             },
             {
-                question: "I was intolerant of anything that kept me from getting on with what I was doing",
+                question: "Over the past week, I was intolerant of anything that kept me from getting on with what I was doing",
                 affects: "s"
             },
             {
-                question: "I felt I was close to panic",
+                question: "Over the past week, I felt I was close to panic",
                 affects: "a"
             },
             {
-                question: "I was unable to become enthusiastic about anything",
+                question: "Over the past week, I was unable to become enthusiastic about anything",
                 affects: "d"
             },
             {
-                question: "I felt I wasn't worth much as a person",
+                question: "Over the past week, I felt I wasn't worth much as a person",
                 affects: "d"
             },
             {
-                question: "I felt that I was rather touchy",
+                question: "Over the past week, I felt that I was rather touchy",
                 affects: "s"
             },
             {
-                question: "I was aware of the action of my heart in the absence of physical exertion (e.g., sense of heart rate increase, heart missing a beat)",
+                question: "Over the past week, I was aware of the action of my heart in the absence of physical exertion (e.g., sense of heart rate increase, heart missing a beat)",
                 affects: "a"
             },
             {
-                question: "I felt scared without any good reason",
+                question: "Over the past week, I felt scared without any good reason",
                 affects: "a"
             },
             {
-                question: "I felt that life was meaningless",
+                question: "Over the past week, I felt that life was meaningless",
                 affects: "d"
             }
         ],
