@@ -73,7 +73,7 @@ const WeekInReview = () => {
             incrementStage();
         }} /> }
         { stage === Stage.Secondary && <Surveyer stage="Secondary" survey={secondary} setSurvey={setSecondary} incrementStage={incrementStage} /> }
-        { stage === Stage.Review && <WeekInReviewReview />}
+        { stage === Stage.Review && <WeekInReviewReview primary={primary} secondary={secondary} />}
     </>
 };
 
