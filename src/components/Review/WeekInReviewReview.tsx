@@ -2,9 +2,9 @@ import { IonSpinner } from "@ionic/react";
 import { ref, set } from "firebase/database";
 import { DateTime } from "luxon";
 import { useState } from "react";
-import { auth, db } from "../firebase";
-import history from "../history";
-import Screener from "../screeners/screener";
+import { auth, db } from "../../firebase";
+import history from "../../history";
+import Screener from "../../screeners/screener";
 
 interface Props {
     primary: Screener,

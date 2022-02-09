@@ -1,8 +1,8 @@
 import { IonPage, IonIcon } from "@ionic/react";
 import { Switch } from "react-router";
 import { Route } from "react-router-dom";
-import WriteJournal from "../components/WriteJournal";
-import FinishJournal from "../components/FinishJournal";
+import WriteJournal from "../components/Journal/WriteJournal";
+import FinishJournal from "../components/Journal/FinishJournal";
 import { useState } from "react";
 import { closeOutline } from "ionicons/icons";
 import history from "../history";

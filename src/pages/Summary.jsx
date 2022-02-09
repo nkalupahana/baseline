@@ -6,12 +6,12 @@ import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { menuOutline, notifications, pencil } from "ionicons/icons";
 import Media from "react-media";
-import WeekSummary from "../components/WeekSummary";
-import MonthSummary from "../components/MonthSummary";
+import WeekSummary from "../components/Summary/Week/WeekSummary";
+import MonthSummary from "../components/Summary/Month/MonthSummary";
 import history from "../history";
 import "./Container.css";
 import "./Summary.css";
-import PromptWeekInReview from "../components/PromptWeekInReview";
+import PromptWeekInReview from "../components/Review/PromptWeekInReview";
 import { LocalNotifications } from "capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 

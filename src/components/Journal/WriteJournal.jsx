@@ -1,8 +1,8 @@
 import "./JournalComponents.css";
 import { IonTextarea } from "@ionic/react";
 import { useEffect } from "react";
-import history from "../history";
-import { signOutAndCleanUp } from "../firebase";
+import history from "../../history";
+import { signOutAndCleanUp } from "../../firebase";
 import { Capacitor } from "@capacitor/core";
 
 const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
