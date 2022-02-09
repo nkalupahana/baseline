@@ -2,8 +2,8 @@ import { IonSpinner, useIonToast } from "@ionic/react";
 import { getIdToken } from "firebase/auth";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
-import Screener, { Answer, Done, Modifier } from "../screeners/screener";
+import { auth } from "../../firebase";
+import Screener, { Answer, Done, Modifier } from "../../screeners/screener";
 
 interface Props {
     survey: Screener,

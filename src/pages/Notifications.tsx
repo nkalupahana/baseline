@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
 import { LocalNotifications, Schedule } from "capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
-import NotificationEditor from "../components/NotificationEditor";
+import NotificationEditor from "../components/Settings/NotificationEditor";
 
 interface NotificationData {
     [key:string]: Array<

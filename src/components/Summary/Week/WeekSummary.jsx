@@ -1,10 +1,10 @@
-import ldb from "../db";
+import ldb from "../../../db";
 import { useLiveQuery } from "dexie-react-hooks";
-import SummaryHeader from "./SummaryHeader";
-import MoodLogList from "./MoodLogList";
+import SummaryHeader from "../SummaryHeader";
+import MoodLogList from "../MoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
 import { useState } from "react";
-import Preloader from "../pages/Preloader";
+import Preloader from "../../../pages/Preloader";
 
 const WeekSummary = ({ gettingData, setMenuDisabled }) => {
     let logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());

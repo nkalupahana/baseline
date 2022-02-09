@@ -1,11 +1,11 @@
 import { getDownloadURL, ref } from "@firebase/storage";
-import { storage, auth } from "../firebase";
+import { storage, auth } from "../../firebase";
 import { useEffect, useState } from "react";
-import Flickity from 'react-flickity-component';
+import Flickity from "react-flickity-component";
 import "flickity/dist/flickity.min.css";
 import "flickity-fullscreen/fullscreen.css";
 import "flickity-fullscreen/fullscreen";
-import useCallbackRef from "../useCallbackRef";
+import useCallbackRef from "../../useCallbackRef";
 
 const ImageCarousel = ({ files, setMenuDisabled }) => {
     const [accessURLs, setAccessURLs] = useState([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import WeekInReviewInitial from "../components/WeekInReviewInitial";
-import Surveyer from "../components/Surveyer";
+import WeekInReviewInitial from "../components/Review/WeekInReviewInitial";
+import Surveyer from "../components/Review/Surveyer";
 import DASS from "../screeners/dass";
 import "./WeekInReview.css";
 import CAGE_AID from "../screeners/cage_aid";
@@ -11,7 +11,7 @@ import { auth, db } from "../firebase";
 import { get, limitToLast, orderByKey, query, ref } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
-import WeekInReviewReview from "../components/WeekInReviewReview";
+import WeekInReviewReview from "../components/Review/WeekInReviewReview";
 
 enum Stage {
     Initial,

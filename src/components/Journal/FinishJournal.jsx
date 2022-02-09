@@ -2,13 +2,13 @@ import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
 import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIcon } from "@ionic/react";
 import { getIdToken } from "@firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
 import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
-import history from "../history";
+import history from "../../history";
 import { attach, trashOutline } from "ionicons/icons";
 import { LocalNotifications } from "capacitor-local-notifications";
 
