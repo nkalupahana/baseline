@@ -9,7 +9,8 @@ export interface Log {
     zone: string,
     mood: number,
     journal: string,
-    average: string
+    average: string,
+    files?: string[],
 }
 
 interface DB extends Dexie {

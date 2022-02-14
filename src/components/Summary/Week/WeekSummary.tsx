@@ -1,5 +1,4 @@
-import ldb from "../../../db";
-import { useLiveQuery } from "dexie-react-hooks";
+import { Log } from "../../../db";
 import SummaryHeader from "../SummaryHeader";
 import WeekMoodLogList from "./WeekMoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
@@ -9,10 +8,10 @@ import Preloader from "../../../pages/Preloader";
 interface Props {
     setMenuDisabled: (disabled: boolean) => void;
     gettingData: boolean;
+    logs: Log[];
 }
 
-const WeekSummary = ({ gettingData, setMenuDisabled } : Props) => {
-    let logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
+const WeekSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
         timeout: undefined,
@@ -34,7 +33,7 @@ const WeekSummary = ({ gettingData, setMenuDisabled } : Props) => {
     */
 
     return (
-        <div className="week-summary-grid">
+        <div className="week-summary-grid container">
             <SummaryHeader></SummaryHeader>
             { logs && logs.length > 0 && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
             { logs && logs.length > 0 && <WeekMoodLogList setMenuDisabled={setMenuDisabled} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate} /> }
