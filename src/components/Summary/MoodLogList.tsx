@@ -1,16 +1,24 @@
 import { DateTime } from "luxon";
+import { Ref } from "react";
+import { Log } from "../../db";
 import MoodLogCard from "./MoodLogCard";
 
-const MoodLogList = ({ logs, container, setMenuDisabled }) => {
+interface Props {
+    logs: Log[],
+    container: Ref<HTMLDivElement>,
+    setMenuDisabled: (disabled: boolean) => void
+}
+
+const MoodLogList = ({ logs, container, setMenuDisabled } : Props) => {
     let els = [<br key="begin"/>];
-    let top = false;
+    let top = undefined;
     const now = DateTime.now();
     const zone = now.zone.name;
     let t;
     let today = [];
     for (let log of logs) {
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
-            els.push(today.reverse());
+            els.push(...today.reverse());
             today = [];
             top = log;
             t = DateTime.fromObject({ year: log.year, month: log.month, day: log.day });
@@ -29,7 +37,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled }) => {
         today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
     }
 
-    els.push(today.reverse());
+    els.push(...today.reverse());
     els.push(
         <div className="bold text-center" key="end">
             <p>no more logs</p>

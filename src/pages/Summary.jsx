@@ -14,12 +14,14 @@ import "./Summary.css";
 import PromptWeekInReview from "../components/Review/PromptWeekInReview";
 import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
     const [menuDisabled, setMenuDisabled] = useState(false);
     const [gettingData, setGettingData] = useState(true);
     const menuRef = useRef();
+    const logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
 
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
@@ -63,7 +65,7 @@ const Summary = () => {
 
     return (
         <div>
-            <div id="mainContent" className="container">
+            <div id="mainContent">
                 <Media
                     queries={{
                         week: "(max-width: 700px)",
@@ -72,8 +74,8 @@ const Summary = () => {
                 >
                     {matches => (
                         <Fragment>
-                            {matches.week && <WeekSummary gettingData={gettingData} setMenuDisabled={setMenuDisabled} />}
-                            {matches.month && <MonthSummary />}
+                            {matches.week && <WeekSummary gettingData={gettingData} setMenuDisabled={setMenuDisabled} logs={logs} />}
+                            {matches.month && <MonthSummary gettingData={gettingData} setMenuDisabled={setMenuDisabled} logs={logs} />}
                         </Fragment>
                     )}
                 </Media>
