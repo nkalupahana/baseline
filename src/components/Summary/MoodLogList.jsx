@@ -39,7 +39,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled }) => {
 
     return (
         <>
-            <div ref={container} id="moodLogList" className="mood-log-list">
+            <div style={{"gridArea": "logs"}} ref={container} id="moodLogList" className="mood-log-list">
                 { els }
             </div>
         </>

@@ -1,6 +1,10 @@
+import SummaryHeader from "../SummaryHeader";
+
 const MonthSummary = () => {
     return (
-        <p>Month summary view</p>
+        <div className="month-summary-grid">
+            <SummaryHeader></SummaryHeader>
+        </div>
     );
 };
 
