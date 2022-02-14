@@ -71,6 +71,19 @@
     position: relative;
 }
 
+.month-summary-grid {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto 200px;
+    grid-template-areas: 
+        "heading heading"
+        "graph logs";
+    height: 100vh;
+    overflow: hidden;
+    align-content: start;
+    position: relative;
+}
+
 .container.menu-content {
     transform: none;
 }

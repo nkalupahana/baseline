@@ -1,6 +1,6 @@
 const SummaryHeader = () => {
     return (
-        <div className="center-summary">
+        <div style={{ gridArea: "heading" }} className="center-summary">
             <div className="title">Here's how your week has been looking.</div>
         </div>
     );
