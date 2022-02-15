@@ -80,7 +80,7 @@ const Summary = () => {
                     )}
                 </Media>
             </div>
-            <IonFab vertical="bottom" horizontal="end" slot="fixed" class="journal-fab" id="journal-fab">
+            { !menuDisabled && <IonFab vertical="bottom" horizontal="end" slot="fixed" class="journal-fab" id="journal-fab">
                 <IonFabButton
                     size="small"
                     color="light"
@@ -98,7 +98,7 @@ const Summary = () => {
                 >
                     <IonIcon icon={pencil} />
                 </IonFabButton>
-            </IonFab>
+            </IonFab> }
             <IonMenu ref={menuRef} disabled={menuDisabled} side="end" contentId="mainContent" menuId="mainMenu">
                 <IonContent>
                     <IonList>
