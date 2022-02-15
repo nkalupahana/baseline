@@ -134,7 +134,7 @@
 }
 
 .bottom-bar {
-    z-index: 9000;
+    z-index: 1000;
     position: absolute;
     left: 22.5%;
     width: 55%;
