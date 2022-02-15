@@ -32,14 +32,6 @@
     scrollbar-width: none;
 }
 
-.marker {
-    height: 6px;
-    width: 6px;
-    position: absolute;
-    border-radius: 2px;
-    background-color: black;
-}
-
 .graph-arrow {
     position: absolute;
     bottom: 10px;

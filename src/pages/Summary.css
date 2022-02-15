@@ -79,7 +79,7 @@
     grid-template-columns: auto 400px;
     grid-template-areas: 
         "heading heading"
-        "graph logs";
+        "calendar logs";
     height: 100vh;
     overflow: hidden;
     align-content: start;
@@ -101,4 +101,12 @@
 
 .helper-text {
     font-weight: normal;
+}
+
+.marker {
+    height: 6px;
+    width: 6px;
+    position: absolute;
+    border-radius: 2px;
+    background-color: black;
 }
