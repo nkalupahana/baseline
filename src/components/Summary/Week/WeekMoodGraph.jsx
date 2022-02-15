@@ -2,47 +2,12 @@ import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
 import { useEffect, useCallback } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { getTime } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
 import { caretUp } from "ionicons/icons";
 
-function getDate(log) {
-    return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
-}
-
-const SECONDS_IN_DAY = 86400;
-// https://materializecss.com/color
-const COLORS = {
-    "-5": "black",
-    "-4": "#d50000", // red accent-4
-    "-3": "#fb8c00", // orange darken-1
-    "-2": "#ffca28", // amber lighten-1
-    "-1": "#ffeb3b", // yellow
-    "0": "#03a9f4",  // light-blue
-    "1": "#4fc3f7",  // light-blue lighten-2
-    "2": "#cddc39",  // lime
-    "3": "#8bc34a",  // light-green
-    "4": "#43a047",  // green darken-1
-    "5": "black"
-};
-
 function createGraphCard(date, data=[]) {
-    let points = [];
-    for (let point of data) {
-        let [hour, rest] = point.time.split(":");
-        hour = Number(hour);
-        if (hour === 12) hour = 0;
-        let [minute, meridiem] = rest.split(" ");
-        minute = Number(minute);
-        const time = DateTime.fromObject({hour: (meridiem === "AM" ? hour : hour + 12), minute}, {zone: point.zone});
-        const seconds = (time.toSeconds() - time.startOf("day").toSeconds());
-        const style = {
-            left: `${seconds / SECONDS_IN_DAY * 100}%`,
-            top: `${(10 - (point.mood + 5)) * 6.5 + 25}%`,
-            backgroundColor: COLORS[point.mood]
-        };
-        points.push(<div id={point.time} className="marker" key={point.timestamp} style={style}></div>);
-    }
+    const points = createPoints(data);
 
     const locator = "g-locator-" + date.toISODate();
     return (<div key={locator} id={locator} className="graph-card">
@@ -161,7 +126,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
 
     let els = [];
     let i = 0;
-    let current = getDate(logs[0]);
+    let current = getDateFromLog(logs[0]);
 
     // Create cards from today to first entry
     let now = DateTime.now().startOf("day");
@@ -172,7 +137,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
 
     while (i < logs.length) {
         let todaysLogs = [];
-        while (i < logs.length && getDate(logs[i]).equals(current)) {
+        while (i < logs.length && getDateFromLog(logs[i]).equals(current)) {
             todaysLogs.push(logs[i]);
             i++;
         }
@@ -182,7 +147,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         if (i === logs.length) break;
 
         // Create cards back to next populated day
-        let next = getDate(logs[i]);
+        let next = getDateFromLog(logs[i]);
         while (!current.equals(next)) {
             current = current.minus({ days: 1 });
             if (!current.equals(next)) els.push(createGraphCard(current));

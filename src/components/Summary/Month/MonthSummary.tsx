@@ -3,6 +3,8 @@ import { Log } from "../../../db";
 import useCallbackRef from "../../../useCallbackRef";
 import MoodLogList from "../MoodLogList";
 import SummaryHeader from "../SummaryHeader";
+import MonthCalendar from "./MonthCalendar";
+import "./MonthCalendar.css"
 
 interface Props {
     setMenuDisabled: (disabled: boolean) => void;
@@ -21,7 +23,10 @@ const MonthSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
     return (
         <div className="month-summary-grid">
             <SummaryHeader></SummaryHeader>
-            { logs && logs.length > 0 && <MoodLogList container={container} logs={logs} setMenuDisabled={setMenuDisabled}></MoodLogList> }
+            { logs && logs.length > 0 && <>
+                    <MonthCalendar logs={logs} />
+                    <MoodLogList container={container} logs={logs} setMenuDisabled={setMenuDisabled} />
+                </> }
         </div>
     );
 };

@@ -1,0 +1,12 @@
+.month-calendar {
+    grid-area: "calendar";
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-card {
+    width: 9vw;
+    height: 20vh;
+    position: relative;
+    text-align: center;
+}

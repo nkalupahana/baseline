@@ -89,7 +89,7 @@ http://ionicframework.com/docs/theming/ */
 }
 
 * {
-    font-family: "Lato", "Helvetica Neue", "Helvetica", "Arial";
+    font-family: "Lato", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 textarea {
