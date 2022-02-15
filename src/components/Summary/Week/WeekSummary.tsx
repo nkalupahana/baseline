@@ -33,7 +33,7 @@ const WeekSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
     */
 
     return (
-        <div className="week-summary-grid container">
+        <div className="week-summary-grid">
             <SummaryHeader></SummaryHeader>
             { logs && logs.length > 0 && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
             { logs && logs.length > 0 && <WeekMoodLogList setMenuDisabled={setMenuDisabled} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate} /> }

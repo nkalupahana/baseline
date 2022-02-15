@@ -6,11 +6,14 @@ import "flickity/dist/flickity.min.css";
 import "flickity-fullscreen/fullscreen.css";
 import "flickity-fullscreen/fullscreen";
 import useCallbackRef from "../../useCallbackRef";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const ImageCarousel = ({ files, setMenuDisabled }) => {
     const [accessURLs, setAccessURLs] = useState([]);
+    const [, loading] = useAuthState(auth);
 
     useEffect(() => {
+        if (loading) return;
         (async () => {
             let promises = [];
             for (let file of files) {
@@ -19,7 +22,7 @@ const ImageCarousel = ({ files, setMenuDisabled }) => {
 
             await Promise.all(promises).then(setAccessURLs);
         })();
-    }, [files]);
+    }, [files, loading]);
     
     const flkty = useCallbackRef(useCallbackRef(node => {
         if (!node) return;

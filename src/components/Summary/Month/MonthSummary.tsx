@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { Log } from "../../../db";
 import useCallbackRef from "../../../useCallbackRef";
 import MoodLogList from "../MoodLogList";

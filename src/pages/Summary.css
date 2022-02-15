@@ -69,6 +69,8 @@
     overflow: hidden;
     align-content: start;
     position: relative;
+    width: 90%;
+    margin: 0 auto;
 }
 
 .month-summary-grid {
