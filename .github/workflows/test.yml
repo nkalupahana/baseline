@@ -23,8 +23,7 @@ jobs:
         ionic cap sync
     - name: Integration Tests
       run: |
-        npm install -g nyc
-        ionic serve -r @cypress/instrument-cra &
+        PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
         sleep 60
         npm run test
     - name: SonarCloud Scan
