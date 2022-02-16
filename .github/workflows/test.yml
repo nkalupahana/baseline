@@ -23,9 +23,11 @@ jobs:
         ionic cap sync
     - name: Integration Tests
       run: |
+        npm install -g nyc
         ionic serve -r @cypress/instrument-cra &
         sleep 60
-        npm run test
+        nyc npm run test
+        nyc report --reporter=lcov
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
