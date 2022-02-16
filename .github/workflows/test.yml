@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 
     - name: Use Node.js 16
       uses: actions/setup-node@v2
       with:
@@ -35,6 +37,7 @@ jobs:
       with:
         name: test-video
         path: cypress/videos
+    - run: ls
     - name: Upload Test Data
       uses: actions/upload-artifact@v2
       with:
