@@ -22,6 +22,7 @@ jobs:
     - name: Integration Tests
       run: |
         ionic serve -r @cypress/instrument-cra &
+        sleep 60
         npm run test
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
