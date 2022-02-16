@@ -35,3 +35,8 @@ jobs:
       with:
         name: test-video
         path: cypress/videos
+    - name: Upload Test Data
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage
