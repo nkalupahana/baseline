@@ -1,0 +1,5 @@
+{
+    "extends": "nyc-config-tsx",
+    "all": true,
+    "include": ["src/**"]
+}

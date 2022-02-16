@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Use Node.js 16
       uses: actions/setup-node@v2
       with:
@@ -21,8 +23,8 @@ jobs:
         ionic cap sync
     - name: Integration Tests
       run: |
-        npm install -g serve
-        serve -s build -p 8100 &
+        PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
+        sleep 60
         npm run test
     - name: Upload Test Video
       if: failure()
@@ -30,3 +32,13 @@ jobs:
       with:
         name: test-video
         path: cypress/videos
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+    - name: Upload Test Data
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage
