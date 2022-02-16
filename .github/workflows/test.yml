@@ -26,18 +26,17 @@ jobs:
         PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
         sleep 60
         npm run test
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
     - name: Upload Test Video
       if: failure()
       uses: actions/upload-artifact@v2
       with:
         name: test-video
         path: cypress/videos
-    - run: ls
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
     - name: Upload Test Data
       uses: actions/upload-artifact@v2
       with:
