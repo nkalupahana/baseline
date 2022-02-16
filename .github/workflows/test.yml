@@ -5,11 +5,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0 
+        fetch-depth: 0
     - name: Use Node.js 16
       uses: actions/setup-node@v2
       with:
@@ -26,8 +26,7 @@ jobs:
         npm install -g nyc
         ionic serve -r @cypress/instrument-cra &
         sleep 60
-        nyc npm run test
-        nyc report --reporter=lcov
+        npm run test
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
