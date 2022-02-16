@@ -92,6 +92,7 @@
   "devDependencies": {
     "@capacitor/cli": "^3.3.3",
     "@cypress/code-coverage": "^3.9.12",
+    "@cypress/instrument-cra": "^1.4.0",
     "@types/luxon": "^2.0.8",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "cypress": "^8.7.0",
