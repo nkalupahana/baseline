@@ -41,13 +41,13 @@
 .highlight-day {
     background-color: red;
     color: white;
-    border-radius: 50px;
+    border-radius: 10px;
 }
 
 .one-month {
-    background-color: rgb(214, 214, 214);
+    background-color: rgba(214, 214, 214, 0.2);
 }
 
 .two-month {
-    background-color: rgb(230, 230, 230);
+    background-color: rgba(214, 214, 214, 0.05);
 }

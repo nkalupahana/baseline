@@ -10,13 +10,16 @@ interface Props {
 function createCalendarCard(date: DateTime, data:Log[] = []) {
     const points = createPoints(data);
     const locator = "c-locator-" + date.toISODate();
-    let extra = "";
+    let dayHighlight = "";
     const today = DateTime.local();
     if (date.day === today.day && date.month === today.month && date.year === today.year) {
-        extra = " highlight-day";
+        dayHighlight = " highlight-day";
     }
-    return (<div key={locator} id={locator} className="calendar-card">
-                <div className={"calendar-card-date" + extra}>{date.day === 1 ? date.toFormat("LLL d") : date.toFormat("d")}</div>
+
+    let monthHighlight = " " + (Math.abs(today.month - date.month) % 2 === 0 ? "one-month" : "two-month");
+
+    return (<div key={locator} id={locator} className={"calendar-card" + monthHighlight}>
+                <div className={"calendar-card-date" + dayHighlight}>{date.day === 1 ? date.toFormat("LLL d yy") : date.toFormat("d")}</div>
                 {points}
             </div>);
 }
@@ -50,6 +53,12 @@ const MonthCalendar = ({ logs } : Props) => {
             current = current.minus({ days: 1 });
             if (!current.equals(next)) els.push(createCalendarCard(current));
         }
+    }
+
+    // 7 days in a week, 6 rows by default = 42
+    while (els.length < 42) {
+        current = current.minus({ days: 1 });
+        els.push(createCalendarCard(current));
     }
 
     // Create empty cards for final week

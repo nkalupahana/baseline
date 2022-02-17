@@ -25,7 +25,7 @@ const COLORS: { [key: string]: string } = {
     "5": "black"
 };
 
-export function createPoints(data: Log[], topOffset=25) {
+export function createPoints(data: Log[]) {
     let points = [];
     for (let point of data) {
         let [h, rest] = point.time.split(":");
@@ -37,7 +37,7 @@ export function createPoints(data: Log[], topOffset=25) {
         const seconds = (time.toSeconds() - time.startOf("day").toSeconds());
         const style = {
             left: `min(${seconds / SECONDS_IN_DAY * 100}%, calc(100% - 6px))`,
-            top: `${(10 - (point.mood + 5)) * 6.5 + topOffset}%`,
+            top: `${(10 - (point.mood + 5)) * 6.5 + 25}%`,
             backgroundColor: COLORS[point.mood]
         };
         points.push(<div id={point.time} className="marker" key={point.timestamp} style={style}></div>);
