@@ -18,7 +18,8 @@ const MoodLogList = ({ logs, container, setMenuDisabled } : Props) => {
     let today = [];
     for (let log of logs) {
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
-            els.push(...today.reverse());
+            today.reverse()
+            els.push(...today);
             today = [];
             top = log;
             t = DateTime.fromObject({ year: log.year, month: log.month, day: log.day });
@@ -37,7 +38,8 @@ const MoodLogList = ({ logs, container, setMenuDisabled } : Props) => {
         today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
     }
 
-    els.push(...today.reverse());
+    today.reverse();
+    els.push(...today);
     els.push(
         <div className="bold text-center" key="end">
             <p>no more logs</p>
@@ -46,11 +48,9 @@ const MoodLogList = ({ logs, container, setMenuDisabled } : Props) => {
     );
 
     return (
-        <>
-            <div style={{"gridArea": "logs"}} ref={container} id="moodLogList" className="mood-log-list">
-                { els }
-            </div>
-        </>
+        <div style={{"gridArea": "logs"}} ref={container} id="moodLogList" className="mood-log-list">
+            { els }
+        </div>
     );
 }
 
