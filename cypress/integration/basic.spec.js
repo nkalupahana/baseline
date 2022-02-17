@@ -64,3 +64,36 @@ describe("Mobile Flow", () => {
         cy.contains("no more logs").should("exist")
     })
 })
+
+describe("Desktop Flow", () => {
+    beforeEach(() => {
+        cy.viewport("macbook-13")
+    })
+
+    it("Write Mood Log", () => {
+        cy.visit("/")
+        cy.contains("What's happening").should("exist")
+        cy.get(".native-textarea").type("Hello desktop world!")
+        cy.contains("Continue").should("exist").click()
+    })
+
+    it("Finish Mood Log", () => {
+        cy.get("svg").should("exist")
+        cy.get(".native-textarea").should("have.value", "Hello desktop world!")
+        cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
+
+        cy.contains("Above Average").should("exist").parents("ion-segment-button").click()
+        cy.get(".segment-button-checked").should("exist").should("have.text", "Above Average")
+        cy.contains("Below Average").should("exist").parents("ion-segment-button").click()
+        cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
+
+        cy.contains("Done!").should("exist").click()
+        cy.get(".loader").should("exist")
+        cy.url().should("include", "/summary")
+    })
+
+    it("Verify Mood Log on Summary", () => {
+        cy.contains("Hello desktop world!").should("exist")
+        cy.contains("no more logs").should("exist")
+    })
+})

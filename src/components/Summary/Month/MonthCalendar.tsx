@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Log } from "../../../db";
 import { createPoints, getDateFromLog } from "../../../helpers";
-import { chunk } from "underscore";
+import { chunk } from "lodash";
 
 interface Props {
     logs: Log[];
@@ -13,7 +13,10 @@ function createCalendarCard(date: DateTime, data:Log[] = []) {
     let dayHighlight = "";
     const today = DateTime.local();
     if (date.day === today.day && date.month === today.month && date.year === today.year) {
-        dayHighlight = " highlight-day";
+        dayHighlight += " highlight-day";
+    }
+    if (date.day === 1) {
+        dayHighlight += " bold";
     }
 
     let monthHighlight = " " + (Math.abs(today.month - date.month) % 2 === 0 ? "one-month" : "two-month");
