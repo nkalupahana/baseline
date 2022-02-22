@@ -14,9 +14,9 @@ const SECONDS_IN_DAY = 86400;
 const COLORS: { [key: string]: string } = {
     "-5": "black",
     "-4": "#d50000", // red accent-4
-    "-3": "#fb8c00", // orange darken-1
-    "-2": "#ffca28", // amber lighten-1
-    "-1": "#ffeb3b", // yellow
+    "-3": "#f57c00", // orange darken-2
+    "-2": "#ffb300", // amber darken-1
+    "-1": "#fdd835", // yellow darken-1
     "0": "#03a9f4",  // light-blue
     "1": "#4fc3f7",  // light-blue lighten-2
     "2": "#cddc39",  // lime
