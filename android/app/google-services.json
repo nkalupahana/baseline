@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "257064314002",
+    "firebase_url": "https://moody-ionic-default-rtdb.firebaseio.com",
+    "project_id": "moody-ionic",
+    "storage_bucket": "moody-ionic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257064314002:android:94c557175bcb3fc018724b",
+        "android_client_info": {
+          "package_name": "la.nisa.moody"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257064314002-oo0rt2erkqfqi6p8g7ulbpuu5h847pbo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "la.nisa.moody",
+            "certificate_hash": "074d5f882c35174c3fd78bc06ad0695a41340b2a"
+          }
+        },
+        {
+          "client_id": "257064314002-kvgrr0turlhatbpvtin7foru6g2h1704.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBEnD-yg-0zeA8qJ0_ywlk6WSXzu_tHj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257064314002-kvgrr0turlhatbpvtin7foru6g2h1704.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "257064314002-gt4hc1i21sodi1mfck8ul61ccuqhgnbf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "la.nisa.moody"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
