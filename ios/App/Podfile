@@ -13,11 +13,12 @@ def capacitor_pods
   pod 'CapacitorHaptics', :path => '../../node_modules/@capacitor/haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
   pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
+  pod 'RobingenzCapacitorFirebaseAuthentication', :path => '../../node_modules/@robingenz/capacitor-firebase-authentication'
   pod 'CapacitorLocalNotifications', :path => '../../node_modules/capacitor-local-notifications'
-  pod 'CordovaPluginsStatic', :path => '../capacitor-cordova-ios-plugins'
 end
 
 target 'moody' do
   capacitor_pods
   # Add your Pods here
+  pod 'RobingenzCapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@robingenz/capacitor-firebase-authentication'
 end

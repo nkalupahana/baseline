@@ -13,9 +13,9 @@ dependencies {
     implementation project(':capacitor-haptics')
     implementation project(':capacitor-keyboard')
     implementation project(':capacitor-status-bar')
+    implementation project(':robingenz-capacitor-firebase-authentication')
     implementation project(':capacitor-local-notifications')
-    implementation "com.google.android.gms:play-services-auth:15.0.1"
-    implementation "com.google.android.gms:play-services-identity:15.0.1"
+
 }
 
 
