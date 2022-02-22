@@ -66,7 +66,7 @@ export default function SPF(): Screener {
             }
         },
         getClinicalInformation: function() {
-            return `SPF-12 raw scores: Social-Interpersonal ${this._results["Social-Interpersonal"]}, Cognitive-Individual ${this._results["Cognitive-Individual"]}. Raw scores unscaled, from 1 - 5 for each question (Likbert). Cutoffs and scale from doi: 10.1007/s12144-018-0110-6.`;
+            return `SPF-12 raw scores: Social-Interpersonal ${this._results["Social-Interpersonal"]}, Cognitive-Individual ${this._results["Cognitive-Individual"]}. Raw scores unscaled, from 1 - 5 for each question (Likert). Cutoffs and scale from doi: 10.1007/s12144-018-0110-6.`;
         }
     }
 }

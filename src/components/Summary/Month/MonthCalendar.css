@@ -5,6 +5,8 @@
     padding: 15px;
     width: 100%;
     flex-direction: column-reverse;
+    max-width: 930px;
+    justify-self: center;
 }
 
 .calendar-row {

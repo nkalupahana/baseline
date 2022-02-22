@@ -1,5 +1,4 @@
 import { Log } from "../../../db";
-import SummaryHeader from "../SummaryHeader";
 import WeekMoodLogList from "./WeekMoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
 import { useState } from "react";
@@ -34,7 +33,9 @@ const WeekSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
 
     return (
         <div className="week-summary-grid">
-            <SummaryHeader></SummaryHeader>
+            <div style={{ gridArea: "heading" }} className="center-summary">
+                <div className="title">Here's how your week has been looking.</div>
+            </div>
             { logs && logs.length > 0 && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
             { logs && logs.length > 0 && <WeekMoodLogList setMenuDisabled={setMenuDisabled} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate} /> }
             { logs && logs.length === 0 && !gettingData && <p className="text-center">Write your first mood log by clicking on the pencil in the bottom right!</p> }

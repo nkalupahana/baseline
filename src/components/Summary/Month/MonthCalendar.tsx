@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Log } from "../../../db";
 import { createPoints, getDateFromLog } from "../../../helpers";
-import { chunk } from "lodash";
+import { chunk, now } from "lodash";
 
 interface Props {
     logs: Log[];
@@ -21,8 +21,19 @@ function createCalendarCard(date: DateTime, data:Log[] = []) {
 
     let monthHighlight = " " + (Math.abs(today.month - date.month) % 2 === 0 ? "one-month" : "two-month");
 
+    let displayDate = "";
+    if (date.day === 1) {
+        if (date.year === today.year) {
+            displayDate = date.toFormat("LLL d");
+        } else {
+            displayDate = date.toFormat("LLL d yy");
+        }
+    } else {
+        displayDate = date.toFormat("d");
+    }
+
     return (<div key={locator} id={locator} className={"calendar-card" + monthHighlight}>
-                <div className={"calendar-card-date" + dayHighlight}>{date.day === 1 ? date.toFormat("LLL d yy") : date.toFormat("d")}</div>
+                <div className={"calendar-card-date" + dayHighlight}>{ displayDate }</div>
                 {points}
             </div>);
 }
