@@ -76,7 +76,7 @@
 .month-summary-grid {
     display: grid;
     grid-template-rows: auto auto;
-    grid-template-columns: auto 400px;
+    grid-template-columns: 65% 35%;
     grid-template-areas: 
         "heading heading"
         "calendar logs";

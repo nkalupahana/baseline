@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { Log } from "../../../db";
 import useCallbackRef from "../../../useCallbackRef";
 import MoodLogList from "../MoodLogList";
-import SummaryHeader from "../SummaryHeader";
 import MonthCalendar from "./MonthCalendar";
 import "./MonthCalendar.css"
 
@@ -22,7 +21,9 @@ const MonthSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
 
     return (
         <div className="month-summary-grid">
-            <SummaryHeader></SummaryHeader>
+            <div style={{ gridArea: "heading", paddingBottom: "30px" }} className="center-summary">
+                <div className="title">Here's how your month has been looking.</div>
+            </div>
             { logs && logs.length > 0 && <>
                     <MonthCalendar logs={logs} />
                     <MoodLogList container={container} logs={logs} setMenuDisabled={setMenuDisabled} />
