@@ -7,6 +7,11 @@
     flex-direction: column-reverse;
     max-width: 930px;
     justify-self: center;
+    scrollbar-width: none;
+}
+
+.month-calendar::-webkit-scrollbar {
+    display: none;
 }
 
 .calendar-row {

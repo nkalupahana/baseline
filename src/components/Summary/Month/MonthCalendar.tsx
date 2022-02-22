@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Log } from "../../../db";
 import { createPoints, getDateFromLog } from "../../../helpers";
-import { chunk, now } from "lodash";
+import { chunk } from "lodash";
 
 interface Props {
     logs: Log[];
