@@ -1,11 +1,11 @@
 import { IonButton, IonPage } from "@ionic/react";
-import { GoogleAuthProvider, signInWithPopup, signInAnonymously, signInWithCredential } from "firebase/auth";
+import { GoogleAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
 import { auth } from "../firebase";
-import { GooglePlus } from "@awesome-cordova-plugins/google-plus";
 import "./Container.css";
-import { Capacitor } from "@capacitor/core";
 import { useEffect } from "react";
 import ldb from '../db';
+import { FirebaseAuthentication } from '@robingenz/capacitor-firebase-authentication';
+import { Capacitor } from "@capacitor/core";
 
 const Login = () => {
     useEffect(() => {
@@ -13,16 +13,8 @@ const Login = () => {
     }, []);
 
     const signInWithGoogle = async () => {
-        if (Capacitor.getPlatform() === "web") {
-            const google = new GoogleAuthProvider();
-            signInWithPopup(auth, google);
-        } else {
-            GooglePlus.login({
-                webClientId: "257064314002-kvgrr0turlhatbpvtin7foru6g2h1704"                    
-            }).then(res => {
-                signInWithCredential(auth, GoogleAuthProvider.credential(res.idToken, res.accessToken));
-            });
-        }
+        const result = await FirebaseAuthentication.signInWithGoogle();
+        if (Capacitor.getPlatform() !== "web") signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
     }
 
     return (

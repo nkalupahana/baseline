@@ -6,9 +6,12 @@
 	"ios": {
 		"scheme": "moody"
 	},
-	"cordova": {
-		"staticPlugins": [
-			"cordova-plugin-googleplus"
-		]
+	"plugins": {
+		"FirebaseAuthentication": {
+			"skipNativeAuth": false,
+			"providers": [
+				"google.com"
+			]
+		}
 	}
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>257064314002-gt4hc1i21sodi1mfck8ul61ccuqhgnbf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.257064314002-gt4hc1i21sodi1mfck8ul61ccuqhgnbf</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>257064314002-oo0rt2erkqfqi6p8g7ulbpuu5h847pbo.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBk8KWN9W31u4iMw65YLav6UA72GPREQ1E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>257064314002</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>la.nisa.moody</string>
+	<key>PROJECT_ID</key>
+	<string>moody-ionic</string>
+	<key>STORAGE_BUCKET</key>
+	<string>moody-ionic.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:257064314002:ios:bf92d408cef0a97418724b</string>
+	<key>DATABASE_URL</key>
+	<string>https://moody-ionic-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
