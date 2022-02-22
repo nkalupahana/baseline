@@ -28,7 +28,7 @@ export default function EDE_QS(): Screener {
 
             if (this._currentQuestion >= this._questions.length) return { _results: this._results, done: true };
 
-            if (this._questions[this._currentQuestion].includes("On how many of the past 7 days")) {
+            if (this._questions[this._currentQuestion].includes("On how many of")) {
                 this.answers = [
                     {
                         answer: "0 days",
