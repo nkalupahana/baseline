@@ -17,8 +17,9 @@ const PromptWeekInReview = () => {
             if (!auth || !auth.currentUser) return;
             const lastWeekInReview = (await get(ref(db, `/${auth.currentUser.uid}/lastWeekInReview`))).val();
             if (lastWeekInReview) {
-                let last = DateTime.fromMillis(lastWeekInReview);
-                let change = 0;
+                // Go to next Friday (starting from day after last week in review)
+                let last = DateTime.fromMillis(lastWeekInReview).plus({ days: 1 });
+                let change = 1;
                 while (last.weekday !== 5) {
                     last = last.plus({ days: 1 });
                     change += 1;
