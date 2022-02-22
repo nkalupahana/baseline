@@ -1,10 +1,11 @@
 import { IonButton, IonPage } from "@ionic/react";
-import { signInAnonymously } from "firebase/auth";
+import { GoogleAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
 import { auth } from "../firebase";
 import "./Container.css";
 import { useEffect } from "react";
 import ldb from '../db';
 import { FirebaseAuthentication } from '@robingenz/capacitor-firebase-authentication';
+import { Capacitor } from "@capacitor/core";
 
 const Login = () => {
     useEffect(() => {
@@ -12,7 +13,8 @@ const Login = () => {
     }, []);
 
     const signInWithGoogle = async () => {
-        FirebaseAuthentication.signInWithGoogle();
+        const result = await FirebaseAuthentication.signInWithGoogle();
+        if (Capacitor.getPlatform() !== "web") signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
     }
 
     return (
