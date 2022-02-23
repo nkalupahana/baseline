@@ -1,5 +1,5 @@
 import { IonButton, IonPage } from "@ionic/react";
-import { GoogleAuthProvider, OAuthCredential, OAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
+import { GoogleAuthProvider, OAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
 import { auth } from "../firebase";
 import "./Container.css";
 import { useEffect } from "react";
@@ -20,6 +20,13 @@ const Login = () => {
     const signInWithApple = async () => {
         const result = await FirebaseAuthentication.signInWithApple();
         console.log(result);
+        if (Capacitor.getPlatform() === "ios") {
+            signInWithCredential(auth, new OAuthProvider("apple.com").credential({
+                idToken: result.credential?.idToken,
+                rawNonce: result.credential?.nonce
+            }));
+        }
+
         /*if (Capacitor.getPlatform() === "android") {
             signInWithCredential(auth, OAuthProvider.credentialFromJSON(JSON.stringify(result.credential)));
         }*/
