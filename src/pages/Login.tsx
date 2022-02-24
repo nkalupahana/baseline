@@ -14,6 +14,7 @@ const Login = () => {
 
     const signInWithGoogle = async () => {
         const result = await FirebaseAuthentication.signInWithGoogle();
+        console.log(result);
         if (Capacitor.getPlatform() !== "web") signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
     }
 
@@ -25,11 +26,11 @@ const Login = () => {
                 idToken: result.credential?.idToken,
                 rawNonce: result.credential?.nonce
             }));
+        } else if (Capacitor.getPlatform() === "android") {
+            signInWithCredential(auth, new OAuthProvider("apple.com").credential({
+                accessToken: result.credential?.accessToken,
+            }));
         }
-
-        /*if (Capacitor.getPlatform() === "android") {
-            signInWithCredential(auth, OAuthProvider.credentialFromJSON(JSON.stringify(result.credential)));
-        }*/
     }
 
     return (
