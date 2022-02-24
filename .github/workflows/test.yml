@@ -1,4 +1,4 @@
-name: Build & Integration Testing
+name: Build, Test, & Deploy
 
 on:
   push
@@ -42,3 +42,41 @@ jobs:
       with:
         name: coverage
         path: coverage
+        
+  android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: "16.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Build (Ionic)
+      run: |
+        npm install -g ionic
+        npm run build
+        ionic cap sync
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+    - name: Build (Android)
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew build
+    - name: Send to Artifacts
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: apk
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+    - name: Send to DeployGate
+      env:
+        token: ${{ secrets.DEPLOYGATE_TOKEN }}
+      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/apk/debug/app-debug.apk" -F "message=Upload from Github Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" https://deploygate.com/api/users/nkalupahana/apps
+
