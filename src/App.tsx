@@ -37,6 +37,7 @@ import history from "./history";
 import "./lifecycle";
 import smoothscroll from "smoothscroll-polyfill";
 import { Capacitor } from "@capacitor/core";
+import ldb from "./db";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -50,7 +51,7 @@ const App = () => {
         smoothscroll.polyfill();
         
         (async () => {
-            if (await Dexie.exists("ldb")) {
+            if (await Dexie.exists("ldb") && (await ldb.logs.count()) !== 0) {
                 setAuthLikely(true);
             }
         })();
