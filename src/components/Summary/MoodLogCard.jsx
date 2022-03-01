@@ -37,7 +37,14 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
         <div className="mood-card" ref={card}>
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
             <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}>{ symbol } { log.mood }</span>
-            { log.journal && <div ref={logContainer} onClick={grow ? () => {} : toggleGrow} className="mood-card-log" style={grow ? {"height": "auto"} : {"maxHeight": `${NOGROW_HEIGHT}px`, "overflow": "hidden"}}>{ log.journal }</div> }
+            { log.journal && 
+            <div 
+                ref={logContainer} 
+                onClick={grow ? () => {} : toggleGrow} 
+                className="mood-card-log" 
+                style={grow ? {"height": "auto"} : {"maxHeight": `${NOGROW_HEIGHT}px`, "overflow": "hidden"}}>
+                    { localStorage.getItem("fake") ? "Test data" : log.journal }
+            </div> }
             
             { !grow && 
             <>
