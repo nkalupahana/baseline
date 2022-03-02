@@ -10,7 +10,7 @@ import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
 import { attach, trashOutline } from "ionicons/icons";
-import { LocalNotifications } from "capacitor-local-notifications";
+import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);

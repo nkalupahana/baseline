@@ -6,7 +6,7 @@ import ldb from './db';
 import { Auth } from '@firebase/auth';
 import { getStorage } from '@firebase/storage';
 import { getDatabase } from 'firebase/database';
-import { LocalNotifications } from 'capacitor-local-notifications';
+import { LocalNotifications } from '@moody-app/capacitor-local-notifications';
 
 /*
 FIREBASE DB DEBUG

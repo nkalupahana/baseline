@@ -12,7 +12,7 @@ import history from "../history";
 import "./Container.css";
 import "./Summary.css";
 import PromptWeekInReview from "../components/Review/PromptWeekInReview";
-import { LocalNotifications } from "capacitor-local-notifications";
+import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 
 const Summary = () => {
