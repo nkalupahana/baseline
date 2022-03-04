@@ -20,4 +20,5 @@ end
 target 'moody' do
   capacitor_pods
   # Add your Pods here
+  pod 'MoodyAppCapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@moody-app/capacitor-firebase-authentication'
 end
