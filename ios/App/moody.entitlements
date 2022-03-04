@@ -6,5 +6,7 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<key>com.apple.developer.usernotifications.time-sensitive</key>
+	<true/>
 </dict>
 </plist>
