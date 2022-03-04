@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import "./Container.css";
 import { useEffect } from "react";
 import ldb from '../db';
-import { FirebaseAuthentication } from '@robingenz/capacitor-firebase-authentication';
+import { FirebaseAuthentication } from '@moody-app/capacitor-firebase-authentication';
 import { Capacitor } from "@capacitor/core";
 
 const Login = () => {
@@ -14,21 +14,15 @@ const Login = () => {
 
     const signInWithGoogle = async () => {
         const result = await FirebaseAuthentication.signInWithGoogle();
-        console.log(result);
         if (Capacitor.getPlatform() !== "web") signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
     }
 
     const signInWithApple = async () => {
         const result = await FirebaseAuthentication.signInWithApple();
-        console.log(result);
-        if (Capacitor.getPlatform() === "ios") {
+        if (Capacitor.getPlatform() !== "web") {
             signInWithCredential(auth, new OAuthProvider("apple.com").credential({
                 idToken: result.credential?.idToken,
                 rawNonce: result.credential?.nonce
-            }));
-        } else if (Capacitor.getPlatform() === "android") {
-            signInWithCredential(auth, new OAuthProvider("apple.com").credential({
-                accessToken: result.credential?.accessToken,
             }));
         }
     }
