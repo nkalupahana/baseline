@@ -111,7 +111,7 @@
     background-color: black;
 }
 
-@media screen and (min-width: 851px) {
+@media screen and (min-width: 600px) {
     .marker {
         height: 7.5px;
         width: 7.5px;
