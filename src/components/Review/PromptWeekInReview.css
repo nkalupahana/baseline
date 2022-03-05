@@ -28,6 +28,11 @@
 
 .finish-button.secondary {
     margin-top: 5px;
+    margin-bottom: 3px;
     background-color: white;
     color: black;
+}
+
+.finish-button.secondary:active {
+    background-color: white;
 }
