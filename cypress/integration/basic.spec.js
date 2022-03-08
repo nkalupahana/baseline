@@ -33,6 +33,7 @@ describe("Mobile Flow", () => {
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
         cy.get(".native-textarea").type("Hello world!")
+        cy.get('body').happoScreenshot();
         cy.contains("Continue").should("exist").click()
     })
 

@@ -59,7 +59,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "cypress run",
+    "test": "npx happo-e2e -- cypress run",
     "eject": "react-scripts eject",
     "cypress:open": "cypress open"
   },
@@ -97,6 +97,9 @@
     "cypress": "^8.7.0",
     "eslint-plugin-cypress": "^2.12.1",
     "faker": "5.5.3",
+    "happo-cypress": "^3.0.1",
+    "happo-e2e": "^1.0.3",
+    "happo.io": "^7.0.2",
     "nyc": "^15.1.0",
     "nyc-config-tsx": "^0.1.0"
   },
