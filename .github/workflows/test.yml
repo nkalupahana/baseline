@@ -26,6 +26,9 @@ jobs:
         PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
         sleep 60
         npm run test
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
     - name: Upload Test Video
       if: failure()
       uses: actions/upload-artifact@v2
