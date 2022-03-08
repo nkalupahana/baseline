@@ -13,6 +13,8 @@ describe("Mobile Flow", () => {
             }
         })
 
+        cy.get('body').happoScreenshot();
+
         cy.contains("Anonymous").should("exist")
         cy.contains("Google").should("exist")
     })
@@ -20,6 +22,7 @@ describe("Mobile Flow", () => {
     it("Login as Anonymous", () => {
         cy.contains("Anonymous").click()
         cy.contains("What's happening").should("exist")
+        cy.get('body').happoScreenshot();
     })
 
     it("Check Mobile Summary Page", () => {
@@ -27,6 +30,7 @@ describe("Mobile Flow", () => {
         cy.contains("week").should("exist")
         cy.contains("first mood log").should("exist")
         cy.get(".mood-card").should("not.exist")
+        cy.get('body').happoScreenshot();
     })
 
     it("Write Mood Log", () => {
@@ -41,11 +45,14 @@ describe("Mobile Flow", () => {
         cy.get("svg").should("exist")
         cy.get(".native-textarea").should("have.value", "Hello world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
+        cy.get('body').happoScreenshot();
 
         cy.contains("Above Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Above Average")
+        cy.get('ion-segment').happoScreenshot();
         cy.contains("Below Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
+        cy.get('ion-segment').happoScreenshot();
 
         cy.contains("Done!").should("exist").click()
         cy.get(".loader").should("exist")
