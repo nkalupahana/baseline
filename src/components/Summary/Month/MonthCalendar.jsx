@@ -9,13 +9,13 @@ function createCalendarCard(date, requestedDate, data=[]) {
     const locator = "c-locator-" + date.toISODate();
     let dayHighlight = "";
     const today = DateTime.local();
-    if (date.toISODate() == today.toISODate()) {
+    if (date.toISODate() === today.toISODate()) {
         dayHighlight += " highlight-day";
     }
     if (date.day === 1) {
         dayHighlight += " bold";
     }
-    if (requestedDate.el && requestedDate.el.slice(10) == date.toISODate()) {
+    if (requestedDate.el && requestedDate.el.slice(10) === date.toISODate()) {
         dayHighlight += " less-highlight-day"
     }
 
