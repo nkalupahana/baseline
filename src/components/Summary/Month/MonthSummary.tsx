@@ -1,9 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Log } from "../../../db";
 import useCallbackRef from "../../../useCallbackRef";
 import MoodLogList from "../MoodLogList";
 import MonthCalendar from "./MonthCalendar";
 import "./MonthCalendar.css"
+import MonthMoodLogList from "./MonthMoodLogList";
 
 interface Props {
     setMenuDisabled: (disabled: boolean) => void;
@@ -12,12 +13,15 @@ interface Props {
 }
 
 const MonthSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
-    const container = useCallbackRef(useCallback((node: any) => {
-        console.log(node);
-        return () => {
-            console.log(node);
-        }
-    }, []));
+    const [requestedDate, setRequestedDate] = useState({
+        el: undefined,
+        timeout: undefined,
+        list: {
+            trustRegion: undefined,
+            last: undefined
+        },
+        calendar: undefined
+    });
 
     return (
         <div className="month-summary-grid">
@@ -25,8 +29,8 @@ const MonthSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
                 <div className="title">Here's how your month has been looking.</div>
             </div>
             { logs && logs.length > 0 && <>
-                    <MonthCalendar logs={logs} />
-                    <MoodLogList container={container} logs={logs} setMenuDisabled={setMenuDisabled} />
+                    <MonthCalendar logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}/>
+                    <MonthMoodLogList logs={logs} setMenuDisabled={setMenuDisabled} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
                 </> }
         </div>
     );

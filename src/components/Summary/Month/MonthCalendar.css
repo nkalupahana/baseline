@@ -43,12 +43,17 @@
     right: 4px;
     top: 4px;
     padding: 4px;
+    border-radius: 10px;
 }
 
 .highlight-day {
-    background-color: red;
+    background-color: red !important;
     color: white;
-    border-radius: 10px;
+}
+
+.less-highlight-day {
+    background-color: rgb(255, 80, 80);
+    color: white;
 }
 
 .one-month {
