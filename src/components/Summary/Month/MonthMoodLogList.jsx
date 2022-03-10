@@ -1,0 +1,112 @@
+import { useEffect, useCallback } from "react";
+import useCallbackRef from "../../../useCallbackRef";
+import { getTime } from "../../../helpers";
+import MoodLogList from "../MoodLogList";
+
+const TRUST_BOUND = 15;
+
+function getBound(el, node) {
+    return node.offsetTop - el.getBoundingClientRect().y + 30;
+}
+
+const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDate }) => {
+    const container = useCallbackRef(useCallback(node => {
+        if (!node) return;
+        const listener = e => {
+            const parentBox = node.getBoundingClientRect();
+            if (requestedDate.el && requestedDate.el[0] === "c" && requestedDate.timeout > getTime()) {
+                // Computer-generated scroll event -- so we're checking to see
+                // if we've made it to the requested element
+                const id = "i" + requestedDate.el.slice(1);
+                const el = node.querySelector("#" + id);
+                if (el) {
+                    const bound = getBound(el, node);
+                    // If we have, remove it
+                    // and set it to the trust region
+                    if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
+                        setRequestedDate({
+                            ...requestedDate,
+                            el: id,
+                            list: {
+                                trustRegion: el,
+                                last: id
+                            },
+                        });
+                    }
+                }
+            } else {
+                // It's a user scroll (probably)
+                if (requestedDate.list.trustRegion) {
+                    // If we're in the trust region, it might not be a user scroll,
+                    // so let's check for that
+                    const bound = getBound(requestedDate.list.trustRegion, node);
+                    if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
+                        return;
+                    } else {
+                        // And if we've left the trust region, remove it
+                        setRequestedDate({
+                            ...requestedDate,
+                            list: {
+                                trustRegion: undefined,
+                                last: requestedDate.list.last
+                            },
+                        });
+                    }
+                }
+
+                // Otherwise, let's get the new position the user
+                // has scrolled to, and if it's a new place sync the calendar to it
+                for (let child of node.children) {
+                    if (child.tagName !== "P") continue;
+                    const childBox = child.getBoundingClientRect();
+                    if (childBox.y > parentBox.top && childBox.y < parentBox.top + (parentBox.height / 3)) {
+                        if (child.id !== requestedDate.el && child.id !== requestedDate.list.last) {
+                            setRequestedDate({
+                                ...requestedDate,
+                                el: child.id,
+                                timeout: getTime(),
+                                list: {
+                                    trustRegion: undefined,
+                                    last: child.id
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+
+        node.addEventListener("scroll", listener);
+        return () => {
+            if (node) {
+                node.removeEventListener("scroll", listener);
+            }
+        }
+    }, [requestedDate, setRequestedDate]));
+
+    // Scroll to position if we get a request
+    useEffect(() => {
+        const node = document.getElementById("moodLogList");
+        if (!node) return;
+        if (requestedDate.el && requestedDate.el[0] === "c") {
+            const id = "i" + requestedDate.el.slice(1);
+            const el = node.querySelector("#" + id);
+            if (el) {
+                node.scrollTo({
+                    top: el.offsetTop - node.offsetTop - 30,
+                    left: 0,
+                    behavior: "smooth"
+                })
+            }
+        }
+    }, [requestedDate]);
+
+    return (
+        <>
+            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} />
+        </>
+    )
+}
+
+export default MonthMoodLogList;

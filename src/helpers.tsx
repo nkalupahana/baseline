@@ -40,7 +40,7 @@ export function createPoints(data: Log[]) {
             top: `${(10 - (point.mood + 5)) * 6.5 + 25}%`,
             backgroundColor: COLORS[point.mood]
         };
-        points.push(<div id={point.time} className="marker" key={point.timestamp} style={style}></div>);
+        points.push(<div className="marker" key={point.timestamp} style={style}></div>);
     }
 
     return points;
