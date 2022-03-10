@@ -82,8 +82,6 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             }
         }
 
-        console.log(requestedDate);
-
         node.addEventListener("click", clickListener);
         node.addEventListener("scroll", scrollListener);
         return () => {
