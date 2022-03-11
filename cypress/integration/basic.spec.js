@@ -56,6 +56,7 @@ describe("Mobile Flow", () => {
 
         cy.contains("Done!").should("exist").click()
         cy.get(".loader").should("exist")
+        cy.get('body').happoScreenshot()
         cy.url().should("include", "/summary")
     })
 
@@ -74,6 +75,7 @@ describe("Desktop Flow", () => {
         cy.visit("/")
         cy.contains("What's happening").should("exist")
         cy.get(".native-textarea").type("Hello desktop world!")
+        cy.get('body').happoScreenshot()
         cy.contains("Continue").should("exist").click()
     })
 
@@ -81,19 +83,25 @@ describe("Desktop Flow", () => {
         cy.get("svg").should("exist")
         cy.get(".native-textarea").should("have.value", "Hello desktop world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
+        cy.get('body').happoScreenshot()
 
         cy.contains("Above Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Above Average")
+        cy.get('ion-segment').happoScreenshot();
         cy.contains("Below Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
+        cy.get('ion-segment').happoScreenshot();
 
         cy.contains("Done!").should("exist").click()
         cy.get(".loader").should("exist")
+        cy.get('body').happoScreenshot()
         cy.url().should("include", "/summary")
+
     })
 
     it("Verify Mood Log on Summary", () => {
         cy.contains("Hello desktop world!").should("exist")
         cy.contains("no more logs").should("exist")
+        cy.get('body').happoScreenshot()
     })
 })
