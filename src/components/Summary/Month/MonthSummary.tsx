@@ -1,7 +1,5 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Log } from "../../../db";
-import useCallbackRef from "../../../useCallbackRef";
-import MoodLogList from "../MoodLogList";
 import MonthCalendar from "./MonthCalendar";
 import "./MonthCalendar.css"
 import MonthMoodLogList from "./MonthMoodLogList";

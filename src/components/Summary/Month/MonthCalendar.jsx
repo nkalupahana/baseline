@@ -44,10 +44,10 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
         const clickListener = e => {
             let element = e.target;
             while (element !== null && !element.id.includes("locator")) {
-                element = element.parentElement;
                 if (element.id.includes("mainContent")) {
                     return;
                 }
+                element = element.parentElement;
             }
             setRequestedDate({
                 ...requestedDate,
