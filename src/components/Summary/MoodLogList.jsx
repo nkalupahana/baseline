@@ -5,14 +5,15 @@ const MoodLogList = ({ logs, container, setMenuDisabled }) => {
     let els = [<br key="begin"/>];
     let top = false;
     const now = DateTime.now();
-    const zone = now.zone.offsetName(now.toMillis(), { format: "short" });
+    const zone = now.zone.name;
+    let t;
     let today = [];
     for (let log of logs) {
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
             els.push(today.reverse());
             today = [];
             top = log;
-            const t = DateTime.fromObject({ year: log.year, month: log.month, day: log.day });
+            t = DateTime.fromObject({ year: log.year, month: log.month, day: log.day });
             els.push(
                 <p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${top.month}${top.day}${top.year}`}>
                     { t.toFormat("DDDD") }
@@ -20,8 +21,9 @@ const MoodLogList = ({ logs, container, setMenuDisabled }) => {
             );
         }
 
-        if (log.zone !== zone && !log.time.includes(log.zone)) {
-            log.time += " " + log.zone;
+        if (log.zone !== zone) {
+            const addZone = t.setZone(log.zone).zone.offsetName(t.toMillis(), { format: "short" });
+            if (!log.time.includes(addZone)) log.time += " " + addZone;
         }
 
         today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);

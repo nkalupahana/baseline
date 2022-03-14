@@ -144,7 +144,7 @@ exports.moodLog = functions.runWith({ memory: "2GB" }).https.onRequest(async (re
         month: userNow.month,
         day: userNow.day,
         time: userNow.toLocaleString(DateTime.TIME_SIMPLE),
-        zone: userNow.zone.offsetName(userNow.toMillis(), { format: "short" }),
+        zone: userNow.zone.name,
         mood: data.mood,
         journal: data.journal,
         average: data.average,
