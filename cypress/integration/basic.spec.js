@@ -101,6 +101,9 @@ describe("Desktop Flow", () => {
     it("Verify Mood Log on Summary", () => {
         cy.contains("Hello desktop world!").should("exist")
         cy.contains("no more logs").should("exist")
-        cy.get(".calendar-card")[0].click()
+        cy.get(".calendar-card")[0].within(el => {
+            el.click()
+            cy.get("")
+        })
     })
 })
