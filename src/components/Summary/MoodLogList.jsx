@@ -21,7 +21,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled }) => {
             );
         }
 
-        if (log.zone !== zone) {
+        if (log.zone !== zone && t) {
             const addZone = t.setZone(log.zone).zone.offsetName(t.toMillis(), { format: "short" });
             if (!log.time.includes(addZone)) log.time += " " + addZone;
         }
