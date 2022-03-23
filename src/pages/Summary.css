@@ -40,16 +40,15 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
     grid-area: logs;
-    display: flex;
-    flex-direction: column;
-}
-
-.mood-log-list.reverse-list {
-    flex-direction: column-reverse;
 }
 
 .mood-log-list::-webkit-scrollbar {
     display: none;
+}
+
+.reversed-list-spacer {
+    width: 100%;
+    height: 80%;
 }
 
 .log-list-expand {

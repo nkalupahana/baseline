@@ -18,7 +18,7 @@ const createLocator = (t: DateTime) => {
 }
 
 const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
-    let els = [<br key="begin"/>];
+    let els = [];
     let top: Log | undefined = undefined;
     const now = DateTime.now();
     const zone = now.zone.name;
@@ -49,17 +49,27 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     if (reverse && top) {
         t = getDateFromLog(top);
         els.push(createLocator(t));
+    }
+
+    if (reverse) {
+        els.reverse();
+    }
+
+    els.push(
+        <div className="bold text-center" key="end">
+            <p>no more logs</p>
+            <br />
+        </div>
+    );
+
+    if (reverse) {
+        els.push(<div className="reversed-list-spacer" key="spacer"></div>)
     } else {
-        els.push(
-            <div className="bold text-center" key="end">
-                <p>no more logs</p>
-                <br />
-            </div>
-        );
+        els.unshift(<br key="begin" />)
     }
 
     return (
-        <div ref={container} id="moodLogList" className={reverse ? "mood-log-list reverse-list" : "mood-log-list"}>
+        <div ref={container} id="moodLogList" className="mood-log-list">
             { els }
         </div>
     );

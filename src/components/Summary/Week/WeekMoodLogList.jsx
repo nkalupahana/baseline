@@ -95,8 +95,8 @@ const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDat
                                     last: undefined
                                 }
                             });
-                            break;
                         }
+                        break;
                     }
                 }
             }

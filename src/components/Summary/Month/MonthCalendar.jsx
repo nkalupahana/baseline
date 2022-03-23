@@ -49,6 +49,10 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 }
                 element = element.parentElement;
             }
+
+            // No logs? Don't highlight.
+            if (element.childElementCount < 2) return;
+
             setRequestedDate({
                 ...requestedDate,
                 el: "c" + element.id.slice(1),
