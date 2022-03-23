@@ -132,7 +132,7 @@ const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDat
             <div style={showSearch ? {height: "30px"} : {height: "0px", overflow: "hidden"}} className="log-list-expand">
                 <IonIcon icon={searchOutline} ></IonIcon> <span style={{fontSize: "14px", position: "relative", bottom: "5px"}}>Search and filter logs</span>
             </div>
-            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} />
+            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={false} />
         </>
     )
 }

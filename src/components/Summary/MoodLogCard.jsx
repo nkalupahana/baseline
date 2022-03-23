@@ -40,7 +40,7 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
             { log.journal && 
             <div 
                 ref={logContainer} 
-                onClick={grow ? () => {} : toggleGrow} 
+                onClick={grow ? undefined : toggleGrow} 
                 className="mood-card-log" 
                 style={grow ? {"height": "auto"} : {"maxHeight": `${NOGROW_HEIGHT}px`, "overflow": "hidden"}}>
                     { localStorage.getItem("fake") ? "Test data" : log.journal }

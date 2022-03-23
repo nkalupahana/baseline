@@ -13,10 +13,9 @@ describe("Mobile Flow", () => {
             }
         })
 
-        cy.get("body").happoScreenshot()
-
         cy.contains("Anonymous").should("exist")
         cy.contains("Google").should("exist")
+        cy.get("body").happoScreenshot()
     })
 
     it("Login as Anonymous", () => {
