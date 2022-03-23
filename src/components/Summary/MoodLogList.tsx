@@ -1,33 +1,39 @@
 import { DateTime } from "luxon";
 import { Ref } from "react";
 import { Log } from "../../db";
+import { getDateFromLog } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 
 interface Props {
     logs: Log[],
     container: Ref<HTMLDivElement>,
     setMenuDisabled: (disabled: boolean) => void
+    reverse: boolean
 }
 
-const MoodLogList = ({ logs, container, setMenuDisabled } : Props) => {
+const createLocator = (t: DateTime) => {
+    return (<p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${t.month}${t.day}${t.year}`}>
+            { t.toFormat("DDDD") }
+        </p>)
+}
+
+const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     let els = [<br key="begin"/>];
-    let top = undefined;
+    let top: Log | undefined = undefined;
     const now = DateTime.now();
     const zone = now.zone.name;
     let t;
     let today = [];
     for (let log of logs) {
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
-            today.reverse()
+            if (!reverse) today.reverse()
             els.push(...today);
+            if ((top && reverse) || !reverse) {
+                t = getDateFromLog((reverse && top) ? top : log);
+                els.push(createLocator(t));
+            }
             today = [];
             top = log;
-            t = DateTime.fromObject({ year: log.year, month: log.month, day: log.day });
-            els.push(
-                <p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${top.month}${top.day}${top.year}`}>
-                    { t.toFormat("DDDD") }
-                </p>
-            );
         }
 
         if (log.zone !== zone && t) {
@@ -38,17 +44,22 @@ const MoodLogList = ({ logs, container, setMenuDisabled } : Props) => {
         today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
     }
 
-    today.reverse();
+    if (!reverse) today.reverse();
     els.push(...today);
-    els.push(
-        <div className="bold text-center" key="end">
-            <p>no more logs</p>
-            <br />
-        </div>
-    );
+    if (reverse && top) {
+        t = getDateFromLog(top);
+        els.push(createLocator(t));
+    } else {
+        els.push(
+            <div className="bold text-center" key="end">
+                <p>no more logs</p>
+                <br />
+            </div>
+        );
+    }
 
     return (
-        <div style={{"gridArea": "logs"}} ref={container} id="moodLogList" className="mood-log-list">
+        <div ref={container} id="moodLogList" className={reverse ? "mood-log-list reverse-list" : "mood-log-list"}>
             { els }
         </div>
     );

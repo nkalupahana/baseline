@@ -40,6 +40,12 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
     grid-area: logs;
+    display: flex;
+    flex-direction: column;
+}
+
+.mood-log-list.reverse-list {
+    flex-direction: column-reverse;
 }
 
 .mood-log-list::-webkit-scrollbar {
@@ -104,8 +110,8 @@
 }
 
 .marker {
-    height: 6px;
-    width: 6px;
+    height: 6.5px;
+    width: 6.5px;
     position: absolute;
     border-radius: 2px;
     background-color: black;

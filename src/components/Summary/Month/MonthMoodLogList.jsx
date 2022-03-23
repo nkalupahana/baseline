@@ -104,7 +104,7 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
 
     return (
         <>
-            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} />
+            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={true} />
         </>
     )
 }
