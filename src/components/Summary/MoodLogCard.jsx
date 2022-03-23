@@ -17,13 +17,14 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
             }
         } else {
             setGrow(false);
-            if (card.current.parentElement.getBoundingClientRect().y > card.current.getBoundingClientRect().y) {
-                card.current.parentElement.scrollTo({
-                    top: card.current.offsetTop - card.current.parentElement.offsetTop - 50,
-                    left: 0,
-                    behavior: "smooth"
-                });
-            }
+        }
+
+        if (card.current.parentElement.getBoundingClientRect().y > card.current.getBoundingClientRect().y) {
+            card.current.parentElement.scrollTo({
+                top: card.current.offsetTop - card.current.parentElement.offsetTop - 50,
+                left: 0,
+                behavior: "smooth"
+            });
         }
     }
 

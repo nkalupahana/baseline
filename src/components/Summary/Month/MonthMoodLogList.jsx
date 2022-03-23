@@ -70,8 +70,8 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
                                     last: child.id
                                 }
                             });
-                            break;
                         }
+                        break;
                     }
                 }
             }
