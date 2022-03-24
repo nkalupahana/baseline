@@ -6,11 +6,10 @@ import MonthMoodLogList from "./MonthMoodLogList";
 
 interface Props {
     setMenuDisabled: (disabled: boolean) => void;
-    gettingData: boolean;
     logs: Log[];
 }
 
-const MonthSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
+const MonthSummary = ({ setMenuDisabled, logs } : Props) => {
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
         timeout: undefined,
