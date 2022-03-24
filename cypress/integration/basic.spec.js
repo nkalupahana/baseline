@@ -129,6 +129,9 @@ describe("Desktop Flow", () => {
             el.click()
             cy.get(".less-highlight-day").should("not.exist")
         })
+        cy.get(".month-calendar").contains(new Date().getDate()).last().within(el => {
+            el.click()
+        })
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
     })
