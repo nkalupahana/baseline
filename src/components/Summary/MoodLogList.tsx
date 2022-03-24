@@ -22,9 +22,11 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     let top: Log | undefined = undefined;
     const now = DateTime.now();
     const zone = now.zone.name;
+    let nowLogs = 0;
     let t;
     let today = [];
     for (let log of logs) {
+        if (log.day === now.day && log.month === now.month && log.year === now.year) ++nowLogs;
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
             if (!reverse) today.reverse();
             els.push(...today);
@@ -63,7 +65,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     );
 
     if (reverse) {
-        els.push(<div className="reversed-list-spacer" key="spacer"></div>);
+        els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * nowLogs + 250)}px)`}} key="spacer"></div>);
     } else {
         els.unshift(<br key="begin" />)
     }
