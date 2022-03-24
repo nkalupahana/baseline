@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import useCallbackRef from "../../../useCallbackRef";
 import { getTime } from "../../../helpers";
 import MoodLogList from "../MoodLogList";

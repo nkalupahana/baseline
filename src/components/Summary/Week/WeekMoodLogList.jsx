@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
 import { getTime } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
