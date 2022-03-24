@@ -81,10 +81,11 @@
 
 .month-summary-grid {
     display: grid;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto 35px auto;
     grid-template-columns: 65% 35%;
     grid-template-areas: 
         "heading heading"
+        "dates logs"
         "calendar logs";
     height: 100vh;
     overflow: hidden;
