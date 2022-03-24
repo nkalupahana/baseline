@@ -102,7 +102,7 @@ describe("Desktop Flow", () => {
         cy.contains("no more logs").should("exist")
         cy.get(".calendar-card").first().within(el => {
             el.click()
-            cy.get(".less-highlight-day").should("exist")
+            cy.get(".less-highlight-day").should("not.exist")
         })
     })
 })
