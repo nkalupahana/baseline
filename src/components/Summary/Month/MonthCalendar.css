@@ -1,7 +1,13 @@
-.calendar-date-strip {
-    grid-area: dates;
+.calendar-date-strip, .month-calendar {
     max-width: 900px;
     display: flex;
+    width: 100%;
+    justify-self: center;
+
+}
+
+.calendar-date-strip {
+    grid-area: dates;
     padding: 0 15px;
 }
 
@@ -12,13 +18,9 @@
 
 .month-calendar {
     grid-area: calendar;
-    display: flex;
     overflow: scroll;
     padding: 15px;
-    width: 100%;
     flex-direction: column-reverse;
-    max-width: 900px;
-    justify-self: center;
     scrollbar-width: none;
 }
 
