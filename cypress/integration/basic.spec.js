@@ -77,10 +77,12 @@ describe("Mobile Flow", () => {
         }
     })
 
-    it("Tests Scroll", () => {
+    it("Scroll Through Log List", () => {
         cy.wait(1000);
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
+        cy.get(".log-list-expand").should("have.css", "height").and("match", /^0px$/)
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
+        cy.get(".log-list-expand").should("have.css", "height").and("not.match", /^0px$/)
     })
 })
 
