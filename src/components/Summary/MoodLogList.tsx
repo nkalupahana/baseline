@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Ref } from "react";
+import { Ref, useEffect } from "react";
 import { Log } from "../../db";
 import { getDateFromLog } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
@@ -26,7 +26,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     let today = [];
     for (let log of logs) {
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
-            if (!reverse) today.reverse()
+            if (!reverse) today.reverse();
             els.push(...today);
             if ((top && reverse) || !reverse) {
                 t = getDateFromLog((reverse && top) ? top : log);
@@ -63,10 +63,17 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     );
 
     if (reverse) {
-        els.push(<div className="reversed-list-spacer" key="spacer"></div>)
+        els.push(<div className="reversed-list-spacer" key="spacer"></div>);
     } else {
         els.unshift(<br key="begin" />)
     }
+
+    useEffect(() => {
+        const list = document.getElementById("moodLogList")!;
+        const ps = list.querySelectorAll("p");
+        console.log(ps[ps.length - 2]);
+        list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
+    }, []);
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list">
