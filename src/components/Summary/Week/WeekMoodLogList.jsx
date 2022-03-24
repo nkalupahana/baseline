@@ -110,29 +110,12 @@ const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDat
         }
     }, [requestedDate, setRequestedDate, setShowSearch]));
 
-    // Scroll to position if we get a request
-    useEffect(() => {
-        const node = document.getElementById("moodLogList");
-        if (!node) return;
-        if (requestedDate.el && requestedDate.el[0] === "g") {
-            const id = "i" + requestedDate.el.slice(1);
-            const el = node.querySelector("#" + id);
-            if (el) {
-                node.scrollTo({
-                    top: el.offsetTop - node.offsetTop - 30,
-                    left: 0,
-                    behavior: "smooth"
-                })
-            }
-        }
-    }, [requestedDate]);
-
     return (
         <>
             <div style={showSearch ? {height: "30px"} : {height: "0px", overflow: "hidden"}} className="log-list-expand">
                 <IonIcon icon={searchOutline} ></IonIcon> <span style={{fontSize: "14px", position: "relative", bottom: "5px"}}>Search and filter logs</span>
             </div>
-            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={false} />
+            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={false} requestedDate={requestedDate} />
         </>
     )
 }

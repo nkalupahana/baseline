@@ -14,7 +14,7 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
         if (!node) return;
         const listener = e => {
             const parentBox = node.getBoundingClientRect();
-            if (requestedDate.el && requestedDate.el[0] === "c" && requestedDate.timeout > getTime()) {
+            if (requestedDate.el && requestedDate.el[0] === "g" && requestedDate.timeout > getTime()) {
                 // Computer-generated scroll event -- so we're checking to see
                 // if we've made it to the requested element
                 const id = "i" + requestedDate.el.slice(1);
@@ -85,26 +85,11 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
         }
     }, [requestedDate, setRequestedDate]));
 
-    // Scroll to position if we get a request
-    useEffect(() => {
-        const node = document.getElementById("moodLogList");
-        if (!node) return;
-        if (requestedDate.el && requestedDate.el[0] === "c") {
-            const id = "i" + requestedDate.el.slice(1);
-            const el = node.querySelector("#" + id);
-            if (el) {
-                node.scrollTo({
-                    top: el.offsetTop - node.offsetTop - 30,
-                    left: 0,
-                    behavior: "smooth"
-                })
-            }
-        }
-    }, [requestedDate]);
+    
 
     return (
         <>
-            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={true} />
+            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={true} requestedDate={requestedDate} />
         </>
     )
 }

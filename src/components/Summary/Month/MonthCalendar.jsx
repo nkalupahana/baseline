@@ -6,7 +6,7 @@ import { useCallback } from "react";
 
 function createCalendarCard(date, requestedDate, data=[]) {
     const points = createPoints(data);
-    const locator = "c-locator-" + date.toISODate();
+    const locator = "g-locator-" + date.toISODate();
     let dayHighlight = "";
     const today = DateTime.local();
     if (date.toISODate() === today.toISODate()) {
@@ -55,14 +55,14 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
 
             setRequestedDate({
                 ...requestedDate,
-                el: "c" + element.id.slice(1),
+                el: "g" + element.id.slice(1),
                 timeout: getTime() + 5
             });
         };
 
         if (requestedDate.el && requestedDate.el[0] === "i" && !requestedDate.calendar) {
-            const el = document.querySelector("#" + requestedDate.el.replace("i", "c"));
-            if (el && (node.getBoundingClientRect().y > el.getBoundingClientRect().y || node.getBoundingClientRect().bottom < el.getBoundingClientRect().bottom )) {
+            const el = document.querySelector("#" + requestedDate.el.replace("i", "g"));
+            if (el && (node.getBoundingClientRect().y > el.getBoundingClientRect().y || node.getBoundingClientRect().bottom < el.getBoundingClientRect().bottom)) {
                 node.scrollTo({
                     top: el.offsetTop - node.offsetTop - 30,
                     left: 0,
