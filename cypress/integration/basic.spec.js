@@ -60,25 +60,29 @@ describe("Mobile Flow", () => {
     })
 
     it("Verify Mood Log on Summary", () => {
-        cy.contains("test log").should("exist")
+        cy.contains("Hello world!").should("exist")
         cy.contains("no more logs").should("exist")
     })
 
     it("Log a Few More Times", () => {
         for (let i = 0; i < 5; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
+            cy.contains("What's happening").should("exist")
             cy.wait(500)
-            cy.get(".native-textarea").should("exist").type(`Test ${i}`)
+            cy.get(".native-textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
-            cy.wait(500)
             cy.contains("Done!").should("exist").click()
-            cy.wait(500)
             cy.url().should("include", "/summary")
+            cy.contains(`Test ${i}`).should("exist")
         }
     })
 
     it("Scroll Through Log List", () => {
-        cy.wait(1000);
+        // Load check
+        cy.get("#moodLogList").should("exist")
+        cy.contains("Hello world!").should("exist")
+        cy.get(".week-mood-graph").should("exist")
+        // Test scroll
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
         cy.get(".log-list-expand").should("have.css", "height").and("match", /^0px$/)
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
@@ -119,7 +123,7 @@ describe("Desktop Flow", () => {
     })
 
     it("Verify Mood Log on Summary", () => {
-        cy.contains("test desktop log").should("exist")
+        cy.contains("Hello desktop world!").should("exist")
         cy.contains("no more logs").should("exist")
         cy.get(".calendar-card").first().within(el => {
             el.click()
