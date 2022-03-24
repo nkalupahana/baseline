@@ -1,3 +1,15 @@
+.calendar-date-strip {
+    grid-area: dates;
+    max-width: 900px;
+    display: flex;
+    padding: 0 15px;
+}
+
+.calendar-date-strip > span {
+    text-align: center;
+    width: calc(100% / 7);
+}
+
 .month-calendar {
     grid-area: calendar;
     display: flex;

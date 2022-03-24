@@ -143,7 +143,18 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
         rows.push(<div key={row[0].key + "-row"} className="calendar-row">{row}</div>);
     });
 
-    return <div ref={calendar} className="month-calendar">{rows}</div>
+    return <>
+        <div className="calendar-date-strip">
+            <span>Sunday</span>
+            <span>Monday</span>
+            <span>Tuesday</span>
+            <span>Wednesday</span>
+            <span>Thursday</span>
+            <span>Friday</span>
+            <span>Saturday</span>
+        </div>
+        <div ref={calendar} className="month-calendar">{rows}</div>
+    </>
 }
 
 export default MonthCalendar;
