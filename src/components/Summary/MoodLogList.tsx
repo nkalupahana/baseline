@@ -88,8 +88,6 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
     useEffect(() => {
         const node = document.getElementById("moodLogList");
         if (!node) return;
-        console.log("test");
-        console.log(requestedDate);
         if (requestedDate && requestedDate.el && requestedDate.el[0] === "g") {
             const id = "i" + requestedDate.el.slice(1);
             const el = node.querySelector("#" + id) as HTMLElement;

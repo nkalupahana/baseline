@@ -62,8 +62,8 @@ describe("Mobile Flow", () => {
     it("Verify Mood Log on Summary", () => {
         cy.contains("Hello world!").should("exist")
         cy.contains("no more logs").should("exist")
-        cy.get('.moodLogList').scrollTo('bottom')
-        cy.get('.moodLogList').scrollTo('top')
+        cy.get('#moodLogList').scrollTo('bottom')
+        cy.get('#moodLogList').scrollTo('top')
     })
 })
 
@@ -106,7 +106,7 @@ describe("Desktop Flow", () => {
             el.click()
             cy.get(".less-highlight-day").should("not.exist")
         })
-        cy.get('.moodLogList').scrollTo('top')
-        cy.get('.moodLogList').scrollTo('bottom')
+        cy.get('#moodLogList').scrollTo('top')
+        cy.get('#moodLogList').scrollTo('bottom')
     })
 })
