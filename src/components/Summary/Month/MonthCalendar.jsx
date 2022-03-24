@@ -43,7 +43,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
         if (!node) return;
         const clickListener = e => {
             let element = e.target;
-            while (element !== null && !element.id.includes("locator")) {
+            while (element && !element.id.includes("locator")) {
                 if (element.id.includes("mainContent")) {
                     return;
                 }
@@ -51,7 +51,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             }
 
             // No logs? Don't highlight.
-            if (element.childElementCount < 2) return;
+            if (!element || element.childElementCount < 2) return;
 
             setRequestedDate({
                 ...requestedDate,
