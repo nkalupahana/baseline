@@ -22,7 +22,7 @@ const MonthSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
     });
 
     return (
-        <div className="month-summary-grid">
+        <div className="month-summary-grid" style={(logs && logs.length > 0) ? {} : {"height": "100%"}}>
             <div style={{ gridArea: "heading", paddingBottom: "30px" }} className="center-summary">
                 <div className="title">Here's how your month has been looking.</div>
             </div>

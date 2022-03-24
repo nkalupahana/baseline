@@ -30,6 +30,7 @@
     overflow-y: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    height: 200px;
 }
 
 .graph-arrow {
