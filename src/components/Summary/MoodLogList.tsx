@@ -8,7 +8,11 @@ interface Props {
     logs: Log[],
     container: Ref<HTMLDivElement>,
     setMenuDisabled: (disabled: boolean) => void
-    reverse: boolean
+    reverse: boolean,
+    requestedDate: {
+        el: string,
+        [key: string]: any
+    }
 }
 
 const createLocator = (t: DateTime) => {
@@ -17,7 +21,7 @@ const createLocator = (t: DateTime) => {
         </p>)
 }
 
-const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
+const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate } : Props) => {
     let els = [];
     let top: Log | undefined = undefined;
     const zone = DateTime.now().zone.name;
@@ -76,10 +80,28 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
         if (reverse) {
             const list = document.getElementById("moodLogList")!;
             const ps = list.querySelectorAll("p");
-            console.log(ps[ps.length - 2]);
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
         }
     }, [reverse]);
+
+    // Scroll to position if we get a request
+    useEffect(() => {
+        const node = document.getElementById("moodLogList");
+        if (!node) return;
+        console.log("test");
+        console.log(requestedDate);
+        if (requestedDate && requestedDate.el && requestedDate.el[0] === "g") {
+            const id = "i" + requestedDate.el.slice(1);
+            const el = node.querySelector("#" + id) as HTMLElement;
+            if (el) {
+                node.scrollTo({
+                    top: el.offsetTop - node.offsetTop - 30,
+                    left: 0,
+                    behavior: "smooth"
+                })
+            }
+        }
+    }, [requestedDate]);
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list">
