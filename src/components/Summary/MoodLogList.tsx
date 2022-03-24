@@ -79,7 +79,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
             console.log(ps[ps.length - 2]);
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
         }
-    }, []);
+    }, [reverse]);
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list">

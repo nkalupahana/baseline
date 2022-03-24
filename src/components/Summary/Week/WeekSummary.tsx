@@ -5,11 +5,10 @@ import { useState } from "react";
 
 interface Props {
     setMenuDisabled: (disabled: boolean) => void;
-    gettingData: boolean;
     logs: Log[];
 }
 
-const WeekSummary = ({ gettingData, setMenuDisabled, logs } : Props) => {
+const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
         timeout: undefined,
