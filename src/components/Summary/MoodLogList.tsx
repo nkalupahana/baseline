@@ -20,13 +20,15 @@ const createLocator = (t: DateTime) => {
 const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     let els = [];
     let top: Log | undefined = undefined;
-    const now = DateTime.now();
-    const zone = now.zone.name;
-    let nowLogs = 0;
+    const zone = DateTime.now().zone.name;
+
+    let firstLogs = 0;
+    const first = getDateFromLog(logs[0]);
+    
     let t;
     let today = [];
     for (let log of logs) {
-        if (log.day === now.day && log.month === now.month && log.year === now.year) ++nowLogs;
+        if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
             if (!reverse) today.reverse();
             els.push(...today);
@@ -65,16 +67,18 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse } : Props) => {
     );
 
     if (reverse) {
-        els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * nowLogs + 250)}px)`}} key="spacer"></div>);
+        els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * firstLogs + 250)}px)`}} key="spacer"></div>);
     } else {
         els.unshift(<br key="begin" />)
     }
 
     useEffect(() => {
-        const list = document.getElementById("moodLogList")!;
-        const ps = list.querySelectorAll("p");
-        console.log(ps[ps.length - 2]);
-        list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
+        if (reverse) {
+            const list = document.getElementById("moodLogList")!;
+            const ps = list.querySelectorAll("p");
+            console.log(ps[ps.length - 2]);
+            list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
+        }
     }, []);
 
     return (
