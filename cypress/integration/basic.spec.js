@@ -36,14 +36,14 @@ describe("Mobile Flow", () => {
     it("Write Mood Log", () => {
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
-        cy.get(".native-textarea").type("Hello world!")
+        cy.get("textarea").type("Hello world!")
         cy.get('body').happoScreenshot()
         cy.contains("Continue").should("exist").click()
     })
 
     it("Finish Mood Log", () => {
         cy.get("svg").should("exist")
-        cy.get(".native-textarea").should("have.value", "Hello world!")
+        cy.get("textarea").should("have.value", "Hello world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
         cy.get('body').happoScreenshot()
 
