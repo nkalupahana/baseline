@@ -82,7 +82,7 @@ jobs:
     - name: Send to DeployGate
       env:
         token: ${{ secrets.DEPLOYGATE_TOKEN }}
-      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from Github Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" https://deploygate.com/api/users/nkalupahana/apps
+      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" https://deploygate.com/api/users/nkalupahana/apps
 
   ios:
     needs: test
@@ -103,6 +103,9 @@ jobs:
     - name: Deploy to TestFlight
       run: |
         brew install fastlane
+        cd ios/App/fastlane
+        echo "Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" > changelog.txt
+        cd ..
         fastlane beta
       env:
         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
