@@ -32,7 +32,9 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
     let t;
     let today = [];
     for (let log of logs) {
+        // Count number of first day logs, for bottom spacing for calendar
         if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
+        // If we've moved to the next day, push the day's log and add a locator
         if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
             if (!reverse) today.reverse();
             els.push(...today);
@@ -44,6 +46,8 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             top = log;
         }
 
+        // Append a zone to the log if it's not the same as the current zone,
+        // and add the log to the list of today's logs
         if (log.zone !== zone && t) {
             const addZone = t.setZone(log.zone).zone.offsetName(t.toMillis(), { format: "short" });
             if (!log.time.includes(addZone)) log.time += " " + addZone;
@@ -52,6 +56,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
         today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
     }
 
+    // Add final information based on whether the list should be reversed (different styles)
     if (!reverse) today.reverse();
     els.push(...today);
     if (reverse && top) {
@@ -59,9 +64,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
         els.push(createLocator(t));
     }
 
-    if (reverse) {
-        els.reverse();
-    }
+    if (reverse) els.reverse();
 
     els.push(
         <div className="bold text-center" key="end">
