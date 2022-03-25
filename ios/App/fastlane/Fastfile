@@ -21,6 +21,6 @@ platform :ios do
     setup_ci if ENV['CI']
     match(type: "appstore")
     build_app(workspace: "App.xcworkspace", scheme: "App")
-    upload_to_testflight
+    upload_to_testflight(api_key_path: "authkey.json")
   end
 end

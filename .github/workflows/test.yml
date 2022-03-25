@@ -106,8 +106,10 @@ jobs:
         cd ios/App/fastlane
         echo "Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" > changelog.txt
         cd ..
+        echo "$APP_STORE_CONNECT_KEY" > authkey.json
         fastlane beta
       env:
         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
