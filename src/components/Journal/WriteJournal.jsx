@@ -14,7 +14,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
     }, [setMoodRead, moodWrite]);
 
     useEffect(() => {
-        if (textarea.current) textarea.current.focus();
+        textarea.current?.focus();
     }, []);
 
     return (
