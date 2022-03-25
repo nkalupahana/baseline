@@ -97,6 +97,7 @@
     "@types/luxon": "^2.0.8",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "cypress": "^9.5.2",
+    "cypress-wait-until": "^1.7.2",
     "eslint-plugin-cypress": "^2.12.1",
     "faker": "5.5.3",
     "happo-cypress": "^3.0.1",
