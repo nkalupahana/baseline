@@ -68,8 +68,8 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 5; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.wait(500)
-            cy.get(".native-textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
+            cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
+            cy.get("textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
             cy.contains("Done!").should("exist").click()
             cy.url().should("include", "/summary")
