@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { createPoints, getDateFromLog, getTime } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET } from "../../../helpers";
 import { chunk } from "lodash";
 import useCallbackRef from "../../../useCallbackRef";
 import { useCallback } from "react";
@@ -75,13 +75,13 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             const el = document.querySelector("#" + requestedDate.el.replace("i", "g"));
             if (el && (node.getBoundingClientRect().y > el.getBoundingClientRect().y || node.getBoundingClientRect().bottom < el.getBoundingClientRect().bottom)) {
                 node.scrollTo({
-                    top: el.offsetTop - node.offsetTop - 30,
+                    top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
                     behavior: "smooth"
                 });
                 setRequestedDate({
                     ...requestedDate,
-                    calendar: el.offsetTop - node.offsetTop - 30,
+                    calendar: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     timeout: getTime() + 1
                 });
             }

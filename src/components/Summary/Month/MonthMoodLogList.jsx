@@ -1,13 +1,9 @@
 import { useCallback } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { getTime } from "../../../helpers";
+import { getMoodLogListBound, getTime } from "../../../helpers";
 import MoodLogList from "../MoodLogList";
 
 const TRUST_BOUND = 15;
-
-function getBound(el, node) {
-    return node.offsetTop - el.getBoundingClientRect().y + 30;
-}
 
 const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDate }) => {
     const container = useCallbackRef(useCallback(node => {
@@ -20,7 +16,7 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
                 const id = "i" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
-                    const bound = getBound(el, node);
+                    const bound = getMoodLogListBound(el, node);
                     // If we have, remove it
                     // and set it to the trust region
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
@@ -39,7 +35,7 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
                 if (requestedDate.list.trustRegion) {
                     // If we're in the trust region, it might not be a user scroll,
                     // so let's check for that
-                    const bound = getBound(requestedDate.list.trustRegion, node);
+                    const bound = getMoodLogListBound(requestedDate.list.trustRegion, node);
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {

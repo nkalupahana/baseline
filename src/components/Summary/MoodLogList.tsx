@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Ref, useEffect } from "react";
 import { Log } from "../../db";
-import { getDateFromLog } from "../../helpers";
+import { getDateFromLog, LOCATOR_OFFSET } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 
 interface Props {
@@ -85,7 +85,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             const list = document.getElementById("moodLogList")!;
             const ps = list.querySelectorAll("p");
             // Get last locator (skips "no more logs" <p> at the end)
-            list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
+            list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
         }
     }, [reverse]);
 
@@ -98,7 +98,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             const el = node.querySelector("#" + id) as HTMLElement;
             if (el) {
                 node.scrollTo({
-                    top: el.offsetTop - node.offsetTop - 30,
+                    top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
                     behavior: "smooth"
                 })
