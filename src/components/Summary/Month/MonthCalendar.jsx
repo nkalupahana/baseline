@@ -41,6 +41,8 @@ function createCalendarCard(date, requestedDate, data=[]) {
 const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
     const calendar = useCallbackRef(useCallback(node => {
         if (!node) return;
+        // Listen for clicks on the calendar, and highlight
+        // and request scroll to date if there's data there
         const clickListener = e => {
             let element = e.target;
             while (element && !element.id.includes("locator")) {
@@ -60,7 +62,16 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             });
         };
 
-        if (requestedDate.el && requestedDate.el[0] === "i" && !requestedDate.calendar) {
+        // If a date is requested, scroll to it and highlight it
+        if (requestedDate.el && requestedDate.el[0] === "i" && (!requestedDate.calendar || requestedDate.timeout < getTime())) {
+            // Clear calendar if we've passed timeout
+            if (requestedDate.calendar) {
+                setRequestedDate({
+                    ...requestedDate,
+                    calendar: undefined
+                });
+            }
+
             const el = document.querySelector("#" + requestedDate.el.replace("i", "g"));
             if (el && (node.getBoundingClientRect().y > el.getBoundingClientRect().y || node.getBoundingClientRect().bottom < el.getBoundingClientRect().bottom)) {
                 node.scrollTo({
@@ -70,14 +81,18 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 });
                 setRequestedDate({
                     ...requestedDate,
-                    calendar: el.offsetTop - node.offsetTop - 30
+                    calendar: el.offsetTop - node.offsetTop - 30,
+                    timeout: getTime() + 1
                 });
             }
         }
 
+        // Computer-generated scroll event:
+        // If the calendar makes it to the requested location,
+        // clear it from the calendar state in requestedDate
         const scrollListener = () => {
             if (requestedDate.calendar) {
-                if (Math.abs(node.scrollTop - requestedDate.calendar) < 10) {
+                if ((Math.abs(node.scrollTop - requestedDate.calendar) < 10) || requestedDate.timeout < getTime()) {
                     setRequestedDate({
                         ...requestedDate,
                         calendar: undefined
