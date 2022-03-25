@@ -45,3 +45,9 @@ export function createPoints(data: Log[]) {
 
     return points;
 }
+
+export const LOCATOR_OFFSET = 30;
+
+export function getMoodLogListBound(el: HTMLElement, node: HTMLElement) {
+    return node.offsetTop - el.getBoundingClientRect().y + LOCATOR_OFFSET;
+}

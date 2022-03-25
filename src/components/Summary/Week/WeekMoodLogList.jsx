@@ -1,15 +1,11 @@
 import { useCallback, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { getTime } from "../../../helpers";
+import { getMoodLogListBound, getTime } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
 import { searchOutline } from "ionicons/icons";
 import MoodLogList from "../MoodLogList";
 
 const TRUST_BOUND = 15;
-
-function getBound(el, node) {
-    return node.offsetTop - el.getBoundingClientRect().y + 30;
-}
 
 const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDate }) => {
     const [showSearch, setShowSearch] = useState(true);
@@ -39,7 +35,7 @@ const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDat
                 const id = "i" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
-                    const bound = getBound(el, node);
+                    const bound = getMoodLogListBound(el, node);
                     // If we have, remove it
                     // and set it to the trust region
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
@@ -59,7 +55,7 @@ const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDat
                 if (requestedDate.list.trustRegion) {
                     // If we're in the trust region, it might not be a user scroll,
                     // so let's check for that
-                    const bound = getBound(requestedDate.list.trustRegion, node);
+                    const bound = getMoodLogListBound(requestedDate.list.trustRegion, node);
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
