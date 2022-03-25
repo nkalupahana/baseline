@@ -34,7 +34,7 @@ function createCalendarCard(date, requestedDate, data=[]) {
 
     return (<div key={locator} id={locator} className={"calendar-card" + monthHighlight}>
                 <div className={"calendar-card-date" + dayHighlight}>{ displayDate }</div>
-                {points}
+                { points }
             </div>);
 }
 
@@ -115,7 +115,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
     let i = 0;
     let current = getDateFromLog(logs[0]);
 
-    // Create cards from today to first entry
+    // Create cards from today to first entry (with some padding at the start)
     let now = DateTime.now().startOf("day").startOf("week").plus({ weeks: 1 }).minus({ days: 2 });
     while (!now.equals(current) && now > current) {
         els.push(createCalendarCard(now, requestedDate));
@@ -168,7 +168,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             <span>Friday</span>
             <span>Saturday</span>
         </div>
-        <div ref={calendar} className="month-calendar">{rows}</div>
+        <div ref={calendar} className="month-calendar">{ rows }</div>
     </>
 }
 

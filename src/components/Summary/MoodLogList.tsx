@@ -79,10 +79,12 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
         els.unshift(<br key="begin" />)
     }
 
+    // Scroll to last log item on load
     useEffect(() => {
         if (reverse) {
             const list = document.getElementById("moodLogList")!;
             const ps = list.querySelectorAll("p");
+            // Get last locator (skips "no more logs" <p> at the end)
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - 30;
         }
     }, [reverse]);
