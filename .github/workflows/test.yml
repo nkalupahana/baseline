@@ -82,5 +82,32 @@ jobs:
     - name: Send to DeployGate
       env:
         token: ${{ secrets.DEPLOYGATE_TOKEN }}
-      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from Github Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" https://deploygate.com/api/users/nkalupahana/apps
+      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" https://deploygate.com/api/users/nkalupahana/apps
 
+  ios:
+    needs: test
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: "16.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Build (Ionic)
+      run: |
+        npm install -g ionic
+        npm run build
+        ionic cap sync
+    - name: Deploy to TestFlight
+      run: |
+        brew install fastlane
+        cd ios/App
+        echo "$APP_STORE_CONNECT_KEY" > authkey.json
+        fastlane beta
+      env:
+        FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}

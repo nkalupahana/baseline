@@ -1,0 +1,8 @@
+app_identifier("la.nisa.moody") # The bundle identifier of your app
+apple_id("avishkank@icloud.com") # Your Apple email address
+
+itc_team_id("119038746") # App Store Connect Team ID
+team_id("FC733RM99L") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

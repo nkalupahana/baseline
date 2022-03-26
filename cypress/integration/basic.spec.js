@@ -125,11 +125,11 @@ describe("Desktop Flow", () => {
     it("Verify Mood Log on Summary", () => {
         cy.contains("Hello desktop world!").should("exist")
         cy.contains("no more logs").should("exist")
-        cy.get(".calendar-card").first().within(el => {
+        cy.get(".calendar-card").last().within(el => {
             el.click()
             cy.get(".less-highlight-day").should("not.exist")
         })
-        cy.get(".month-calendar").contains(new Date().getDate()).last().within(el => {
+        cy.get(".month-calendar").contains(new Date().getDate()).first().within(el => {
             el.click()
         })
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
