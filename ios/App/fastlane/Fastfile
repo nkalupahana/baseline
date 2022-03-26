@@ -24,6 +24,6 @@ platform :ios do
       build_number: latest_testflight_build_number(api_key_path: "authkey.json") + 1
     })
     build_app(workspace: "App.xcworkspace", scheme: "App")
-    upload_to_testflight(api_key_path: "authkey.json")
+    upload_to_testflight(api_key_path: "authkey.json", skip_waiting_for_build_processing: true)
   end
 end
