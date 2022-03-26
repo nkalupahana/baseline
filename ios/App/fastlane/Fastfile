@@ -20,6 +20,10 @@ platform :ios do
   lane :beta do
     setup_ci if ENV['CI']
     match(type: "appstore")
+    increment_build_number({
+      api_key_path: "authkey.json",
+      build_number: latest_testflight_build_number + 1
+    })
     build_app(workspace: "App.xcworkspace", scheme: "App")
     upload_to_testflight(api_key_path: "authkey.json")
   end
