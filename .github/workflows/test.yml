@@ -103,9 +103,7 @@ jobs:
     - name: Deploy to TestFlight
       run: |
         brew install fastlane
-        cd ios/App/fastlane
-        echo "Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" > changelog.txt
-        cd ..
+        cd ios/App
         echo "$APP_STORE_CONNECT_KEY" > authkey.json
         fastlane beta
       env:

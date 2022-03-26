@@ -25,6 +25,10 @@ platform :ios do
     })
     build_app(workspace: "App.xcworkspace", scheme: "App")
     set_changelog
-    upload_to_testflight(api_key_path: "authkey.json", skip_waiting_for_build_processing: true)
+    upload_to_testflight(
+      api_key_path: "authkey.json", 
+      skip_waiting_for_build_processing: true, 
+      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}"
+    )
   end
 end
