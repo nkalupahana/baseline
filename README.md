@@ -3,6 +3,7 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/nkalupahana/moody.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/nkalupahana/moody/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/nkalupahana/moody/badge/main)](https://www.codefactor.io/repository/github/nkalupahana/moody/overview/main)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody?ref=badge_small)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nkalupahana_moody&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nkalupahana_moody)
 
 A better, universal, journaling and mood tracking platform.
 
