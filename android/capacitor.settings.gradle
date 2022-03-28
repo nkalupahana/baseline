@@ -14,9 +14,6 @@ project(':capacitor-haptics').projectDir = new File('../node_modules/@capacitor/
 include ':capacitor-keyboard'
 project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor/keyboard/android')
 
-include ':capacitor-push-notifications'
-project(':capacitor-push-notifications').projectDir = new File('../node_modules/@capacitor/push-notifications/android')
-
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
@@ -25,3 +22,6 @@ project(':moody-app-capacitor-firebase-authentication').projectDir = new File('.
 
 include ':moody-app-capacitor-local-notifications'
 project(':moody-app-capacitor-local-notifications').projectDir = new File('../node_modules/@moody-app/capacitor-local-notifications/android')
+
+include ':moody-app-capacitor-push-notifications'
+project(':moody-app-capacitor-push-notifications').projectDir = new File('../node_modules/@moody-app/capacitor-push-notifications/android')

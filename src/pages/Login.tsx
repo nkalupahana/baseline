@@ -7,7 +7,7 @@ import ldb from '../db';
 import { FirebaseAuthentication } from '@moody-app/capacitor-firebase-authentication';
 import { Capacitor } from "@capacitor/core";
 import { FCM } from "@capacitor-community/fcm";
-import { PushNotifications } from "@capacitor/push-notifications";
+import { PushNotifications } from "@moody-app/capacitor-push-notifications";
 
 const Login = () => {
     useEffect(() => {

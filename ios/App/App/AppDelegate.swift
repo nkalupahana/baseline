@@ -80,7 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // If this isn't a background message to clean up old notifications,
         // stop processing
-        if !(userInfo["cleanUp"] is Int) {
+        if !(userInfo["cleanUp"] is String) {
             completionHandler(UIBackgroundFetchResult.newData)
             return
         }

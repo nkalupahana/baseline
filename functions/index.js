@@ -322,9 +322,11 @@ exports.sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZone("
             payload: {
                 aps: {
                     contentAvailable: true,
-                },
-                cleanUp: true,
+                }
             },
+        },
+        data: {
+            cleanUp: "true"
         }
     });
 });
