@@ -314,3 +314,17 @@ exports.cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsub.sch
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 });
+
+exports.sendCleanUpMessage = functions.pubsub.schedule('0 0 * * SUN').timeZone('America/Chicago').onRun(async _ => {
+    await admin.messaging().send({
+        topic: "all",
+        apns: {
+            payload: {
+                aps: {
+                    contentAvailable: true,
+                },
+                cleanUp: true,
+            },
+        }
+    });
+});

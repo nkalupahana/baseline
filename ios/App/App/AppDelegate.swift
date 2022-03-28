@@ -48,14 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // but if you want the App API to support tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
-    
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-      NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
-    }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-      NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
-    }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         // Called when the app was launched with an activity, including Universal Links.
@@ -74,5 +66,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationCenter.default.post(name: .capacitorStatusBarTapped, object: nil)
         }
     }
+    
+    // Push Notification handlers
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+      NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
+    }
 
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+      NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        // If this isn't a background message to clean up old notifications,
+        // stop processing
+        if !(userInfo["cleanUp"] is Int) {
+            completionHandler(UIBackgroundFetchResult.newData)
+            return
+        }
+        
+        UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+            // Find the latest notification (only one we want to preserve)
+            var latestNotification: Optional<UNNotification> = nil;
+            var identifiers: [String] = []
+            for notification in notifications {
+                if (latestNotification == nil || notification.date > latestNotification!.date) {
+                    latestNotification = notification;
+                }
+                identifiers.append(notification.request.identifier)
+            }
+            
+            // Remove the identifier of the latest notification from the list
+            identifiers.removeAll { id in
+                return id == latestNotification?.request.identifier
+            }
+            
+            // Remove all remaining notifications, and complete
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: identifiers)
+            completionHandler(UIBackgroundFetchResult.newData)
+        }
+    }
 }
