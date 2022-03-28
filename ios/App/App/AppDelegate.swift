@@ -11,6 +11,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        let activity = NSUserActivity(activityType: "la.nisa.moody.using-app")
+        activity.webpageURL = URL(string: "https://moody.nisa.la")
+        activity.isEligibleForHandoff = true
+        activity.title = "Using moody"
+        self.userActivity = activity
+        self.userActivity?.becomeCurrent()
+        
         return true
     }
 
