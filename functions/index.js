@@ -271,7 +271,7 @@ exports.survey = functions.https.onRequest(async (req, res) => {
     res.send(200);
 });
 
-exports.cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsub.schedule('0 0 * * SUN').timeZone('America/Chicago').onRun(async _ => {
+exports.cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsub.schedule("0 0 * * SUN").timeZone("America/Chicago").onRun(async _ => {
     let promises = [];
     let usersToDelete = [];
 
@@ -315,7 +315,7 @@ exports.cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsub.sch
     }
 });
 
-exports.sendCleanUpMessage = functions.pubsub.schedule('0 0 * * SUN').timeZone('America/Chicago').onRun(async _ => {
+exports.sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZone("America/Chicago").onRun(async _ => {
     await admin.messaging().send({
         topic: "all",
         apns: {
