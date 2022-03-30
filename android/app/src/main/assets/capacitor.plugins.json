@@ -1,5 +1,9 @@
 [
 	{
+		"pkg": "@capacitor-community/fcm",
+		"classpath": "com.getcapacitor.community.fcm.FCMPlugin"
+	},
+	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
@@ -22,5 +26,9 @@
 	{
 		"pkg": "@moody-app/capacitor-local-notifications",
 		"classpath": "com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin"
+	},
+	{
+		"pkg": "@moody-app/capacitor-push-notifications",
+		"classpath": "com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin"
 	}
 ]

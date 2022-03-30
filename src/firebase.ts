@@ -8,6 +8,7 @@ import { getStorage } from '@firebase/storage';
 import { getDatabase } from 'firebase/database';
 import { LocalNotifications } from '@moody-app/capacitor-local-notifications';
 import { FirebaseAuthentication } from '@moody-app/capacitor-firebase-authentication';
+import { FCM } from '@capacitor-community/fcm';
 
 /*
 FIREBASE DB DEBUG
@@ -52,6 +53,8 @@ export const signOutAndCleanUp = () => {
             });
         }
     });
+    // Remove FCM topic subscription
+    if (Capacitor.getPlatform() !== "web") FCM.unsubscribeFrom({ topic: "all" });
     // Sign out of Firebase
     FirebaseAuthentication.signOut();
     signOut(auth);

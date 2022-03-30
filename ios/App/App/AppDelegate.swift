@@ -66,5 +66,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationCenter.default.post(name: .capacitorStatusBarTapped, object: nil)
         }
     }
+    
+    // Push Notification handlers
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+      NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
+    }
 
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+      NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        // If this isn't a background message to clean up old notifications,
+        // stop processing
+        if !(userInfo["cleanUp"] is String) {
+            completionHandler(UIBackgroundFetchResult.newData)
+            return
+        }
+        
+        UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+            // Find the latest local notification (only one we want to preserve)
+            var latestNotification: Optional<UNNotification> = nil;
+            var identifiers: [String] = []
+            for notification in notifications {
+                if notification.request.content.title != "What's happening?" {
+                    continue;
+                }
+                
+                if (latestNotification == nil || notification.date > latestNotification!.date) {
+                    latestNotification = notification;
+                }
+                identifiers.append(notification.request.identifier)
+            }
+            
+            // Remove the identifier of the latest notification from the list
+            identifiers.removeAll { id in
+                return id == latestNotification?.request.identifier
+            }
+            
+            // Remove all remaining notifications, and complete
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: identifiers)
+            completionHandler(UIBackgroundFetchResult.newData)
+        }
+    }
 }
