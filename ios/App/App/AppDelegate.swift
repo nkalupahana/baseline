@@ -86,10 +86,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
-            // Find the latest notification (only one we want to preserve)
+            // Find the latest local notification (only one we want to preserve)
             var latestNotification: Optional<UNNotification> = nil;
             var identifiers: [String] = []
             for notification in notifications {
+                if notification.request.content.title != "What's happening?" {
+                    continue;
+                }
+                
                 if (latestNotification == nil || notification.date > latestNotification!.date) {
                     latestNotification = notification;
                 }
