@@ -136,18 +136,19 @@
 .bottom-bar {
     z-index: 1000;
     position: absolute;
-    left: 22.5%;
-    width: 55%;
+    left: 17.5%;
+    width: 65%;
     background-color: lightgray;
     border-radius: 10px 10px 0 0;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 800px) {
     .bottom-bar {
         left: 2.5%;
         width: 95%;
     }
 }
+
 
 .finish-button {
     width: 97%;
