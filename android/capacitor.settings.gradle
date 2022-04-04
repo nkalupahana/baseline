@@ -5,6 +5,9 @@ project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/
 include ':capacitor-community-fcm'
 project(':capacitor-community-fcm').projectDir = new File('../node_modules/@capacitor-community/fcm/android')
 
+include ':capacitor-firebase-authentication'
+project(':capacitor-firebase-authentication').projectDir = new File('../node_modules/@capacitor-firebase/authentication/android')
+
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/@capacitor/app/android')
 
@@ -16,9 +19,6 @@ project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
-
-include ':moody-app-capacitor-firebase-authentication'
-project(':moody-app-capacitor-firebase-authentication').projectDir = new File('../node_modules/@moody-app/capacitor-firebase-authentication/android')
 
 include ':moody-app-capacitor-local-notifications'
 project(':moody-app-capacitor-local-notifications').projectDir = new File('../node_modules/@moody-app/capacitor-local-notifications/android')
