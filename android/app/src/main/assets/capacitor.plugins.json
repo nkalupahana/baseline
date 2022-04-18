@@ -4,6 +4,10 @@
 		"classpath": "com.getcapacitor.community.fcm.FCMPlugin"
 	},
 	{
+		"pkg": "@capacitor-firebase/authentication",
+		"classpath": "dev.robingenz.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin"
+	},
+	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
@@ -18,10 +22,6 @@
 	{
 		"pkg": "@capacitor/status-bar",
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
-	},
-	{
-		"pkg": "@moody-app/capacitor-firebase-authentication",
-		"classpath": "dev.robingenz.capacitorjs.plugins.firebase.auth.FirebaseAuthenticationPlugin"
 	},
 	{
 		"pkg": "@moody-app/capacitor-local-notifications",

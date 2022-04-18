@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import "./Container.css";
 import { useEffect } from "react";
 import ldb from '../db';
-import { FirebaseAuthentication } from '@moody-app/capacitor-firebase-authentication';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { Capacitor } from "@capacitor/core";
 import { FCM } from "@capacitor-community/fcm";
 import { PushNotifications } from "@moody-app/capacitor-push-notifications";
