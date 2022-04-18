@@ -148,7 +148,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
     }
 
     // Create empty cards for final week
-    while (current.weekday !== 7) {
+    while (current.weekday !== 1) {
         current = current.minus({ days: 1 });
         els.push(createCalendarCard(current, requestedDate));
     }
