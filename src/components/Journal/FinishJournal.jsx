@@ -224,11 +224,12 @@ const FinishJournal = props => {
                         <p className="text-center">Trevor Line for LGBTQ+ Youth: <br /><a href="tel:1-866-488-7386" target="_blank" rel="noreferrer">Call</a> or <a href="sms:678678" target="_blank" rel="noreferrer">Text</a>, or <a href="https://trevorproject.secure.force.com/apex/TrevorChatPreChatForm" target="_blank" rel="noreferrer">Online Chat</a></p>
                         <p className="text-center"><a href="https://www.apa.org/topics/crisis-hotlines" target="_blank" rel="noreferrer">Other Specialized Hotlines (drugs/assault/abuse/etc.)</a></p>
                         <p className="text-center">We also can't recommend therapy enough as a way to process your feelings and find ways to solve problems in your life. If you have health insurance, you can likely get therapy for cheap. 
-                            Check with your insurance provider, and <a href="https://www.apa.org/topics/crisis-hotlines" target="_blank" rel="noreferrer">search for specialists here!</a> If you don't have insurance or aren't sure how to find a covered therapist (or if you need help finding any other resources!), email us at <a href="mailto:findhelp@domain" target="_blank" rel="noreferrer">findhelp@domain</a> -- we'd be happy to help.
+                            Check with your insurance provider, and <a href="https://www.apa.org/topics/crisis-hotlines" target="_blank" rel="noreferrer">search for specialists here!</a> If you don't have insurance or aren't sure how to find a covered therapist (or if you need help finding any other resources!), 
+                            email us at <a href="mailto:findhelp@domain" target="_blank" rel="noreferrer">findhelp@domain</a> -- we'd be happy to help.
                         </p>
                         <p className="text-center">If you're struggling with money and it's negatively impacting your mental health, you can apply for financial assistance from the moody Gap Fund.
-                            The gap fund exists to help you "fill in the gaps" in your financial situation, and can be used for pretty much anything, from funding for therapy to transportation to basic necessities like food and shelter.
-                            <a onClick={() => {history.push("/gap")}}> You can apply now by clicking here, or any time from the menu on the summary page.</a>
+                            The gap fund exists to help you "fill in the gaps" in your financial situation, and can be used for pretty much anything, from funding for therapy to transportation to basic necessities like food and shelter.&nbsp;
+                            <span style={{color: "var(--ion-color-primary, #3880ff)"}} onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or any time from the menu on the summary page.</span>
                         </p>
                         { !submitted && props.moodWrite === -5 && <div onClick={submit} className="finish-button">
                             { !submitting && "Save Mood Log" }
