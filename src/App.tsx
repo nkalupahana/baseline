@@ -38,6 +38,7 @@ import "./lifecycle";
 import smoothscroll from "smoothscroll-polyfill";
 import { Capacitor } from "@capacitor/core";
 import ldb from "./db";
+import GapFund from "./pages/GapFund";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -66,6 +67,7 @@ const App = () => {
                     <Route path="/journal" component={Journal} />
                     <Route path="/summary" component={Summary} />
                     <Route path="/notifications" component={Notifications} />
+                    <Route path="/gap" component={GapFund} />
                     <Route path="/review" component={WeekInReview} />
                     <Redirect to="/journal" />
                 </Switch>
