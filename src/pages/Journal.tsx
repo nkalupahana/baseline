@@ -23,7 +23,7 @@ const Journal = () => {
                     <Route exact path="/journal">
                         <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
                     </Route>
-                    <Route exact path="/journal/finish">
+                    <Route path="/journal/finish">
                         <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
                     </Route>
                 </Switch>

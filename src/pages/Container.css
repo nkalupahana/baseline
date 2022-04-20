@@ -17,6 +17,12 @@
     }
 }
 
+@media only screen and (min-width: 800px) {
+    .container-desktop {
+        width: 75%;
+    }
+}
+
 .column-flex {
     display: flex;
     flex-direction: column;

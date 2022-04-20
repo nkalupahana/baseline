@@ -11,12 +11,12 @@ import { Capacitor } from "@capacitor/core";
 import history from "../../history";
 import { attach, trashOutline } from "ionicons/icons";
 import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
+import { Route, Switch } from "react-router";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [neg5, setNeg5] = useState(false);
     const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 148;
     const [bottomBarStyle, setBottomBarStyle] = useState({
@@ -33,14 +33,14 @@ const FinishJournal = props => {
     };
 
     useEffect(() => {
-        if (submitted && !neg5) {
+        if (submitted && !history.location.pathname.includes("/neg")) {
             history.push("/summary");
         }
-    }, [submitted, neg5]);
+    }, [submitted]);
 
     const submit = async () => {
         if (submitting) return;
-        if (props.moodWrite === -5) setNeg5(true);
+        if (props.moodWrite === -5) history.push("/journal/finish/neg");
         if (loading) {
             toast("No internet connectivity -- please try again.");
             return;
@@ -142,89 +142,93 @@ const FinishJournal = props => {
     return (
 
         <div className="center-journal">
-            { !neg5 && <>
-                <div className="title">
-                    Let's summarize.
-                </div>
-                <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
-                <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
-                <br />
-                <span className="bold">
-                    <CircularSlider
-                        width={190}
-                        label="nice find!"
-                        labelFontSize={0}
-                        valueFontSize="4rem"
-                        labelColor="#020856"
-                        knobColor="#020856"
-                        progressColorFrom="#1c88e3"
-                        progressColorTo="#1975e6"
-                        progressSize={20}
-                        trackColor="#eeeeee"
-                        trackSize={20}
-                        min={-5}
-                        max={5}
-                        direction={-1}
-                        dataIndex={props.moodRead + 5}
-                        animateKnob={false}
-                        knobDraggable={!submitting}
-                        verticalOffset="0.2em"
-                        onChange={ v => props.setMoodWrite(v) }
-                    />
-                </span>
-
-                <br /><br />
-
-                <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
-                <div className="container">
-                    <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
-                        <IonSegmentButton value="below">
-                            <IonLabel>Below Average</IonLabel>
-                        </IonSegmentButton>
-                        <IonSegmentButton value="average">
-                            <IonLabel>Average</IonLabel>
-                        </IonSegmentButton>
-                        <IonSegmentButton value="above">
-                            <IonLabel>Above Average</IonLabel>
-                        </IonSegmentButton>
-                    </IonSegment>
-                </div>
-                <br /><br />
-                { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
-                { props.files.length < 3 && 
-                    <>
-                        <label htmlFor="files">
-                            <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
-                        </label>
-                        <input disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
-                    </> 
-                }
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-                <div style={bottomBarStyle} className="bottom-bar">
-                    <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
-                    <div onClick={submit} className="finish-button">
-                        { !submitting && "Done!" }
-                        { submitting && <IonSpinner className="loader" name="crescent" /> }
+            <Switch>
+                <Route exact path="/journal/finish">
+                    <div className="title">
+                        Let's summarize.
                     </div>
-                </div>
-            </> }
-            { neg5 && <>
-                <div className="title">
-                    Hi there.
-                </div>
-                <p className="text-center">We know things probably seem pretty bad right now. We wanted to take a minute to offer you some hope and support. If you can, 
-                    take a minute to breathe and reflect. We're here for you.</p>
-                <p className="text-center">When you're going through hard times, it's important to talk to someone about how you feel. Mood logging is already a great start. If you have 
-                    someone in your life that you trust to talk about what you're going through, reach out to them. We know it's hard, but it's almost always worth it.
-                    If what you're going through involves those people, you can also talk with someone on a site like <a href="https://7cups.com">7 Cups</a>, 
-                    a free and confidential emotional support community with community chat and trained listeners.</p>
-                <p className="text-center">If you're currently in crisis, please try to seek support as soon as you can. Here are some resources:</p>
-                <p className="text-center">National Suicide Prevention Lifeline: <br /><a href="tel:988">Call/Text 988</a>, or use the <a href="https://suicidepreventionlifeline.org/chat/">Online Chat</a></p>
-                { !submitted && <div onClick={submit} className="finish-button">
-                    { !submitting && "Save Mood Log" }
-                    { submitting && <IonSpinner className="loader" name="crescent" /> }
-                </div> }
-            </> }
+                    <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
+                    <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
+                    <br />
+                    <span className="bold">
+                        <CircularSlider
+                            width={190}
+                            label="nice find!"
+                            labelFontSize={0}
+                            valueFontSize="4rem"
+                            labelColor="#020856"
+                            knobColor="#020856"
+                            progressColorFrom="#1c88e3"
+                            progressColorTo="#1975e6"
+                            progressSize={20}
+                            trackColor="#eeeeee"
+                            trackSize={20}
+                            min={-5}
+                            max={5}
+                            direction={-1}
+                            dataIndex={props.moodRead + 5}
+                            animateKnob={false}
+                            knobDraggable={!submitting}
+                            verticalOffset="0.2em"
+                            onChange={ v => props.setMoodWrite(v) }
+                        />
+                    </span>
+
+                    <br /><br />
+
+                    <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
+                    <div className="container">
+                        <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
+                            <IonSegmentButton value="below">
+                                <IonLabel>Below Average</IonLabel>
+                            </IonSegmentButton>
+                            <IonSegmentButton value="average">
+                                <IonLabel>Average</IonLabel>
+                            </IonSegmentButton>
+                            <IonSegmentButton value="above">
+                                <IonLabel>Above Average</IonLabel>
+                            </IonSegmentButton>
+                        </IonSegment>
+                    </div>
+                    <br /><br />
+                    { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
+                    { props.files.length < 3 && 
+                        <>
+                            <label htmlFor="files">
+                                <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
+                            </label>
+                            <input disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
+                        </> 
+                    }
+                    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                    <div style={bottomBarStyle} className="bottom-bar">
+                        <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
+                        <div onClick={submit} className="finish-button">
+                            { !submitting && "Done!" }
+                            { submitting && <IonSpinner className="loader" name="crescent" /> }
+                        </div>
+                    </div>
+                </Route>
+                <Route exact path="/journal/finish/neg">
+                    <div className="container-desktop">
+                        <div className="title">
+                            Hi there.
+                        </div>
+                        <p className="text-center">We know things probably seem pretty bad right now. We wanted to take a minute to offer you some hope and support. If you can, 
+                            take a minute to breathe and reflect. We're here for you.</p>
+                        <p className="text-center">When you're going through hard times, it's important to talk to someone about how you feel. Mood logging is already a great start. If you have 
+                            someone in your life that you trust to talk about what you're going through, reach out to them. We know it's hard, but it's almost always worth it.
+                            If what you're going through involves those people, you can also talk with someone on a site like <a target="_blank" href="https://7cups.com">7 Cups</a>, 
+                            a free and confidential emotional support community with community chat and trained listeners.</p>
+                        <p className="text-center">If you're currently in crisis, please try to seek support as soon as you can. Here are some resources:</p>
+                        <p className="text-center">National Suicide Prevention Lifeline: <br /><a href="tel:988" target="_blank">Call/Text 988</a>, or use the <a target="_blank" href="https://suicidepreventionlifeline.org/chat/">Online Chat</a></p>
+                        { !submitted && <div onClick={submit} className="finish-button">
+                            { !submitting && "Save Mood Log" }
+                            { submitting && <IonSpinner className="loader" name="crescent" /> }
+                        </div> }
+                    </div>
+                </Route>
+            </Switch>
         </div>
     );
 };
