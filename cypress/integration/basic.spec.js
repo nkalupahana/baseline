@@ -88,6 +88,38 @@ describe("Mobile Flow", () => {
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
         cy.get(".log-list-expand").should("have.css", "height").and("not.match", /^0px$/)
     })
+
+    it("Test -5 Warning Behavior", () => {
+        cy.get(".fab-button-close-active").should("exist").click()
+        cy.contains("What's happening").should("exist")
+        cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
+        cy.get("textarea").should("exist").focus().type(`-5`).should("have.value", `-5`)
+        cy.contains("Continue").should("exist").click()
+        cy.get("span.bold > div > div:first")
+            .trigger('mousedown', { which: 1 })
+            .trigger('mousemove', { clientX: 100, clientY: 0, pageX: 100, pageY: 0, screenX: 100, screenY: 0 })
+            .trigger('mouseup', { force: true })
+
+        cy.contains("Done!").should("exist").click()
+
+        // -5 time
+        cy.url().should("include", "/neg")
+        cy.get(".loader").should("exist")
+        cy.contains("crisis").should("exist")
+        cy.contains("apply now").should("exist").click()
+
+        // Gap fund page
+        cy.url().should("include", "/gap")
+        cy.contains("Gap Fund").should("exist")
+
+        // Back to summary
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/neg")
+        cy.contains("crisis").should("exist")
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+        cy.contains("week").should("exist")
+    })
 })
 
 describe("Desktop Flow", () => {
