@@ -229,7 +229,7 @@ const FinishJournal = props => {
                         </p>
                         <p className="text-center">If you're struggling with money and it's negatively impacting your mental health, you can apply for financial assistance from the moody Gap Fund.
                             The gap fund exists to help you "fill in the gaps" in your financial situation, and can be used for pretty much anything, from funding for therapy to transportation to basic necessities like food and shelter.&nbsp;
-                            <span style={{color: "var(--ion-color-primary, #3880ff)"}} onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or any time from the menu on the summary page.</span>
+                            <span style={{color: "var(--ion-color-primary, #3880ff)"}} onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or later from the menu on the summary page.</span>
                         </p>
                         { !submitted && props.moodWrite === -5 && <div onClick={submit} className="finish-button">
                             { !submitting && "Save Mood Log" }
