@@ -100,6 +100,8 @@ describe("Mobile Flow", () => {
             .trigger('mousemove', { clientX: 100, clientY: 0, pageX: 100, pageY: 0, screenX: 100, screenY: 0 })
             .trigger('mouseup', { force: true })
 
+        cy.contains("Done!").should("exist").click()
+
         // -5 time
         cy.url().should("include", "/neg")
         cy.get(".loader").should("exist")
