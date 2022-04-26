@@ -1,4 +1,4 @@
-app_identifier("la.nisa.moody") # The bundle identifier of your app
+app_identifier("app.getbaseline.baseline") # The bundle identifier of your app
 apple_id("avishkank@icloud.com") # Your Apple email address
 
 itc_team_id("119038746") # App Store Connect Team ID

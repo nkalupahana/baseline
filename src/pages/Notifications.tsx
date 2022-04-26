@@ -104,7 +104,7 @@ const Notifications = () => {
                     </>
                 }
                 { Capacitor.getPlatform() === "web" && <p className="text-center italics">Notifications are not supported on web. Please get the iOS/Android app.</p> }
-                { !notificationsEnabled && <p className="text-center italics">You haven't allowed this app to send notifications. Go to Settings and enable notifications for moody in order to use this feature.</p> }
+                { !notificationsEnabled && <p className="text-center italics">You haven't allowed this app to send notifications. Go to Settings and enable notifications for baseline in order to use this feature.</p> }
             </div>
             <br/><br/><br/><br/><br/><br/><br/><br/>
         </div>

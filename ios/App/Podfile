@@ -19,7 +19,7 @@ def capacitor_pods
   pod 'MoodyAppCapacitorPushNotifications', :path => '../../node_modules/@moody-app/capacitor-push-notifications'
 end
 
-target 'moody' do
+target 'baseline' do
   capacitor_pods
   # Add your Pods here
   pod 'CapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@capacitor-firebase/authentication'

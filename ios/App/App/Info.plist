@@ -4,12 +4,12 @@
 <dict>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>la.nisa.moody.using-app</string>
+		<string>app.getbaseline.baseline.using-app</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>moody</string>
+	<string>baseline</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">moody</string>
-    <string name="title_activity_main">moody</string>
-    <string name="package_name">la.nisa.moody</string>
-    <string name="custom_url_scheme">la.nisa.moody</string>
+    <string name="app_name">baseline</string>
+    <string name="title_activity_main">baseline</string>
+    <string name="package_name">app.getbaseline.baseline</string>
+    <string name="custom_url_scheme">app.getbaseline.baseline</string>
 </resources>
