@@ -19,7 +19,7 @@ const Negative5 = () => {
             Check with your insurance provider, and <a href="https://www.apa.org/topics/crisis-hotlines" target="_blank" rel="noreferrer">search for specialists here!</a> If you don't have insurance or aren't sure how to find a covered therapist (or if you need help finding any other resources!), 
             email us at <a href="mailto:findhelp@domain" target="_blank" rel="noreferrer">findhelp@domain</a> &mdash; we're happy to help.
         </p>
-        <p className="text-center">If you're struggling with money and it's hurting your mental health, you can apply for financial assistance from the moody Gap Fund.
+        <p className="text-center">If you're struggling with money and it's hurting your mental health, you can apply for financial assistance from the baseline Gap Fund.
             The gap fund exists to help you "fill in the gaps" in your financial situation, and can be used for pretty much anything, including therapy, medication, transportation, basic necessities like food and shelter, and more.&nbsp;
             <span style={{color: "var(--ion-color-primary, #3880ff)", cursor: "pointer"}} onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or later from the menu on the summary page.</span>
         </p>

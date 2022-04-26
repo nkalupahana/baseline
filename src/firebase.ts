@@ -17,12 +17,12 @@ enableLogging(true);
 */
 
 export const firebase = initializeApp({
-    "apiKey": "AIzaSyAlYsMV0bXEum2jytDPKe4uD17g8do4WaQ", 
-    "authDomain": "moody-ionic.firebaseapp.com", 
-    "projectId": "moody-ionic", 
-    "storageBucket": "moody-ionic.appspot.com", 
-    "messagingSenderId": "257064314002", 
-    "appId": "1:257064314002:web:bf10991ebeb4d6df18724b"
+    apiKey: "AIzaSyCtzcuoGrYQfj-PaXGLNTD22Ro0JecPLl4",
+    authDomain: "getbaselineapp.firebaseapp.com",
+    projectId: "getbaselineapp",
+    storageBucket: "getbaselineapp.appspot.com",
+    messagingSenderId: "841063163864",
+    appId: "1:841063163864:web:0cb24972a209fd9b5334ad"
 });
 
 export let auth: Auth;

@@ -9,8 +9,12 @@
     "public": "build",
     "rewrites": [
       {
-        "source": "/moodLog",
+        "source": "/api/moodLog",
         "function": "moodLog"
+      },
+      {
+        "source": "/api/survey",
+        "function": "survey"
       },
       {
         "source": "**",

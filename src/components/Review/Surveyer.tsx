@@ -54,7 +54,7 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
             setSubmitting(q.value);
             let errored = false;
             const token = await getIdToken(user);
-            const response = await fetch("https://us-central1-moody-ionic.cloudfunctions.net/survey",
+            const response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey",
                 {
                     method: "POST",
                     headers: {

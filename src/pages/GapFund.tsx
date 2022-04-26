@@ -9,7 +9,7 @@ const GapFund = () => {
         <div className="container">
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.goBack()}></IonIcon>
             <div className="center-journal container">
-                <div className="title">moody Gap Fund</div>
+                <div className="title">baseline Gap Fund</div>
                 <p className="text-center margin-bottom-0">placeholder text</p>
             </div>
             <EndSpacer />

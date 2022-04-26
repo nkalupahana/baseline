@@ -1,4 +1,4 @@
-# moody
+# baseline
 [![DeepScan grade](https://deepscan.io/api/teams/15815/projects/19050/branches/483959/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=15815&pid=19050&bid=483959)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/nkalupahana/moody.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/nkalupahana/moody/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/nkalupahana/moody/badge/main)](https://www.codefactor.io/repository/github/nkalupahana/moody/overview/main)

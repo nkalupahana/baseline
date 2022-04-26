@@ -1,4 +1,4 @@
-package la.nisa.moody;
+package app.getbaseline.baseline;
 
 import com.getcapacitor.BridgeActivity;
 

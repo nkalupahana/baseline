@@ -4,12 +4,12 @@
 <dict>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>la.nisa.moody.using-app</string>
+		<string>app.getbaseline.baseline.using-app</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>moody</string>
+	<string>baseline</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -31,7 +31,7 @@
 			<string>REVERSED_CLIENT_ID</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.257064314002-gt4hc1i21sodi1mfck8ul61ccuqhgnbf</string>
+				<string>com.googleusercontent.apps.841063163864-67r650rfj0q8tk4le2h6i9s6afevi07o</string>
 			</array>
 		</dict>
 	</array>

@@ -1,12 +1,12 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "la.nisa.moody",
-  appName: "moody",
+  appId: "app.getbaseline.baseline",
+  appName: "baseline",
   webDir: "build",
   bundledWebRuntime: false,
   ios: {
-    scheme: "moody"
+    scheme: "baseline"
   },
   plugins: {
     FirebaseAuthentication: {
