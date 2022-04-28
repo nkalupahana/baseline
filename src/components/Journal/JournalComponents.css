@@ -46,6 +46,7 @@
     resize: none;
     overflow: auto;
     outline: none;
+    line-height: 21px;
 
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -63,7 +64,7 @@
 
 .tx.tx-display {
     margin-top: 0 !important;
-    width: 100%;   
+    width: 100%;
 }
 
 /* Auto-Resize Textbox */
@@ -71,48 +72,55 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .input-sizer {
-  display: inline-grid;
-  vertical-align: top;
-  align-items: center;
-  position: relative;
-  width: 90%;
+    display: inline-grid;
+    vertical-align: top;
+    align-items: center;
+    position: relative;
+    width: 90%;
+    line-height: 21px;
+}
+
+@media only screen and (min-width: 800px) {
+    .input-sizer {
+        width: 80%;
+    }
 }
 
 .input-sizer.stacked {
-  align-items: stretch;
+    align-items: stretch;
 }
 
 .input-sizer.stacked::after,
 .input-sizer.stacked input,
 .input-sizer.stacked textarea {
-  grid-area: 2/1;
+    grid-area: 2/1;
 }
 
 .input-sizer::after,
 .input-sizer input,
 .input-sizer textarea {
-  width: auto;
-  min-width: 1em;
-  grid-area: 1/2;
-  font: inherit;
-  padding: 0.25em;
-  margin: 0;
-  resize: none;
-  background: none;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  border: none;
+    width: auto;
+    min-width: 1em;
+    grid-area: 1/2;
+    font: inherit;
+    padding: 0.25em;
+    margin: 0;
+    resize: none;
+    background: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
 }
 
 .input-sizer::after {
-  content: attr(data-value) " ";
-  visibility: hidden;
-  white-space: pre-wrap;
+    content: attr(data-value) " ";
+    visibility: hidden;
+    white-space: pre-wrap;
 }
 
 /* Auto-Resize Textbox end */
@@ -120,7 +128,7 @@
 .fake-button {
     width: 200px;
     height: 50px;
-    background-color: #4B7EF7;
+    background-color: #4b7ef7;
     text-align: center;
     line-height: 50px;
     border-radius: 10px;
@@ -148,10 +156,9 @@
     }
 }
 
-
 .finish-button {
     width: 97%;
-    background-color: #4B7EF7;
+    background-color: #4b7ef7;
     height: 50px;
     text-align: center;
     line-height: 50px;
@@ -161,7 +168,7 @@
 }
 
 .finish-button:active {
-    background-color: #2E6CFC;
+    background-color: #2e6cfc;
 }
 
 .loader {
