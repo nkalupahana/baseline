@@ -2,10 +2,12 @@ import { DataSnapshot, off, ref, serverTimestamp, set } from "@firebase/database
 import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner, useIonToast } from "@ionic/react";
 import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
+import ldb from "../db";
 import { auth, db } from "../firebase";
 import history from "../history";
 import Preloader from "./Preloader";
@@ -17,6 +19,12 @@ interface GapFundData {
     method: string;
 }
 
+enum SubmissionState {
+    NO_DATA_YET,
+    NO_SUBMISSION,
+    NOT_ELIGIBLE
+}
+
 const GapFund = () => {
     const [email, setEmail] = useState("");
     const [confirmEmail, setConfirmEmail] = useState("");
@@ -24,7 +32,7 @@ const GapFund = () => {
     const [amount, setAmount] = useState("");
     const [method, setMethod] = useState("");
     const [submitting, setSubmitting] = useState(false);
-    const [gapFundData, setGapFundData] = useState<boolean | null | GapFundData>(false);
+    const [gapFundData, setGapFundData] = useState<SubmissionState | GapFundData>(SubmissionState.NO_DATA_YET);
     const [gapFundAvailable, setGapFundAvailable] = useState(null);
 
     const [present] = useIonToast();
@@ -44,9 +52,21 @@ const GapFund = () => {
     useEffect(() => {
         if (loading) return;
 
-        const listener = async (data: DataSnapshot) => {
+        const listener = async (snap: DataSnapshot) => {
             setGapFundAvailable(await (await get(ref(db, "/config/gapFundAvailable"))).val());
-            setGapFundData(await data.val());
+            const data = await snap.val();
+            if (data === null) {
+                const firstLogTime = await ldb.logs.orderBy("timestamp").limit(1).first();
+                const numLogs = await ldb.logs.count();
+                // Must have 7+ logs, and the first log must be from at least a week ago
+                if (!firstLogTime || DateTime.now().toMillis() - firstLogTime.timestamp < 604800000 || numLogs < 7) {
+                    setGapFundData(SubmissionState.NOT_ELIGIBLE);
+                } else {
+                    setGapFundData(SubmissionState.NO_SUBMISSION);
+                }
+            } else {
+                setGapFundData(data);
+            }
         }
         const gapFundRef = ref(db, `/${auth?.currentUser?.uid}/gapFund`);
         onValue(gapFundRef, listener);
@@ -116,8 +136,12 @@ const GapFund = () => {
                     please <span style={{color: "var(--ion-color-primary, #3880ff)", cursor: "pointer"}} onClick={() => {history.push("/donate")}}>donate it here!</span> 100% of donations go to the gap fund.
                 </p>
                 <div style={{width: "100%", height: "25px", borderTop: "1px #d2d1d1 solid"}}></div>
-                { gapFundData === false && <Preloader /> }
-                { gapFundData === null && gapFundAvailable && <>
+                { gapFundData === SubmissionState.NO_DATA_YET && <Preloader /> }
+                { gapFundData === SubmissionState.NOT_ELIGIBLE && <p>
+                    You haven't used baseline for long enough to be eligible to request gap funds! 
+                    Come back after you've consistently used baseline for at least a week.
+                </p> }
+                { gapFundData === SubmissionState.NO_SUBMISSION && gapFundAvailable && <>
                     <div style={{"width": "90%"}}>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Email</IonLabel>
