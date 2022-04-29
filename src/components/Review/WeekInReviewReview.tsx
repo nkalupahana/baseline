@@ -1,4 +1,4 @@
-import { IonSpinner } from "@ionic/react";
+import { IonSpinner, useIonToast } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
@@ -12,11 +12,21 @@ interface Props {
 
 const WeekInReviewReview = (props: Props) => {
     const [loading, setLoading] = useState(false);
+    const [present] = useIonToast();
     const finish = async () => {
         if (loading) return;
         setLoading(true);
-        await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), serverTimestamp());
-        history.push("/summary");
+        try {
+            await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), serverTimestamp());
+            history.push("/summary");
+        } catch {
+            present({
+                message:  "Something went wrong, please try again.",
+                position: "top",
+                duration: 3000
+            });
+            setLoading(false);
+        }
     };
 
     return (<div className="center-summary container">
