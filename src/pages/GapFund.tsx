@@ -140,6 +140,7 @@ const GapFund = () => {
                 { gapFundData === SubmissionState.NOT_ELIGIBLE && <p>
                     You haven't used baseline for long enough to be eligible to request gap funds! 
                     Come back after you've consistently used baseline for at least a week.
+                    If you need help, contact us at <a href="mailto:gapfund@getbaseline.app">gapfund@getbaseline.app</a>.
                 </p> }
                 { gapFundData === SubmissionState.NO_SUBMISSION && gapFundAvailable && <>
                     <div style={{"width": "90%"}}>
