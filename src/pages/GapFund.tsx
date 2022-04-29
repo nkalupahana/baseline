@@ -103,7 +103,7 @@ const GapFund = () => {
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.length > 2 ? history.goBack() : history.push("/summary")}></IonIcon>
             <div className="center-journal container">
                 <div className="title">baseline Gap Fund</div>
-                <p className="text-center">something about capitalism you know the drill. and donate</p>
+                <p className="text-center">capitalism sucks. get your money here.</p>
                 { gapFundData === false && <Preloader />}
                 { gapFundData === null && gapFundAvailable && <>
                     <div style={{"width": "90%"}}>
@@ -145,22 +145,23 @@ const GapFund = () => {
                     </div>
                 </> }
                 { gapFundData === null && !gapFundAvailable && 
-                    <p>Unfortunately, due to financial limitations from the number of requests we've gotten,
+                    <p>Unfortunately, due to financial limitations from the number of requests we've received,
                         we can't accept any more requests at this time. Please check back later. If you have
                         some extra money and can donate to help us fund more people, please do!
                     </p> }
-                { typeof gapFundData === "object" && <>
+                { gapFundData && typeof gapFundData === "object" && <>
                     <p>Thanks for submitting the gap fund request detailed below. You should
                         get an email from us about your funding in the next few days. 
-                        In the meantime, if you have any questions, email us at <a href="mailto:gapfund@getbaseline.app">gapfund@getbaseline.app</a>.
-                    </p> 
+                        In the meantime, if you have any questions, 
+                        email us at <a href="mailto:gapfund@getbaseline.app">gapfund@getbaseline.app</a> (ideally from the email you submitted in your gap fund request).
+                    </p>
                     <div style={{"width": "100%"}}>
-                        <p className="margin-bottom-0">Email: { gapFundData?.email }</p>
-                        <p className="margin-bottom-0">Need: { gapFundData?.need }</p>
-                        <p className="margin-bottom-0">Amount: { gapFundData?.amount }</p>
-                        <p className="margin-bottom-0">Payment Method: { gapFundData?.method }</p>
+                        <p className="margin-bottom-0">Email: { gapFundData.email }</p>
+                        <p className="margin-bottom-0">Need: { gapFundData.need }</p>
+                        <p className="margin-bottom-0">Amount: { gapFundData.amount }</p>
+                        <p className="margin-bottom-0">Payment Method: { gapFundData.method }</p>
                     </div>
-                </>}
+                </> }
             </div>
             <EndSpacer />
         </div>
