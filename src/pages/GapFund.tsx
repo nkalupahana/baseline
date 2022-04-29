@@ -103,8 +103,20 @@ const GapFund = () => {
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.length > 2 ? history.goBack() : history.push("/summary")}></IonIcon>
             <div className="center-journal container">
                 <div className="title">baseline Gap Fund</div>
-                <p className="text-center">capitalism sucks. get your money here.</p>
-                { gapFundData === false && <Preloader />}
+                <p className="text-center">
+                    Even when everything goes right, mental health can still be a struggle. But when money's involved,
+                    we recognize that things can get way, way harder. If you're struggling with money
+                    and it's negatively impacting you, the baseline gap fund can help you "fill in the gaps" and get
+                    financial assistance quickly. This money can be used for pretty much anything, 
+                    including therapy, medication, transportation, basic necessities like food and shelter, and more. Requests are typically $50
+                    or less, but if you need more, it never hurts to request it &mdash; we'll work with you to help you get what you need.
+                </p>
+                <p className="text-center">
+                    We're a volunteer operation funded by donations. If you have money to spare to help people in need, 
+                    please <a href="/donate">donate it here!</a> 100% of donations go to the gap fund.
+                </p>
+                <div style={{width: "100%", height: "25px", borderTop: "1px #d2d1d1 solid"}}></div>
+                { gapFundData === false && <Preloader /> }
                 { gapFundData === null && gapFundAvailable && <>
                     <div style={{"width": "90%"}}>
                         <IonItem>
