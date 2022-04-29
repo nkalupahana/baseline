@@ -1,6 +1,6 @@
 import { DataSnapshot, off, ref, serverTimestamp, set } from "@firebase/database";
-import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner, IonTextarea, useIonToast } from "@ionic/react";
-import { onValue } from "firebase/database";
+import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner, useIonToast } from "@ionic/react";
+import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -18,6 +18,7 @@ const GapFund = () => {
     const [method, setMethod] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [gapFundData, setGapFundData] = useState(false);
+    const [gapFundAvailable, setGapFundAvailable] = useState(null);
 
     const [present] = useIonToast();
     const [, loading] = useAuthState(auth);
@@ -34,7 +35,9 @@ const GapFund = () => {
     // Preload until auth is ready and gap fund data is loaded
     useEffect(() => {
         if (loading) return;
+
         const listener = async (data: DataSnapshot) => {
+            setGapFundAvailable(await (await get(ref(db, "/config/gapFundAvailable"))).val());
             setGapFundData(await data.val());
         }
         const gapFundRef = ref(db, `/${auth?.currentUser?.uid}/gapFund`);
@@ -93,7 +96,7 @@ const GapFund = () => {
             <div className="center-journal container">
                 <div className="title">baseline Gap Fund</div>
                 { gapFundData === false && <Preloader />}
-                { gapFundData === null && <>
+                { gapFundData === null && gapFundAvailable && <>
                     <p className="text-center">something about capitalism you know the drill</p>
                     <div style={{"width": "90%"}}>
                         <IonItem>
@@ -133,6 +136,7 @@ const GapFund = () => {
                         </div>
                     </div>
                 </> }
+                { gapFundData === null && !gapFundAvailable && <p>unavailable</p> }
                 { gapFundData && <p>submitted</p>}
             </div>
             <EndSpacer />
