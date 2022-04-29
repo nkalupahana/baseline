@@ -1,6 +1,5 @@
 import { IonSpinner } from "@ionic/react";
-import { ref, set } from "firebase/database";
-import { DateTime } from "luxon";
+import { ref, serverTimestamp, set } from "firebase/database";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
 import history from "../../history";
@@ -16,7 +15,7 @@ const WeekInReviewReview = (props: Props) => {
     const finish = async () => {
         if (loading) return;
         setLoading(true);
-        await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), DateTime.utc().toMillis());
+        await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), serverTimestamp());
         history.push("/summary");
     };
 
