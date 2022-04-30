@@ -53,19 +53,19 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
 
             setSubmitting(q.value);
             let errored = false;
-            const token = await getIdToken(user);
-            const response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey",
-                {
+            let response = undefined;
+            try {
+                response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey", {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${await getIdToken(user)}`,
                     },
                     body: JSON.stringify({
                         key: final._key,
                         results: final._results
                     })
-                }
-            ).catch(e => {
+                })
+            } catch (e: any) {
                 if (e.message === "Load failed") {
                     toast(`We can't reach our servers. Check your internet connection and try again.`);
                 } else {
@@ -74,7 +74,7 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
                 errored = true;
                 setSubmitting(-1);
                 return;
-            });
+            }
 
             if (response) {
                 if (response.ok) {

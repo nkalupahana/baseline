@@ -49,7 +49,6 @@ const FinishJournal = props => {
         }
         setSubmitting(true);
 
-        const token = await getIdToken(user);
         let errored = false;
 
         var data = new FormData();
@@ -61,15 +60,16 @@ const FinishJournal = props => {
             data.append("file", file);
         }
 
-        const response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLog",
-            {
+        let response = undefined;
+        try {
+            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLog", {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${await getIdToken(user)}`,
                 },
                 body: data
-            }
-        ).catch(e => {
+            });
+        } catch (e) {
             if (e.message === "Load failed") {
                 toast(`We can't reach our servers. Check your internet connection and try again.${props.files.length > 0 ? " Your images might also be too big." : ""}`);
             } else {
@@ -77,7 +77,7 @@ const FinishJournal = props => {
             }
             errored = true;
             setSubmitting(false);
-        });
+        }
 
         if (response) {
             if (response.ok) {

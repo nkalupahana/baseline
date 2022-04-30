@@ -10,29 +10,6 @@
       "lastWeekInReview": {
         ".write": "auth != null && auth.uid == $uid",
         ".validate": "newData.isNumber() && newData.val() == now"
-      },
-      "gapFund": {
-        ".read": "auth != null && auth.uid == $uid",
-        ".write": "auth != null && auth.uid == $uid && !data.exists()",
-        ".validate": "newData.hasChildren(['email', 'need', 'amount', 'method', 'timestamp'])",
-        "email": {
-          ".validate": "newData.isString() && newData.val().length < 1000"
-        },
-        "need": {
-          ".validate": "newData.isString() && newData.val().length < 10000"
-        },
-        "amount": {
-          ".validate": "newData.isString() && newData.val().length < 10000"
-        },
-        "method": {
-          ".validate": "newData.isString() && newData.val().length < 10000"
-        },
-        "timestamp": {
-          ".validate": "newData.isNumber() && newData.val() == now"
-        },
-        "$other": {
-          ".validate": "false"
-        }
       }
     },
     ".read": false,

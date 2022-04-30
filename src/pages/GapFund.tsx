@@ -1,4 +1,5 @@
-import { DataSnapshot, off, ref, serverTimestamp, set } from "@firebase/database";
+import { getIdToken } from "@firebase/auth";
+import { DataSnapshot, off, ref } from "@firebase/database";
 import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner, useIonToast } from "@ionic/react";
 import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
@@ -36,7 +37,7 @@ const GapFund = () => {
     const [gapFundAvailable, setGapFundAvailable] = useState(null);
 
     const [present] = useIonToast();
-    const [, loading] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
 
     const toast = (message: string) => {
         present({
@@ -79,41 +80,40 @@ const GapFund = () => {
     const submit = async () => {
         if (submitting) return;
         setSubmitting(true);
-        if (!email || email.length >= 1000) {
-            toast("Please enter your email address. It must be under 1000 characters.");
+        if (!email || !need || !amount || !method) {
+            toast("Please complete all fields before submitting!");
             return;
         }
 
         if (email !== confirmEmail) {
-            toast("Your email addresses do not match!");
+            toast("Your email addresses must match!");
             return;
         }
 
-        if (!need || need.length >= 10000) {
-            toast("Please tell us what you need money for. It must be under 10000 characters.");
-            return;
-        }
-
-        if (!amount || amount.length >= 10000) {
-            toast("Please tell us how much money you want. It must be under 10000 characters.");
-            return;
-        }
-
-        if (!method || method.length >= 10000) {
-            toast("Please tell us how we can get money to you. It must be under 10000 characters.");
+        if (email.length >= 10000 || need.length >= 10000 || amount.length >= 10000 || method.length >= 10000) {
+            toast("Each field must be under 10,000 characters.");
             return;
         }
         
         try {
-            await set(ref(db, `/${auth?.currentUser?.uid}/gapFund`), {
-                email,
-                need,
-                amount,
-                method,
-                timestamp: serverTimestamp()
+            await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFund",{
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${await getIdToken(user)}`,
+                },
+                body: JSON.stringify({
+                    email,
+                    need,
+                    amount,
+                    method,
+                })
             });
-        } catch {
-            toast("There was an error submitting your request. Please try again.");
+        } catch (e: any) {
+            if (e.message === "Load failed") {
+                toast(`We can't reach our servers. Check your internet connection and try again.`);
+            } else {
+                toast(`Something went wrong, please try again! \nError: ${e.message}`);
+            }
             return;
         }
     };
