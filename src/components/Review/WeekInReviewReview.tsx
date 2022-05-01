@@ -1,7 +1,8 @@
-import { IonSpinner, useIonToast } from "@ionic/react";
+import { IonSpinner } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
+import { toast } from "../../helpers";
 import history from "../../history";
 import Screener from "../../screeners/screener";
 
@@ -12,7 +13,6 @@ interface Props {
 
 const WeekInReviewReview = (props: Props) => {
     const [loading, setLoading] = useState(false);
-    const [present] = useIonToast();
     const finish = async () => {
         if (loading) return;
         setLoading(true);
@@ -20,11 +20,7 @@ const WeekInReviewReview = (props: Props) => {
             await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), serverTimestamp());
             history.push("/summary");
         } catch {
-            present({
-                message:  "Something went wrong, please try again.",
-                position: "top",
-                duration: 3000
-            });
+            toast("Something went wrong, please try again.");
             setLoading(false);
         }
     };

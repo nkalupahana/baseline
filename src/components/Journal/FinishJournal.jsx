@@ -5,7 +5,6 @@ import { getIdToken } from "@firebase/auth";
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
@@ -14,7 +13,7 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Route, Switch } from "react-router";
 import EndSpacer from "../EndSpacer";
 import Negative5 from "./Negative5";
-import Toastify from 'toastify-js';
+import { networkFailure, toast } from "../../helpers";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
@@ -25,18 +24,6 @@ const FinishJournal = props => {
         height: BOTTOM_BAR_HEIGHT + "px",
         bottom: "0px"
     });
-
-    const toast = message => {
-        Toastify({
-            text: message,
-            duration: 3000,
-            gravity: "bottom",
-            position: "center",
-            style: {
-                "border-radius": "10px"
-            }
-        }).showToast();
-    };
 
     useEffect(() => {
         if (submitted && !history.location.pathname.includes("/neg")) {
@@ -72,7 +59,7 @@ const FinishJournal = props => {
                 body: data
             });
         } catch (e) {
-            if (e.message === "Load failed") {
+            if (networkFailure(e.message)) {
                 toast(`We can't reach our servers. Check your internet connection and try again.${props.files.length > 0 ? " Your images might also be too big." : ""}`);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
@@ -84,7 +71,7 @@ const FinishJournal = props => {
         if (response) {
             if (response.ok) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
-                toast("Mood log saved!");
+                toast("Mood log saved!", "bottom");
                 setSubmitted(true);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${await response.text()}`);

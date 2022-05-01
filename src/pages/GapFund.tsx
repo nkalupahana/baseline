@@ -1,6 +1,6 @@
 import { getIdToken } from "@firebase/auth";
 import { DataSnapshot, off, ref } from "@firebase/database";
-import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner, useIonToast } from "@ionic/react";
+import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
 import { DateTime } from "luxon";
@@ -10,6 +10,7 @@ import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db } from "../firebase";
+import { networkFailure, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
 
@@ -36,17 +37,7 @@ const GapFund = () => {
     const [gapFundData, setGapFundData] = useState<SubmissionState | GapFundData>(SubmissionState.NO_DATA_YET);
     const [gapFundAvailable, setGapFundAvailable] = useState(null);
 
-    const [present] = useIonToast();
     const [user, loading] = useAuthState(auth);
-
-    const toast = (message: string) => {
-        present({
-            message,
-            position: "bottom",
-            duration: 3000
-        });
-        setSubmitting(false);
-    };
 
     // Preload until auth is ready and gap fund data is loaded
     // Also ensure that gap fund is available before displaying
@@ -109,7 +100,7 @@ const GapFund = () => {
                 })
             });
         } catch (e: any) {
-            if (e.message === "Load failed") {
+            if (networkFailure(e.message)) {
                 toast(`We can't reach our servers. Check your internet connection and try again.`);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);

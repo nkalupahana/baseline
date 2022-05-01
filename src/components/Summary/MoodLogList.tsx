@@ -87,7 +87,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             // Get last locator (skips "no more logs" <p> at the end)
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
         }
-    }, [reverse]);
+    }, [reverse, logs]);
 
     // Scroll to position if we get a request
     useEffect(() => {

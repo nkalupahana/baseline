@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import Toastify from "toastify-js";
 import { Log } from "./db";
 
 export function getTime() {
@@ -50,4 +51,20 @@ export const LOCATOR_OFFSET = 30;
 
 export function getMoodLogListBound(el: HTMLElement, node: HTMLElement) {
     return node.offsetTop - el.getBoundingClientRect().y + LOCATOR_OFFSET;
+}
+
+export function toast(message: string, gravity?: Toastify.Options["gravity"]) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: gravity || "top",
+        position: "center",
+        style: {
+            "border-radius": "10px"
+        }
+    }).showToast();
+};
+
+export function networkFailure(message: string) {
+    return message === "Load failed" || message.includes("Failed to fetch");
 }

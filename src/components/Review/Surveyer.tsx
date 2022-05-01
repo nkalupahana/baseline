@@ -1,8 +1,9 @@
-import { IonSpinner, useIonToast } from "@ionic/react";
+import { IonSpinner } from "@ionic/react";
 import { getIdToken } from "firebase/auth";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
+import { networkFailure, toast } from "../../helpers";
 import Screener, { Answer, Done, Modifier } from "../../screeners/screener";
 
 interface Props {
@@ -13,18 +14,8 @@ interface Props {
 }
 
 const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
-    
     const [submitting, setSubmitting] = useState(-1);
     const [user, loading] = useAuthState(auth);
-    const [present] = useIonToast();
-
-    const toast = (message: string) => {
-        present({
-            message,
-            position: "top",
-            duration: 3000
-        });
-    };
 
     const next = async (q: Answer) => {
         if (submitting !== -1) return;
@@ -65,7 +56,7 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
                     })
                 })
             } catch (e: any) {
-                if (e.message === "Load failed") {
+                if (networkFailure(e.message)) {
                     toast(`We can't reach our servers. Check your internet connection and try again.`);
                 } else {
                     toast(`Something went wrong, please try again! \nError: ${e.message}`);
