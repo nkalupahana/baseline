@@ -52,7 +52,6 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
             }
 
             setSubmitting(q.value);
-            let errored = false;
             let response = undefined;
             try {
                 response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey", {
@@ -71,7 +70,6 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
                 } else {
                     toast(`Something went wrong, please try again! \nError: ${e.message}`);
                 }
-                errored = true;
                 setSubmitting(-1);
                 return;
             }
@@ -80,11 +78,11 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
                 if (response.ok) {
                     incrementStage();
                 } else {
-                    if (!errored) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+                    toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
                     setSubmitting(-1);
                 }
             } else {
-                if (!errored) toast(`Something went wrong, please try again!`);
+                toast(`Something went wrong, please try again!`);
                 setSubmitting(-1);
             }
         }

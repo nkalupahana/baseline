@@ -49,8 +49,6 @@ const FinishJournal = props => {
         }
         setSubmitting(true);
 
-        let errored = false;
-
         var data = new FormData();
         data.append("timezone", DateTime.local().zoneName);
         data.append("mood", props.moodWrite);
@@ -75,8 +73,8 @@ const FinishJournal = props => {
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }
-            errored = true;
             setSubmitting(false);
+            return;
         }
 
         if (response) {
@@ -89,11 +87,11 @@ const FinishJournal = props => {
                 });
                 setSubmitted(true);
             } else {
-                if (!errored) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
                 setSubmitting(false);
             }
         } else {
-            if (!errored) toast(`Something went wrong, please try again!`);
+            toast(`Something went wrong, please try again!`);
             setSubmitting(false);
         }
     };
