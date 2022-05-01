@@ -92,6 +92,10 @@ http://ionicframework.com/docs/theming/ */
     font-family: "Lato", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
+ion-input {
+    font-family: "Lato", "Helvetica Neue", "Helvetica", "Arial", sans-serif !important;
+}
+
 textarea {
     line-height: 21px;
 }

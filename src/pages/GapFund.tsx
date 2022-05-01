@@ -171,7 +171,7 @@ const GapFund = () => {
                         <br />
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Paypal / Venmo / Cash App / Zelle</IonLabel>
-                            <Textarea getter={method} setter={setMethod} />
+                            <Textarea getter={method} setter={setMethod} placeholder={"Venmo: @username"} />
                         </IonItem>
                         <p>If you need us to use a different method to get you money, explain it above and we'll reach out to you.</p>
                         <br />
