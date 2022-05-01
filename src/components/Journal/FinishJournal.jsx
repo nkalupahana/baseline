@@ -14,12 +14,12 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Route, Switch } from "react-router";
 import EndSpacer from "../EndSpacer";
 import Negative5 from "./Negative5";
+import Toastify from 'toastify-js';
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 148;
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
@@ -27,11 +27,15 @@ const FinishJournal = props => {
     });
 
     const toast = message => {
-        present({
-            message,
-            position: "top",
-            duration: 3000
-        });
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "bottom",
+            position: "center",
+            style: {
+                "border-radius": "10px"
+            }
+        }).showToast();
     };
 
     useEffect(() => {
@@ -80,11 +84,7 @@ const FinishJournal = props => {
         if (response) {
             if (response.ok) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
-                present({
-                    message: `Mood log saved!`,
-                    position: "bottom",
-                    duration: 3000
-                });
+                toast("Mood log saved!");
                 setSubmitted(true);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
