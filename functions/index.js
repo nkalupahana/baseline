@@ -408,5 +408,4 @@ exports.gapFund = functions.https.onRequest(async (req, res) => {
     });
 
     res.send(200);
-    return;
 });

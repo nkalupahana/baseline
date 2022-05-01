@@ -167,4 +167,33 @@ describe("Desktop Flow", () => {
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
     })
+
+    it("Verify Notifications Page", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.get("body").happoScreenshot()
+        cy.contains("Notifications").should("exist").click()
+        cy.url().should("include", "notifications")
+        cy.contains("not supported").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get(".top-corner").click()
+        cy.url().should("include", "summary")
+    })
+
+    it("Verify Gap Fund Page", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Gap Fund").should("exist").click()
+        cy.url().should("include", "gap")
+        cy.contains("eligible").should("exist")
+        cy.get("body").happoScreenshot()
+
+        cy.contains("donate").should("exist").click()
+        cy.url().should("include", "donate")
+        cy.get("body").happoScreenshot()
+        cy.get(".top-corner").click()
+        cy.url().should("include", "gap")
+        cy.contains("eligible").should("exist")
+
+        cy.get(".top-corner").click()
+        cy.url().should("include", "summary")
+    });
 })

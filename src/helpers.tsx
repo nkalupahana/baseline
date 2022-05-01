@@ -63,7 +63,7 @@ export function toast(message: string, gravity?: Toastify.Options["gravity"]) {
             "border-radius": "10px"
         }
     }).showToast();
-};
+}
 
 export function networkFailure(message: string) {
     return message === "Load failed" || message.includes("Failed to fetch");
