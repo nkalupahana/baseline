@@ -1,3 +1,6 @@
+import Dexie from "dexie"
+import { DateTime } from "luxon"
+
 /* global cy */
 
 describe("Mobile Flow", () => {
@@ -71,7 +74,7 @@ describe("Mobile Flow", () => {
             cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
             cy.get("textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
-            cy.contains("Done!").should("exist").click()
+            cy.contains("Done!").should("exist").click({ force: true })
             cy.url().should("include", "/summary")
             cy.contains(`Test ${i}`).should("exist")
         }
@@ -179,7 +182,7 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "summary")
     })
 
-    it("Verify Gap Fund Page", () => {
+    it("Verify Non-Eligible Gap Fund Page", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Gap Fund").should("exist").click()
         cy.url().should("include", "gap")
@@ -195,5 +198,72 @@ describe("Desktop Flow", () => {
 
         cy.get(".top-corner").click()
         cy.url().should("include", "summary")
-    });
+    })
+
+    it("Makes User Eligible (Week In Review, Gap Fund)", () => {
+        const ldb = new Dexie('ldb');
+        ldb.version(1).stores({
+            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
+        });
+
+        const date =  DateTime.now().minus({ week: 1 });
+        ldb.logs.add({
+            timestamp: date.toMillis(),
+            month: date.month,
+            day: date.day,
+            year: date.year,
+            time: "1:00 CST",
+            zone: "America/Chicago",
+            average: "average",
+            mood: 0,
+            journal: "fake"
+        });
+
+        cy.get(".fab-button-close-active").click()
+        cy.contains("What's happening").should("exist")
+        cy.get(".top-corner").click()
+        cy.contains("Week In Review").should("exist")
+        cy.get(".prompt-prompt").happoScreenshot()
+    })
+
+    it("Complete Week In Review", () => {
+        cy.contains("Later").click()
+        cy.contains("Week In Review").should("not.exist")
+        cy.get(".fab-button-close-active").click()
+        cy.contains("What's happening").should("exist")
+        cy.get(".top-corner").click()
+        cy.contains("Week In Review").should("exist")
+        cy.contains("Start").click()
+
+        cy.contains("three parts").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.contains("Start Primary").click()
+        cy.contains("Question 1/21").should("exist")
+        for (let i = 0; i < 21; ++i) {
+            cy.contains("Never").click()
+        }
+
+        cy.get(".loader").should("exist")
+        cy.get(".loader").should("not.exist", { timeout: 10000 })
+        cy.contains("Question 1/").should("exist").then(el => {
+            let questions = Number(el.text().split("/")[1]);
+            if (questions === 5) --questions; // Removes skipped question in asQ
+            for (let i = 0; i < questions; ++i) {
+                cy.get(".finish-button").first().click()
+            }
+        })
+
+        cy.get(".loader").should("exist")
+        cy.get(".loader").should("not.exist", { timeout: 10000 })
+        cy.contains("d=0, a=0, s=0").should("exist")
+        cy.contains("Finish").should("exist").click()
+        cy.url().should("include", "summary")
+    })
+
+    it("Attempts Gap Fund Request", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Gap Fund").should("exist").click()
+        cy.url().should("include", "gap")
+        cy.contains("Make sure you get this right").should("exist")
+    })
 })

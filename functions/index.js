@@ -372,12 +372,18 @@ exports.gapFund = functions.https.onRequest(async (req, res) => {
 
     // Get user statistics for fraud detection
     const logRef = db.ref(`/${req.user.user_id}/logs`);
-    const firstLog = Object.keys(await (await logRef.limitToFirst(1).get()).val())[0];
+    const firstLog = Number(Object.keys(await (await logRef.limitToFirst(1).get()).val())[0]);
 
     const lastLogs = await (await logRef.limitToLast(25).get()).val();
     let lastLogStr = "";
     for (let key in lastLogs) {
         lastLogStr += DateTime.fromMillis(Number(key)).toRFC2822() + "\n";
+    }
+
+    // Simple date validation (real fraud detection will be done manually in the sheet)
+    if (Object.keys(lastLogs).length < 7 || DateTime.now().minus({ days: 5 }).toMillis() > firstLog) {
+        res.send(400);
+        return;
     }
 
     // Write to spreadsheet
