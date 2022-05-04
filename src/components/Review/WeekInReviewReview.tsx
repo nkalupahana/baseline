@@ -1,8 +1,8 @@
 import { IonSpinner } from "@ionic/react";
-import { ref, set } from "firebase/database";
-import { DateTime } from "luxon";
+import { ref, serverTimestamp, set } from "firebase/database";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
+import { toast } from "../../helpers";
 import history from "../../history";
 import Screener from "../../screeners/screener";
 
@@ -16,8 +16,13 @@ const WeekInReviewReview = (props: Props) => {
     const finish = async () => {
         if (loading) return;
         setLoading(true);
-        await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), DateTime.utc().toMillis());
-        history.push("/summary");
+        try {
+            await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), serverTimestamp());
+            history.push("/summary");
+        } catch {
+            toast("Something went wrong, please try again.");
+            setLoading(false);
+        }
     };
 
     return (<div className="center-summary container">

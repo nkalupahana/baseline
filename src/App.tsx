@@ -25,6 +25,7 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
+import "toastify-js/src/toastify.css"
 
 /* Theme variables */
 import "./theme/variables.css";
@@ -39,6 +40,7 @@ import smoothscroll from "smoothscroll-polyfill";
 import { Capacitor } from "@capacitor/core";
 import ldb from "./db";
 import GapFund from "./pages/GapFund";
+import Donate from "./pages/Donate";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -68,6 +70,7 @@ const App = () => {
                     <Route path="/summary" component={Summary} />
                     <Route path="/notifications" component={Notifications} />
                     <Route path="/gap" component={GapFund} />
+                    <Route path="/donate" component={Donate} />
                     <Route path="/review" component={WeekInReview} />
                     <Redirect to="/journal" />
                 </Switch>

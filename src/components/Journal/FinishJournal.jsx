@@ -5,7 +5,6 @@ import { getIdToken } from "@firebase/auth";
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import { useIonToast } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
@@ -14,25 +13,17 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Route, Switch } from "react-router";
 import EndSpacer from "../EndSpacer";
 import Negative5 from "./Negative5";
+import { networkFailure, toast } from "../../helpers";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [present] = useIonToast();
     const BOTTOM_BAR_HEIGHT = 148;
     const [bottomBarStyle, setBottomBarStyle] = useState({
         height: BOTTOM_BAR_HEIGHT + "px",
         bottom: "0px"
     });
-
-    const toast = message => {
-        present({
-            message,
-            position: "top",
-            duration: 3000
-        });
-    };
 
     useEffect(() => {
         if (submitted && !history.location.pathname.includes("/neg")) {
@@ -49,9 +40,6 @@ const FinishJournal = props => {
         }
         setSubmitting(true);
 
-        const token = await getIdToken(user);
-        let errored = false;
-
         var data = new FormData();
         data.append("timezone", DateTime.local().zoneName);
         data.append("mood", props.moodWrite);
@@ -61,39 +49,36 @@ const FinishJournal = props => {
             data.append("file", file);
         }
 
-        const response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLog",
-            {
+        let response = undefined;
+        try {
+            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLog", {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${await getIdToken(user)}`,
                 },
                 body: data
-            }
-        ).catch(e => {
-            if (e.message === "Load failed") {
+            });
+        } catch (e) {
+            if (networkFailure(e.message)) {
                 toast(`We can't reach our servers. Check your internet connection and try again.${props.files.length > 0 ? " Your images might also be too big." : ""}`);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }
-            errored = true;
             setSubmitting(false);
-        });
+            return;
+        }
 
         if (response) {
             if (response.ok) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
-                present({
-                    message: `Mood log saved!`,
-                    position: "bottom",
-                    duration: 3000
-                });
+                toast("Mood log saved!", "bottom");
                 setSubmitted(true);
             } else {
-                if (!errored) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
                 setSubmitting(false);
             }
         } else {
-            if (!errored) toast(`Something went wrong, please try again!`);
+            toast(`Something went wrong, please try again!`);
             setSubmitting(false);
         }
     };

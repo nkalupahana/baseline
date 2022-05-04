@@ -1,8 +1,9 @@
-import { IonSpinner, useIonToast } from "@ionic/react";
+import { IonSpinner } from "@ionic/react";
 import { getIdToken } from "firebase/auth";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
+import { networkFailure, toast } from "../../helpers";
 import Screener, { Answer, Done, Modifier } from "../../screeners/screener";
 
 interface Props {
@@ -13,18 +14,8 @@ interface Props {
 }
 
 const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
-    
     const [submitting, setSubmitting] = useState(-1);
     const [user, loading] = useAuthState(auth);
-    const [present] = useIonToast();
-
-    const toast = (message: string) => {
-        present({
-            message,
-            position: "top",
-            duration: 3000
-        });
-    };
 
     const next = async (q: Answer) => {
         if (submitting !== -1) return;
@@ -52,39 +43,37 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
             }
 
             setSubmitting(q.value);
-            let errored = false;
-            const token = await getIdToken(user);
-            const response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey",
-                {
+            let response = undefined;
+            try {
+                response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey", {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${await getIdToken(user)}`,
                     },
                     body: JSON.stringify({
                         key: final._key,
                         results: final._results
                     })
-                }
-            ).catch(e => {
-                if (e.message === "Load failed") {
+                })
+            } catch (e: any) {
+                if (networkFailure(e.message)) {
                     toast(`We can't reach our servers. Check your internet connection and try again.`);
                 } else {
                     toast(`Something went wrong, please try again! \nError: ${e.message}`);
                 }
-                errored = true;
                 setSubmitting(-1);
                 return;
-            });
+            }
 
             if (response) {
                 if (response.ok) {
                     incrementStage();
                 } else {
-                    if (!errored) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+                    toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
                     setSubmitting(-1);
                 }
             } else {
-                if (!errored) toast(`Something went wrong, please try again!`);
+                toast(`Something went wrong, please try again!`);
                 setSubmitting(-1);
             }
         }

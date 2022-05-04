@@ -330,3 +330,88 @@ exports.sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZone("
         }
     });
 });
+
+exports.gapFund = functions.https.onRequest(async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Authorization");
+
+    // Preflight? Stop here.
+    if (req.method === "OPTIONS") {
+        res.status(204).send("");
+        return;
+    }
+
+    await validateAuth(req, res);
+    if (!req.user) return;
+    const body = JSON.parse(req.body);
+
+    // Validation
+    for (let key of ["email", "need", "amount", "method"]) {
+        if (typeof body[key] !== "string" || body[key].trim().length === 0 || body[key].length >= 10000) {
+            res.send(400);
+            return;
+        }
+    }
+
+    // Get user statistics for fraud detection
+    const db = admin.database();
+    const logRef = db.ref(`/${req.user.user_id}/logs`);
+    const firstLog = Number(Object.keys(await (await logRef.limitToFirst(1).get()).val())[0]);
+
+    const lastLogs = await (await logRef.limitToLast(25).get()).val();
+    let lastLogStr = "";
+    for (let key in lastLogs) {
+        lastLogStr += DateTime.fromMillis(Number(key)).toRFC2822() + "\n";
+    }
+
+    // Simple date validation (real fraud detection will be done manually in the sheet)
+    if (Object.keys(lastLogs).length < 7 || DateTime.now().minus({ days: 5 }).toMillis() < firstLog) {
+        res.send(400);
+        return;
+    }
+
+    // Put data in user's database
+    const gapFundRef = db.ref(`/${req.user.user_id}/gapFund`);
+    const currentData = await (await gapFundRef.get()).val();
+    if (currentData) {
+        res.send(400);
+        return;
+    }
+
+    await gapFundRef.set({
+        email: body.email,
+        need: body.need,
+        amount: body.amount,
+        method: body.method
+    });
+
+    // Write to spreadsheet
+    const google = require("@googleapis/sheets");
+    const auth = await google.auth.getClient({
+        scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+
+    const api = google.sheets({ version: 'v4', auth });
+    await api.spreadsheets.values.append({
+        spreadsheetId: "1N3Ecex6TVeWQvd1uKBNtf__XBASx47i5wBktTSbjdus",
+        range: "A2:J9999",
+        valueInputOption: "USER_ENTERED",
+        resource: {
+            values: [[
+                req.user.user_id, 
+                body.email, 
+                body.need, 
+                body.amount, 
+                body.method, 
+                lastLogStr, // Last log dates
+                DateTime.fromMillis(Number(firstLog)).toRFC2822(), // First log
+                "New", // Status
+                "Needs Review ASAP", // Progression
+                `https://console.firebase.google.com/u/0/project/getbaselineapp/database/getbaselineapp-default-rtdb/data/${req.user.user_id}~2FgapFund`
+            ]]
+        }
+    });
+
+    res.send(200);
+});

@@ -116,7 +116,12 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
     let current = getDateFromLog(logs[0]);
 
     // Create cards from today to first entry (with some padding at the start)
-    let now = DateTime.now().startOf("day").startOf("week").plus({ weeks: 1 }).minus({ days: 2 });
+    // Now = latest saturday (monday = 1 for weekday)
+    let now = DateTime.now().startOf("day");
+    while (now.weekday !== 6) {
+        now = now.plus({ days: 1 });
+    }
+
     while (!now.equals(current) && now > current) {
         els.push(createCalendarCard(now, requestedDate));
         now = now.minus({days: 1});
@@ -147,8 +152,8 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
         els.push(createCalendarCard(current, requestedDate));
     }
 
-    // Create empty cards for final week
-    while (current.weekday !== 1) {
+    // Create empty cards for final week (stop on sunday = 7)
+    while (current.weekday !== 7) {
         current = current.minus({ days: 1 });
         els.push(createCalendarCard(current, requestedDate));
     }
