@@ -71,7 +71,6 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 5; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
             cy.get("textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
             cy.contains("Done!").should("exist").click({ force: true })
@@ -95,7 +94,6 @@ describe("Mobile Flow", () => {
     it("Test -5 Warning Behavior", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
-        cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
         cy.get("textarea").should("exist").focus().type(`-5`).should("have.value", `-5`)
         cy.contains("Continue").should("exist").click()
         cy.get("span.bold > div > div:first")

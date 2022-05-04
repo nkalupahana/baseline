@@ -7,7 +7,7 @@ import { Auth } from '@firebase/auth';
 import { getStorage } from '@firebase/storage';
 import { getDatabase } from 'firebase/database';
 import { LocalNotifications } from '@moody-app/capacitor-local-notifications';
-import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { FirebaseAuthentication } from '@moody-app/capacitor-firebase-authentication';
 import { FCM } from '@capacitor-community/fcm';
 
 /*

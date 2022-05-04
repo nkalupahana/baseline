@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import "./Container.css";
 import { useEffect } from "react";
 import ldb from '../db';
-import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { FirebaseAuthentication } from "@moody-app/capacitor-firebase-authentication";
 import { Capacitor } from "@capacitor/core";
 import { FCM } from "@capacitor-community/fcm";
 import { PushNotifications } from "@moody-app/capacitor-push-notifications";
@@ -15,7 +15,9 @@ const Login = () => {
     }, []);
 
     const signInWithGoogle = async () => {
-        const result = await FirebaseAuthentication.signInWithGoogle();
+        const result = await FirebaseAuthentication.signInWithGoogle({
+            scopes: ["https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/identitytoolkit"]
+        });
         if (Capacitor.getPlatform() !== "web") {
             await setUpFCM();
             signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
@@ -31,6 +33,14 @@ const Login = () => {
                 rawNonce: result.credential?.nonce
             }));
         }
+    }
+
+    const signInWithGithub = async () => {
+        const result = await FirebaseAuthentication.signInWithGithub({
+            scopes: ["user:email", "gist"]
+        });
+        alert("done");
+        console.log(result);
     }
 
     const signInWithAnonymous = async () => {
@@ -52,6 +62,7 @@ const Login = () => {
                 <br/><br/>
                 <IonButton mode="ios" onClick={signInWithGoogle}>Google</IonButton>
                 <IonButton mode="ios" onClick={signInWithApple}>Apple</IonButton>
+                <IonButton mode="ios" onClick={signInWithGithub}>GitHub</IonButton>
                 <IonButton mode="ios" onClick={signInWithAnonymous}>Anonymous</IonButton>
             </div>
         </IonPage>
