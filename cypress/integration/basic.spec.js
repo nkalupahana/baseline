@@ -174,7 +174,7 @@ describe("Desktop Flow", () => {
     it("Verify Notifications Page", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Notifications").should("exist")
-        // screenshot menu
+        cy.get("ion-menu").happoScreenshot()
         cy.contains("Notifications").click()
         cy.url().should("include", "notifications")
         cy.contains("not supported").should("exist")
