@@ -187,12 +187,12 @@ const GapFund = () => {
                         </div>
                     </div>
                 </> }
-                { gapFundData === null && !gapFundAvailable && 
+                { (gapFundData === SubmissionState.NO_SUBMISSION && !gapFundAvailable) && 
                     <p>Unfortunately, due to financial limitations from the number of requests we've received,
                         we can't accept any more requests at this time. Please check back later. If you have
                         some extra money and can donate to help us fund more people, please do!
                     </p> }
-                { gapFundData && typeof gapFundData === "object" && <>
+                { typeof gapFundData === "object" && <>
                     <p>Thanks for submitting the gap fund request detailed below. You should
                         get an email from us about your funding in the next few days. 
                         In the meantime, if you have any questions, 
