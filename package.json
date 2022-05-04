@@ -15,7 +15,7 @@
     "@ionic/core": "^6.0.2",
     "@ionic/react": "^6.0.2",
     "@ionic/react-router": "^6.0.2",
-    "@moody-app/capacitor-firebase-authentication": "^0.2.1",
+    "@moody-app/capacitor-firebase-authentication": "^0.2.2",
     "@moody-app/capacitor-local-notifications": "^1.0.21",
     "@moody-app/capacitor-push-notifications": "^1.0.13",
     "@nkalupahana/react-circular-slider": "github:nkalupahana/react-circular-slider",
