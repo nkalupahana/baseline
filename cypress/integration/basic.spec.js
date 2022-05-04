@@ -173,8 +173,9 @@ describe("Desktop Flow", () => {
 
     it("Verify Notifications Page", () => {
         cy.get(".fab-button-small").should("exist").click()
-        cy.get("body").happoScreenshot()
-        cy.contains("Notifications").should("exist").click()
+        cy.contains("Notifications").should("exist")
+        // screenshot menu
+        cy.contains("Notifications").click()
         cy.url().should("include", "notifications")
         cy.contains("not supported").should("exist")
         cy.get("body").happoScreenshot()
@@ -265,5 +266,32 @@ describe("Desktop Flow", () => {
         cy.contains("Gap Fund").should("exist").click()
         cy.url().should("include", "gap")
         cy.contains("Make sure you get this right").should("exist")
+
+        cy.contains("Submit").click()
+        cy.contains("complete all fields").should("exist")
+
+        cy.get("#email").type("hello@email.com")
+        cy.contains("Submit").click()
+        cy.get(".toastify").should("have.length", 2)
+
+        cy.get("#need").type("need")
+        cy.contains("Submit").click()
+        cy.get(".toastify").should("have.length", 3)
+
+        cy.get("#amount").type("amount")
+        cy.contains("Submit").click()
+        cy.get(".toastify").should("have.length", 4)
+
+        cy.get("#method").type("  ")
+        cy.contains("Submit").click()
+        cy.get(".toastify").should("have.length", 5)
+
+        cy.get("#method").clear().type("method")
+        cy.contains("Submit").click()
+        cy.contains("match").should("exist")
+
+        cy.get("#confirmEmail").type("hello@email.com")
+        cy.contains("Submit").click()
+        cy.contains("went wrong").should("exist")
     })
 })

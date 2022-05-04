@@ -71,23 +71,27 @@ const GapFund = () => {
     const submit = async () => {
         if (submitting) return;
         setSubmitting(true);
-        if (!email || !need || !amount || !method) {
+        if (!email.trim() || !need.trim() || !amount.trim() || !method.trim()) {
             toast("Please complete all fields before submitting!");
+            setSubmitting(false);
             return;
         }
 
         if (email !== confirmEmail) {
             toast("Your email addresses must match!");
+            setSubmitting(false);
             return;
         }
 
         if (email.length >= 10000 || need.length >= 10000 || amount.length >= 10000 || method.length >= 10000) {
             toast("Each field must be under 10,000 characters.");
+            setSubmitting(false);
             return;
         }
-        
+
+        let response;
         try {
-            await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFund",{
+            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFund",{
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${await getIdToken(user)}`,
@@ -105,7 +109,18 @@ const GapFund = () => {
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }
+            setSubmitting(false);
             return;
+        }
+
+        if (response) {
+            if (!response.ok) {
+                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+                setSubmitting(false);
+            }
+        } else {
+            toast(`Something went wrong, please try again!`);
+            setSubmitting(false);
         }
     };
 
@@ -137,11 +152,11 @@ const GapFund = () => {
                     <div style={{"width": "90%"}}>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Email</IonLabel>
-                            <IonInput value={email} inputMode="email" onIonChange={e => setEmail(e.detail.value!)}></IonInput>
+                            <IonInput id="email" value={email} inputMode="email" onIonChange={e => setEmail(e.detail.value!)}></IonInput>
                         </IonItem>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Confirm Email</IonLabel>
-                            <IonInput value={confirmEmail} inputMode="email" onIonChange={e => setConfirmEmail(e.detail.value!)}></IonInput>
+                            <IonInput id="confirmEmail" value={confirmEmail} inputMode="email" onIonChange={e => setConfirmEmail(e.detail.value!)}></IonInput>
                         </IonItem>
                         <p>Make sure you get this right -- we'll be sending more information here. If your email is monitored by people
                             you don't want seeing this request, make a burner email, or list a safer contact method above.
@@ -149,12 +164,12 @@ const GapFund = () => {
                         <br />
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">What do you need money for?</IonLabel>
-                            <Textarea getter={need} setter={setNeed} />
+                            <Textarea id="need" getter={need} setter={setNeed} />
                         </IonItem>
                         <br />
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">How much money do you want?</IonLabel>
-                            <Textarea getter={amount} setter={setAmount} />
+                            <Textarea id="amount" getter={amount} setter={setAmount} />
                         </IonItem>
                         <p>We may not be able to give the full amount you need due to financial limitations, 
                             so list multiple amounts if there are different ways we can help you.
@@ -162,7 +177,7 @@ const GapFund = () => {
                         <br />
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Paypal / Venmo / Cash App / Zelle</IonLabel>
-                            <Textarea getter={method} setter={setMethod} placeholder={"Venmo: @username"} />
+                            <Textarea id="method" getter={method} setter={setMethod} placeholder={"Venmo: @username"} />
                         </IonItem>
                         <p>If you need us to use a different method to get you money, explain it above and we'll reach out to you.</p>
                         <br />

@@ -348,14 +348,30 @@ exports.gapFund = functions.https.onRequest(async (req, res) => {
 
     // Validation
     for (let key of ["email", "need", "amount", "method"]) {
-        if (typeof body[key] !== "string" || body[key].length >= 10000) {
+        if (typeof body[key] !== "string" || body[key].trim().length === 0 || body[key].length >= 10000) {
             res.send(400);
             return;
         }
     }
 
-    // Put data in user's database
+    // Get user statistics for fraud detection
     const db = admin.database();
+    const logRef = db.ref(`/${req.user.user_id}/logs`);
+    const firstLog = Number(Object.keys(await (await logRef.limitToFirst(1).get()).val())[0]);
+
+    const lastLogs = await (await logRef.limitToLast(25).get()).val();
+    let lastLogStr = "";
+    for (let key in lastLogs) {
+        lastLogStr += DateTime.fromMillis(Number(key)).toRFC2822() + "\n";
+    }
+
+    // Simple date validation (real fraud detection will be done manually in the sheet)
+    if (Object.keys(lastLogs).length < 7 || DateTime.now().minus({ days: 5 }).toMillis() < firstLog) {
+        res.send(400);
+        return;
+    }
+
+    // Put data in user's database
     const gapFundRef = db.ref(`/${req.user.user_id}/gapFund`);
     const currentData = await (await gapFundRef.get()).val();
     if (currentData) {
@@ -369,22 +385,6 @@ exports.gapFund = functions.https.onRequest(async (req, res) => {
         amount: body.amount,
         method: body.method
     });
-
-    // Get user statistics for fraud detection
-    const logRef = db.ref(`/${req.user.user_id}/logs`);
-    const firstLog = Number(Object.keys(await (await logRef.limitToFirst(1).get()).val())[0]);
-
-    const lastLogs = await (await logRef.limitToLast(25).get()).val();
-    let lastLogStr = "";
-    for (let key in lastLogs) {
-        lastLogStr += DateTime.fromMillis(Number(key)).toRFC2822() + "\n";
-    }
-
-    // Simple date validation (real fraud detection will be done manually in the sheet)
-    if (Object.keys(lastLogs).length < 7 || DateTime.now().minus({ days: 5 }).toMillis() > firstLog) {
-        res.send(400);
-        return;
-    }
 
     // Write to spreadsheet
     const google = require("@googleapis/sheets");
