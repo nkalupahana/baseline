@@ -13,6 +13,7 @@ import { auth, db } from "../firebase";
 import { networkFailure, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
+import AES from "crypto-js/aes";
 
 interface GapFundData {
     email: string;
@@ -46,7 +47,7 @@ const GapFund = () => {
 
         const listener = async (snap: DataSnapshot) => {
             setGapFundAvailable(await (await get(ref(db, "/config/gapFundAvailable"))).val());
-            const data = await snap.val();
+            let data = await snap.val();
             if (data === null) {
                 const firstLogTime = await ldb.logs.orderBy("timestamp").limit(1).first();
                 const numLogs = await ldb.logs.count();
@@ -57,6 +58,10 @@ const GapFund = () => {
                     setGapFundData(SubmissionState.NO_SUBMISSION);
                 }
             } else {
+                if ("data" in data) {
+                    // decrypt TODO
+                    //AES.decrypt()
+                }
                 setGapFundData(data);
             }
         }
@@ -91,7 +96,7 @@ const GapFund = () => {
 
         let response;
         try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFund",{
+            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFundEnc",{
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${await getIdToken(user)}`,
@@ -101,6 +106,7 @@ const GapFund = () => {
                     need,
                     amount,
                     method,
+                    keys: localStorage.getItem("keys")
                 })
             });
         } catch (e: any) {
@@ -139,7 +145,7 @@ const GapFund = () => {
                 </p>
                 <p className="text-center">
                     This is a volunteer operation funded by donations. If you have money to spare to help people in need, 
-                    please <span style={{color: "var(--ion-color-primary, #3880ff)", cursor: "pointer"}} onClick={() => {history.push("/donate")}}>donate it here!</span> 100% of donations go to the gap fund.
+                    please <span className="fake-link" onClick={() => {history.push("/donate")}}>donate it here!</span> 100% of donations go to the gap fund.
                 </p>
                 <div style={{width: "100%", height: "25px", borderTop: "1px #d2d1d1 solid"}}></div>
                 { gapFundData === SubmissionState.NO_DATA_YET && <Preloader /> }

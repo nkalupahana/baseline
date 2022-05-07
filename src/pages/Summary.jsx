@@ -2,7 +2,7 @@ import { IonContent, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, 
 import { useEffect, useRef, useState, Fragment } from "react";
 import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
-import { auth, db } from "../firebase";
+import { auth, db, signOutAndCleanUp } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { cashOutline, menuOutline, notifications, pencil } from "ionicons/icons";
 import Media from "react-media";
@@ -16,6 +16,8 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
+import AES from "crypto-js/aes";
+import aesutf8 from "crypto-js/enc-utf8";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -46,9 +48,20 @@ const Summary = () => {
 
             if (newData) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
+                let keys = localStorage.getItem("keys");
+                if (!keys) {
+                    // TODO activate once encryption is fully available
+                    //signOutAndCleanUp();
+                    //return;
+                } else {
+                    keys = JSON.parse(keys);
+                }
 
                 // Add timestamp to data object
                 for (let key in newData) {
+                    if ("data" in newData[key]) {
+                        newData[key] = JSON.parse(AES.decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
+                    }
                     newData[key].timestamp = Number(key);
                 }
 

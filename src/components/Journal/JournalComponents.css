@@ -47,6 +47,7 @@
     overflow: auto;
     outline: none;
     line-height: 21px;
+    overflow-y: clip;
 
     -webkit-box-shadow: none;
     -moz-box-shadow: none;

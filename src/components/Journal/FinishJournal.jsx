@@ -45,13 +45,14 @@ const FinishJournal = props => {
         data.append("mood", props.moodWrite);
         data.append("journal", props.text);
         data.append("average", props.average);
+        data.append("keys", localStorage.getItem("keys"));
         for (let file of props.files) {
             data.append("file", file);
         }
 
         let response = undefined;
         try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLog", {
+            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLogEnc", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${await getIdToken(user)}`,

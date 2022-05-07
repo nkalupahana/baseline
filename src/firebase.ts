@@ -38,6 +38,7 @@ export let storage = getStorage();
 export let db = getDatabase();
 
 export const signOutAndCleanUp = () => {
+    console.log("SIGN OUT");
     // Clear DB
     ldb.logs.clear();
     // Remove local notifications
@@ -55,6 +56,8 @@ export const signOutAndCleanUp = () => {
     });
     // Remove FCM topic subscription
     if (Capacitor.getPlatform() !== "web") FCM.unsubscribeFrom({ topic: "all" });
+    // Remove keys from store
+    localStorage.removeItem("keys");
     // Sign out of Firebase
     FirebaseAuthentication.signOut();
     signOut(auth);

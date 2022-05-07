@@ -21,7 +21,7 @@ const Negative5 = () => {
         </p>
         <p className="text-center">If you're struggling with money and it's hurting your mental health, you can apply for financial assistance from the baseline Gap Fund.
             The gap fund exists to help you "fill in the gaps" in your financial situation, and can be used for pretty much anything, including therapy, medication, transportation, basic necessities like food and shelter, and more.&nbsp;
-            <span style={{color: "var(--ion-color-primary, #3880ff)", cursor: "pointer"}} onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or later from the menu on the summary page.</span>
+            <span className="fake-link" onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or later from the menu on the summary page.</span>
         </p>
     </>)
 };

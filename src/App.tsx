@@ -30,7 +30,7 @@ import "toastify-js/src/toastify.css"
 /* Theme variables */
 import "./theme/variables.css";
 
-import { auth } from "./firebase";
+import { auth, signOutAndCleanUp } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Dexie from "dexie";
 import { useEffect, useState } from "react";
@@ -49,9 +49,15 @@ setupIonicReact({
 const App = () => {
     const [user, loading] = useAuthState(auth);
     const [authLikely, setAuthLikely] = useState(false);
+    const [loggingIn, setLoggingIn] = useState(false);
     
     useEffect(() => {
         smoothscroll.polyfill();
+
+        if (!localStorage.getItem("keys")) {
+            signOutAndCleanUp();
+            return;
+        }
         
         (async () => {
             if (await Dexie.exists("ldb") && (await ldb.logs.count()) !== 0) {
@@ -63,8 +69,8 @@ const App = () => {
     return (
         <IonApp>
             { loading && !authLikely && <Preloader /> }
-            { !loading && !user && <Login></Login> }
-            { ((!loading && user) || (loading && authLikely)) && <IonReactRouter history={history}>
+            { !loading && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
+            { ((!loading && user && !loggingIn) || (loading && authLikely)) && <IonReactRouter history={history}>
                 <Switch>
                     <Route path="/journal" component={Journal} />
                     <Route path="/summary" component={Summary} />

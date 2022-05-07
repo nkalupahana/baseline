@@ -7,25 +7,41 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "build": "tsc"
   },
   "engines": {
     "node": "14"
   },
-  "main": "index.js",
+  "main": "lib/index.js",
   "dependencies": {
+    "@googleapis/drive": "^2.3.0",
     "@googleapis/sheets": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "crypto-js": "^4.1.1",
+    "crypto-random-string": "^3.3.1",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.18.0",
+    "firebase-functions": "^3.21.0",
     "formidable-serverless": "^1.1.1",
     "luxon": "^2.0.2",
+    "node-fetch": "^2.6.7",
     "sharp": "^0.29.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/crypto-js": "^4.1.1",
+    "@types/node-fetch": "^2.6.1",
+    "@types/sharp": "^0.30.2",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^7.6.0",
     "eslint-config-google": "^0.14.0",
-    "firebase-functions-test": "^0.2.0"
+    "eslint-plugin-import": "^2.26.0",
+    "firebase-functions-test": "^0.2.0",
+    "typescript": "^4.6.4"
   },
-  "private": true
+  "private": true,
+  "type": "commonjs"
 }
