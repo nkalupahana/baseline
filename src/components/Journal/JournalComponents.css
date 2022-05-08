@@ -58,6 +58,10 @@
     display: none;
 }
 
+.tx::-webkit-scrollbar {
+    display: none;
+}
+
 .tx:focus {
     border: none;
     box-shadow: none;
