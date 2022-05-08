@@ -30,5 +30,9 @@
 	{
 		"pkg": "@moody-app/capacitor-push-notifications",
 		"classpath": "com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin"
+	},
+	{
+		"pkg": "capacitor-cloudkit",
+		"classpath": "cloudkit.baseline.getbaseline.app.CloudKitPlugin"
 	}
 ]

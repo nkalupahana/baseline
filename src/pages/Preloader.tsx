@@ -6,7 +6,7 @@ const Preloader = ({ message="One second, we're getting things ready." } : { mes
         <div className="container column-flex">
             <br/><br/><br/><br/>
             <IonSpinner className="loader" name="crescent" class="bigger-spinner" />
-            <p>{ message }</p>
+            <p style={{"paddingTop": "25px"}} className="text-center container">{ message }</p>
         </div>
     );
 };

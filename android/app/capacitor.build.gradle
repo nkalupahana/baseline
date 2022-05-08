@@ -17,6 +17,7 @@ dependencies {
     implementation project(':moody-app-capacitor-firebase-authentication')
     implementation project(':moody-app-capacitor-local-notifications')
     implementation project(':moody-app-capacitor-push-notifications')
+    implementation project(':capacitor-cloudkit')
 
 }
 

@@ -21,6 +21,13 @@ export interface Request extends functions.https.Request {
     user?: DecodedIdToken;
 }
 
+const CLOUDKIT = {
+    KEY: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
+    ENV: "production",
+    ID: "iCloud.baseline.getbaseline.app",
+    BASE: "https://api.apple-cloudkit.com"
+}
+
 const validateAuth = async (req: Request, res: functions.Response<any>) => {
     if ((!req.headers.authorization || !req.headers.authorization.startsWith("Bearer ")) && !(req.cookies && req.cookies.__session)) {
         res.status(403).send("Unauthorized");
@@ -567,7 +574,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
             res.send(keys);
             return;
         } else if (body.credential.providerId === "apple.com") {
-            const url = `https://api.apple-cloudkit.com/database/1/iCloud.baseline.getbaseline.app/development/private/records/lookup?ckAPIToken=d894131229c2c6c118a6a61df792e0cd2279022205f88fbb89c0c0f97ce5deed&ckWebAuthToken=${body.credential.accessToken}`;
+            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${CLOUDKIT.KEY}&ckWebAuthToken=${body.credential.accessToken}`;
             const response = await nfetch(url, {
                 method: "POST",
                 body: JSON.stringify({
@@ -633,7 +640,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
 
         id = respData["id"];
     } else if (body.credential.providerId === "apple.com") {
-        const url = `https://api.apple-cloudkit.com/database/1/iCloud.baseline.getbaseline.app/development/private/records/modify?ckAPIToken=d894131229c2c6c118a6a61df792e0cd2279022205f88fbb89c0c0f97ce5deed&ckWebAuthToken=${body.credential.accessToken}`;
+        const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${CLOUDKIT.KEY}&ckWebAuthToken=${body.credential.accessToken}`;
         console.log(url);
         const b = JSON.stringify({
             operations: [{

@@ -22,8 +22,8 @@ enum LoginStates {
 
 const cloudKitOpts: SignInOptions = {
     containerIdentifier: "iCloud.baseline.getbaseline.app",
-    environment: "development",
-    ckAPIToken: "d894131229c2c6c118a6a61df792e0cd2279022205f88fbb89c0c0f97ce5deed"
+    environment: "production",
+    ckAPIToken: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565"
 };
 
 const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
@@ -170,7 +170,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     return (
         <IonPage>
-            <div className="container column-flex">
+            <div className="container column-flex text-center">
                 <br/><br/>
                 { loginState === LoginStates.START && <>
                     <IonButton mode="ios" onClick={() => loginFlow(signInWithGoogle)}>Google</IonButton>
@@ -181,15 +181,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
                     <Preloader message="Logging in, please wait." />
                     <br />
-                    <p>Been stuck here for over a minute? <span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+                    <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
                 </> }
                 { loginState === LoginStates.CLOUDKIT_NEEDED && <>
                     <IonButton mode="ios" onClick={signInWithCloudKit}>Apple, Again</IonButton>
                 </> }
                 { loginState === LoginStates.GETTING_KEYS && <>
-                    <Preloader message="One second! We're getting your encryption keys." />
+                    <Preloader message="One moment! We're getting your encryption keys." />
                     <br />
-                    <p>Been stuck here for over a minute? <span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+                    <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
                 </> }
             </div>
         </IonPage>
