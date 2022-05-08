@@ -26,3 +26,8 @@
 
 import 'happo-cypress';
 import 'cypress-wait-until';
+
+// Never clear localStorage
+Cypress.LocalStorage.clear = function (keys, ls, rs) {
+
+}

@@ -69,7 +69,7 @@ const validateKeys = async (keys_: string, db: Database, user_id: string) => {
         return false;
     }
 
-    if (Object.keys(keys).length !== 3) {
+    if (!keys || Object.keys(keys).length !== 3) {
         return false;
     }
 
