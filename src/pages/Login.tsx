@@ -100,7 +100,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 localStorage.setItem("keys", JSON.stringify(await keyResponse.json()));
                 setLoggingIn(false);
             } else {
-                throw new Error(`Something went wrong, please try again! ${await keyResponse.text()}`);
+                throw new Error(`Something went wrong, please try again! ${keyResponse ? await keyResponse.text() : ""}`);
             }
         } catch (e: any) {
             if (networkFailure(e.message)) {

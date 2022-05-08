@@ -54,7 +54,7 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
 
             { grow && 
             <>
-                { log.files && log.files.lenght > 0 && <ImageCarousel setMenuDisabled={setMenuDisabled} files={log.files}></ImageCarousel>}
+                { log.files && log.files.length > 0 && <ImageCarousel setMenuDisabled={setMenuDisabled} files={log.files}></ImageCarousel>}
                 <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
             </> }
         </div>
