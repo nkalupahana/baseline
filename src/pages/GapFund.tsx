@@ -9,11 +9,12 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
-import { auth, db } from "../firebase";
+import { auth, db, signOutAndCleanUp } from "../firebase";
 import { networkFailure, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
+import aesutf8 from "crypto-js/enc-utf8";
 
 interface GapFundData {
     email: string;
@@ -58,9 +59,18 @@ const GapFund = () => {
                     setGapFundData(SubmissionState.NO_SUBMISSION);
                 }
             } else {
+                console.log(data);
                 if ("data" in data) {
-                    // decrypt TODO
-                    //AES.decrypt()
+                    let keys_ = localStorage.getItem("keys");
+                    let keys;
+                    if (!keys_) {
+                        signOutAndCleanUp();
+                        return;
+                    } else {
+                        keys = JSON.parse(keys_);
+                    }
+                    
+                    data = JSON.parse(AES.decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8))
                 }
                 setGapFundData(data);
             }

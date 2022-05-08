@@ -436,10 +436,10 @@ export const gapFundEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] })
     const body = JSON.parse(req.body);
     
     const db = admin.database();
-    const encryptionKey = await validateKeys(body.keys, db, req.body.user_id);
+    const encryptionKey = await validateKeys(body.keys, db, req.user.user_id);
 
     if (!encryptionKey) {
-        res.send(400);
+        res.send(400); 
         return;
     }
 

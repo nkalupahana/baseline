@@ -50,9 +50,8 @@ const Summary = () => {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
                 let keys = localStorage.getItem("keys");
                 if (!keys) {
-                    // TODO activate once encryption is fully available
-                    //signOutAndCleanUp();
-                    //return;
+                    signOutAndCleanUp();
+                    return;
                 } else {
                     keys = JSON.parse(keys);
                 }
