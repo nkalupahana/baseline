@@ -27,4 +27,4 @@ include ':moody-app-capacitor-push-notifications'
 project(':moody-app-capacitor-push-notifications').projectDir = new File('../node_modules/@moody-app/capacitor-push-notifications/android')
 
 include ':capacitor-cloudkit'
-project(':capacitor-cloudkit').projectDir = new File('../node_modules/capacitor-cloudkit/android')
+project(':capacitor-cloudkit').projectDir = new File('../../capacitor-cloudkit/android')

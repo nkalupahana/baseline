@@ -31,7 +31,7 @@
     "@types/toastify-js": "^1.11.0",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
-    "capacitor-cloudkit": "^0.0.1",
+    "capacitor-cloudkit": "^0.0.2",
     "crypto-js": "^4.1.1",
     "dexie": "^3.0.3",
     "dexie-react-hooks": "^1.1.1",
