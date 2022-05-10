@@ -24,6 +24,11 @@ describe("Mobile Flow", () => {
 
     it("Login as Anonymous", () => {
         cy.contains("Anonymous").click()
+        cy.contains("Logging in").should("exist")
+        cy.contains("try again").should("exist").click()
+        cy.contains("Anonymous").click()
+        cy.contains("Logging in").should("exist")
+        cy.contains("keys").should("exist")
         cy.contains("What's happening").should("exist")
         cy.get("body").happoScreenshot()
     })
