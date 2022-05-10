@@ -35,6 +35,12 @@ jobs:
       with:
         name: test-video
         path: cypress/videos
+    - name: Upload Test Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-screenshots
+        path: cypress/screenshots
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
