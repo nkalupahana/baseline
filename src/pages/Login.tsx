@@ -142,16 +142,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         return result.credential;
     }
 
-    const signInWithGithub = async () => {
-        const result = await FirebaseAuthentication.signInWithGithub({
-            scopes: ["user:email", "gist"]
-        });
-        alert("done");
-        console.log(result);
-
-        throw Error("No tokens?");
-    }
-
     const signInWithAnonymous = async () => {
         if (Capacitor.getPlatform() !== "web") await setUpFCM();
         await signInAnonymously(auth);
@@ -177,7 +167,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 { loginState === LoginStates.START && <>
                     <IonButton mode="ios" onClick={() => loginFlow(signInWithGoogle)}>Google</IonButton>
                     <IonButton mode="ios" onClick={() => loginFlow(signInWithApple)}>Apple</IonButton>
-                    <IonButton mode="ios" onClick={() => loginFlow(signInWithGithub)}>GitHub</IonButton>
                     <IonButton mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous</IonButton>
                 </> }
                 { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
@@ -186,7 +175,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
                 </> }
                 { loginState === LoginStates.CLOUDKIT_NEEDED && <>
-                    <IonButton mode="ios" onClick={signInWithCloudKit}>Apple, Again</IonButton>
+                    <div className="title">One more time!</div>
+                    <p>To properly secure your data with iCloud, we need you to sign in one more time. You'll be ready to go after that, though!</p>
+                    <p>Sign in with Apple is still in beta. Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
+                    <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
                 </> }
                 { loginState === LoginStates.GETTING_KEYS && <>
                     <Preloader message="One moment! We're getting your encryption keys." />

@@ -6,6 +6,7 @@ import { DateTime } from "luxon"
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
+        Cypress.config('defaultCommandTimeout', 8000);
     })
 
     it("Load Main Page", () => {
