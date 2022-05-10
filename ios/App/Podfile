@@ -10,17 +10,19 @@ def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCommunityFcm', :path => '../../node_modules/@capacitor-community/fcm'
-  pod 'CapacitorFirebaseAuthentication', :path => '../../node_modules/@capacitor-firebase/authentication'
   pod 'CapacitorApp', :path => '../../node_modules/@capacitor/app'
   pod 'CapacitorHaptics', :path => '../../node_modules/@capacitor/haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
   pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
+  pod 'MoodyAppCapacitorFirebaseAuthentication', :path => '../../node_modules/@moody-app/capacitor-firebase-authentication'
   pod 'MoodyAppCapacitorLocalNotifications', :path => '../../node_modules/@moody-app/capacitor-local-notifications'
   pod 'MoodyAppCapacitorPushNotifications', :path => '../../node_modules/@moody-app/capacitor-push-notifications'
+  pod 'CapacitorCloudkit', :path => '../../node_modules/capacitor-cloudkit'
 end
 
 target 'baseline' do
   capacitor_pods
   # Add your Pods here
-  pod 'CapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@capacitor-firebase/authentication'
+  pod 'GoogleSignIn', :git => 'https://github.com/google/GoogleSignIn-iOS.git', :branch => 'main'
+  pod 'MoodyAppCapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@moody-app/capacitor-firebase-authentication'
 end

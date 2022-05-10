@@ -6,6 +6,7 @@ import { DateTime } from "luxon"
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
+        Cypress.config('defaultCommandTimeout', 8000);
     })
 
     it("Load Main Page", () => {
@@ -23,6 +24,11 @@ describe("Mobile Flow", () => {
 
     it("Login as Anonymous", () => {
         cy.contains("Anonymous").click()
+        cy.contains("Logging in").should("exist")
+        cy.contains("try again").should("exist").click()
+        cy.contains("Anonymous").click()
+        cy.contains("Logging in").should("exist")
+        cy.contains("keys").should("exist")
         cy.contains("What's happening").should("exist")
         cy.get("body").happoScreenshot()
     })
@@ -71,7 +77,6 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 5; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
             cy.get("textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
             cy.contains("Done!").should("exist").click({ force: true })
@@ -95,7 +100,6 @@ describe("Mobile Flow", () => {
     it("Test -5 Warning Behavior", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
-        cy.waitUntil(() => Cypress.$("ion-toast").length === 0)
         cy.get("textarea").should("exist").focus().type(`-5`).should("have.value", `-5`)
         cy.contains("Continue").should("exist").click()
         cy.get("span.bold > div > div:first")

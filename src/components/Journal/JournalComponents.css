@@ -47,6 +47,7 @@
     overflow: auto;
     outline: none;
     line-height: 21px;
+    overflow-y: clip;
 
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -57,14 +58,19 @@
     display: none;
 }
 
+.tx::-webkit-scrollbar {
+    display: none;
+}
+
 .tx:focus {
     border: none;
     box-shadow: none;
 }
 
 .tx.tx-display {
-    margin-top: 0 !important;
-    width: 100%;
+    margin: 0 auto;
+    padding-right: 6px;
+    width: 98%;
 }
 
 /* Auto-Resize Textbox */

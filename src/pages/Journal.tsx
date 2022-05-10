@@ -3,10 +3,12 @@ import { Switch } from "react-router";
 import { Route } from "react-router-dom";
 import WriteJournal from "../components/Journal/WriteJournal";
 import FinishJournal from "../components/Journal/FinishJournal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { closeOutline } from "ionicons/icons";
 import history from "../history";
 import "./Container.css";
+import { checkKeys } from "../helpers";
+import { signOutAndCleanUp } from "../firebase";
 
 const Journal = () => {
     const [text, setText] = useState("");
@@ -14,6 +16,13 @@ const Journal = () => {
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
     const [average, setAverage] = useState("average");
+    
+    useEffect(() => {
+        const keys = checkKeys();
+        if (!keys) {
+            signOutAndCleanUp();
+        }
+    }, []);
 
     return (
         <IonPage>

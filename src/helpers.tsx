@@ -68,3 +68,11 @@ export function toast(message: string, gravity?: Toastify.Options["gravity"]) {
 export function networkFailure(message: string) {
     return message === "Load failed" || message.includes("Failed to fetch");
 }
+
+export function checkKeys() {
+    const keys = localStorage.getItem("keys");
+    if (!keys) {
+        return false;
+    }
+    return JSON.parse(keys);
+}

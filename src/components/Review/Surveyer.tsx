@@ -45,14 +45,15 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
             setSubmitting(q.value);
             let response = undefined;
             try {
-                response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/survey", {
+                response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/surveyEnc", {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${await getIdToken(user)}`,
                     },
                     body: JSON.stringify({
                         key: final._key,
-                        results: final._results
+                        results: final._results,
+                        keys: localStorage.getItem("keys")
                     })
                 })
             } catch (e: any) {

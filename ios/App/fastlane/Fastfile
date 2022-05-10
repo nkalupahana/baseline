@@ -27,7 +27,7 @@ platform :ios do
     upload_to_testflight(
       api_key_path: "authkey.json", 
       skip_waiting_for_build_processing: true, 
-      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}"
+      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
     )
   end
 end

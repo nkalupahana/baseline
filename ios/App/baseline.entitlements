@@ -12,7 +12,17 @@
 	<array>
 		<string>activitycontinuation:web.getbaseline.app</string>
 	</array>
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.baseline.getbaseline.app</string>
+	</array>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
 	<key>com.apple.developer.usernotifications.time-sensitive</key>
 	<true/>
+	<key>com.apple.developer.icloud-container-environment</key>
+	<string>Production</string>
 </dict>
 </plist>

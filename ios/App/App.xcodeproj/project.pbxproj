@@ -33,6 +33,7 @@
 		AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
 		D76920355608A3227F030023 /* Pods-baseline.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baseline.debug.xcconfig"; path = "Pods/Target Support Files/Pods-baseline/Pods-baseline.debug.xcconfig"; sourceTree = "<group>"; };
 		E2AD3EC8EC6BE39DD59F3DDF /* Pods-moody.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-moody.debug.xcconfig"; path = "Pods/Target Support Files/Pods-moody/Pods-moody.debug.xcconfig"; sourceTree = "<group>"; };
+		F413097F28232F7E004118CE /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		F43DAABF27C57A7C00566D61 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 		FE6B42F1849A2895643B62CC /* Pods-baseline.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baseline.release.xcconfig"; path = "Pods/Target Support Files/Pods-baseline/Pods-baseline.release.xcconfig"; sourceTree = "<group>"; };
@@ -53,6 +54,7 @@
 		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F413097F28232F7E004118CE /* CloudKit.framework */,
 				40CBD264F71156B3FC86972E /* Pods_baseline.framework */,
 			);
 			name = Frameworks;

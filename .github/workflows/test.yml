@@ -35,6 +35,12 @@ jobs:
       with:
         name: test-video
         path: cypress/videos
+    - name: Upload Test Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-screenshots
+        path: cypress/screenshots
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
@@ -82,7 +88,8 @@ jobs:
     - name: Send to DeployGate
       env:
         token: ${{ secrets.DEPLOYGATE_TOKEN }}
-      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}" https://deploygate.com/api/users/nkalupahana/apps
+        COMMIT_MSG: ${{ github.event.commits[0].message }}
+      run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}, msg ${COMMIT_MSG}" https://deploygate.com/api/users/nkalupahana/apps
 
   ios:
     needs: test
@@ -111,3 +118,4 @@ jobs:
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
         APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+        COMMIT_MSG: ${{ github.event.commits[0].message }}

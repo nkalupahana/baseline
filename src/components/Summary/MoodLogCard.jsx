@@ -12,7 +12,7 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
 
     function toggleGrow() {
         if (!grow) {
-            if (log.files || logContainer.current.offsetHeight === NOGROW_HEIGHT) {
+            if ((log.files && log.files.length > 0) || logContainer.current.offsetHeight === NOGROW_HEIGHT) {
                 setGrow(true);
             }
         } else {
@@ -49,12 +49,12 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
             
             { !grow && 
             <>
-                { log.files && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
+                { log.files && log.files.length > 0 && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
             </> }
 
             { grow && 
             <>
-                { log.files && <ImageCarousel setMenuDisabled={setMenuDisabled} files={log.files}></ImageCarousel>}
+                { log.files && log.files.length > 0 && <ImageCarousel setMenuDisabled={setMenuDisabled} files={log.files}></ImageCarousel> }
                 <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
             </> }
         </div>
