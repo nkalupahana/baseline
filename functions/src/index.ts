@@ -61,11 +61,9 @@ const validateAuth = async (req: Request, res: functions.Response<any>) => {
 };
 
 const validateKeys = async (keys_: string, db: Database, user_id: string) => {
-    // Encryption key validation
     if (typeof keys_ !== "string") {
         return false;
     }
-
 
     let keys;
     try {
@@ -78,7 +76,7 @@ const validateKeys = async (keys_: string, db: Database, user_id: string) => {
         return false;
     }
 
-    for (let key of ["visibleKey", "encryptedKey", "encryptedKeyVisible"]) {
+    for (const key of ["visibleKey", "encryptedKey", "encryptedKeyVisible"]) {
         if (!(key in keys) || typeof keys[key] !== "string") {
             return false;
         }
@@ -178,7 +176,7 @@ export const moodLogEnc = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCR
         }
 
         let promises = [];
-        for (let file of files) {
+        for (const file of files) {
             // Convert file to WEBP (with compression), and then save
             // Promises array for parallel processing
             try {
@@ -343,7 +341,7 @@ export const surveyEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).
         }
 
         // Validate that result values are numbers, and that they're within bounds
-        for (let key of RESULT_VAL.keys) {
+        for (const key of RESULT_VAL.keys) {
             if (
                 typeof results[key] !== "number" || 
                 isNaN(results[key]) || 
@@ -449,7 +447,7 @@ export const gapFundEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] })
     }
 
     // Validation
-    for (let key of ["email", "need", "amount", "method"]) {
+    for (const key of ["email", "need", "amount", "method"]) {
         if (typeof body[key] !== "string" || body[key].trim().length === 0 || body[key].length >= 10000) {
             res.send(400);
             return;
@@ -462,7 +460,7 @@ export const gapFundEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] })
 
     const lastLogs = await (await logRef.limitToLast(25).get()).val();
     let lastLogStr = "";
-    for (let key in lastLogs) {
+    for (const key in lastLogs) {
         lastLogStr += DateTime.fromMillis(Number(key)).toRFC2822() + "\n";
     }
 
@@ -594,17 +592,17 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
                     }
                 })
             });
-            let data = await response.json();
-            if ("serverErrorCode" in data || !("records" in data)) {
+            let respData = await response.json();
+            if ("serverErrorCode" in respData || !("records" in respData)) {
                 res.send(400);
                 return;
             }
 
-            data = data["records"][0]["fields"];
+            respData = respData["records"][0]["fields"];
             res.send({
-                encryptedKey: data["encryptedKey"]["value"],
-                visibleKey: data["visibleKey"]["value"],
-                encryptedKeyVisible: AES.decrypt(data["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
+                encryptedKey: respData["encryptedKey"]["value"],
+                visibleKey: respData["visibleKey"]["value"],
+                encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
             });
             return;
         } else if (body.credential.providerId === "anonymous") {
@@ -620,19 +618,16 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
     let id: string = "";
 
     if (body.credential.providerId === "google.com") {
-        const b = JSON.stringify({
-            "parents": ["appDataFolder"],
-            "name": "keys",
-            "properties": {
-                visibleKey,
-                encryptedKey
-            }
-        });
-        console.log(b);
-
         const response = await nfetch("https://www.googleapis.com/drive/v3/files", {
             method: "POST",
-            body: b,
+            body: JSON.stringify({
+                "parents": ["appDataFolder"],
+                "name": "keys",
+                "properties": {
+                    visibleKey,
+                    encryptedKey
+                }
+            }),
             headers: {
                 "Authorization": `Bearer ${body.credential.accessToken}`,
                 "Content-Type": "application/json"
@@ -640,8 +635,6 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         });
 
         const respData = await response.json();
-        console.log(respData);
-        console.log(JSON.stringify(respData));
 
         if ("error" in respData || !("id" in respData)) {
             res.send(400);
@@ -651,35 +644,30 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         id = respData["id"];
     } else if (body.credential.providerId === "apple.com") {
         const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
-        console.log(url);
-        const b = JSON.stringify({
-            operations: [{
-                operationType: "forceReplace",
-                record: {
-                    recordType: "Keys",
-                    recordName: "Keys",
-                    fields: {
-                        visibleKey: {
-                            value: visibleKey,
-                            recordType: "STRING"
-                        },
-                        encryptedKey: {
-                            value: encryptedKey,
-                            recordType: "STRING"
-                        }
-                    }
-                }
-            }]
-        });
-        console.log(b);
-
         const response = await nfetch(url, {
             method: "POST",
-            body: b
+            body: JSON.stringify({
+                operations: [{
+                    operationType: "forceReplace",
+                    record: {
+                        recordType: "Keys",
+                        recordName: "Keys",
+                        fields: {
+                            visibleKey: {
+                                value: visibleKey,
+                                recordType: "STRING"
+                            },
+                            encryptedKey: {
+                                value: encryptedKey,
+                                recordType: "STRING"
+                            }
+                        }
+                    }
+                }]
+            })
         });
 
         const respData = await response.json();
-        console.log(JSON.stringify(respData));
         if ("serverErrorCode" in respData) {
             res.send(400);
             return;

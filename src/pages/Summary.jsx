@@ -18,6 +18,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
 import aesutf8 from "crypto-js/enc-utf8";
+import { checkKeys } from "../helpers";
 
 const Summary = () => {
     const [, loading] = useAuthState(auth);
@@ -25,10 +26,15 @@ const Summary = () => {
     const [gettingData, setGettingData] = useState(true);
     const menuRef = useRef();
     const logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
+    const keys = checkKeys();
 
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
         if (loading) return;
+        if (!keys) {
+            signOutAndCleanUp();
+            return;
+        }
         const listener = async snap => {
             setGettingData(true);
             let lastUpdated = 0;
@@ -48,17 +54,9 @@ const Summary = () => {
 
             if (newData) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
-                let keys = localStorage.getItem("keys");
-                if (!keys) {
-                    signOutAndCleanUp();
-                    return;
-                } else {
-                    keys = JSON.parse(keys);
-                }
-
                 // Add timestamp to data object
-                for (let key in newData) {
-                    if ("data" in newData[key]) {
+                for (const key in newData) {
+                    if ("data" in newData[key] && keys) {
                         newData[key] = JSON.parse(AES.decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
                     }
                     newData[key].timestamp = Number(key);
@@ -74,7 +72,7 @@ const Summary = () => {
         return () => {
             off(lastUpdatedRef, "value", listener);
         };
-    }, [loading, setGettingData]);
+    }, [loading, setGettingData, keys]);
 
     return (
         <div>

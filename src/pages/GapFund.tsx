@@ -70,7 +70,7 @@ const GapFund = () => {
                         keys = JSON.parse(keys_);
                     }
                     
-                    data = JSON.parse(AES.decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8))
+                    data = JSON.parse(AES.decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
                 }
                 setGapFundData(data);
             }

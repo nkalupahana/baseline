@@ -32,15 +32,14 @@ import "./theme/variables.css";
 
 import { auth, signOutAndCleanUp } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import Dexie from "dexie";
 import { useEffect, useState } from "react";
 import history from "./history";
 import "./lifecycle";
 import smoothscroll from "smoothscroll-polyfill";
 import { Capacitor } from "@capacitor/core";
-import ldb from "./db";
 import GapFund from "./pages/GapFund";
 import Donate from "./pages/Donate";
+import { checkKeys } from "./helpers";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -48,29 +47,21 @@ setupIonicReact({
 
 const App = () => {
     const [user, loading] = useAuthState(auth);
-    const [authLikely, setAuthLikely] = useState(false);
     const [loggingIn, setLoggingIn] = useState(false);
+    const keys = checkKeys();
     
     useEffect(() => {
         smoothscroll.polyfill();
-
-        if (!localStorage.getItem("keys")) {
+        if (!keys) {
             signOutAndCleanUp();
-            return;
         }
-        
-        (async () => {
-            if (await Dexie.exists("ldb") && (await ldb.logs.count()) !== 0) {
-                setAuthLikely(true);
-            }
-        })();
-    }, []);
+    }, [keys]);
 
     return (
         <IonApp>
-            { loading && !authLikely && <Preloader /> }
+            { loading && !keys && <Preloader /> }
             { !loading && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
-            { ((!loading && user && !loggingIn) || (loading && authLikely)) && <IonReactRouter history={history}>
+            { ((!loading && user && !loggingIn) || (loading && keys)) && <IonReactRouter history={history}>
                 <Switch>
                     <Route path="/journal" component={Journal} />
                     <Route path="/summary" component={Summary} />
