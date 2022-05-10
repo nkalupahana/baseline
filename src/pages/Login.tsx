@@ -100,7 +100,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             });
 
             if (keyResponse && keyResponse.ok) {
-                if (await auth.currentUser?.getIdToken() == idToken) {
+                if (await auth.currentUser?.getIdToken() === idToken) {
                     localStorage.setItem("keys", JSON.stringify(await keyResponse.json()));
                     setLoggingIn(false);
                 }
