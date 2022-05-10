@@ -59,14 +59,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             return;
         }
 
+        // Second round of auth needed on apple devices
         if (credential.providerId === "apple.com") {
-            if (Capacitor.getPlatform() === "ios") {
-                credential.accessToken = (await CloudKit.authenticate(cloudKitOpts)).ckWebAuthToken;
-            } else {
-                setLoginState(LoginStates.CLOUDKIT_NEEDED);
-                setStoredCredential(credential);
-                return;
-            }
+            setLoginState(LoginStates.CLOUDKIT_NEEDED);
+            setStoredCredential(credential);
+            return;
         }
 
         await continueLoginFlow(credential);
@@ -89,8 +86,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     const continueLoginFlow = async (credential: AuthCredential) => {
         setLoginState(LoginStates.GETTING_KEYS);
-        console.log(credential);
-        console.log(await auth.currentUser?.getIdToken());
         try {
             const keyResponse = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/getOrCreateKeys", {
                 method: "POST",
