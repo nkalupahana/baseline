@@ -20,13 +20,17 @@ enum LoginStates {
     GETTING_KEYS
 }
 
-let cloudKitOpts: SignInOptions = {
-    containerIdentifier: "iCloud.baseline.getbaseline.app",
-    environment: "production",
-    ckAPIToken: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565"
+const TOKENS: any = {
+    web: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
+    android: "07441aa58144eecb74f973795899f223e06a8306d109cfd496aa59372d5a200f",
+    ios: "2a0a11d8b842c93e6e14c7a0e00cd7d9d2afac12917281a9f8ae845c17d4fc4a"
 };
 
-const ckAPITokenRedirect = "07441aa58144eecb74f973795899f223e06a8306d109cfd496aa59372d5a200f";
+const cloudKitOpts: SignInOptions = {
+    containerIdentifier: "iCloud.baseline.getbaseline.app",
+    environment: "production",
+    ckAPIToken: TOKENS[Capacitor.getPlatform()]
+};
 
 const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [loginState, setLoginState] = useState<LoginStates>(LoginStates.START);
@@ -71,10 +75,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const signInWithCloudKit = async () => {
         setLoginState(LoginStates.GETTING_CLOUDKIT);
         let credential: AuthCredential;
-        if (Capacitor.getPlatform() === "android") {
-            cloudKitOpts.ckAPIToken = ckAPITokenRedirect;
-        }
-
         try {
             credential = JSON.parse(JSON.stringify(storedCredential));
             credential.accessToken = (await CloudKit.authenticate(cloudKitOpts)).ckWebAuthToken;
@@ -98,10 +98,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     Authorization: `Bearer ${await auth.currentUser?.getIdToken()}`,
                 },
                 body: JSON.stringify({
-                    credential: {
-                        ...credential,
-                        grantMethod: Capacitor.getPlatform() === "android" ? "KEY_REDIRECT" : "KEY_POSTMESSAGE"
-                    }
+                    credential,
+                    platform: Capacitor.getPlatform()
                 })
             });
 

@@ -21,13 +21,17 @@ export interface Request extends functions.https.Request {
     user?: DecodedIdToken;
 }
 
+const TOKENS: any = {
+    web: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
+    android: "07441aa58144eecb74f973795899f223e06a8306d109cfd496aa59372d5a200f",
+    ios: "2a0a11d8b842c93e6e14c7a0e00cd7d9d2afac12917281a9f8ae845c17d4fc4a"
+};
+
 const CLOUDKIT: any = {
-    KEY_POSTMESSAGE: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
-    KEY_REDIRECT: "07441aa58144eecb74f973795899f223e06a8306d109cfd496aa59372d5a200f",
     ENV: "production",
     ID: "iCloud.baseline.getbaseline.app",
     BASE: "https://api.apple-cloudkit.com"
-}
+};
 
 const validateAuth = async (req: Request, res: functions.Response<any>) => {
     if ((!req.headers.authorization || !req.headers.authorization.startsWith("Bearer ")) && !(req.cookies && req.cookies.__session)) {
@@ -541,13 +545,11 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         return;
     }
 
-    if (body.credential.providerId === "apple.com") {
-        if (typeof body.credential.grantMethod !== "string" || !["KEY_POSTMESSAGE", "KEY_REDIRECT"].includes(body.credential.grantMethod)) {
-            res.send(400);
-            return;
-        }
+    if (typeof body.platform !== "string" || !["ios", "android", "web"].includes(body.platform)) {
+        res.send(400);
+        return;
     }
-
+    
     const db = admin.database();
 
     const encryptionRef = db.ref(`/${req.user.user_id}/encryption`);
@@ -582,7 +584,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
             res.send(keys);
             return;
         } else if (body.credential.providerId === "apple.com") {
-            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${CLOUDKIT[body.credential.grantMethod]}&ckWebAuthToken=${body.credential.accessToken}`;
+            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
             const response = await nfetch(url, {
                 method: "POST",
                 body: JSON.stringify({
@@ -648,7 +650,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
 
         id = respData["id"];
     } else if (body.credential.providerId === "apple.com") {
-        const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${CLOUDKIT[body.credential.grantMethod]}&ckWebAuthToken=${body.credential.accessToken}`;
+        const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
         console.log(url);
         const b = JSON.stringify({
             operations: [{

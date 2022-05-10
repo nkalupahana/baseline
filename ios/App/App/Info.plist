@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>app.getbaseline.baseline.using-app</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -34,6 +30,16 @@
 				<string>com.googleusercontent.apps.841063163864-67r650rfj0q8tk4le2h6i9s6afevi07o</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Sign in With CloudKit</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cloudkit-icloud.baseline.getbaseline.app</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -50,6 +56,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is needed to take pictures for mood logs.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>app.getbaseline.baseline.using-app</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
