@@ -87,10 +87,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const continueLoginFlow = async (credential: AuthCredential) => {
         setLoginState(LoginStates.GETTING_KEYS);
         try {
+            const idToken = await auth.currentUser?.getIdToken();
             const keyResponse = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/getOrCreateKeys", {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${await auth.currentUser?.getIdToken()}`,
+                    Authorization: `Bearer ${idToken}`,
                 },
                 body: JSON.stringify({
                     credential,
@@ -99,8 +100,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             });
 
             if (keyResponse && keyResponse.ok) {
-                localStorage.setItem("keys", JSON.stringify(await keyResponse.json()));
-                setLoggingIn(false);
+                if (await auth.currentUser?.getIdToken() == idToken) {
+                    localStorage.setItem("keys", JSON.stringify(await keyResponse.json()));
+                    setLoggingIn(false);
+                }
             } else {
                 throw new Error(`Something went wrong, please try again! ${keyResponse ? await keyResponse.text() : ""}`);
             }
