@@ -55,7 +55,7 @@ const App = () => {
         if (!keys) {
             signOutAndCleanUp();
         }
-    }, [keys]);
+    }, []);
 
     return (
         <IonApp>

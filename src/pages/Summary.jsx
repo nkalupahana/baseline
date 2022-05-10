@@ -26,15 +26,17 @@ const Summary = () => {
     const [gettingData, setGettingData] = useState(true);
     const menuRef = useRef();
     const logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
-    const keys = checkKeys();
+
+    useEffect(() => {
+        const keys = checkKeys();
+        if (!keys) {
+            signOutAndCleanUp();
+        }
+    }, []);
 
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
         if (loading) return;
-        if (!keys) {
-            signOutAndCleanUp();
-            return;
-        }
         const listener = async snap => {
             setGettingData(true);
             let lastUpdated = 0;
@@ -54,7 +56,8 @@ const Summary = () => {
 
             if (newData) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
-                // Add timestamp to data object
+                const keys = checkKeys();
+                // Add timestamp to data object, and decrypt as needed
                 for (const key in newData) {
                     if ("data" in newData[key] && keys) {
                         newData[key] = JSON.parse(AES.decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
@@ -72,7 +75,7 @@ const Summary = () => {
         return () => {
             off(lastUpdatedRef, "value", listener);
         };
-    }, [loading, setGettingData, keys]);
+    }, [loading, setGettingData]);
 
     return (
         <div>

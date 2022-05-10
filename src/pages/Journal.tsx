@@ -16,12 +16,13 @@ const Journal = () => {
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
     const [average, setAverage] = useState("average");
-    const keys = checkKeys();
+    
     useEffect(() => {
+        const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();
         }
-    }, [keys]);
+    }, []);
 
     return (
         <IonPage>
