@@ -162,8 +162,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     return (
         <IonPage>
-            <div className="container column-flex text-center">
-                <br/><br/>
+            <div className="container column-flex text-center center-summary">
                 { loginState === LoginStates.START && <>
                     <IonButton mode="ios" onClick={() => loginFlow(signInWithGoogle)}>Google</IonButton>
                     <IonButton mode="ios" onClick={() => loginFlow(signInWithApple)}>Apple</IonButton>
@@ -174,12 +173,12 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <br />
                     <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
                 </> }
-                { loginState === LoginStates.CLOUDKIT_NEEDED && <>
+                { loginState === LoginStates.CLOUDKIT_NEEDED && <div style={{"maxWidth": "500px"}}>
                     <div className="title">One more time!</div>
-                    <p>To properly secure your data with iCloud, we need you to sign in one more time. You'll be ready to go after that, though!</p>
+                    <p className="margin-bottom-0">To properly secure your data with iCloud, we need you to sign in one more time. You'll be ready to go after that, though!</p>
                     <p>Sign in with Apple is still in beta. Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                     <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
-                </> }
+                </div> }
                 { loginState === LoginStates.GETTING_KEYS && <>
                     <Preloader message="One moment! We're getting your encryption keys." />
                     <br />
