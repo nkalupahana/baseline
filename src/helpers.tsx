@@ -60,8 +60,13 @@ export function toast(message: string, gravity?: Toastify.Options["gravity"]) {
         gravity: gravity || "top",
         position: "center",
         style: {
-            "border-radius": "10px"
-        }
+            "border-radius": "10px",
+        },
+        offset: {
+            y: (gravity === "bottom") ? "5px" : "max(calc(env(safe-area-inset-top) - 5px), 0px)",
+            x: 0
+        },
+        stopOnFocus: false
     }).showToast();
 }
 
