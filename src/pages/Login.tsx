@@ -65,15 +65,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             if (flowVal !== flow) return;
             if (!credential) throw Error("Your sign in didn't go through. Please try again!");
         } catch (e: any) {
+            if (flowVal !== flow) return;
             toast(`Something went wrong, please try again! Make sure you're connected to the Internet. ${e.message}`);
             resetFlow();
             return;
         }
 
-        if (flowVal !== flow) return;
-
         // Second round of auth needed on apple devices
         if (credential.providerId === "apple.com") {
+            if (flowVal !== flow) return;
             setLoginState(LoginStates.CLOUDKIT_NEEDED);
             setStoredCredential(credential);
             return;
@@ -117,6 +117,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     platform: Capacitor.getPlatform()
                 })
             });
+            
             if (flowVal !== flow) return;
             if (keyResponse && keyResponse.ok) {
                 const data = JSON.stringify(await keyResponse.json());
@@ -180,7 +181,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         
         if (flowVal !== flow) return;
         await signInAnonymously(auth);
-
+        
         return {
             providerId: "anonymous",
             accessToken: "anonymous"

@@ -1,5 +1,5 @@
 import { IonContent, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonMenu } from "@ionic/react";
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useEffect, useRef, useState } from "react";
 import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db, signOutAndCleanUp } from "../firebase";
