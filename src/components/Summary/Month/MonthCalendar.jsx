@@ -169,7 +169,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
 
     useEffect(() => {
         const el = document.querySelector(".less-highlight-day");
-        if (requestedDate.el && (!el || requestedDate.el !== el?.parentElement.id)) {
+        if (requestedDate.el && (!el || requestedDate.el !== el.parentElement.id)) {
             if (el) {
                 el.classList.remove("less-highlight-day");
             }
