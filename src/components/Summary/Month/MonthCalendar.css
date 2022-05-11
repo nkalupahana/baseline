@@ -36,7 +36,7 @@
 }
 
 .calendar-card {
-    width: calc(100%/7);
+    width: calc(100% / 7);
     height: 15vh;
     position: relative;
     text-align: center;
