@@ -22,7 +22,7 @@ const Settings = () => {
             <div style={{"maxWidth": "600px"}}>
                 <SettingsBox 
                     title="Reduce Motion" 
-                    description="Turn this on to disable animations (especially useful if your device is old, slow, or generally can't render the app well)." 
+                    description="Turn this on to disable animations. This typically will not increase performance by any noticable amount." 
                     checked={reduceMotion}
                     setChecked={setReduceMotion}
                 />
