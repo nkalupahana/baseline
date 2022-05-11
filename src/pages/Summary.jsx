@@ -4,7 +4,7 @@ import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db, signOutAndCleanUp } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { cashOutline, menuOutline, notifications, pencil } from "ionicons/icons";
+import { analytics, cashOutline, chevronBackOutline, cogOutline, menuOutline, notifications, pencil } from "ionicons/icons";
 import Media from "react-media";
 import WeekSummary from "../components/Summary/Week/WeekSummary";
 import MonthSummary from "../components/Summary/Month/MonthSummary";
@@ -117,8 +117,8 @@ const Summary = () => {
             </IonFab> }
             <IonMenu ref={menuRef} disabled={menuDisabled} side="end" contentId="mainContent" menuId="mainMenu">
                 <IonContent>
-                    <IonList>
-                        <div style={{"height": "25px", "width": "100%"}}></div>
+                    <IonList className="menu">
+                        <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>
                         <IonItem onClick={() => history.push("/notifications")}>
                             <IonIcon icon={notifications} slot="start" />
                             <IonLabel>Notifications</IonLabel>
@@ -127,6 +127,19 @@ const Summary = () => {
                             <IonIcon icon={cashOutline} slot="start" />
                             <IonLabel>Gap Fund</IonLabel>
                         </IonItem>
+                        <IonItem>
+                            <IonIcon icon={analytics} slot="start" />
+                            <IonLabel>Surveys</IonLabel>
+                        </IonItem>
+                        <IonItem className="move-rest-down" onClick={() => history.push("/settings")}>
+                            <IonIcon icon={cogOutline} slot="start" />
+                            <IonLabel>Settings</IonLabel>
+                        </IonItem>
+                        <IonItem onClick={signOutAndCleanUp}>
+                            <IonIcon icon={chevronBackOutline} slot="start" />
+                            <IonLabel>Sign Out</IonLabel>
+                        </IonItem>
+                        <div style={{"height": "20px"}}></div>
                     </IonList>
                 </IonContent>
             </IonMenu>
