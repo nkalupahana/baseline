@@ -125,3 +125,13 @@
         width: 7.5px;
     }
 }
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.menu > .move-rest-down {
+    margin-top: auto;
+}
