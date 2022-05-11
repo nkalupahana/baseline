@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Ref, useEffect } from "react";
 import { Log } from "../../db";
-import { getDateFromLog, LOCATOR_OFFSET } from "../../helpers";
+import { getDateFromLog, LOCATOR_OFFSET, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 
 interface Props {
@@ -25,6 +25,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
     let els = [];
     let top: Log | undefined = undefined;
     const zone = DateTime.now().zone.name;
+    const settings = parseSettings();
 
     let firstLogs = 0;
     const first = getDateFromLog(logs[0]);
@@ -53,7 +54,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             if (!log.time.includes(addZone)) log.time += " " + addZone;
         }
 
-        today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
+        today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} />);
     }
 
     // Add final information based on whether the list should be reversed (different styles)
@@ -100,11 +101,11 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
                 node.scrollTo({
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
-                    behavior: "smooth"
+                    behavior: settings.reduceMotion ? "auto" : "smooth"
                 })
             }
         }
-    }, [requestedDate]);
+    }, [requestedDate, settings.reduceMotion]);
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list">

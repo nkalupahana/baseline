@@ -10,7 +10,7 @@ import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db, signOutAndCleanUp } from "../firebase";
-import { networkFailure, toast } from "../helpers";
+import { goBackSafely, networkFailure, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
@@ -142,7 +142,7 @@ const GapFund = () => {
 
     return (
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.length > 2 ? history.goBack() : history.push("/summary")}></IonIcon>
+            <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
             <div className="center-journal container">
                 <div className="title">baseline Gap Fund</div>
                 <p className="text-center">

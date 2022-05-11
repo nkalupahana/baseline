@@ -2,7 +2,7 @@ import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
 import { useEffect, useCallback } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { createPoints, getDateFromLog, getTime } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
 import { caretUp } from "ionicons/icons";
 
@@ -25,6 +25,8 @@ function getBound(el, node) {
 }
 
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
+    const settings = parseSettings();
+
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
         const listener = e => {
@@ -118,11 +120,11 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                 node.scrollTo({
                     top: 0,
                     left: (el.offsetLeft + el.offsetWidth) - (node.offsetLeft + node.offsetWidth),
-                    behavior: "smooth"
+                    behavior: settings.reduceMotion ? "auto" : "smooth"
                 });
             }
         }
-    }, [requestedDate]);
+    }, [requestedDate, settings.reduceMotion]);
 
     let els = [];
     let i = 0;

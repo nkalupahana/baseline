@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET, parseSettings } from "../../../helpers";
 import { chunk } from "lodash";
 import useCallbackRef from "../../../useCallbackRef";
 import { useCallback } from "react";
@@ -39,6 +39,8 @@ function createCalendarCard(date, requestedDate, data=[]) {
 }
 
 const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
+    const settings = parseSettings();
+
     const calendar = useCallbackRef(useCallback(node => {
         if (!node) return;
         // Listen for clicks on the calendar, and highlight
@@ -77,7 +79,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 node.scrollTo({
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
-                    behavior: "smooth"
+                    behavior: settings.reduceMotion ? "auto" : "smooth"
                 });
                 setRequestedDate({
                     ...requestedDate,
@@ -109,7 +111,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 node.removeEventListener("scroll", scrollListener);
             }
         }
-    }, [requestedDate, setRequestedDate]));
+    }, [requestedDate, setRequestedDate, settings.reduceMotion]));
 
     let els = [];
     let i = 0;
