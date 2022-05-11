@@ -95,7 +95,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             if (ps.length < 3) return;
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
         }
-    }, [reverse, logs, els]);
+    }, [reverse, els]);
 
     // Scroll to position if we get a request
     useEffect(() => {
