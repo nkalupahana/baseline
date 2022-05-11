@@ -136,7 +136,6 @@ const Summary = () => {
                             <IonLabel>Settings</IonLabel>
                         </IonItem>
                         <IonItem onClick={signOutAndCleanUp}>
-                            <IonIcon icon={chevronBackOutline} slot="start" />
                             <IonLabel>Sign Out</IonLabel>
                         </IonItem>
                         <div style={{"height": "20px"}}></div>
