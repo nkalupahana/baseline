@@ -87,12 +87,12 @@ const Summary = () => {
                     }}
                 >
                     {matches => (
-                        <Fragment>
+                        <>
                             { matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} logs={logs} /> }
                             { matches.month && <MonthSummary setMenuDisabled={setMenuDisabled} logs={logs} /> }
                             { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
                             { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
-                        </Fragment>
+                        </>
                     )}
                 </Media>
             </div>

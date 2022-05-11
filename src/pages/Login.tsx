@@ -32,6 +32,12 @@ const cloudKitOpts: SignInOptions = {
     ckAPIToken: TOKENS[Capacitor.getPlatform()]
 };
 
+// Login Flow Guard
+// If the user cancels login, we want to exit the login flow
+// as quickly as possible. The flow guard gives a unique ID to
+// each login flow, forcing an exit if the flow is interrupted.
+let flow = Math.random();
+
 const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [loginState, setLoginState] = useState<LoginStates>(LoginStates.START);
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
@@ -41,23 +47,30 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     }, []);
 
     const resetFlow = () => {
+        flow = Math.random();
         signOutAndCleanUp();
         setLoggingIn(false);
         setLoginState(LoginStates.START);
     }
 
-    const loginFlow = async (signInFunc: () => Promise<AuthCredential | null>) => {
+    const loginFlow = async (signInFunc: (flowVal: number) => Promise<AuthCredential | null | undefined>) => {
+        const flowVal = Math.random();
+        flow = flowVal;
         setLoggingIn(true);
         setLoginState(LoginStates.LOGGING_IN);
-        let credential: AuthCredential | null;
+        let credential: AuthCredential | null | undefined;
         try {
-            credential = await signInFunc();
+            credential = await signInFunc(flowVal);
+            
+            if (flowVal !== flow) return;
             if (!credential) throw Error("Your sign in didn't go through. Please try again!");
         } catch (e: any) {
             toast(`Something went wrong, please try again! Make sure you're connected to the Internet. ${e.message}`);
             resetFlow();
             return;
         }
+
+        if (flowVal !== flow) return;
 
         // Second round of auth needed on apple devices
         if (credential.providerId === "apple.com") {
@@ -66,28 +79,34 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             return;
         }
 
-        await continueLoginFlow(credential);
+        await continueLoginFlow(credential, flowVal);
     }
 
     const signInWithCloudKit = async () => {
+        const flowVal = flow;
         setLoginState(LoginStates.GETTING_CLOUDKIT);
         let credential: AuthCredential;
         try {
             credential = JSON.parse(JSON.stringify(storedCredential));
-            credential.accessToken = (await CloudKit.authenticate(cloudKitOpts)).ckWebAuthToken;
+            const token = (await CloudKit.authenticate(cloudKitOpts)).ckWebAuthToken;
+            if (flowVal !== flow) return;
+            credential.accessToken = token;
         } catch (e: any) {
+            if (flowVal !== flow) return;
             toast(`Something went wrong, please try again! Make sure you're connected to the Internet. ${e.message}`);
             setLoginState(LoginStates.CLOUDKIT_NEEDED);
             return;
         }
 
-        await continueLoginFlow(credential);
+        await continueLoginFlow(credential, flowVal);
     }
 
-    const continueLoginFlow = async (credential: AuthCredential) => {
+    const continueLoginFlow = async (credential: AuthCredential, flowVal: number) => {
         setLoginState(LoginStates.GETTING_KEYS);
+        if (flowVal !== flow) return;
         try {
             const idToken = await auth.currentUser?.getIdToken();
+            if (flowVal !== flow) return;
             const keyResponse = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/getOrCreateKeys", {
                 method: "POST",
                 headers: {
@@ -98,44 +117,54 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     platform: Capacitor.getPlatform()
                 })
             });
-
+            if (flowVal !== flow) return;
             if (keyResponse && keyResponse.ok) {
-                if (await auth.currentUser?.getIdToken() === idToken) {
-                    localStorage.setItem("keys", JSON.stringify(await keyResponse.json()));
-                    setLoggingIn(false);
-                }
+                const data = JSON.stringify(await keyResponse.json());
+
+                if (flowVal !== flow) return;
+                localStorage.setItem("keys", data);
+                setLoggingIn(false);
             } else {
                 throw new Error(`Something went wrong, please try again! ${keyResponse ? await keyResponse.text() : ""}`);
             }
         } catch (e: any) {
+            if (flowVal !== flow) return;
             if (networkFailure(e.message)) {
                 toast("We're having trouble reaching our servers. Make sure you're connected to the Internet.");
             } else {
                 toast(`Something went wrong, please try again! Make sure you're connected to the Internet. ${e.message}`);
             }
 
+            if (flowVal !== flow) return;
             resetFlow();
             return;
         }
     }
 
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = async (flowVal: number) => {
+        if (flowVal !== flow) return;
         const result = await FirebaseAuthentication.signInWithGoogle({
             scopes: ["https://www.googleapis.com/auth/drive.appdata"]
         });
 
         if (Capacitor.getPlatform() !== "web") {
+            if (flowVal !== flow) return;
             await setUpFCM();
+            if (flowVal !== flow) return;
             await signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
         }
 
         return result.credential;
     }
 
-    const signInWithApple = async () => {
+    const signInWithApple = async (flowVal: number) => {
+        if (flowVal !== flow) return;
         const result = await FirebaseAuthentication.signInWithApple();
+
         if (Capacitor.getPlatform() !== "web") {
+            if (flowVal !== flow) return;
             await setUpFCM();
+            if (flowVal !== flow) return;
             await signInWithCredential(auth, new OAuthProvider("apple.com").credential({
                 idToken: result.credential?.idToken,
                 rawNonce: result.credential?.nonce
@@ -145,8 +174,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         return result.credential;
     }
 
-    const signInWithAnonymous = async () => {
+    const signInWithAnonymous = async (flowVal: number) => {
+        if (flowVal !== flow) return;
         if (Capacitor.getPlatform() !== "web") await setUpFCM();
+        
+        if (flowVal !== flow) return;
         await signInAnonymously(auth);
 
         return {
