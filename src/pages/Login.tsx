@@ -88,9 +88,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         let credential: AuthCredential;
         try {
             credential = JSON.parse(JSON.stringify(storedCredential));
-            const token = (await CloudKit.authenticate(cloudKitOpts)).ckWebAuthToken;
-            if (flowVal !== flow) return;
-            credential.accessToken = token;
+            credential.accessToken = (await CloudKit.authenticate(cloudKitOpts)).ckWebAuthToken;
         } catch (e: any) {
             if (flowVal !== flow) return;
             toast(`Something went wrong, please try again! Make sure you're connected to the Internet. ${e.message}`);
