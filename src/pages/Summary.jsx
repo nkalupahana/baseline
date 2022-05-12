@@ -24,6 +24,15 @@ const Summary = () => {
     const [, loading] = useAuthState(auth);
     const [menuDisabled, setMenuDisabled] = useState(false);
     const [gettingData, setGettingData] = useState(true);
+    const [graphEls, setGraphEls] = useState([]);
+    const [listEls, setListEls] = useState([]);
+    const bundle = {
+        graphEls,
+        setGraphEls,
+        listEls,
+        setListEls
+    };
+
     const menuRef = useRef();
     const logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
 
@@ -88,10 +97,10 @@ const Summary = () => {
                 >
                     {matches => (
                         <>
-                            { matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} logs={logs} /> }
-                            { matches.month && <MonthSummary setMenuDisabled={setMenuDisabled} logs={logs} /> }
-                            { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
-                            { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
+                            { matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} logs={logs} bundle={bundle} /> }
+                            { matches.month && <MonthSummary setMenuDisabled={setMenuDisabled} logs={logs} bundle={bundle} /> }
+                            { logs && (listEls.length === 0 || graphEls.length === 0) && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
+                            { (!logs || ((listEls.length === 0 || graphEls.length === 0) && gettingData)) && <Preloader /> }
                         </>
                     )}
                 </Media>

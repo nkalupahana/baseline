@@ -5,7 +5,7 @@ import MoodLogList from "../MoodLogList";
 
 const TRUST_BOUND = 15;
 
-const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDate }) => {
+const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDate, getter, setter }) => {
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
         const listener = e => {
@@ -85,7 +85,15 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
 
     return (
         <>
-            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={true} requestedDate={requestedDate} />
+            <MoodLogList 
+                logs={logs} 
+                container={container} 
+                setMenuDisabled={setMenuDisabled} 
+                reverse={true} 
+                requestedDate={requestedDate}
+                getter={getter}
+                setter={setter}
+            />
         </>
     )
 }

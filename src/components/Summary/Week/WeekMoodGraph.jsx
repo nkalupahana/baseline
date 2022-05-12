@@ -1,6 +1,6 @@
 import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback } from "react";
 import useCallbackRef from "../../../useCallbackRef";
 import { createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
@@ -24,9 +24,8 @@ function getBound(el, node) {
     return (elBox.x + elBox.width) - (node.offsetLeft + node.offsetWidth) - 8;
 }
 
-const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
+const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs, getter, setter }) => {
     const settings = parseSettings();
-    const [els, setEls] = useState([]);
 
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
@@ -164,13 +163,13 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             els.push(createGraphCard(current));
         }
 
-        setEls(els);
-    }, [logs]);
+        setter(els);
+    }, [logs, setter]);
 
     return (
         <>
             <div id="weekMoodGraph" ref={container} style={{ gridArea: "graph" }} className="week-mood-graph">
-                { els }
+                { getter }
             </div>
             <IonIcon className="graph-arrow" icon={caretUp}></IonIcon>
         </>

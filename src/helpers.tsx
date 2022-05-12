@@ -7,6 +7,17 @@ export interface AnyMap {
     [key: string]: any;
 }
 
+export interface SummaryProps {
+    setMenuDisabled: (disabled: boolean) => void;
+    logs: Log[];
+    bundle: {
+        listEls: JSX.Element[];
+        setListEls: (_: JSX.Element[]) => void;
+        graphEls: JSX.Element[];
+        setGraphEls: (_: JSX.Element[]) => void;
+    }
+}
+
 export function getTime() {
     return Math.round(Date.now() / 1000);
 }

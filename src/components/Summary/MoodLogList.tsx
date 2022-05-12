@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Ref, useEffect, useState } from "react";
+import { Ref, useEffect } from "react";
 import { Log } from "../../db";
 import { getDateFromLog, LOCATOR_OFFSET, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
@@ -12,7 +12,9 @@ interface Props {
     requestedDate: {
         el: string,
         [key: string]: any
-    }
+    },
+    getter: JSX.Element[],
+    setter: (_: JSX.Element[]) => void;
 }
 
 const createLocator = (t: DateTime) => {
@@ -21,8 +23,7 @@ const createLocator = (t: DateTime) => {
         </p>)
 }
 
-const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate } : Props) => {
-    const [els, setEls] = useState<JSX.Element[]>([]);
+const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate, getter, setter } : Props) => {
     const settings = parseSettings();
 
     useEffect(() => {
@@ -83,8 +84,8 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             els.unshift(<br key="begin" />)
         }
 
-        setEls(els);
-    }, [logs, reverse, setMenuDisabled, settings.reduceMotion]);
+        setter(els);
+    }, [logs, reverse, setMenuDisabled, settings.reduceMotion, setter]);
     
     // Scroll to last log item on load
     useEffect(() => {
@@ -95,7 +96,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             if (ps.length < 3) return;
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
         }
-    }, [reverse, els]);
+    }, [reverse, getter]);
 
     // Scroll to position if we get a request
     useEffect(() => {
@@ -116,7 +117,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list">
-            { els }
+            { getter }
         </div>
     );
 }

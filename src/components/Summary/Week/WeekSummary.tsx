@@ -1,14 +1,9 @@
-import { Log } from "../../../db";
 import WeekMoodLogList from "./WeekMoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
 import { useState } from "react";
+import { SummaryProps } from "../../../helpers";
 
-interface Props {
-    setMenuDisabled: (disabled: boolean) => void;
-    logs: Log[];
-}
-
-const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
+const WeekSummary = ({ setMenuDisabled, logs, bundle } : SummaryProps) => {
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
         timeout: undefined,
@@ -35,8 +30,21 @@ const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
                 <div className="title">Here's how your week has been looking.</div>
             </div>
             { logs && logs.length > 0 && <>
-                <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph>
-                <WeekMoodLogList setMenuDisabled={setMenuDisabled} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
+                <WeekMoodGraph 
+                    getter={bundle.graphEls} 
+                    setter={bundle.setGraphEls} 
+                    requestedDate={requestedDate} 
+                    setRequestedDate={setRequestedDate} 
+                    logs={logs}
+                />
+                <WeekMoodLogList 
+                    getter={bundle.listEls} 
+                    setter={bundle.setListEls} 
+                    setMenuDisabled={setMenuDisabled} 
+                    logs={logs} 
+                    requestedDate={requestedDate} 
+                    setRequestedDate={setRequestedDate} 
+                />
             </> }
         </div>
     );

@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET, parseSettings } from "../../../helpers";
 import { chunk } from "lodash";
 import useCallbackRef from "../../../useCallbackRef";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 function createCalendarCard(date, data=[]) {
     const points = createPoints(data);
@@ -35,9 +35,8 @@ function createCalendarCard(date, data=[]) {
             </div>);
 }
 
-const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
+const MonthCalendar = ({ logs, requestedDate, setRequestedDate, getter, setter }) => {
     const settings = parseSettings();
-    const [rows, setRows] = useState([]);
 
     const calendar = useCallbackRef(useCallback(node => {
         if (!node) return;
@@ -164,8 +163,8 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             rows.push(<div key={row[0].key + "-row"} className="calendar-row">{row}</div>);
         });
 
-        setRows(rows);
-    }, [logs]);
+        setter(rows);
+    }, [logs, setter]);
 
     useEffect(() => {
         const el = document.querySelector(".less-highlight-day");
@@ -175,7 +174,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             }
             document.querySelector(`#${requestedDate.el.replace("i", "g")}`).children[0].classList.add("less-highlight-day");
         }
-    }, [requestedDate, rows]);
+    }, [requestedDate, getter]);
 
     return <>
         <div className="calendar-date-strip">
@@ -187,7 +186,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             <span>Friday</span>
             <span>Saturday</span>
         </div>
-        <div ref={calendar} className="month-calendar">{ rows }</div>
+        <div ref={calendar} className="month-calendar">{ getter }</div>
     </>
 }
 
