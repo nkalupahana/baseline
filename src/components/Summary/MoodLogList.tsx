@@ -110,7 +110,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate,
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
                     behavior: settings.reduceMotion ? "auto" : "smooth"
-                })
+                });
             }
         }
     }, [requestedDate, settings.reduceMotion]);

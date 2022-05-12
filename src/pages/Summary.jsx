@@ -20,10 +20,13 @@ import AES from "crypto-js/aes";
 import aesutf8 from "crypto-js/enc-utf8";
 import { checkKeys } from "../helpers";
 
+let lastLength = 0;
+
 const Summary = () => {
     const [, loading] = useAuthState(auth);
     const [menuDisabled, setMenuDisabled] = useState(false);
     const [gettingData, setGettingData] = useState(true);
+
     const [graphEls, setGraphEls] = useState([]);
     const [listEls, setListEls] = useState([]);
     const bundle = {
@@ -75,8 +78,9 @@ const Summary = () => {
                 }
 
                 await ldb.logs.bulkAdd(Object.values(newData));
+            } else {
+                setGettingData(false);
             }
-            setGettingData(false);
         };
         const lastUpdatedRef = ref(db, `/${auth.currentUser.uid}/lastUpdated`);
         onValue(lastUpdatedRef, listener);
@@ -85,6 +89,13 @@ const Summary = () => {
             off(lastUpdatedRef, "value", listener);
         };
     }, [loading, setGettingData]);
+
+    useEffect(() => {
+        if (logs && lastLength !== logs.length && gettingData) {
+            lastLength = logs.length;
+            setGettingData(false);
+        }
+    })
 
     return (
         <div>
@@ -99,8 +110,8 @@ const Summary = () => {
                         <>
                             { matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} logs={logs} bundle={bundle} /> }
                             { matches.month && <MonthSummary setMenuDisabled={setMenuDisabled} logs={logs} bundle={bundle} /> }
-                            { logs && (listEls.length === 0 || graphEls.length === 0) && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
-                            { (!logs || ((listEls.length === 0 || graphEls.length === 0) && gettingData)) && <Preloader /> }
+                            { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
+                            { (gettingData || (logs && logs.length > 0 && (listEls.length === 0 || graphEls.length === 0))) && <Preloader /> }
                         </>
                     )}
                 </Media>
