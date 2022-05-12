@@ -1,0 +1,9 @@
+.settings-box-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 60px;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "title toggle"
+      "description description";
+}

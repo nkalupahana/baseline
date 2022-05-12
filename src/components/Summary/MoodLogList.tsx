@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
-import { Ref, useEffect } from "react";
+import { Ref, useEffect, useState } from "react";
 import { Log } from "../../db";
-import { getDateFromLog, LOCATOR_OFFSET } from "../../helpers";
+import { getDateFromLog, LOCATOR_OFFSET, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 
 interface Props {
@@ -22,72 +22,80 @@ const createLocator = (t: DateTime) => {
 }
 
 const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate } : Props) => {
-    let els = [];
-    let top: Log | undefined = undefined;
-    const zone = DateTime.now().zone.name;
+    const [els, setEls] = useState<JSX.Element[]>([]);
+    const settings = parseSettings();
 
-    let firstLogs = 0;
-    const first = getDateFromLog(logs[0]);
+    useEffect(() => {
+        let els = [];
+        let top: Log | undefined = undefined;
+        const zone = DateTime.now().zone.name;
     
-    let t;
-    let today = [];
-    for (let log of logs) {
-        // Count number of first day logs, for bottom spacing for calendar
-        if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
-        // If we've moved to the next day, push the day's log and add a locator
-        if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
-            if (!reverse) today.reverse();
-            els.push(...today);
-            if ((top && reverse) || !reverse) {
-                t = getDateFromLog((reverse && top) ? top : log);
-                els.push(createLocator(t));
+        let firstLogs = 0;
+        const first = getDateFromLog(logs[0]);
+        
+        let t;
+        let today = [];
+        for (let log of logs) {
+            // Count number of first day logs, for bottom spacing for calendar
+            if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
+            // If we've moved to the next day, push the day's log and add a locator
+            if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
+                if (!reverse) today.reverse();
+                els.push(...today);
+                if ((top && reverse) || !reverse) {
+                    t = getDateFromLog((reverse && top) ? top : log);
+                    els.push(createLocator(t));
+                }
+                today = [];
+                top = log;
             }
-            today = [];
-            top = log;
+    
+            // Append a zone to the log if it's not the same as the current zone,
+            // and add the log to the list of today's logs
+            if (log.zone !== zone && t) {
+                const addZone = t.setZone(log.zone).zone.offsetName(t.toMillis(), { format: "short" });
+                if (!log.time.includes(addZone)) log.time += " " + addZone;
+            }
+    
+            today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} />);
+        }
+    
+        // Add final information based on whether the list should be reversed (different styles)
+        if (!reverse) today.reverse();
+        els.push(...today);
+        if (reverse && top) {
+            t = getDateFromLog(top);
+            els.push(createLocator(t));
+        }
+    
+        if (reverse) els.reverse();
+    
+        els.push(
+            <div className="bold text-center" key="end">
+                <p>no more logs</p>
+                <br />
+            </div>
+        );
+    
+        if (reverse) {
+            els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * firstLogs + 250)}px)`}} key="spacer"></div>);
+        } else {
+            els.unshift(<br key="begin" />)
         }
 
-        // Append a zone to the log if it's not the same as the current zone,
-        // and add the log to the list of today's logs
-        if (log.zone !== zone && t) {
-            const addZone = t.setZone(log.zone).zone.offsetName(t.toMillis(), { format: "short" });
-            if (!log.time.includes(addZone)) log.time += " " + addZone;
-        }
-
-        today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} />);
-    }
-
-    // Add final information based on whether the list should be reversed (different styles)
-    if (!reverse) today.reverse();
-    els.push(...today);
-    if (reverse && top) {
-        t = getDateFromLog(top);
-        els.push(createLocator(t));
-    }
-
-    if (reverse) els.reverse();
-
-    els.push(
-        <div className="bold text-center" key="end">
-            <p>no more logs</p>
-            <br />
-        </div>
-    );
-
-    if (reverse) {
-        els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * firstLogs + 250)}px)`}} key="spacer"></div>);
-    } else {
-        els.unshift(<br key="begin" />)
-    }
-
+        setEls(els);
+    }, [logs, reverse, setMenuDisabled, settings.reduceMotion]);
+    
     // Scroll to last log item on load
     useEffect(() => {
         if (reverse) {
             const list = document.getElementById("moodLogList")!;
             const ps = list.querySelectorAll("p");
-            // Get last locator (skips "no more logs" <p> at the end)
+            // Scroll to last locator (skips "no more logs" <p> at the end)
+            if (ps.length < 3) return;
             list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
         }
-    }, [reverse, logs]);
+    }, [reverse, els]);
 
     // Scroll to position if we get a request
     useEffect(() => {
@@ -100,11 +108,11 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
                 node.scrollTo({
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
-                    behavior: "smooth"
+                    behavior: settings.reduceMotion ? "auto" : "smooth"
                 })
             }
         }
-    }, [requestedDate]);
+    }, [requestedDate, settings.reduceMotion]);
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list">

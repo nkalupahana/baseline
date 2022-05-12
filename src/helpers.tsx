@@ -1,6 +1,11 @@
 import { DateTime } from "luxon";
 import Toastify from "toastify-js";
 import { Log } from "./db";
+import history from "./history";
+
+export interface AnyMap {
+    [key: string]: any;
+}
 
 export function getTime() {
     return Math.round(Date.now() / 1000);
@@ -12,7 +17,7 @@ export function getDateFromLog(log: Log) {
 
 const SECONDS_IN_DAY = 86400;
 // https://materializecss.com/color
-const COLORS: { [key: string]: string } = {
+const COLORS: AnyMap = {
     "-5": "black",
     "-4": "#d50000", // red accent-4
     "-3": "#f57c00", // orange darken-2
@@ -81,3 +86,16 @@ export function checkKeys() {
     }
     return JSON.parse(keys);
 }
+
+export function goBackSafely() {
+    history.length > 2 ? history.goBack() : history.push("/summary");
+}
+
+export function parseSettings() {
+    let data: AnyMap = {};
+    try {
+        data = JSON.parse(localStorage.getItem("settings") ?? "{}");
+    } catch {}
+    return data;
+}
+

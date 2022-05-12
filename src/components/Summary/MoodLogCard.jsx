@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 
-const MoodLogCard = ({ log, setMenuDisabled }) => {
+const MoodLogCard = ({ log, setMenuDisabled, reduceMotion }) => {
     const [grow, setGrow] = useState(false);
     const card = useRef();
     const logContainer = useRef();
@@ -23,7 +23,7 @@ const MoodLogCard = ({ log, setMenuDisabled }) => {
             card.current.parentElement.scrollTo({
                 top: card.current.offsetTop - card.current.parentElement.offsetTop - 50,
                 left: 0,
-                behavior: "smooth"
+                behavior: reduceMotion ? "auto" : "smooth"
             });
         }
     }

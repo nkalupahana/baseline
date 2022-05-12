@@ -3,6 +3,11 @@ import { DateTime } from "luxon"
 
 /* global cy */
 
+// This is a temporary solution -- I'm 
+// not sure what's wrong with the flow selector, but
+// it's having issues, so this is the solution for now :/
+const WAIT_FOR_AUTH = 5000;
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -26,7 +31,9 @@ describe("Mobile Flow", () => {
         cy.contains("Anonymous").click()
         cy.contains("Logging in").should("exist")
         cy.contains("try again").should("exist").click()
-        cy.contains("Anonymous").click()
+        cy.contains("Anonymous").should("exist")
+        cy.wait(WAIT_FOR_AUTH)
+        cy.contains("Anonymous").should("exist").click()
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
         cy.contains("What's happening").should("exist")

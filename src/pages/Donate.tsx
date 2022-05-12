@@ -1,10 +1,10 @@
 import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import history from "../history";
+import { goBackSafely } from "../helpers";
 
 const Donate = () => {
     return (<div className="container">
-        <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.length > 2 ? history.goBack() : history.push("/summary")}></IonIcon>
+        <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
         <div className="center-journal container">
             <div className="title">Donate!</div>
             <p>placeholder text</p>

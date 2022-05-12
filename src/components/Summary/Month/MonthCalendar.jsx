@@ -1,10 +1,10 @@
 import { DateTime } from "luxon";
-import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET, parseSettings } from "../../../helpers";
 import { chunk } from "lodash";
 import useCallbackRef from "../../../useCallbackRef";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-function createCalendarCard(date, requestedDate, data=[]) {
+function createCalendarCard(date, data=[]) {
     const points = createPoints(data);
     const locator = "g-locator-" + date.toISODate();
     let dayHighlight = "";
@@ -14,9 +14,6 @@ function createCalendarCard(date, requestedDate, data=[]) {
     }
     if (date.day === 1) {
         dayHighlight += " bold";
-    }
-    if (requestedDate.el && requestedDate.el.slice(10) === date.toISODate()) {
-        dayHighlight += " less-highlight-day"
     }
 
     let monthHighlight = " " + (Math.abs(today.month - date.month) % 2 === 0 ? "one-month" : "two-month");
@@ -39,6 +36,9 @@ function createCalendarCard(date, requestedDate, data=[]) {
 }
 
 const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
+    const settings = parseSettings();
+    const [rows, setRows] = useState([]);
+
     const calendar = useCallbackRef(useCallback(node => {
         if (!node) return;
         // Listen for clicks on the calendar, and highlight
@@ -77,7 +77,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 node.scrollTo({
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
-                    behavior: "smooth"
+                    behavior: settings.reduceMotion ? "auto" : "smooth"
                 });
                 setRequestedDate({
                     ...requestedDate,
@@ -109,59 +109,73 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 node.removeEventListener("scroll", scrollListener);
             }
         }
-    }, [requestedDate, setRequestedDate]));
+    }, [requestedDate, setRequestedDate, settings.reduceMotion]));
 
-    let els = [];
-    let i = 0;
-    let current = getDateFromLog(logs[0]);
-
-    // Create cards from today to first entry (with some padding at the start)
-    // Now = latest saturday (monday = 1 for weekday)
-    let now = DateTime.now().startOf("day");
-    while (now.weekday !== 6) {
-        now = now.plus({ days: 1 });
-    }
-
-    while (!now.equals(current) && now > current) {
-        els.push(createCalendarCard(now, requestedDate));
-        now = now.minus({days: 1});
-    }
-
-    while (i < logs.length) {
-        let todaysLogs = [];
-        while (i < logs.length && getDateFromLog(logs[i]).equals(current)) {
-            todaysLogs.push(logs[i]);
-            i++;
+    useEffect(() => {
+        let els = [];
+        let i = 0;
+        let current = getDateFromLog(logs[0]);
+    
+        // Create cards from today to first entry (with some padding at the start)
+        // Now = latest saturday (monday = 1 for weekday)
+        let now = DateTime.now().startOf("day");
+        while (now.weekday !== 6) {
+            now = now.plus({ days: 1 });
         }
-
-        // Create card for current day
-        els.push(createCalendarCard(current, requestedDate, todaysLogs));
-        if (i === logs.length) break;
-
-        // Create cards back to next populated day
-        let next = getDateFromLog(logs[i]);
-        while (!current.equals(next)) {
+    
+        while (!now.equals(current) && now > current) {
+            els.push(createCalendarCard(now));
+            now = now.minus({days: 1});
+        }
+    
+        while (i < logs.length) {
+            let todaysLogs = [];
+            while (i < logs.length && getDateFromLog(logs[i]).equals(current)) {
+                todaysLogs.push(logs[i]);
+                i++;
+            }
+    
+            // Create card for current day
+            els.push(createCalendarCard(current, todaysLogs));
+            if (i === logs.length) break;
+    
+            // Create cards back to next populated day
+            let next = getDateFromLog(logs[i]);
+            while (!current.equals(next)) {
+                current = current.minus({ days: 1 });
+                if (!current.equals(next)) els.push(createCalendarCard(current));
+            }
+        }
+    
+        // 7 days in a week, 6 rows by default = 42
+        while (els.length < 42) {
             current = current.minus({ days: 1 });
-            if (!current.equals(next)) els.push(createCalendarCard(current, requestedDate));
+            els.push(createCalendarCard(current));
         }
-    }
+    
+        // Create empty cards for final week (stop on sunday = 7)
+        while (current.weekday !== 7) {
+            current = current.minus({ days: 1 });
+            els.push(createCalendarCard(current));
+        }
+    
+        let rows = [];
+        chunk(els, 7).forEach(row => {
+            rows.push(<div key={row[0].key + "-row"} className="calendar-row">{row}</div>);
+        });
 
-    // 7 days in a week, 6 rows by default = 42
-    while (els.length < 42) {
-        current = current.minus({ days: 1 });
-        els.push(createCalendarCard(current, requestedDate));
-    }
+        setRows(rows);
+    }, [logs]);
 
-    // Create empty cards for final week (stop on sunday = 7)
-    while (current.weekday !== 7) {
-        current = current.minus({ days: 1 });
-        els.push(createCalendarCard(current, requestedDate));
-    }
-
-    let rows = [];
-    chunk(els, 7).forEach(row => {
-        rows.push(<div key={row[0].key + "-row"} className="calendar-row">{row}</div>);
-    });
+    useEffect(() => {
+        const el = document.querySelector(".less-highlight-day");
+        if (requestedDate.el && (!el || requestedDate.el !== el.parentElement.id)) {
+            if (el) {
+                el.classList.remove("less-highlight-day");
+            }
+            document.querySelector(`#${requestedDate.el.replace("i", "g")}`).children[0].classList.add("less-highlight-day");
+        }
+    }, [requestedDate, rows]);
 
     return <>
         <div className="calendar-date-strip">

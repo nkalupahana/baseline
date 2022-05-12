@@ -1,8 +1,8 @@
 import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { createPoints, getDateFromLog, getTime } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
 import { caretUp } from "ionicons/icons";
 
@@ -25,6 +25,9 @@ function getBound(el, node) {
 }
 
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
+    const settings = parseSettings();
+    const [els, setEls] = useState([]);
+
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
         const listener = e => {
@@ -118,47 +121,51 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                 node.scrollTo({
                     top: 0,
                     left: (el.offsetLeft + el.offsetWidth) - (node.offsetLeft + node.offsetWidth),
-                    behavior: "smooth"
+                    behavior: settings.reduceMotion ? "auto" : "smooth"
                 });
             }
         }
-    }, [requestedDate]);
+    }, [requestedDate, settings.reduceMotion]);
 
-    let els = [];
-    let i = 0;
-    let current = getDateFromLog(logs[0]);
+    useEffect(() => {
+        let els = [];
+        let i = 0;
+        let current = getDateFromLog(logs[0]);
 
-    // Create cards from today to first entry
-    let now = DateTime.now().startOf("day");
-    while (!now.equals(current) && now > current) {
-        els.push(createGraphCard(now));
-        now = now.minus({days: 1});
-    }
-
-    while (i < logs.length) {
-        let todaysLogs = [];
-        while (i < logs.length && getDateFromLog(logs[i]).equals(current)) {
-            todaysLogs.push(logs[i]);
-            i++;
+        // Create cards from today to first entry
+        let now = DateTime.now().startOf("day");
+        while (!now.equals(current) && now > current) {
+            els.push(createGraphCard(now));
+            now = now.minus({days: 1});
         }
 
-        // Create card for current day
-        els.push(createGraphCard(current, todaysLogs));
-        if (i === logs.length) break;
+        while (i < logs.length) {
+            let todaysLogs = [];
+            while (i < logs.length && getDateFromLog(logs[i]).equals(current)) {
+                todaysLogs.push(logs[i]);
+                i++;
+            }
 
-        // Create cards back to next populated day
-        let next = getDateFromLog(logs[i]);
-        while (!current.equals(next)) {
+            // Create card for current day
+            els.push(createGraphCard(current, todaysLogs));
+            if (i === logs.length) break;
+
+            // Create cards back to next populated day
+            let next = getDateFromLog(logs[i]);
+            while (!current.equals(next)) {
+                current = current.minus({ days: 1 });
+                if (!current.equals(next)) els.push(createGraphCard(current));
+            }
+        }
+
+        // Create empty cards for final week
+        for (let i = 0; i < 6; i++) {
             current = current.minus({ days: 1 });
-            if (!current.equals(next)) els.push(createGraphCard(current));
+            els.push(createGraphCard(current));
         }
-    }
 
-    // Create empty cards for final week
-    for (let i = 0; i < 6; i++) {
-        current = current.minus({ days: 1 });
-        els.push(createGraphCard(current));
-    }
+        setEls(els);
+    }, [logs]);
 
     return (
         <>

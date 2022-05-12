@@ -40,6 +40,7 @@ import { Capacitor } from "@capacitor/core";
 import GapFund from "./pages/GapFund";
 import Donate from "./pages/Donate";
 import { checkKeys } from "./helpers";
+import Settings from "./pages/Settings";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -69,6 +70,7 @@ const App = () => {
                     <Route path="/gap" component={GapFund} />
                     <Route path="/donate" component={Donate} />
                     <Route path="/review" component={WeekInReview} />
+                    <Route path="/settings" component={Settings} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }
