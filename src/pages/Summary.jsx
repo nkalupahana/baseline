@@ -95,7 +95,7 @@ const Summary = () => {
             lastLength = logs.length;
             setGettingData(false);
         }
-    })
+    }, [logs, gettingData])
 
     return (
         <div>
