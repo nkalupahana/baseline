@@ -303,6 +303,8 @@ describe("Desktop Flow", () => {
 
         cy.get("#confirmEmail").type("hello@email.com")
         cy.contains("Submit").click()
+        cy.get(".loader").should("exist")
+        cy.get(".loader").should("not.exist")
         cy.contains("went wrong").should("exist")
     })
 })
