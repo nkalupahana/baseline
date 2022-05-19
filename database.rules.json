@@ -10,6 +10,15 @@
       "lastWeekInReview": {
         ".write": "auth != null && auth.uid == $uid",
         ".validate": "newData.isNumber() && newData.val() == now"
+      },
+      "encryption": {
+        ".read": false
+      },
+      "pdp": {
+        ".read": false,
+        "enabled": {
+          ".read": "auth != null && auth.uid == $uid"
+        }
       }
     },
     ".read": false,
