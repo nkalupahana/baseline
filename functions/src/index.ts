@@ -549,7 +549,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
     
     const db = admin.database();
     const pdp = await (await db.ref(`/${req.user.user_id}/pdp`).get()).val();
-    if (typeof pdp === "object" && pdp.enabled) {
+    if (typeof pdp === "object" && pdp !== null && pdp.enabled) {
         if (typeof body.password !== "string" || !bcrypt.compareSync(body.password, pdp.passwordHash)) {
             res.send(400);
             return;
