@@ -16,8 +16,10 @@
       },
       "pdp": {
         ".read": false,
-        "enabled": {
-          ".read": "auth != null && auth.uid == $uid"
+        "method": {
+          ".read": "auth != null && auth.uid == $uid",
+          ".write":"auth != null && auth.uid == $uid",
+          ".validate": "newData.isString() && (newData.val() == 'upfront' || newData.val() == 'discreet')"
         }
       }
     },

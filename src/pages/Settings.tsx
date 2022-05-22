@@ -1,19 +1,10 @@
 import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
-import { goBackSafely, parseSettings } from "../helpers";
+import { goBackSafely } from "../helpers";
 
 const Settings = () => {
-    const settings = parseSettings();
-    const [reduceMotion, setReduceMotion] = useState(settings.reduceMotion);
-
-    useEffect(() => {
-        let data = parseSettings();
-        data["reduceMotion"] = reduceMotion;
-        localStorage.setItem("settings", JSON.stringify(data));
-    }, [reduceMotion]);
-
     return <div className="container">
         <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
         <div className="center-journal container">
@@ -21,13 +12,12 @@ const Settings = () => {
             <br />
             <div style={{"maxWidth": "600px"}}>
                 <SettingsBox 
-                    title="Reduce Motion" 
-                    description="Turn this on to disable animations. This typically will not increase performance by any noticable amount." 
-                    checked={reduceMotion}
-                    setChecked={setReduceMotion}
+                    title="Reduce Motion"
+                    attr="reduceMotion"
+                    description="Turn this on to disable animations. This typically won't increase performance by any noticable amount."
                 />
+                <PDP />
             </div>
-
         </div>
     </div>;
 };

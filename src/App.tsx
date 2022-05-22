@@ -41,6 +41,7 @@ import GapFund from "./pages/GapFund";
 import Donate from "./pages/Donate";
 import { checkKeys } from "./helpers";
 import Settings from "./pages/Settings";
+import Unlock from "./pages/Unlock";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -50,6 +51,7 @@ const App = () => {
     const [user, loading] = useAuthState(auth);
     const [loggingIn, setLoggingIn] = useState(false);
     const keys = checkKeys();
+    console.log(keys);
     
     useEffect(() => {
         smoothscroll.polyfill();
@@ -65,6 +67,7 @@ const App = () => {
             { ((!loading && user && !loggingIn) || (loading && keys)) && <IonReactRouter history={history}>
                 <Switch>
                     <Route path="/journal" component={Journal} />
+                    <Route path="/unlock" component={Unlock} />
                     <Route path="/summary" component={Summary} />
                     <Route path="/notifications" component={Notifications} />
                     <Route path="/gap" component={GapFund} />

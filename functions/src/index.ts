@@ -550,7 +550,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
     const db = admin.database();
     const pdp = await (await db.ref(`/${req.user.user_id}/pdp`).get()).val();
     if (typeof pdp === "object" && pdp !== null && pdp.enabled) {
-        if (typeof body.password !== "string" || !bcrypt.compareSync(body.password, pdp.passwordHash)) {
+        if (typeof body.passphrase !== "string" || !bcrypt.compareSync(body.passphrase, pdp.passphraseHash)) {
             res.send(400);
             return;
         }
@@ -711,7 +711,7 @@ export const enablePDP = functions.https.onRequest(async (req: Request, res) => 
     if (!req.user) return;
     
     const body = JSON.parse(req.body);
-    if (typeof body.password !== "string" || body.password.length < 10) {
+    if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
         res.send(400);
         return;
     }
@@ -719,14 +719,14 @@ export const enablePDP = functions.https.onRequest(async (req: Request, res) => 
     const db = admin.database();
     await db.ref(`${req.user.user_id}/pdp`).set({
         enabled: true,
-        passwordHash: bcrypt.hashSync(body.password),
+        passphraseHash: bcrypt.hashSync(body.passphrase),
         method: "upfront"
     });
 
     res.send(200);
 });
 
-export const changePDPPassword = functions.https.onRequest(async (req: Request, res) => { 
+export const changePDPpassphrase = functions.https.onRequest(async (req: Request, res) => { 
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
@@ -741,13 +741,13 @@ export const changePDPPassword = functions.https.onRequest(async (req: Request, 
     if (!req.user) return;
     
     const body = JSON.parse(req.body);
-    if (typeof body.password !== "string" || body.password.length < 10) {
+    if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
         res.send(400);
         return;
     }
 
     const db = admin.database();
-    await db.ref(`${req.user.user_id}/pdp/passwordHash`).set(bcrypt.hashSync(body.password));
+    await db.ref(`${req.user.user_id}/pdp/passphraseHash`).set(bcrypt.hashSync(body.passphrase));
 
     res.send(200);
 });

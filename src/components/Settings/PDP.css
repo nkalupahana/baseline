@@ -1,0 +1,22 @@
+.passphrase-box {
+    border: 3px lightgrey solid;
+    padding: 1px 30px;
+    border-radius: 10px;
+}
+
+.invisible-input {
+    border: none;
+    width: 100%;
+    padding-bottom: 7px;
+}
+
+.invisible-input:focus {
+    border: none;
+    outline: none;
+}
+
+.label-pos {
+    position: relative;
+    top: -4px;
+    margin-left: 10px;
+}

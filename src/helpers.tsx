@@ -82,7 +82,7 @@ export function networkFailure(message: string) {
 export function checkKeys() {
     const keys = localStorage.getItem("keys");
     if (!keys) {
-        return false;
+        return localStorage.getItem("ekeys");
     }
     return JSON.parse(keys);
 }

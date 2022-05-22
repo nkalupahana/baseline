@@ -1,3 +1,5 @@
+import ldb from "./db";
+import { parseSettings } from "./helpers";
 import history from "./history";
 
 const THRESHOLD_SEC = 60 * 3;
@@ -24,3 +26,15 @@ function redirect() {
 document.addEventListener("resume", redirect);
 document.addEventListener("deviceready", redirect);
 document.addEventListener("pause", setLastOpenedTime);
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") {
+        localStorage.removeItem("keys");
+        ldb.logs.clear();
+    } else {
+        if (localStorage.getItem("ekeys") && !localStorage.getItem("keys")) {
+            if (parseSettings()["pdp"] === "upfront") {
+                history.push("/unlock");
+            }
+        }
+    }
+});
