@@ -28,8 +28,10 @@ document.addEventListener("deviceready", redirect);
 document.addEventListener("pause", setLastOpenedTime);
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState !== "visible") {
-        localStorage.removeItem("keys");
-        ldb.logs.clear();
+        if (parseSettings()["pdp"]) {
+            localStorage.removeItem("keys");
+            ldb.logs.clear();
+        }
     } else {
         if (localStorage.getItem("ekeys") && !localStorage.getItem("keys")) {
             if (parseSettings()["pdp"] === "upfront") {
