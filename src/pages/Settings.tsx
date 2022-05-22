@@ -1,5 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
+import EndSpacer from "../components/EndSpacer";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { goBackSafely } from "../helpers";
@@ -19,6 +20,7 @@ const Settings = () => {
                 <PDP />
             </div>
         </div>
+        <EndSpacer />
     </div>;
 };
 
