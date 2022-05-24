@@ -104,7 +104,7 @@ export function checkKeys() {
                 history.push("/unlock");
                 return "upfront";
             } else {
-                if (!["/summary", "/rsummary", "/settings"].includes(history.location.pathname)) history.push("/summary");
+                if (!["/summary", "/rsummary", "/settings", "/unlock"].includes(history.location.pathname)) history.push("/summary");
                 return "discreet";
             }
         }
