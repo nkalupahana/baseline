@@ -5,7 +5,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { checkKeys, networkFailure, toast } from "../../helpers";
 import Screener, { Answer, Done, Modifier } from "../../screeners/screener";
-const keys = checkKeys();
 
 interface Props {
     survey: Screener,
@@ -54,7 +53,7 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
                     body: JSON.stringify({
                         key: final._key,
                         results: final._results,
-                        keys
+                        keys: JSON.stringify(checkKeys())
                     })
                 })
             } catch (e: any) {
