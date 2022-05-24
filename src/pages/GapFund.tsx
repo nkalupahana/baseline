@@ -114,7 +114,7 @@ const GapFund = () => {
                     need,
                     amount,
                     method,
-                    keys
+                    keys: JSON.stringify(keys)
                 })
             });
         } catch (e: any) {

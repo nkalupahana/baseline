@@ -5,6 +5,7 @@ import hash from "crypto-js/sha512";
 import aesutf8 from "crypto-js/enc-utf8";
 import AES from "crypto-js/aes";
 import { toast } from "../helpers";
+import { signOutAndCleanUp } from "../firebase";
 
 const Unlock = () => {
     const [passphrase, setPassphrase] = useState("");
@@ -26,6 +27,7 @@ const Unlock = () => {
     return <>
         <div style={{ gridArea: "heading" }} className="center-summary container">
             <UnlockCmp unlock={unlock} getter={passphrase} setter={setPassphrase} />
+            <p>Stuck? <span onClick={signOutAndCleanUp} className="fake-link">Click here to sign out.</span> Note that in order to sign back in, you will still need this passphrase.</p>
         </div>
     </>
 }
