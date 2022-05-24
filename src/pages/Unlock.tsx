@@ -17,6 +17,7 @@ const Unlock = () => {
         const h = hash(passphrase).toString();
         if (hash(AES.decrypt(keyData.keys, h).toString(aesutf8)).toString() === keyData.hash) {
             sessionStorage.setItem("pwd", h);
+            history.replace("/summary");
         } else {
             toast("Your passphrase is incorrect, please try again.");
         }

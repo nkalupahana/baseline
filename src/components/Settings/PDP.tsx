@@ -4,11 +4,9 @@ import { DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
-import { networkFailure, parseSettings, toast, changeDatabaseEncryption, setEkeys, setSettings } from "../../helpers";
+import { networkFailure, toast, changeDatabaseEncryption, setEkeys, setSettings } from "../../helpers";
 import Preloader from "../../pages/Preloader";
 import "./PDP.css";
-import hash from "crypto-js/sha512";
-import AES from "crypto-js/aes";
 
 const PDP = () => {
     const [user] = useAuthState(auth);
@@ -40,7 +38,7 @@ const PDP = () => {
 
     useEffect(() => {
         if (updateEncryption !== 0 && finalizedPassphrase !== "") {
-            const pwd = hash(finalizedPassphrase).toString();
+            const pwd = finalizedPassphrase;
             changeDatabaseEncryption(sessionStorage.getItem("pwd") ?? "", pwd).then(() => {
                 const keys = localStorage.getItem("keys") ?? "";
                 setEkeys(keys, pwd);

@@ -145,12 +145,13 @@ export async function changeDatabaseEncryption(oldPassword="", newPassword="") {
 }
 
 export function setEkeys(keys: string, pwd: string) {
+    const h = hash(pwd).toString();
     localStorage.setItem("ekeys", JSON.stringify({
-        keys: AES.encrypt(keys, pwd).toString(),
+        keys: AES.encrypt(keys, h).toString(),
         hash: hash(keys).toString()
     }));
 
-    sessionStorage.setItem("pwd", pwd);
+    sessionStorage.setItem("pwd", h);
     localStorage.removeItem("keys");
 }
 
