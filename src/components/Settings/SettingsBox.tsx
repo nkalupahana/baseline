@@ -1,6 +1,6 @@
 import { IonToggle } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { parseSettings } from "../../helpers";
+import { parseSettings, setSettings } from "../../helpers";
 import "./SettingsBox.css";
 
 interface Props {
@@ -14,9 +14,7 @@ const SettingsBox = ({ title, description, attr }: Props) => {
     const [checked, setChecked] = useState(settings[attr]);
     
     useEffect(() => {
-        let data = parseSettings();
-        data[attr] = checked;
-        localStorage.setItem("settings", JSON.stringify(data));
+        setSettings(attr, checked);
     }, [checked, attr]);
 
     return <div className="settings-box-grid">

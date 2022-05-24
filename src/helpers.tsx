@@ -5,6 +5,7 @@ import ldb, { Log } from "./db";
 import { signOutAndCleanUp } from "./firebase";
 import history from "./history";
 import aesutf8 from "crypto-js/enc-utf8";
+import hash from "crypto-js/sha512";
 
 export interface AnyMap {
     [key: string]: any;
@@ -141,4 +142,20 @@ export async function changeDatabaseEncryption(oldPassword="", newPassword="") {
         }
         await ldb.logs.bulkPut(logs);
     }
+}
+
+export function setEkeys(keys: string, pwd: string) {
+    localStorage.setItem("ekeys", JSON.stringify({
+        keys: AES.encrypt(keys, pwd).toString(),
+        hash: hash(keys).toString()
+    }));
+
+    sessionStorage.setItem("pwd", pwd);
+    localStorage.removeItem("keys");
+}
+
+export function setSettings(key: string, value: string) {
+    let data = parseSettings();
+    data[key] = value;
+    localStorage.setItem("settings", JSON.stringify(data));
 }

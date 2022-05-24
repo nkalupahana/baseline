@@ -551,7 +551,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
     const pdp = await (await db.ref(`/${req.user.user_id}/pdp`).get()).val();
     if (typeof pdp === "object" && pdp !== null && pdp.enabled) {
         if (typeof body.passphrase !== "string" || !bcrypt.compareSync(body.passphrase, pdp.passphraseHash)) {
-            res.send(400);
+            res.status(401).send("Your passphrase is incorrect.");
             return;
         }
     }

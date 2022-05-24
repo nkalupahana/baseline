@@ -4,7 +4,7 @@ import { DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
-import { networkFailure, parseSettings, toast, changeDatabaseEncryption } from "../../helpers";
+import { networkFailure, parseSettings, toast, changeDatabaseEncryption, setEkeys, setSettings } from "../../helpers";
 import Preloader from "../../pages/Preloader";
 import "./PDP.css";
 import hash from "crypto-js/sha512";
@@ -24,9 +24,7 @@ const PDP = () => {
         if (!user) return;
         const listener = async (snap: DataSnapshot) => {
             const val = await snap.val();
-            let settings = parseSettings();
-            settings["pdp"] = val;
-            localStorage.setItem("settings", JSON.stringify(settings));
+            setSettings("pdp", val);
             setMethod(val ? val : false);
             setSubmitting(false);
             setUpdateEncryption(Math.random());
@@ -45,12 +43,8 @@ const PDP = () => {
             const pwd = hash(finalizedPassphrase).toString();
             changeDatabaseEncryption(sessionStorage.getItem("pwd") ?? "", pwd).then(() => {
                 const keys = localStorage.getItem("keys") ?? "";
-                localStorage.setItem("ekeys", JSON.stringify({
-                    keys: AES.encrypt(keys, pwd).toString(),
-                    hash: hash(keys).toString()
-                }));
-                sessionStorage.setItem("pwd", pwd);
-                localStorage.removeItem("keys");
+                setEkeys(keys, pwd);
+
                 setFinalizedPassphrase("");
                 setUpdateEncryption(0);
             });

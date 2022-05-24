@@ -1,6 +1,6 @@
-import { IonButton, IonPage } from "@ionic/react";
+import { IonButton, IonItem, IonLabel, IonPage } from "@ionic/react";
 import { GoogleAuthProvider, OAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
-import { auth, signOutAndCleanUp } from "../firebase";
+import { auth, db, signOutAndCleanUp } from "../firebase";
 import "./Container.css";
 import { useEffect, useState } from "react";
 import ldb from '../db';
@@ -8,15 +8,18 @@ import { AuthCredential, FirebaseAuthentication } from "@moody-app/capacitor-fir
 import { Capacitor } from "@capacitor/core";
 import { FCM } from "@capacitor-community/fcm";
 import { PushNotifications } from "@moody-app/capacitor-push-notifications";
-import { networkFailure, toast } from "../helpers";
+import { networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
+import UnlockCmp from "../components/Settings/UnlockCmp";
+import { get, ref } from "firebase/database";
 
 enum LoginStates {
     START,
     LOGGING_IN,
     CLOUDKIT_NEEDED,
     GETTING_CLOUDKIT,
+    UNLOCK,
     GETTING_KEYS
 }
 
@@ -41,6 +44,7 @@ let flow = Math.random();
 const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [loginState, setLoginState] = useState<LoginStates>(LoginStates.START);
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
+    const [passphrase, setPassphrase] = useState("");
 
     useEffect(() => {
         ldb.logs.clear();
@@ -51,6 +55,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         signOutAndCleanUp();
         setLoggingIn(false);
         setLoginState(LoginStates.START);
+        setPassphrase("");
     }
 
     const loginFlow = async (signInFunc: (flowVal: number) => Promise<AuthCredential | null | undefined>) => {
@@ -71,11 +76,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             return;
         }
 
+        setStoredCredential(credential);
         // Second round of auth needed on apple devices
         if (credential.providerId === "apple.com") {
             if (flowVal !== flow) return;
             setLoginState(LoginStates.CLOUDKIT_NEEDED);
-            setStoredCredential(credential);
             return;
         }
 
@@ -102,6 +107,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const continueLoginFlow = async (credential: AuthCredential, flowVal: number) => {
         setLoginState(LoginStates.GETTING_KEYS);
         if (flowVal !== flow) return;
+
+        const method = await (await get(ref(db, `/${auth.currentUser?.uid}/pdp/method`))).val();
+        if (flowVal !== flow) return;
+        if (method && !passphrase) {
+            setLoginState(LoginStates.UNLOCK);
+            return;
+        }
+
+        if (flowVal !== flow) return;
         try {
             const idToken = await auth.currentUser?.getIdToken();
             if (flowVal !== flow) return;
@@ -112,7 +126,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 },
                 body: JSON.stringify({
                     credential,
-                    platform: Capacitor.getPlatform()
+                    platform: Capacitor.getPlatform(),
+                    passphrase
                 })
             });
             
@@ -121,10 +136,21 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 const data = JSON.stringify(await keyResponse.json());
 
                 if (flowVal !== flow) return;
-                localStorage.setItem("keys", data);
+                if (passphrase) {
+                    setEkeys(data, passphrase);
+                    setSettings("pdp", method);
+                } else {
+                    localStorage.setItem("keys", data);
+                }
+                
+                if (flowVal !== flow) return;
                 setLoggingIn(false);
+            } else if (keyResponse.status === 401) {
+                if (flowVal !== flow) return;
+                toast(await keyResponse.text());
+                setLoginState(LoginStates.UNLOCK);
             } else {
-                throw new Error(`Something went wrong, please try again! ${keyResponse ? await keyResponse.text() : ""}`);
+                throw new Error(`${keyResponse ? await keyResponse.text() : ""}`);
             }
         } catch (e: any) {
             if (flowVal !== flow) return;
@@ -213,6 +239,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <p>Sign in with Apple is still in beta. Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                     <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
                 </div> }
+                { loginState === LoginStates.UNLOCK && <>
+                    <UnlockCmp unlock={() => continueLoginFlow(storedCredential!, flow)} getter={passphrase} setter={setPassphrase} />
+                    <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
+                </> }
                 { loginState === LoginStates.GETTING_KEYS && <>
                     <Preloader message="One moment! We're getting your encryption keys." />
                     <br />
