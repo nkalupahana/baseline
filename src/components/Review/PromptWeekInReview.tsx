@@ -11,10 +11,9 @@ import "./PromptWeekInReview.css";
 const PromptWeekInReview = () => {
     const [user] = useAuthState(auth);
     const [show, setShow] = useState(false);
-    const keys = checkKeys();
 
     useEffect(() => {
-        if (!user || typeof keys !== "object") return;
+        if (!user || typeof checkKeys() !== "object") return;
         (async () => {
             const lastWeekInReview = (await get(ref(db, `/${user.uid}/lastWeekInReview`))).val();
             if (lastWeekInReview) {
@@ -43,7 +42,7 @@ const PromptWeekInReview = () => {
                 }
             }
         })();
-    }, [user, keys]);
+    }, [user]);
 
     return <>
         { show && <div className="prompt-overlay">
