@@ -1,6 +1,8 @@
+import AES from "crypto-js/aes";
 import { DateTime } from "luxon";
 import Toastify from "toastify-js";
-import { Log } from "./db";
+import ldb, { Log } from "./db";
+import { signOutAndCleanUp } from "./firebase";
 import history from "./history";
 
 export interface AnyMap {
@@ -81,9 +83,32 @@ export function networkFailure(message: string) {
 
 export function checkKeys() {
     const keys = localStorage.getItem("keys");
+
     if (!keys) {
-        return localStorage.getItem("ekeys");
+        const pdpSetting = parseSettings()["pdp"];
+        if (pdpSetting) {
+            if (sessionStorage.getItem("pwd")) {
+                const ekeys = localStorage.getItem("ekeys");
+                if (!ekeys) {
+                    toast("Something went wrong, please sign in again.");
+                    signOutAndCleanUp();
+                    return;
+                }
+                
+                return JSON.parse(ekeys);
+            }
+
+            if (pdpSetting === "upfront") {
+                history.push("/unlock");
+                return "upfront";
+            } else {
+                return "discreet";
+            }
+        }
+
+        return false;
     }
+
     return JSON.parse(keys);
 }
 
@@ -99,3 +124,20 @@ export function parseSettings() {
     return data;
 }
 
+export async function changeDatabaseEncryption(oldPassword="", newPassword="") {
+    console.log("h1");
+    if (newPassword) {
+        if (oldPassword) {
+            // TODO
+            console.warn("old password, do something");
+        }
+
+        let logs = await ldb.logs.toArray();
+        for (let i = 0; i < logs.length; ++i) {
+            logs[i].ejournal = AES.encrypt(logs[i].journal ?? "", newPassword).toString();
+            logs[i].journal = "";
+        }
+        console.log(logs);
+        await ldb.logs.bulkPut(logs);
+    }
+}

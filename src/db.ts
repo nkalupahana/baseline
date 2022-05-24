@@ -8,25 +8,19 @@ export interface Log {
     time: string,
     zone: string,
     mood: number,
-    journal: string,
+    journal?: string,
+    ejournal?: string,
     average: string,
     files?: string[],
 }
 
-interface ELogData {
-    key: number;
-    data: string;
-}
-
 interface DB extends Dexie {
     logs: Dexie.Table<Log, number>;
-    elogs: Dexie.Table<ELogData, number>;
 }
 
 const ldb = new Dexie('ldb');
 ldb.version(1).stores({
-    logs: `&timestamp, year, month, day, time, zone, mood, journal, average`,
-    elogs: `&key, data`
+    logs: `&timestamp, year, month, day, time, zone, mood, journal, ejournal, average`,
 });
 
 export default ldb as DB;

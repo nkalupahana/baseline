@@ -3,9 +3,8 @@ import { getIdToken } from "firebase/auth";
 import { DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import ldb from "../../db";
 import { auth, db } from "../../firebase";
-import { networkFailure, parseSettings, toast } from "../../helpers";
+import { networkFailure, parseSettings, toast, changeDatabaseEncryption } from "../../helpers";
 import Preloader from "../../pages/Preloader";
 import "./PDP.css";
 
@@ -41,14 +40,13 @@ const PDP = () => {
 
     useEffect(() => {
         if (updateEncryption !== 0 && finalizedPassphrase !== "") {
-            ldb.elogs.clear().then(async () => {
-                ldb.elogs.add({
-                    key: 0,
-                    data: JSON.stringify(await ldb.logs.toArray())
-                });
+            changeDatabaseEncryption(sessionStorage.getItem("pwd") ?? "", finalizedPassphrase).then(() => {
+                localStorage.setItem("ekeys", localStorage.getItem("keys") ?? "");
+                sessionStorage.setItem("pwd", finalizedPassphrase);
+                localStorage.removeItem("keys");
+                setFinalizedPassphrase("");
+                setUpdateEncryption(0);
             });
-            localStorage.setItem("ekeys", localStorage.getItem("keys") ?? "");
-            setFinalizedPassphrase("");
         }
     }, [updateEncryption, finalizedPassphrase]);
 
@@ -119,11 +117,11 @@ const PDP = () => {
                 <form>
                     <IonItem>
                         <IonLabel className="ion-text-wrap" position="stacked">Passphrase</IonLabel>
-                        <input className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />
+                        <input autoComplete="new-password" className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />
                     </IonItem>
                     <IonItem>
                         <IonLabel className="ion-text-wrap" position="stacked">Confirm Passphrase</IonLabel>
-                        <input className="invisible-input" value={confirmPassphrase} type="password" onChange={e => setConfirmPassphrase(e.target.value)} />
+                        <input autoComplete="new-password" className="invisible-input" value={confirmPassphrase} type="password" onChange={e => setConfirmPassphrase(e.target.value)} />
                     </IonItem>
                     <br />
                     <div className="finish-button" onClick={submitPassphrase}>

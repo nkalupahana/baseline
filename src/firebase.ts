@@ -41,7 +41,6 @@ export const signOutAndCleanUp = () => {
     console.log("SIGN OUT");
     // Clear DB
     ldb.logs.clear();
-    ldb.elogs.clear();
     // Remove local notifications
     LocalNotifications.getPending().then(({ notifications }) => {
         let toCancel = [];
@@ -60,6 +59,8 @@ export const signOutAndCleanUp = () => {
     // Remove keys from store
     localStorage.removeItem("keys");
     localStorage.removeItem("ekeys");
+    localStorage.removeItem("settings");
+    sessionStorage.removeItem("pwd");
     // Sign out of Firebase
     FirebaseAuthentication.signOut();
     signOut(auth);

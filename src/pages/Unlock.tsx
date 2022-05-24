@@ -1,21 +1,17 @@
 import { IonButton } from "@ionic/react"
-import ldb from "../db";
+import { useEffect } from "react";
 import history from "../history";
 
 const Unlock = () => {
+    useEffect(() => {
+        if (!(localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd"))) history.replace("/summary");
+    }, []);
+
     return <>
         <br /><br /><br /><br />
-        <IonButton onClick={async () => {
-            try {
-                const ekeys = localStorage.getItem("ekeys");
-                if (ekeys) localStorage.setItem("keys",  ekeys);
-                const edata = await ldb.elogs.get(0);
-                if (edata) await ldb.logs.bulkAdd(JSON.parse(edata.data));
-            } catch (e) {
-                console.log(e);
-            } finally {
-                history.replace("/summary");
-            }
+        <IonButton onClick={() => {
+            sessionStorage.setItem("pwd", "password");
+            history.replace("/summary");
         }}>Unlock</IonButton>
     </>
 }
