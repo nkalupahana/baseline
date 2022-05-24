@@ -1,4 +1,4 @@
-import { IonButton, IonItem, IonLabel, IonPage } from "@ionic/react";
+import { IonButton, IonPage } from "@ionic/react";
 import { GoogleAuthProvider, OAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
 import { auth, db, signOutAndCleanUp } from "../firebase";
 import "./Container.css";
