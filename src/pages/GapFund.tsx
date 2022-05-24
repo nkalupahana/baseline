@@ -114,7 +114,7 @@ const GapFund = () => {
                     need,
                     amount,
                     method,
-                    keys: localStorage.getItem("keys")
+                    keys
                 })
             });
         } catch (e: any) {

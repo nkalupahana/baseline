@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ldb from "../../db";
 import { auth, db } from "../../firebase";
+import { checkKeys } from "../../helpers";
 import history from "../../history";
 import "./PromptWeekInReview.css";
 
 const PromptWeekInReview = () => {
     const [, loading] = useAuthState(auth);
     const [show, setShow] = useState(false);
+    const keys = checkKeys();
 
     useEffect(() => {
-        if (loading) return;
+        if (loading || typeof keys !== "object") return;
         (async () => {
             if (!auth || !auth.currentUser) return;
             const lastWeekInReview = (await get(ref(db, `/${auth.currentUser.uid}/lastWeekInReview`))).val();
@@ -42,7 +44,7 @@ const PromptWeekInReview = () => {
                 }
             }
         })();
-    }, [loading]);
+    }, [loading, keys]);
 
     return <>
         { show && <div className="prompt-overlay">
