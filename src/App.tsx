@@ -42,6 +42,7 @@ import Donate from "./pages/Donate";
 import { checkKeys } from "./helpers";
 import Settings from "./pages/Settings";
 import Unlock from "./pages/Unlock";
+import RSummary from "./pages/RSummary";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -51,7 +52,6 @@ const App = () => {
     const [user, loading] = useAuthState(auth);
     const [loggingIn, setLoggingIn] = useState(false);
     const keys = checkKeys();
-    console.log(keys);
     
     useEffect(() => {
         smoothscroll.polyfill();
@@ -74,6 +74,7 @@ const App = () => {
                     <Route path="/donate" component={Donate} />
                     <Route path="/review" component={WeekInReview} />
                     <Route path="/settings" component={Settings} />
+                    <Route path="/rsummary" component={RSummary} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }

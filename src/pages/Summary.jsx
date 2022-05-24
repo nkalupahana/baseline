@@ -78,13 +78,14 @@ const Summary = () => {
 
                 // Add timestamp to data object, and decrypt as needed
                 const pdpSetting = parseSettings()["pdp"];
+                const pwd = sessionStorage.getItem("pwd");
                 for (const key in newData) {
                     if ("data" in newData[key] && keys) {
                         newData[key] = JSON.parse(AES.decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
                     }
                     newData[key].timestamp = Number(key);
                     if (pdpSetting) {
-                        newData[key].ejournal = newData[key].journal;
+                        newData[key].ejournal = AES.encrypt(newData[key].journal, pwd).toString();
                         newData[key].journal = "";
                     }
                 }

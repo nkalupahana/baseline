@@ -4,6 +4,7 @@ import Toastify from "toastify-js";
 import ldb, { Log } from "./db";
 import { signOutAndCleanUp } from "./firebase";
 import history from "./history";
+import aesutf8 from "crypto-js/enc-utf8";
 
 export interface AnyMap {
     [key: string]: any;
@@ -87,8 +88,9 @@ export function checkKeys() {
     if (!keys) {
         const pdpSetting = parseSettings()["pdp"];
         if (pdpSetting) {
-            if (sessionStorage.getItem("pwd")) {
-                const ekeys = localStorage.getItem("ekeys");
+            const pwd = sessionStorage.getItem("pwd");
+            if (pwd) {
+                const ekeys = AES.decrypt(JSON.parse(localStorage.getItem("ekeys") ?? "{}")["keys"], pwd).toString(aesutf8);
                 if (!ekeys) {
                     toast("Something went wrong, please sign in again.");
                     signOutAndCleanUp();
@@ -102,6 +104,7 @@ export function checkKeys() {
                 history.push("/unlock");
                 return "upfront";
             } else {
+                if (!["/summary", "/rsummary", "/settings"].includes(history.location.pathname)) history.push("/summary");
                 return "discreet";
             }
         }
@@ -125,7 +128,6 @@ export function parseSettings() {
 }
 
 export async function changeDatabaseEncryption(oldPassword="", newPassword="") {
-    console.log("h1");
     if (newPassword) {
         if (oldPassword) {
             // TODO
@@ -137,7 +139,6 @@ export async function changeDatabaseEncryption(oldPassword="", newPassword="") {
             logs[i].ejournal = AES.encrypt(logs[i].journal ?? "", newPassword).toString();
             logs[i].journal = "";
         }
-        console.log(logs);
         await ldb.logs.bulkPut(logs);
     }
 }

@@ -10,7 +10,7 @@ import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db, signOutAndCleanUp } from "../firebase";
-import { goBackSafely, networkFailure, toast } from "../helpers";
+import { checkKeys, goBackSafely, networkFailure, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
@@ -38,8 +38,8 @@ const GapFund = () => {
     const [submitting, setSubmitting] = useState(false);
     const [gapFundData, setGapFundData] = useState<SubmissionState | GapFundData>(SubmissionState.NO_DATA_YET);
     const [gapFundAvailable, setGapFundAvailable] = useState(null);
-
     const [user, loading] = useAuthState(auth);
+    const keys = checkKeys();
 
     // Preload until auth is ready and gap fund data is loaded
     // Also ensure that gap fund is available before displaying
@@ -61,13 +61,11 @@ const GapFund = () => {
             } else {
                 console.log(data);
                 if ("data" in data) {
-                    let keys_ = localStorage.getItem("keys");
-                    let keys;
-                    if (!keys_) {
+                    if (!keys) {
                         signOutAndCleanUp();
                         return;
-                    } else {
-                        keys = JSON.parse(keys_);
+                    } else if (typeof keys === "string") {
+                        return;
                     }
                     
                     data = JSON.parse(AES.decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
@@ -81,7 +79,7 @@ const GapFund = () => {
         return () => {
             off(gapFundRef, "value", listener);
         };
-    }, [loading]);
+    }, [loading, keys]);
 
     const submit = async () => {
         if (submitting) return;

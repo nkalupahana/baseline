@@ -7,6 +7,8 @@ import { auth, db } from "../../firebase";
 import { networkFailure, parseSettings, toast, changeDatabaseEncryption } from "../../helpers";
 import Preloader from "../../pages/Preloader";
 import "./PDP.css";
+import hash from "crypto-js/sha512";
+import AES from "crypto-js/aes";
 
 const PDP = () => {
     const [user] = useAuthState(auth);
@@ -40,9 +42,14 @@ const PDP = () => {
 
     useEffect(() => {
         if (updateEncryption !== 0 && finalizedPassphrase !== "") {
-            changeDatabaseEncryption(sessionStorage.getItem("pwd") ?? "", finalizedPassphrase).then(() => {
-                localStorage.setItem("ekeys", localStorage.getItem("keys") ?? "");
-                sessionStorage.setItem("pwd", finalizedPassphrase);
+            const pwd = hash(finalizedPassphrase).toString();
+            changeDatabaseEncryption(sessionStorage.getItem("pwd") ?? "", pwd).then(() => {
+                const keys = localStorage.getItem("keys") ?? "";
+                localStorage.setItem("ekeys", JSON.stringify({
+                    keys: AES.encrypt(keys, pwd).toString(),
+                    hash: hash(keys).toString()
+                }));
+                sessionStorage.setItem("pwd", pwd);
                 localStorage.removeItem("keys");
                 setFinalizedPassphrase("");
                 setUpdateEncryption(0);

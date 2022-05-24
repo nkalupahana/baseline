@@ -27,7 +27,7 @@ document.addEventListener("deviceready", redirect);
 document.addEventListener("pause", setLastOpenedTime);
 document.addEventListener("visibilitychange", () => {
     sessionStorage.removeItem("pwd");
-    history.push("/journal");
+    history.push(`/rsummary`);
 });
 
 window.onbeforeunload = () => {
