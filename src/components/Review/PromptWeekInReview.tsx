@@ -9,15 +9,14 @@ import history from "../../history";
 import "./PromptWeekInReview.css";
 
 const PromptWeekInReview = () => {
-    const [, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [show, setShow] = useState(false);
     const keys = checkKeys();
 
     useEffect(() => {
-        if (loading || typeof keys !== "object") return;
+        if (!user || typeof keys !== "object") return;
         (async () => {
-            if (!auth || !auth.currentUser) return;
-            const lastWeekInReview = (await get(ref(db, `/${auth.currentUser.uid}/lastWeekInReview`))).val();
+            const lastWeekInReview = (await get(ref(db, `/${user.uid}/lastWeekInReview`))).val();
             if (lastWeekInReview) {
                 // Go to next Friday (starting from day after last week in review)
                 let last = DateTime.fromMillis(lastWeekInReview).plus({ days: 1 });
@@ -44,7 +43,7 @@ const PromptWeekInReview = () => {
                 }
             }
         })();
-    }, [loading, keys]);
+    }, [user, keys]);
 
     return <>
         { show && <div className="prompt-overlay">
