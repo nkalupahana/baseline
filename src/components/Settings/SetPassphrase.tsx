@@ -1,6 +1,6 @@
 import { IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { getIdToken } from "firebase/auth";
-import { FormEvent, SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { toast, networkFailure } from "../../helpers";
