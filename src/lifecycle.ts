@@ -1,4 +1,4 @@
-import { checkKeys } from "./helpers";
+import { checkKeys, parseSettings } from "./helpers";
 import history from "./history";
 
 const THRESHOLD_SEC = 60 * 3;
@@ -26,8 +26,10 @@ document.addEventListener("resume", redirect);
 document.addEventListener("deviceready", redirect);
 document.addEventListener("pause", setLastOpenedTime);
 document.addEventListener("visibilitychange", () => {
-    sessionStorage.removeItem("pwd");
-    history.push(`/rsummary`);
+    if (parseSettings()["pdp"]) {
+        sessionStorage.removeItem("pwd");
+        history.push(`/rsummary`);
+    }
 });
 
 window.onbeforeunload = () => {

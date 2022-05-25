@@ -1,31 +1,38 @@
-import { IonItem, IonLabel, IonRadio, IonRadioGroup, IonSpinner } from "@ionic/react";
-import { getIdToken } from "firebase/auth";
+import { IonRadio, IonRadioGroup } from "@ionic/react";
 import { DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
-import { networkFailure, toast, changeDatabaseEncryption, setEkeys, setSettings } from "../../helpers";
+import { changeDatabaseEncryption, parseSettings, setSettings } from "../../helpers";
 import Preloader from "../../pages/Preloader";
+import SetPassphrase from "./SetPassphrase";
 import "./PDP.css";
 
 const PDP = () => {
     const [user] = useAuthState(auth);
     const [method, setMethod] = useState<string | boolean | undefined>(undefined);
-    const [passphraseBox, setPassphraseBox] = useState(false);
-    const [passphrase, setPassphrase] = useState("");
-    const [confirmPassphrase, setConfirmPassphrase] = useState("");
-    const [submitting, setSubmitting] = useState(false);
-    const [updateEncryption, setUpdateEncryption] = useState(0);
-    const [finalizedPassphrase, setFinalizedPassphrase] = useState("");
+    const [showSP, setShowSP] = useState(false);
+    const [finalizedPassphrase, setFinalizedPassphrase] = useState({
+        changing: false,
+        passphrase: "",
+    });
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) return;  
         const listener = async (snap: DataSnapshot) => {
             const val = await snap.val();
+            const pdpSetting = parseSettings()["pdp"];
+            const oldMethod = pdpSetting ? pdpSetting : false;
+            const newMethod = val ? val : false;
+
             setSettings("pdp", val);
-            setMethod(val ? val : false);
-            setSubmitting(false);
-            setUpdateEncryption(Math.random());
+            setMethod(newMethod);
+            if (oldMethod !== newMethod) {
+                    setFinalizedPassphrase({
+                    ...finalizedPassphrase,
+                    changing: true,
+                });
+            }
         };
         
         const pdpRef = ref(db, `/${user.uid}/pdp/method`);
@@ -34,69 +41,25 @@ const PDP = () => {
         return () => {
             off(pdpRef, "value", listener);
         };
-    }, [user]);
+    }, [finalizedPassphrase, user]);
 
     useEffect(() => {
-        if (updateEncryption !== 0 && finalizedPassphrase !== "") {
-            const pwd = finalizedPassphrase;
-            changeDatabaseEncryption(sessionStorage.getItem("pwd") ?? "", pwd).then(() => {
-                const keys = localStorage.getItem("keys") ?? "";
-                setEkeys(keys, pwd);
-
-                setFinalizedPassphrase("");
-                setUpdateEncryption(0);
+        if (finalizedPassphrase.changing) {
+            const oldPwd = sessionStorage.getItem("pwd") ?? "";
+            const newPwd = finalizedPassphrase.passphrase;
+            console.log("CHANGE");
+            console.log(oldPwd);
+            console.log(newPwd);
+            
+            changeDatabaseEncryption(oldPwd, newPwd).then(() => {
+                setFinalizedPassphrase({
+                    changing: false,
+                    passphrase: ""
+                });
+                setShowSP(false);
             });
         }
-    }, [updateEncryption, finalizedPassphrase]);
-
-    const submitPassphrase = async () => {
-        if (submitting) return;
-        setSubmitting(true);
-        if (!passphrase.trim() || passphrase.trim().length < 6) {
-            toast("Passphrase must be at least 6 characters long!");
-            setSubmitting(false);
-            return;
-        }
-
-        if (passphrase !== confirmPassphrase) {
-            toast("Your passphrases must match!");
-            setSubmitting(false);
-            return;
-        }
-
-        setFinalizedPassphrase(passphrase);
-
-        let response;
-        try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/enablePDP",{
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${await getIdToken(user)}`,
-                },
-                body: JSON.stringify({
-                    passphrase
-                })
-            });
-        } catch (e: any) {
-            if (networkFailure(e.message)) {
-                toast(`We can't reach our servers. Check your internet connection and try again.`);
-            } else {
-                toast(`Something went wrong, please try again! \nError: ${e.message}`);
-            }
-            setSubmitting(false);
-            return;
-        }
-
-        if (response) {
-            if (!response.ok) {
-                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
-                setSubmitting(false);
-            }
-        } else {
-            toast(`Something went wrong, please try again!`);
-            setSubmitting(false);
-        }
-    };
+    }, [finalizedPassphrase]);
 
     const changeMethod = (method: string) => {
         set(ref(db, `/${user.uid}/pdp/method`), method);
@@ -110,26 +73,8 @@ const PDP = () => {
                 can be required up-front whenever the app is opened, or it can be hidden away 
                 to make it appear as if you don't use baseline at all.
             </p>
-            { !method && !passphraseBox && <p className="fake-link" onClick={() => setPassphraseBox(true)}>Set a passphrase to begin.</p> }
-            { !method && passphraseBox && <div className="margin-bottom-0 passphrase-box">
-                <p>Set up your passphrase below. We recommend using <a href="https://www.useapassphrase.com/" target="_blank" rel="noreferrer">a set of memorable words</a> you haven't used elsewhere, or a password manager.</p>
-                <form>
-                    <IonItem>
-                        <IonLabel className="ion-text-wrap" position="stacked">Passphrase</IonLabel>
-                        <input autoComplete="new-password" className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />
-                    </IonItem>
-                    <IonItem>
-                        <IonLabel className="ion-text-wrap" position="stacked">Confirm Passphrase</IonLabel>
-                        <input autoComplete="new-password" className="invisible-input" value={confirmPassphrase} type="password" onChange={e => setConfirmPassphrase(e.target.value)} />
-                    </IonItem>
-                    <br />
-                    <div className="finish-button" onClick={submitPassphrase}>
-                        { !submitting && <>Set Passphrase</> }
-                        { submitting && <IonSpinner className="loader" name="crescent" /> }
-                    </div>
-                    <br />
-                </form>
-            </div> }
+            { !method && !showSP && !finalizedPassphrase.changing && <p className="fake-link" onClick={() => setShowSP(true)}>Set a passphrase to begin.</p> }
+            { !method && showSP &&  <SetPassphrase finalize={setFinalizedPassphrase} /> }
             { (typeof method === "string") && <>
                 <p className="margin-bottom-0">Local data protection is <span className="bold">enabled.</span></p>
                 <br />
@@ -146,8 +91,8 @@ const PDP = () => {
                     </p>
                     <br />
                 </IonRadioGroup>
-                <p className="margin-bottom-0 fake-link">Change Passphrase</p>
-                <p className="margin-bottom-0 fake-link">Remove Passphrase</p>
+                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link">Change Passphrase</p> }
+                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link">Remove Passphrase</p> }
             </> }
         </div> }
         { method === undefined && <Preloader /> }

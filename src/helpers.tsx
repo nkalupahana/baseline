@@ -128,30 +128,52 @@ export function parseSettings() {
     return data;
 }
 
-export async function changeDatabaseEncryption(oldPassword="", newPassword="") {
-    if (newPassword) {
-        if (oldPassword) {
-            // TODO
-            console.warn("old password, do something");
-        }
+// NOTE: Old password comes in hashed, new password does not
+export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
+    let logs = await ldb.logs.toArray();
 
+    // Undo encryption if we're changing passphrases or removing an old one
+    if ((oldPwd && newPwd) || (oldPwd && !newPwd)) {
         let logs = await ldb.logs.toArray();
         for (let i = 0; i < logs.length; ++i) {
-            logs[i].ejournal = AES.encrypt(logs[i].journal ?? "", newPassword).toString();
+            logs[i].journal = AES.decrypt(logs[i].ejournal ?? "", oldPwd).toString(aesutf8);
+            logs[i].ejournal = "";
+        }
+        
+        if (!newPwd) await ldb.logs.bulkPut(logs);
+        
+        // Reconstruct keys
+        let keys = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
+        localStorage.setItem("keys", AES.decrypt(keys.keys, oldPwd).toString(aesutf8));
+        localStorage.removeItem("ekeys");
+        sessionStorage.removeItem("pwd");
+    }
+
+    if (newPwd) {
+        // Encryption needed
+        // Construct new passphrase
+        newPwd = hash(newPwd).toString();
+
+        // Encrypt data
+        for (let i = 0; i < logs.length; ++i) {
+            logs[i].ejournal = AES.encrypt(logs[i].journal ?? "", newPwd).toString();
             logs[i].journal = "";
         }
         await ldb.logs.bulkPut(logs);
+
+        // Set keys
+        const keys = localStorage.getItem("keys") ?? "";
+        setEkeys(keys, newPwd);
     }
 }
 
 export function setEkeys(keys: string, pwd: string) {
-    const h = hash(pwd).toString();
     localStorage.setItem("ekeys", JSON.stringify({
-        keys: AES.encrypt(keys, h).toString(),
+        keys: AES.encrypt(keys, pwd).toString(),
         hash: hash(keys).toString()
     }));
 
-    sessionStorage.setItem("pwd", h);
+    sessionStorage.setItem("pwd", pwd);
     localStorage.removeItem("keys");
 }
 

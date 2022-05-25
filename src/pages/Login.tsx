@@ -13,6 +13,7 @@ import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
 import { get, ref } from "firebase/database";
+import hash from "crypto-js/sha512";
 
 enum LoginStates {
     START,
@@ -137,7 +138,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
                 if (flowVal !== flow) return;
                 if (passphrase) {
-                    setEkeys(data, passphrase);
+                    setEkeys(data, hash(passphrase).toString());
                     setSettings("pdp", method);
                 } else {
                     localStorage.setItem("keys", data);
