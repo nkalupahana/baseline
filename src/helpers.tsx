@@ -133,8 +133,7 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
     let logs = await ldb.logs.toArray();
 
     // Undo encryption if we're changing passphrases or removing an old one
-    if ((oldPwd && newPwd) || (oldPwd && !newPwd)) {
-        let logs = await ldb.logs.toArray();
+    if (oldPwd) {
         for (let i = 0; i < logs.length; ++i) {
             logs[i].journal = AES.decrypt(logs[i].ejournal ?? "", oldPwd).toString(aesutf8);
             logs[i].ejournal = "";
@@ -148,6 +147,8 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
         localStorage.removeItem("ekeys");
         sessionStorage.removeItem("pwd");
     }
+
+    console.log(logs);
 
     if (newPwd) {
         // Encryption needed
@@ -181,4 +182,13 @@ export function setSettings(key: string, value: string) {
     let data = parseSettings();
     data[key] = value;
     localStorage.setItem("settings", JSON.stringify(data));
+}
+
+export function checkPassphrase(passphrase: string): boolean {
+    try {
+        const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
+        return hash(AES.decrypt(keyData.keys, hash(passphrase).toString()).toString(aesutf8)).toString() === keyData.hash
+    } catch {
+        return false;
+    }
 }

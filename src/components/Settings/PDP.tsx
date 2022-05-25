@@ -8,11 +8,13 @@ import Preloader from "../../pages/Preloader";
 import SetPassphrase from "./SetPassphrase";
 import "./PDP.css";
 import RemovePassphrase from "./RemovePassphrase";
+import ChangePassphrase from "./ChangePassphrase";
 
 const PDP = () => {
     const [user] = useAuthState(auth);
     const [method, setMethod] = useState<string | boolean | undefined>(undefined);
     const [showSP, setShowSP] = useState(false);
+    const [showCP, setShowCP] = useState(false);
     const [showRP, setShowRP] = useState(false);
     const [finalizedPassphrase, setFinalizedPassphrase] = useState({
         changing: false,
@@ -69,6 +71,7 @@ const PDP = () => {
                 });
                 setShowSP(false);
                 setShowRP(false);
+                setShowCP(false);
             });
         }
     }, [finalizedPassphrase]);
@@ -85,7 +88,7 @@ const PDP = () => {
                 can be required up-front whenever the app is opened, or it can be hidden away 
                 to make it appear as if you don't use baseline at all.
             </p>
-            { !method && !showSP && !finalizedPassphrase.changing && <p className="fake-link" onClick={() => setShowSP(true)}>Set a passphrase to begin.</p> }
+            { !method && !finalizedPassphrase.changing && <p className="fake-link" onClick={() => setShowSP(!showSP)}>Set a passphrase to begin.</p> }
             { !method && showSP && <SetPassphrase finalize={setFinalizedPassphrase} /> }
             { (typeof method === "string") && <>
                 <p className="margin-bottom-0">Local data protection is <span className="bold">enabled.</span></p>
@@ -103,8 +106,9 @@ const PDP = () => {
                     </p>
                     <br />
                 </IonRadioGroup>
-                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link">Change Passphrase</p> }
-                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(true)}>Remove Passphrase</p> }
+                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link" onClick={() => setShowCP(!showCP)}>Change Passphrase</p> }
+                { method && showCP && <ChangePassphrase finalize={setFinalizedPassphrase} /> }
+                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(!showRP)}>Remove Passphrase</p> }
                 { method && showRP && <RemovePassphrase finalize={setFinalizedPassphrase} /> }
             </> }
         </div> }

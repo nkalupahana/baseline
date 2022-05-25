@@ -749,6 +749,9 @@ export const changePDPpassphrase = functions.https.onRequest(async (req: Request
     }
 
     const db = admin.database();
+    // TODO add verification
+
+
     await db.ref(`${req.user.user_id}/pdp`).update({
         passphraseHash: bcrypt.hashSync(body.passphrase),
         passphraseUpdate: Math.random()
@@ -770,6 +773,8 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
 
     await validateAuth(req, res);
     if (!req.user) return;
+
+    // TODO add verification
     
     const db = admin.database();
     await db.ref(`${req.user.user_id}/pdp`).remove();

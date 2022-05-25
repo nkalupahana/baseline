@@ -3,10 +3,7 @@ import { getIdToken } from "firebase/auth";
 import { SyntheticEvent, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import { toast, networkFailure } from "../../helpers";
-import hash from "crypto-js/sha512";
-import aesutf8 from "crypto-js/enc-utf8";
-import AES from "crypto-js/aes";
+import { toast, networkFailure, checkPassphrase } from "../../helpers";
 
 const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
     const [passphrase, setPassphrase] = useState("");
@@ -23,13 +20,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
             return;
         }
 
-        try {
-            const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
-            const h = hash(passphrase).toString();
-            if (hash(AES.decrypt(keyData.keys, h).toString(aesutf8)).toString() !== keyData.hash) {
-                throw Error();
-            }
-        } catch {
+        if (!checkPassphrase(passphrase)) {
             toast("Your passphrase is incorrect, please try again.");
             setSubmitting(false);
             return;
@@ -79,7 +70,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
             <form onSubmit={submitPassphrase}>
                 <IonItem>
                     <IonLabel className="ion-text-wrap" position="stacked">Passphrase</IonLabel>
-                    <input autoComplete="new-password" className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />
+                    <input autoComplete="current-password" className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />
                 </IonItem>
                 <br />
                 <div className="finish-button" onClick={submitPassphrase}>

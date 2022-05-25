@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import history from "../history";
 import UnlockCmp from "../components/Settings/UnlockCmp";
 import hash from "crypto-js/sha512";
-import aesutf8 from "crypto-js/enc-utf8";
-import AES from "crypto-js/aes";
-import { toast } from "../helpers";
+import { checkPassphrase, toast } from "../helpers";
 import { signOutAndCleanUp } from "../firebase";
 
 const Unlock = () => {
@@ -14,16 +12,10 @@ const Unlock = () => {
     }, []);
 
     const unlock = () => {
-        try {
-            const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
-            const h = hash(passphrase).toString();
-            if (hash(AES.decrypt(keyData.keys, h).toString(aesutf8)).toString() === keyData.hash) {
-                sessionStorage.setItem("pwd", h);
-                history.replace("/summary");
-            } else {
-                throw Error();
-            }
-        } catch {
+        if (checkPassphrase(passphrase)) {
+            sessionStorage.setItem("pwd", hash(passphrase).toString());
+            history.replace("/summary");
+        } else {
             toast("Your passphrase is incorrect, please try again.");
         }
     };

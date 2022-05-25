@@ -30,6 +30,9 @@
         "passphraseUpdate": {
           ".read": "auth != null && auth.uid == $uid"
         }
+      },
+      "gapFund": {
+        ".read": "auth != null && auth.uid == $uid"
       }
     }
   }
