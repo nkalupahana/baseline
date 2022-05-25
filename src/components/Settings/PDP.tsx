@@ -22,19 +22,31 @@ const PDP = () => {
     useEffect(() => {
         if (!user) return;  
         const listener = async (snap: DataSnapshot) => {
-            const val = await snap.val();
-            const pdpSetting = parseSettings()["pdp"];
-            const oldMethod = pdpSetting ? pdpSetting : false;
-            const newMethod = val ? val : false;
-
-            setSettings("pdp", val);
-            setMethod(newMethod);
-            if (oldMethod !== newMethod) {
-                    setFinalizedPassphrase({
+            const updateOld = parseSettings()["passphraseUpdate"];
+            const update = await snap.val();
+            if (update !== updateOld && !(!update && !updateOld)) {
+                setSettings("passphraseUpdate", update);
+                setFinalizedPassphrase({
                     ...finalizedPassphrase,
                     changing: true,
                 });
             }
+        };
+        
+        const pdpRef = ref(db, `/${user.uid}/pdp/passphraseUpdate`);
+        onValue(pdpRef, listener);
+
+        return () => {
+            off(pdpRef, "value", listener);
+        };
+    }, [finalizedPassphrase, user]);
+
+    useEffect(() => {
+        if (!user) return;  
+        const listener = async (snap: DataSnapshot) => {
+            const val = await snap.val();
+            setSettings("pdp", val);
+            setMethod(val);
         };
         
         const pdpRef = ref(db, `/${user.uid}/pdp/method`);
@@ -49,10 +61,7 @@ const PDP = () => {
         if (finalizedPassphrase.changing) {
             const oldPwd = sessionStorage.getItem("pwd") ?? "";
             const newPwd = finalizedPassphrase.passphrase;
-            console.log("CHANGE");
-            console.log(oldPwd);
-            console.log(newPwd);
-            
+
             changeDatabaseEncryption(oldPwd, newPwd).then(() => {
                 setFinalizedPassphrase({
                     changing: false,

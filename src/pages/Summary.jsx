@@ -18,7 +18,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
 import aesutf8 from "crypto-js/enc-utf8";
-import { checkKeys, parseSettings, toast } from "../helpers";
+import { checkKeys, parseSettings, setSettings, toast } from "../helpers";
 
 const Summary = () => {
     const [user] = useAuthState(auth);
@@ -40,8 +40,14 @@ const Summary = () => {
         get(ref(db, `/${user.uid}/pdp/method`))
             .then(snap => snap.val())
             .then(val => {
-                const pdpSetting = parseSettings()["pdp"];
-                if (pdpSetting !== val && !(!val && !pdpSetting)) {
+                setSettings("pdp", val);
+            });
+
+        get(ref(db, `/${user.uid}/pdp/passphraseUpdate`))
+            .then(snap => snap.val())
+            .then(val => {
+                const update = parseSettings()["passphraseUpdate"];
+                if (update !== val && !(!val && !update)) {
                     toast("Your data protection method has changed elsewhere. To protect your security, we ask that you sign in again.");
                     signOutAndCleanUp();
                 }

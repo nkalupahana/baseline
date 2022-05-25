@@ -1,6 +1,6 @@
 import { IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { getIdToken } from "firebase/auth";
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { toast, networkFailure } from "../../helpers";
@@ -13,7 +13,8 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
     const [submitting, setSubmitting] = useState(false);
     const [user] = useAuthState(auth);
 
-    const submitPassphrase = async () => {
+    const submitPassphrase = async (e: SyntheticEvent) => {
+        e.preventDefault();
         if (submitting) return;
         setSubmitting(true);
         if (!passphrase.trim() || passphrase.trim().length < 6) {
@@ -75,7 +76,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
         <br />
         <div className="margin-bottom-0 passphrase-box">
             <p>In order to remove your passphrase, you need to enter your current one. If you've forgotten it, email us { user && <>from { user.email }</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
-            <form>
+            <form onSubmit={submitPassphrase}>
                 <IonItem>
                     <IonLabel className="ion-text-wrap" position="stacked">Passphrase</IonLabel>
                     <input autoComplete="new-password" className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />

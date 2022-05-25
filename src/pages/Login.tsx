@@ -140,6 +140,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 if (passphrase) {
                     setEkeys(data, hash(passphrase).toString());
                     setSettings("pdp", method);
+                    const update = await (await get(ref(db, `/${auth.currentUser?.uid}/pdp/passphraseUpdate`))).val();
+                    setSettings("passphraseUpdate", update);
                 } else {
                     localStorage.setItem("keys", data);
                 }

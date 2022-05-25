@@ -9,7 +9,7 @@ const UnlockCmp = ({ unlock, getter, setter } : { unlock: () => void, getter: st
         <div className="title">Unlock baseline</div>
             <br />
             <div style={{"width": "100%", "maxWidth": "600px"}}>
-                <form>
+                <form onSubmit={unlock}>
                     <IonItem>
                         <IonLabel className="ion-text-wrap" position="stacked">Passphrase</IonLabel>
                         <input autoComplete="new-password" className="invisible-input" value={getter} type="password" onChange={e => setter(e.target.value)} />

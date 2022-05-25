@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { Database } from "firebase-admin/lib/database/database";
 import * as AES from "crypto-js/aes";
-import * as aesutf8 from "crypto-js/enc-utf8"
+import * as aesutf8 from "crypto-js/enc-utf8";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { DateTime } from "luxon";
 import * as fs from "fs";
@@ -717,9 +717,11 @@ export const enablePDP = functions.https.onRequest(async (req: Request, res) => 
     }
 
     const db = admin.database();
+    const bcryptHash = bcrypt.hashSync(body.passphrase);
     await db.ref(`${req.user.user_id}/pdp`).set({
         enabled: true,
-        passphraseHash: bcrypt.hashSync(body.passphrase),
+        passphraseHash: bcryptHash,
+        passphraseUpdate: Math.random(),
         method: "upfront"
     });
 
@@ -747,7 +749,10 @@ export const changePDPpassphrase = functions.https.onRequest(async (req: Request
     }
 
     const db = admin.database();
-    await db.ref(`${req.user.user_id}/pdp/passphraseHash`).set(bcrypt.hashSync(body.passphrase));
+    await db.ref(`${req.user.user_id}/pdp`).update({
+        passphraseHash: bcrypt.hashSync(body.passphrase),
+        passphraseUpdate: Math.random()
+    });
 
     res.send(200);
 });
