@@ -14,12 +14,16 @@ const Unlock = () => {
     }, []);
 
     const unlock = () => {
-        const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
-        const h = hash(passphrase).toString();
-        if (hash(AES.decrypt(keyData.keys, h).toString(aesutf8)).toString() === keyData.hash) {
-            sessionStorage.setItem("pwd", h);
-            history.replace("/summary");
-        } else {
+        try {
+            const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
+            const h = hash(passphrase).toString();
+            if (hash(AES.decrypt(keyData.keys, h).toString(aesutf8)).toString() === keyData.hash) {
+                sessionStorage.setItem("pwd", h);
+                history.replace("/summary");
+            } else {
+                throw Error();
+            }
+        } catch {
             toast("Your passphrase is incorrect, please try again.");
         }
     };
