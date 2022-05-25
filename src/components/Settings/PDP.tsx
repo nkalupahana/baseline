@@ -7,11 +7,13 @@ import { changeDatabaseEncryption, parseSettings, setSettings } from "../../help
 import Preloader from "../../pages/Preloader";
 import SetPassphrase from "./SetPassphrase";
 import "./PDP.css";
+import RemovePassphrase from "./RemovePassphrase";
 
 const PDP = () => {
     const [user] = useAuthState(auth);
     const [method, setMethod] = useState<string | boolean | undefined>(undefined);
     const [showSP, setShowSP] = useState(false);
+    const [showRP, setShowRP] = useState(false);
     const [finalizedPassphrase, setFinalizedPassphrase] = useState({
         changing: false,
         passphrase: "",
@@ -57,6 +59,7 @@ const PDP = () => {
                     passphrase: ""
                 });
                 setShowSP(false);
+                setShowRP(false);
             });
         }
     }, [finalizedPassphrase]);
@@ -74,7 +77,7 @@ const PDP = () => {
                 to make it appear as if you don't use baseline at all.
             </p>
             { !method && !showSP && !finalizedPassphrase.changing && <p className="fake-link" onClick={() => setShowSP(true)}>Set a passphrase to begin.</p> }
-            { !method && showSP &&  <SetPassphrase finalize={setFinalizedPassphrase} /> }
+            { !method && showSP && <SetPassphrase finalize={setFinalizedPassphrase} /> }
             { (typeof method === "string") && <>
                 <p className="margin-bottom-0">Local data protection is <span className="bold">enabled.</span></p>
                 <br />
@@ -92,7 +95,8 @@ const PDP = () => {
                     <br />
                 </IonRadioGroup>
                 { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link">Change Passphrase</p> }
-                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link">Remove Passphrase</p> }
+                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(true)}>Remove Passphrase</p> }
+                { method && showRP && <RemovePassphrase finalize={setFinalizedPassphrase} /> }
             </> }
         </div> }
         { method === undefined && <Preloader /> }
