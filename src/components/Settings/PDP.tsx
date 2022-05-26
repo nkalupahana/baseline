@@ -16,11 +16,9 @@ const PDP = () => {
     const [showSP, setShowSP] = useState(false);
     const [showCP, setShowCP] = useState(false);
     const [showRP, setShowRP] = useState(false);
-    const [finalizedPassphrase, setFinalizedPassphrase] = useState({
-        changing: false,
-        passphrase: "",
-    });
+    const [finalizedPassphrase, setFinalizedPassphrase] = useState("");
 
+    // Passphrase update received, change encryption as needed
     useEffect(() => {
         if (!user) return;  
         const listener = async (snap: DataSnapshot) => {
@@ -28,9 +26,14 @@ const PDP = () => {
             const update = await snap.val();
             if (update !== updateOld && !(!update && !updateOld)) {
                 setSettings("passphraseUpdate", update);
-                setFinalizedPassphrase({
-                    ...finalizedPassphrase,
-                    changing: true,
+                const oldPwd = sessionStorage.getItem("pwd") ?? "";
+                const newPwd = finalizedPassphrase;
+
+                changeDatabaseEncryption(oldPwd, newPwd).then(() => {
+                    setFinalizedPassphrase("");
+                    setShowSP(false);
+                    setShowRP(false);
+                    setShowCP(false);
                 });
             }
         };
@@ -43,6 +46,7 @@ const PDP = () => {
         };
     }, [finalizedPassphrase, user]);
 
+    // Passphrase method updated, update state/settings
     useEffect(() => {
         if (!user) return;  
         const listener = async (snap: DataSnapshot) => {
@@ -59,23 +63,7 @@ const PDP = () => {
         };
     }, [finalizedPassphrase, user]);
 
-    useEffect(() => {
-        if (finalizedPassphrase.changing) {
-            const oldPwd = sessionStorage.getItem("pwd") ?? "";
-            const newPwd = finalizedPassphrase.passphrase;
-
-            changeDatabaseEncryption(oldPwd, newPwd).then(() => {
-                setFinalizedPassphrase({
-                    changing: false,
-                    passphrase: ""
-                });
-                setShowSP(false);
-                setShowRP(false);
-                setShowCP(false);
-            });
-        }
-    }, [finalizedPassphrase]);
-
+    // Send update to database
     const changeMethod = (method: string) => {
         set(ref(db, `/${user.uid}/pdp/method`), method);
     }
@@ -88,7 +76,7 @@ const PDP = () => {
                 can be required up-front whenever the app is opened, or it can be hidden away 
                 to make it appear as if you don't use baseline at all.
             </p>
-            { !method && !finalizedPassphrase.changing && <p className="fake-link" onClick={() => setShowSP(!showSP)}>Set a passphrase to begin.</p> }
+            { !method && !finalizedPassphrase && <p className="fake-link" onClick={() => setShowSP(!showSP)}>Set a passphrase to begin.</p> }
             { !method && showSP && <SetPassphrase finalize={setFinalizedPassphrase} /> }
             { (typeof method === "string") && <>
                 <p className="margin-bottom-0">Local data protection is <span className="bold">enabled.</span></p>
@@ -106,9 +94,9 @@ const PDP = () => {
                     </p>
                     <br />
                 </IonRadioGroup>
-                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link" onClick={() => setShowCP(!showCP)}>Change Passphrase</p> }
+                { !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowCP(!showCP)}>Change Passphrase</p> }
                 { method && showCP && <ChangePassphrase finalize={setFinalizedPassphrase} /> }
-                { !finalizedPassphrase.changing && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(!showRP)}>Remove Passphrase</p> }
+                { !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(!showRP)}>Remove Passphrase</p> }
                 { method && showRP && <RemovePassphrase finalize={setFinalizedPassphrase} /> }
             </> }
         </div> }

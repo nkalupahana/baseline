@@ -717,10 +717,13 @@ export const enablePDP = functions.https.onRequest(async (req: Request, res) => 
     }
 
     const db = admin.database();
-    const bcryptHash = bcrypt.hashSync(body.passphrase);
+    if (await (await db.ref(`${req.user.user_id}/pdp`).get()).val()) {
+        res.send(400);
+        return;
+    }
+
     await db.ref(`${req.user.user_id}/pdp`).set({
-        enabled: true,
-        passphraseHash: bcryptHash,
+        passphraseHash: bcrypt.hashSync(body.passphrase),
         passphraseUpdate: Math.random(),
         method: "upfront"
     });
@@ -743,17 +746,25 @@ export const changePDPpassphrase = functions.https.onRequest(async (req: Request
     if (!req.user) return;
     
     const body = JSON.parse(req.body);
-    if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
+    if (typeof body.oldPassphrase !== "string" || body.oldPassphrase.length < 6) {
+        res.send(400);
+        return;
+    }
+
+    if (typeof body.newPassphrase !== "string" || body.newPassphrase.length < 6) {
         res.send(400);
         return;
     }
 
     const db = admin.database();
-    // TODO add verification
-
+    const oldHash = await (await db.ref(`${req.user.user_id}/pdp/passphraseHash`).get()).val();
+    if (!oldHash || !bcrypt.compareSync(body.oldPassphrase, oldHash)) {
+        res.send(400);
+        return;
+    }
 
     await db.ref(`${req.user.user_id}/pdp`).update({
-        passphraseHash: bcrypt.hashSync(body.passphrase),
+        passphraseHash: bcrypt.hashSync(body.newPassphrase),
         passphraseUpdate: Math.random()
     });
 
@@ -774,10 +785,19 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
     await validateAuth(req, res);
     if (!req.user) return;
 
-    // TODO add verification
-    
-    const db = admin.database();
-    await db.ref(`${req.user.user_id}/pdp`).remove();
+    const body = JSON.parse(req.body);
+    if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
+        res.send(400);
+        return;
+    }
 
+    const db = admin.database();
+    const hash = await (await db.ref(`${req.user.user_id}/pdp/passphraseHash`).get()).val();
+    if (!hash || !bcrypt.compareSync(body.passphrase, hash)) {
+        res.send(400);
+        return;
+    }
+    
+    await db.ref(`${req.user.user_id}/pdp`).remove();
     res.send(200);
 });

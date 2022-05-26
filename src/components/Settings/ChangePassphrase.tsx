@@ -5,7 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { toast, networkFailure, checkPassphrase } from "../../helpers";
 
-const ChangePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
+const ChangePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
     const [oldPassphrase, setOldPassphrase] = useState("");
     const [newPassphrase, setNewPassphrase] = useState("");
     const [newConfirmPassphrase, setNewConfirmPassphrase] = useState("");
@@ -34,10 +34,7 @@ const ChangePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
             return;
         }
 
-        finalize({
-            changing: false,
-            passphrase: newPassphrase
-        });
+        finalize(newPassphrase);
 
         let response;
         try {
@@ -47,7 +44,8 @@ const ChangePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
                     Authorization: `Bearer ${await getIdToken(user)}`,
                 },
                 body: JSON.stringify({
-                    passphrase: newPassphrase
+                    oldPassphrase,
+                    newPassphrase
                 })
             });
         } catch (e: any) {

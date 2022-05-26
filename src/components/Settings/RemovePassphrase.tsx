@@ -5,7 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { toast, networkFailure, checkPassphrase } from "../../helpers";
 
-const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
+const RemovePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
     const [passphrase, setPassphrase] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [user] = useAuthState(auth);
@@ -26,10 +26,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: any) => void }) => {
             return;
         }
 
-        finalize({
-            changing: false,
-            passphrase: ""
-        });
+        finalize("");
 
         let response;
         try {
