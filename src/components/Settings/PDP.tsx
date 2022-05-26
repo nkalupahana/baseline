@@ -10,7 +10,7 @@ import "./PDP.css";
 import RemovePassphrase from "./RemovePassphrase";
 import ChangePassphrase from "./ChangePassphrase";
 
-const PDP = () => {
+const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
     const [user] = useAuthState(auth);
     const [method, setMethod] = useState<string | boolean | undefined>(undefined);
     const [showSP, setShowSP] = useState(false);
@@ -25,6 +25,7 @@ const PDP = () => {
             const updateOld = parseSettings()["passphraseUpdate"];
             const update = await snap.val();
             if (update !== updateOld && !(!update && !updateOld)) {
+                taskBlock(true);
                 setSettings("passphraseUpdate", update);
                 const oldPwd = sessionStorage.getItem("pwd") ?? "";
                 const newPwd = finalizedPassphrase;
@@ -34,6 +35,7 @@ const PDP = () => {
                     setShowSP(false);
                     setShowRP(false);
                     setShowCP(false);
+                    taskBlock(false);
                 });
             }
         };

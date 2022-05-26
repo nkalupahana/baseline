@@ -412,6 +412,28 @@ describe("Test Settings", () => {
         cy.contains("Test 0")
     })
 
+    it("Test Discreet Mode", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-radio").eq(1).click().should("have.class", "radio-checked")
+        cy.get("ion-radio").eq(0).should("not.have.class", "radio-checked")
+
+        cy.reload()
+        cy.url().should("include", "/summary")
+        cy.contains("first mood log").should("exist")
+        cy.get(".mood-card").should("not.exist")
+
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+
+        cy.url().should("include", "/unlock")
+        cy.get("input[type=password]").type("password1")
+        cy.get(".finish-button").click()
+        
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+    })
+
     it("Test Remove Passphrase", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
