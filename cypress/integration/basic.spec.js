@@ -426,6 +426,7 @@ describe("Test Settings", () => {
         cy.get("input[type=password]").clear().type("password1")
         cy.get(".finish-button").click()
 
+        cy.get(".passphrase-box").should("not.exist")
         cy.contains("Set a passphrase").should("exist")
         cy.get(".top-corner").click()
         cy.url().should("include", "/summary")
