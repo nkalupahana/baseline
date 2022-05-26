@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import history from "../history";
 import UnlockCmp from "../components/Settings/UnlockCmp";
 import hash from "crypto-js/sha512";
@@ -11,7 +11,8 @@ const Unlock = () => {
         if (!(localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd"))) history.replace("/summary");
     }, []);
 
-    const unlock = () => {
+    const unlock = (e: SyntheticEvent) => {
+        e.preventDefault();
         if (checkPassphrase(passphrase)) {
             sessionStorage.setItem("pwd", hash(passphrase).toString());
             history.replace("/summary");

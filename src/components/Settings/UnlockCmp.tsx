@@ -1,8 +1,9 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { IonItem, IonLabel } from "@ionic/react";
+import { SyntheticEvent } from "react";
 
-const UnlockCmp = ({ unlock, getter, setter } : { unlock: () => void, getter: string, setter: (_: string) => void; }) => {
+const UnlockCmp = ({ unlock, getter, setter } : { unlock: (e: SyntheticEvent) => void, getter: string, setter: (_: string) => void; }) => {
     const [user] = useAuthState(auth);
 
     return <>
@@ -20,7 +21,7 @@ const UnlockCmp = ({ unlock, getter, setter } : { unlock: () => void, getter: st
                     Submit
                 </div>
                 <br />
-                <p className="margin-bottom-0">Forgot your passphrase? Email us from the email you made this account with { user && <>({ user.email })</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
+                <p className="margin-bottom-0">Forgot your passphrase? Email us { user && <>from { user.email }</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
                 { user && <p style={{"fontSize": "12px"}}>UID: { user.uid }</p> }
         </div>
     </>;

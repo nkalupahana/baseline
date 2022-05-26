@@ -243,7 +243,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
                 </div> }
                 { loginState === LoginStates.UNLOCK && <>
-                    <UnlockCmp unlock={() => continueLoginFlow(storedCredential!, flow)} getter={passphrase} setter={setPassphrase} />
+                    <UnlockCmp unlock={e => {
+                        e.preventDefault();
+                        continueLoginFlow(storedCredential!, flow);
+                    }} getter={passphrase} setter={setPassphrase} />
                     <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
                 </> }
                 { loginState === LoginStates.GETTING_KEYS && <>
