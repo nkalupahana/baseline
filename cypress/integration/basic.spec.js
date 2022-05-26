@@ -422,7 +422,7 @@ describe("Test Settings", () => {
         cy.get("input[type=password]").type("password")
         cy.get(".finish-button").click()
 
-        cy.get("incorrect").should("exist")
+        cy.contains("incorrect").should("exist")
         cy.get("input[type=password]").clear().type("password1")
         cy.get(".finish-button").click()
 
