@@ -46,7 +46,7 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
         return () => {
             off(pdpRef, "value", listener);
         };
-    }, [finalizedPassphrase, user]);
+    }, [finalizedPassphrase, user, taskBlock]);
 
     // Passphrase method updated, update state/settings
     useEffect(() => {

@@ -148,8 +148,6 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
         sessionStorage.removeItem("pwd");
     }
 
-    console.log(logs);
-
     if (newPwd) {
         // Encryption needed
         // Construct new passphrase
