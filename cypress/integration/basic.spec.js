@@ -350,10 +350,9 @@ describe("Test Settings", () => {
         cy.get(".finish-button").click()
         cy.get(".loader").should("exist")
         cy.get(".passphrase-box").should("not.exist")
-        cy.get("ion-spinner").should("exist")
-        cy.get("ion-spinner").should("not.exist")
         cy.contains("enabled").should("exist")
         cy.get("input[type=password]").should("not.exist")
+        cy.get("ion-spinner").should("not.exist")
 
         cy.get("ion-radio").eq(0).should("have.class", "radio-checked")
         cy.get(".top-corner").click()
@@ -402,9 +401,9 @@ describe("Test Settings", () => {
         cy.get("input[type=password]").eq(0).clear().type("password")
         cy.get(".finish-button").click()
         cy.get(".passphrase-box").should("not.exist")
-        cy.get("ion-spinner").should("exist")
-        cy.get("ion-spinner").should("not.exist")
+        cy.get("Change Passphrase").should("exist")
         cy.contains("enabled").should("exist")
+        cy.get("ion-spinner").should("not.exist")
 
         cy.reload()
         cy.url().should("include", "/unlock")
@@ -460,10 +459,8 @@ describe("Test Settings", () => {
 
         cy.get(".passphrase-box").should("not.exist")
         cy.contains("Set a passphrase").should("exist")
-
-        cy.get("ion-spinner").should("exist")
         cy.get("ion-spinner").should("not.exist")
-        
+
         cy.get(".top-corner").click()
         cy.url().should("include", "/summary")
         cy.contains("Test 0")

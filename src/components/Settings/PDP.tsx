@@ -82,7 +82,7 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
                 to make it appear as if you don't use baseline at all.
             </p>
             { !method && !finalizedPassphrase && <p className="fake-link" onClick={() => setShowSP(!showSP)}>Set a passphrase to begin.</p> }
-            { !method && showSP && <SetPassphrase finalize={setFinalizedPassphrase} /> }
+            { showSP && <SetPassphrase finalize={setFinalizedPassphrase} /> }
             { (typeof method === "string") && <>
                 <p className="margin-bottom-0">Local data protection is <span className="bold">enabled.</span></p>
                 <br />
@@ -103,11 +103,11 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
                     <IonSpinner className="loader" name="crescent" />
                     <br /><br />
                 </> }
-                { !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowCP(!showCP)}>Change Passphrase</p> }
-                { method && showCP && <ChangePassphrase finalize={setFinalizedPassphrase} /> }
-                { !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(!showRP)}>Remove Passphrase</p> }
-                { method && showRP && <RemovePassphrase finalize={setFinalizedPassphrase} /> }
             </> }
+            { method && !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowCP(!showCP)}>Change Passphrase</p> }
+            { showCP && <ChangePassphrase finalize={setFinalizedPassphrase} /> }
+            { method && !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(!showRP)}>Remove Passphrase</p> }
+            { showRP && <RemovePassphrase finalize={setFinalizedPassphrase} /> }
         </div> }
         { method === undefined && <Preloader /> }
     </>
