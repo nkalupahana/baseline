@@ -186,7 +186,7 @@ export function setSettings(key: string, value: string) {
 export function checkPassphrase(passphrase: string): boolean {
     try {
         const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
-        return hash(decrypt(keyData.keys, hash(passphrase).toString())).toString() === keyData.hash
+        return hash(decrypt(keyData.keys, hash(passphrase).toString(), false)).toString() === keyData.hash
     } catch {
         return false;
     }
@@ -237,12 +237,15 @@ export function encrypt(data: string, key: string) {
     }
 }
 
-export function decrypt(data: string, key: string) {
+export function decrypt(data: string, key: string, signOut=true) {
     try {
         return AES.decrypt(data, key).toString(aesutf8);
     } catch {
-        toast("Data decryption failed, so as a security precaution, we ask that you sign in again.");
-        signOutAndCleanUp();
-        return "";
+        if (signOut) {
+            toast("Data decryption failed, so as a security precaution, we ask that you sign in again.");
+            signOutAndCleanUp();
+        }
     }
+
+    return "";
 }
