@@ -58,6 +58,9 @@ export const signOutAndCleanUp = () => {
     if (Capacitor.getPlatform() !== "web") FCM.unsubscribeFrom({ topic: "all" });
     // Remove keys from store
     localStorage.removeItem("keys");
+    localStorage.removeItem("ekeys");
+    localStorage.removeItem("settings");
+    sessionStorage.removeItem("pwd");
     // Sign out of Firebase
     FirebaseAuthentication.signOut();
     signOut(auth);

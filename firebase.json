@@ -11,11 +11,11 @@
     "rewrites": [
       {
         "source": "/api/moodLog",
-        "function": "moodLog"
+        "function": "moodLogEnc"
       },
       {
         "source": "/api/survey",
-        "function": "survey"
+        "function": "surveyEnc"
       },
       {
         "source": "**",

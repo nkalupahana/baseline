@@ -1,7 +1,12 @@
+import AES from "crypto-js/aes";
 import { DateTime } from "luxon";
 import Toastify from "toastify-js";
-import { Log } from "./db";
+import ldb, { Log } from "./db";
+import { signOutAndCleanUp } from "./firebase";
 import history from "./history";
+import aesutf8 from "crypto-js/enc-utf8";
+import hash from "crypto-js/sha512";
+import { getIdToken, User } from "firebase/auth";
 
 export interface AnyMap {
     [key: string]: any;
@@ -81,9 +86,34 @@ export function networkFailure(message: string) {
 
 export function checkKeys() {
     const keys = localStorage.getItem("keys");
+
     if (!keys) {
+        const pdpSetting = parseSettings()["pdp"];
+        if (pdpSetting) {
+            const pwd = sessionStorage.getItem("pwd");
+            if (pwd) {
+                const ekeys = decrypt(JSON.parse(localStorage.getItem("ekeys") ?? "{}")["keys"], pwd);
+                if (!ekeys) {
+                    toast("Something went wrong, please sign in again.");
+                    signOutAndCleanUp();
+                    return;
+                }
+                
+                return JSON.parse(ekeys);
+            }
+
+            if (pdpSetting === "upfront") {
+                history.push("/unlock");
+                return "upfront";
+            } else {
+                if (!["/summary", "/rsummary", "/settings", "/unlock"].includes(history.location.pathname)) history.push("/summary");
+                return "discreet";
+            }
+        }
+
         return false;
     }
+
     return JSON.parse(keys);
 }
 
@@ -99,3 +129,131 @@ export function parseSettings() {
     return data;
 }
 
+// NOTE: Old password comes in hashed, new password does not
+export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
+    let logs = await ldb.logs.toArray();
+
+    // Undo encryption if we're changing passphrases or removing an old one
+    if (oldPwd) {
+        for (let i = 0; i < logs.length; ++i) {
+            logs[i].journal = decrypt(logs[i].ejournal ?? "", oldPwd);
+            logs[i].ejournal = "";
+            if (logs[i].efiles) {
+                logs[i].files = JSON.parse(decrypt(logs[i].efiles ?? "[]", oldPwd));
+                delete logs[i].efiles;
+            }
+        }
+        
+        if (!newPwd) await ldb.logs.bulkPut(logs);
+        
+        // Reconstruct keys
+        let keys = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
+        localStorage.setItem("keys", decrypt(keys.keys, oldPwd));
+        localStorage.removeItem("ekeys");
+        sessionStorage.removeItem("pwd");
+    }
+
+    if (newPwd) {
+        // Encryption needed
+        // Construct new passphrase
+        newPwd = hash(newPwd).toString();
+
+        // Encrypt data
+        for (let i = 0; i < logs.length; ++i) {
+            logs[i].ejournal = encrypt(logs[i].journal ?? "", newPwd);
+            logs[i].journal = "";
+            if (logs[i].files) {
+                logs[i].efiles = encrypt(JSON.stringify(logs[i].files), newPwd);
+                delete logs[i].files;
+            }
+        }
+        
+        await ldb.logs.bulkPut(logs);
+
+        // Set keys
+        const keys = localStorage.getItem("keys") ?? "";
+        setEkeys(keys, newPwd);
+    }
+}
+
+export function setEkeys(keys: string, pwd: string) {
+    localStorage.setItem("ekeys", JSON.stringify({
+        keys: encrypt(keys, pwd),
+        hash: hash(keys).toString()
+    }));
+
+    sessionStorage.setItem("pwd", pwd);
+    localStorage.removeItem("keys");
+}
+
+export function setSettings(key: string, value: string) {
+    let data = parseSettings();
+    data[key] = value;
+    localStorage.setItem("settings", JSON.stringify(data));
+}
+
+export function checkPassphrase(passphrase: string): boolean {
+    try {
+        const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
+        return hash(decrypt(keyData.keys, hash(passphrase).toString(), false)).toString() === keyData.hash
+    } catch {
+        return false;
+    }
+}
+
+export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting?: (_: boolean) => void) {
+    let response;
+    let toasted = false;
+    try {
+        response = await fetch(`https://us-central1-getbaselineapp.cloudfunctions.net/${route}`,{
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${await getIdToken(user)}`,
+            },
+            body: JSON.stringify(body)
+        });
+    } catch (e: any) {
+        if (networkFailure(e.message)) {
+            toast(`We can't reach our servers. Check your internet connection and try again.`);
+        } else {
+            toast(`Something went wrong, please try again! \nError: ${e.message}`);
+        }
+        toasted = true;
+    }
+
+    if (response && !toasted) {
+        if (!response.ok) {
+            toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+        } else {
+            return true;
+        }
+    } else {
+        toast(`Something went wrong, please try again!`);
+    }
+
+    if (setSubmitting) setSubmitting(false);
+    return false;
+}
+
+export function encrypt(data: string, key: string) {
+    try {
+        return AES.encrypt(data, key).toString();
+    } catch {
+        toast("Data encryption failed, so as a security precaution, we ask that you sign in again.");
+        signOutAndCleanUp();
+        return "";
+    }
+}
+
+export function decrypt(data: string, key: string, signOut=true) {
+    try {
+        return AES.decrypt(data, key).toString(aesutf8);
+    } catch {
+        if (signOut) {
+            toast("Data decryption failed, so as a security precaution, we ask that you sign in again.");
+            signOutAndCleanUp();
+        }
+    }
+
+    return "";
+}

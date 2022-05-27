@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { Database } from "firebase-admin/lib/database/database";
 import * as AES from "crypto-js/aes";
-import * as aesutf8 from "crypto-js/enc-utf8"
+import * as aesutf8 from "crypto-js/enc-utf8";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { DateTime } from "luxon";
 import * as fs from "fs";
@@ -82,8 +82,7 @@ const validateKeys = async (keys_: string, db: Database, user_id: string) => {
         }
     }
 
-    const encryptionRef = db.ref(`/${user_id}/encryption`);
-    const encryptionData = await (await encryptionRef.get()).val();
+    const encryptionData = await (await db.ref(`/${user_id}/encryption`).get()).val();
 
     if (!bcrypt.compareSync(keys.encryptedKey, encryptionData.encryptedKeyHash)) {
         return false;
@@ -549,9 +548,15 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
     }
     
     const db = admin.database();
+    const pdp = await (await db.ref(`/${req.user.user_id}/pdp`).get()).val();
+    if (typeof pdp === "object" && pdp !== null && pdp.enabled) {
+        if (typeof body.passphrase !== "string" || !bcrypt.compareSync(body.passphrase, pdp.passphraseHash)) {
+            res.status(401).send("Your passphrase is incorrect.");
+            return;
+        }
+    }
 
-    const encryptionRef = db.ref(`/${req.user.user_id}/encryption`);
-    const encryptionData = await (await encryptionRef.get()).val();
+    const encryptionData = await (await db.ref(`/${req.user.user_id}/encryption`).get()).val();
 
     if (!process.env.KEY_ENCRYPTION_KEY) {
         res.send(500);
@@ -689,4 +694,110 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         encryptedKey,
         encryptedKeyVisible
     });
+});
+
+export const enablePDP = functions.https.onRequest(async (req: Request, res) => { 
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Authorization");
+
+    // Preflight? Stop here.
+    if (req.method === "OPTIONS") {
+        res.status(204).send("");
+        return;
+    }
+
+    await validateAuth(req, res);
+    if (!req.user) return;
+    
+    const body = JSON.parse(req.body);
+    if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
+        res.send(400);
+        return;
+    }
+
+    const db = admin.database();
+    if (await (await db.ref(`${req.user.user_id}/pdp`).get()).val()) {
+        res.send(400);
+        return;
+    }
+
+    await db.ref(`${req.user.user_id}/pdp`).set({
+        passphraseHash: bcrypt.hashSync(body.passphrase),
+        passphraseUpdate: Math.random(),
+        method: "upfront"
+    });
+
+    res.send(200);
+});
+
+export const changePDPpassphrase = functions.https.onRequest(async (req: Request, res) => { 
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Authorization");
+
+    // Preflight? Stop here.
+    if (req.method === "OPTIONS") {
+        res.status(204).send("");
+        return;
+    }
+
+    await validateAuth(req, res);
+    if (!req.user) return;
+    
+    const body = JSON.parse(req.body);
+    if (typeof body.oldPassphrase !== "string" || body.oldPassphrase.length < 6) {
+        res.send(400);
+        return;
+    }
+
+    if (typeof body.newPassphrase !== "string" || body.newPassphrase.length < 6) {
+        res.send(400);
+        return;
+    }
+
+    const db = admin.database();
+    const oldHash = await (await db.ref(`${req.user.user_id}/pdp/passphraseHash`).get()).val();
+    if (!oldHash || !bcrypt.compareSync(body.oldPassphrase, oldHash)) {
+        res.send(400);
+        return;
+    }
+
+    await db.ref(`${req.user.user_id}/pdp`).update({
+        passphraseHash: bcrypt.hashSync(body.newPassphrase),
+        passphraseUpdate: Math.random()
+    });
+
+    res.send(200);
+});
+
+export const removePDP = functions.https.onRequest(async (req: Request, res) => { 
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Authorization");
+
+    // Preflight? Stop here.
+    if (req.method === "OPTIONS") {
+        res.status(204).send("");
+        return;
+    }
+
+    await validateAuth(req, res);
+    if (!req.user) return;
+
+    const body = JSON.parse(req.body);
+    if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
+        res.send(400);
+        return;
+    }
+
+    const db = admin.database();
+    const hash = await (await db.ref(`${req.user.user_id}/pdp/passphraseHash`).get()).val();
+    if (!hash || !bcrypt.compareSync(body.passphrase, hash)) {
+        res.send(400);
+        return;
+    }
+    
+    await db.ref(`${req.user.user_id}/pdp`).remove();
+    res.send(200);
 });

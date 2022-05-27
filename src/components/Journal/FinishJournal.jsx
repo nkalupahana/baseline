@@ -13,7 +13,7 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Route, Switch } from "react-router";
 import EndSpacer from "../EndSpacer";
 import Negative5 from "./Negative5";
-import { networkFailure, toast } from "../../helpers";
+import { checkKeys, networkFailure, toast } from "../../helpers";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
@@ -45,7 +45,7 @@ const FinishJournal = props => {
         data.append("mood", props.moodWrite);
         data.append("journal", props.text);
         data.append("average", props.average);
-        data.append("keys", localStorage.getItem("keys"));
+        data.append("keys", JSON.stringify(checkKeys()));
         for (let file of props.files) {
             data.append("file", file);
         }

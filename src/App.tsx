@@ -41,6 +41,8 @@ import GapFund from "./pages/GapFund";
 import Donate from "./pages/Donate";
 import { checkKeys } from "./helpers";
 import Settings from "./pages/Settings";
+import Unlock from "./pages/Unlock";
+import RSummary from "./pages/RSummary";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -65,12 +67,14 @@ const App = () => {
             { ((!loading && user && !loggingIn) || (loading && keys)) && <IonReactRouter history={history}>
                 <Switch>
                     <Route path="/journal" component={Journal} />
+                    <Route path="/unlock" component={Unlock} />
                     <Route path="/summary" component={Summary} />
                     <Route path="/notifications" component={Notifications} />
                     <Route path="/gap" component={GapFund} />
                     <Route path="/donate" component={Donate} />
                     <Route path="/review" component={WeekInReview} />
                     <Route path="/settings" component={Settings} />
+                    <Route path="/rsummary" component={RSummary} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }

@@ -1,3 +1,4 @@
+import { checkKeys, parseSettings } from "./helpers";
 import history from "./history";
 
 const THRESHOLD_SEC = 60 * 3;
@@ -14,7 +15,7 @@ function redirect() {
     if (!window.location.pathname.startsWith("/journal") && !window.location.pathname.startsWith("/review")) {
         let lastOpenedTime = Number(window.localStorage.getItem("lastOpenedTime"));
         if (getTime() - lastOpenedTime > THRESHOLD_SEC) {
-            history.push("/journal");
+            if (checkKeys() !== "upfront") history.push("/journal");
         }
     }
 
@@ -24,3 +25,13 @@ function redirect() {
 document.addEventListener("resume", redirect);
 document.addEventListener("deviceready", redirect);
 document.addEventListener("pause", setLastOpenedTime);
+document.addEventListener("visibilitychange", () => {
+    if (parseSettings()["pdp"]) {
+        sessionStorage.removeItem("pwd");
+        history.push(`/rsummary`);
+    }
+});
+
+window.onbeforeunload = () => {
+    sessionStorage.removeItem("pwd");
+};

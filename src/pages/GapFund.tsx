@@ -1,4 +1,3 @@
-import { getIdToken } from "@firebase/auth";
 import { DataSnapshot, off, ref } from "@firebase/database";
 import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { get, onValue } from "firebase/database";
@@ -10,11 +9,9 @@ import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db, signOutAndCleanUp } from "../firebase";
-import { goBackSafely, networkFailure, toast } from "../helpers";
+import { checkKeys, decrypt, goBackSafely, makeRequest, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
-import AES from "crypto-js/aes";
-import aesutf8 from "crypto-js/enc-utf8";
 
 interface GapFundData {
     email: string;
@@ -38,8 +35,8 @@ const GapFund = () => {
     const [submitting, setSubmitting] = useState(false);
     const [gapFundData, setGapFundData] = useState<SubmissionState | GapFundData>(SubmissionState.NO_DATA_YET);
     const [gapFundAvailable, setGapFundAvailable] = useState(null);
-
     const [user, loading] = useAuthState(auth);
+    const keys = checkKeys();
 
     // Preload until auth is ready and gap fund data is loaded
     // Also ensure that gap fund is available before displaying
@@ -61,16 +58,14 @@ const GapFund = () => {
             } else {
                 console.log(data);
                 if ("data" in data) {
-                    let keys_ = localStorage.getItem("keys");
-                    let keys;
-                    if (!keys_) {
+                    if (!keys) {
                         signOutAndCleanUp();
                         return;
-                    } else {
-                        keys = JSON.parse(keys_);
+                    } else if (typeof keys === "string") {
+                        return;
                     }
                     
-                    data = JSON.parse(AES.decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
+                    data = JSON.parse(decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`));
                 }
                 setGapFundData(data);
             }
@@ -81,7 +76,7 @@ const GapFund = () => {
         return () => {
             off(gapFundRef, "value", listener);
         };
-    }, [loading]);
+    }, [loading, keys]);
 
     const submit = async () => {
         if (submitting) return;
@@ -104,40 +99,13 @@ const GapFund = () => {
             return;
         }
 
-        let response;
-        try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFundEnc",{
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${await getIdToken(user)}`,
-                },
-                body: JSON.stringify({
-                    email,
-                    need,
-                    amount,
-                    method,
-                    keys: localStorage.getItem("keys")
-                })
-            });
-        } catch (e: any) {
-            if (networkFailure(e.message)) {
-                toast(`We can't reach our servers. Check your internet connection and try again.`);
-            } else {
-                toast(`Something went wrong, please try again! \nError: ${e.message}`);
-            }
-            setSubmitting(false);
-            return;
-        }
-
-        if (response) {
-            if (!response.ok) {
-                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
-                setSubmitting(false);
-            }
-        } else {
-            toast(`Something went wrong, please try again!`);
-            setSubmitting(false);
-        }
+        makeRequest("gapFundEnc", user, {
+            email,
+            need,
+            amount,
+            method,
+            keys: JSON.stringify(keys)
+        }, setSubmitting);
     };
 
     return (

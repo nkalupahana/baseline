@@ -306,3 +306,163 @@ describe("Desktop Flow", () => {
         cy.contains("went wrong").should("exist")
     })
 })
+
+describe("Test Settings", () => {
+    beforeEach(() => {
+        cy.viewport("iphone-x")
+    })
+
+    it("Test Reduce Motion", () => {
+        cy.visit("/summary")
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.contains("Reduce Motion").should("exist")
+        cy.get(".settings-box-grid").happoScreenshot()
+        cy.get("ion-toggle").should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").click()
+        cy.get("ion-toggle").should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").happoScreenshot()
+
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+        cy.contains("week").should("exist")
+
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.contains("Reduce Motion").should("exist")
+        cy.get("ion-toggle").should("have.class", "toggle-checked")
+    })
+
+    it("Set a Passphrase", () => {
+        cy.get("input[type=password]").should("not.exist")
+        cy.contains("Set a passphrase").click()
+        cy.get("input[type=password]").should("exist")
+        cy.get(".passphrase-box").happoScreenshot()
+        cy.get(".finish-button").click()
+        cy.contains("long").should("exist")
+
+        cy.get("input[type=password]").eq(0).type("password")
+        cy.get("input[type=password]").eq(1).type("password1")
+        cy.get(".finish-button").click()
+        cy.contains("match").should("exist")
+
+        cy.get("input[type=password]").eq(1).clear().type("password")
+        cy.get(".finish-button").click()
+        cy.get(".loader").should("exist")
+        cy.get(".passphrase-box").should("not.exist")
+        cy.contains("enabled").should("exist")
+        cy.get("input[type=password]").should("not.exist")
+        cy.get("ion-spinner").should("not.exist")
+
+        cy.get("ion-radio").eq(0).should("have.class", "radio-checked")
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-radio").eq(0).should("have.class", "radio-checked")
+        cy.get("ion-radio").eq(1).should("not.have.class", "radio-checked")
+    })
+
+    it("Test Unlock", () => {
+        cy.reload()
+        cy.url().should("include", "/unlock")
+        cy.contains("Unlock").should("exist")
+        cy.get("input[type=password]").type("p")
+        cy.get(".finish-button").click()
+        cy.contains("incorrect").should("exist")
+
+        cy.get("input[type=password]").clear().type("password")
+        cy.get(".finish-button").click()
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+    })
+
+    it("Test Change Passphrase", () => {
+        cy.url().should("include", "/summary")
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.contains("Change").click()
+        cy.get(".finish-button").click()
+        cy.contains("long").should("exist")
+
+        cy.get("input[type=password]").eq(0).type("password1")
+        cy.get(".finish-button").click()
+        cy.get(".toastify").should("have.length", 2)
+
+        cy.get("input[type=password]").eq(1).type("password1")
+        cy.get(".finish-button").click()
+        cy.get(".toastify").should("have.length", 3)
+
+        cy.get("input[type=password]").eq(2).type("password1")
+        cy.get(".finish-button").click()
+        cy.get(".toastify").should("have.length", 4)
+        cy.contains("incorrect")
+
+        cy.get("input[type=password]").eq(0).clear().type("password")
+        cy.get(".finish-button").click()
+        cy.get(".passphrase-box").should("not.exist")
+        cy.contains("Change Passphrase").should("exist")
+        cy.contains("enabled").should("exist")
+        cy.get("ion-spinner").should("not.exist")
+
+        cy.reload()
+        cy.url().should("include", "/unlock")
+        cy.contains("Unlock").should("exist")
+
+        cy.get("input[type=password]").type("password1")
+        cy.get(".finish-button").click()
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+    })
+
+    it("Test Discreet Mode", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-radio").eq(1).click().should("have.class", "radio-checked")
+        cy.get("ion-radio").eq(0).should("not.have.class", "radio-checked")
+        cy.get("ion-spinner").should("not.exist")
+
+
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+
+        cy.reload()
+        cy.url().should("include", "/summary")
+        cy.contains("first mood log").should("exist")
+        cy.get(".mood-card").should("not.exist")
+
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+
+        cy.url().should("include", "/unlock")
+        cy.get("input[type=password]").type("password1")
+        cy.get(".finish-button").click()
+        
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+    })
+
+    it("Test Remove Passphrase", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+
+        cy.contains("Remove").click()
+        cy.get(".finish-button").click()
+        cy.contains("long").should("exist")
+        cy.get("input[type=password]").type("password")
+        cy.get(".finish-button").click()
+
+        cy.contains("incorrect").should("exist")
+        cy.get("input[type=password]").clear().type("password1")
+        cy.get(".finish-button").click()
+
+        cy.get(".passphrase-box").should("not.exist")
+        cy.contains("Set a passphrase").should("exist")
+        cy.get("ion-spinner").should("not.exist")
+
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+    })
+})

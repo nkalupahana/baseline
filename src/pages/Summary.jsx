@@ -16,16 +16,15 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
-import AES from "crypto-js/aes";
-import aesutf8 from "crypto-js/enc-utf8";
-import { checkKeys } from "../helpers";
+import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
 
 const Summary = () => {
-    const [, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [menuDisabled, setMenuDisabled] = useState(false);
     const [gettingData, setGettingData] = useState(true);
     const menuRef = useRef();
-    const logs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
+    const logsQuery = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
+    const [logs, setLogs] = useState([]);
 
     useEffect(() => {
         const keys = checkKeys();
@@ -34,9 +33,28 @@ const Summary = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (!user) return;
+        get(ref(db, `/${user.uid}/pdp/method`))
+            .then(snap => snap.val())
+            .then(val => {
+                setSettings("pdp", val);
+            });
+
+        get(ref(db, `/${user.uid}/pdp/passphraseUpdate`))
+            .then(snap => snap.val())
+            .then(val => {
+                const update = parseSettings()["passphraseUpdate"];
+                if (update !== val && !(!val && !update)) {
+                    toast("Your data protection method has changed elsewhere. To protect your security, we ask that you sign in again.");
+                    signOutAndCleanUp();
+                }
+            });
+    }, [user]);
+
     // Data refresh -- check timestamp and pull in new data
     useEffect(() => {
-        if (loading) return;
+        if (!user) return;
         const listener = async snap => {
             setGettingData(true);
             let lastUpdated = 0;
@@ -52,17 +70,32 @@ const Summary = () => {
             }
 
             console.log("Updating...");
-            let newData = (await get(query(ref(db, `/${auth.currentUser.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
+            let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
 
             if (newData) {
                 if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
                 const keys = checkKeys();
+                if (keys === "discreet") {
+                    setGettingData(false);
+                    return;
+                }
+
                 // Add timestamp to data object, and decrypt as needed
+                const pdpSetting = parseSettings()["pdp"];
+                const pwd = sessionStorage.getItem("pwd");
                 for (const key in newData) {
                     if ("data" in newData[key] && keys) {
-                        newData[key] = JSON.parse(AES.decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
+                        newData[key] = JSON.parse(decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`));
                     }
                     newData[key].timestamp = Number(key);
+                    if (pdpSetting) {
+                        newData[key].ejournal = encrypt(newData[key].journal, pwd);
+                        newData[key].journal = "";
+                        if (newData[key].files) {
+                            newData[key].efiles = encrypt(JSON.stringify(newData[key].files), pwd);
+                            delete newData[key].files;
+                        }
+                    }
                 }
 
                 await ldb.logs.bulkAdd(Object.values(newData));
@@ -75,7 +108,29 @@ const Summary = () => {
         return () => {
             off(lastUpdatedRef, "value", listener);
         };
-    }, [loading, setGettingData]);
+    }, [user, setGettingData]);
+
+    useEffect(() => {
+        if (parseSettings()["pdp"] && logsQuery) {
+            const pwd = sessionStorage.getItem("pwd");
+            if (!sessionStorage.getItem("pwd")) {
+                setLogs([]);
+                return;
+            }
+
+            let l = JSON.parse(JSON.stringify(logsQuery));
+            for (let i = 0; i < logsQuery.length; ++i) {
+                l[i].journal = decrypt(l[i].ejournal, pwd);
+                if (l[i].efiles) {
+                    l[i].files = JSON.parse(decrypt(l[i].efiles, pwd));
+                }
+            }
+
+            setLogs(l);
+        } else {
+            setLogs(logsQuery);
+        }
+    }, [logsQuery]);
 
     return (
         <div>
