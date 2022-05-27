@@ -192,7 +192,7 @@ export function checkPassphrase(passphrase: string): boolean {
     }
 }
 
-export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting: (_: boolean) => void) {
+export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting?: (_: boolean) => void) {
     let response;
     let toasted = false;
     try {
@@ -216,13 +216,13 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
         if (!response.ok) {
             toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
         } else {
-            setSubmitting(false);
+            if (setSubmitting) setSubmitting(false);
             return true;
         }
     } else {
         toast(`Something went wrong, please try again!`);
     }
 
-    setSubmitting(false);
+    if (setSubmitting) setSubmitting(false);
     return false;
 }

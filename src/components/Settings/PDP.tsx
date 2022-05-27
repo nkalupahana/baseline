@@ -1,4 +1,4 @@
-import { IonRadio, IonRadioGroup } from "@ionic/react";
+import { IonRadio, IonRadioGroup, IonSpinner } from "@ionic/react";
 import { DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -17,6 +17,7 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
     const [showCP, setShowCP] = useState(false);
     const [showRP, setShowRP] = useState(false);
     const [finalizedPassphrase, setFinalizedPassphrase] = useState("");
+    const [changingMethod, setChangingMethod] = useState(false);
 
     // Passphrase update received, change encryption as needed
     useEffect(() => {
@@ -55,6 +56,7 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
             const val = await snap.val();
             setSettings("pdp", val);
             setMethod(val);
+            setChangingMethod(false);
         };
         
         const pdpRef = ref(db, `/${user.uid}/pdp/method`);
@@ -67,6 +69,7 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
 
     // Send update to database
     const changeMethod = (method: string) => {
+        setChangingMethod(true);
         set(ref(db, `/${user.uid}/pdp/method`), method);
     }
 
@@ -96,6 +99,10 @@ const PDP = ({ taskBlock } : { taskBlock: (_: boolean) => void }) => {
                     </p>
                     <br />
                 </IonRadioGroup>
+                { changingMethod && <>
+                    <IonSpinner className="loader" name="crescent" />
+                    <br /><br />
+                </> }
                 { !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowCP(!showCP)}>Change Passphrase</p> }
                 { method && showCP && <ChangePassphrase finalize={setFinalizedPassphrase} /> }
                 { !finalizedPassphrase && <p className="margin-bottom-0 fake-link" onClick={() => setShowRP(!showRP)}>Remove Passphrase</p> }

@@ -1,9 +1,8 @@
 import { IonSpinner } from "@ionic/react";
-import { getIdToken } from "firebase/auth";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import { checkKeys, networkFailure, toast } from "../../helpers";
+import { checkKeys, makeRequest, toast } from "../../helpers";
 import Screener, { Answer, Done, Modifier } from "../../screeners/screener";
 
 interface Props {
@@ -43,38 +42,15 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
             }
 
             setSubmitting(q.value);
-            let response = undefined;
-            try {
-                response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/surveyEnc", {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${await getIdToken(user)}`,
-                    },
-                    body: JSON.stringify({
-                        key: final._key,
-                        results: final._results,
-                        keys: JSON.stringify(checkKeys())
-                    })
-                })
-            } catch (e: any) {
-                if (networkFailure(e.message)) {
-                    toast(`We can't reach our servers. Check your internet connection and try again.`);
-                } else {
-                    toast(`Something went wrong, please try again! \nError: ${e.message}`);
-                }
-                setSubmitting(-1);
-                return;
-            }
+            const res = await makeRequest("surveyEnc", user, {
+                key: final._key,
+                results: final._results,
+                keys: JSON.stringify(checkKeys())
+            });
 
-            if (response) {
-                if (response.ok) {
-                    incrementStage();
-                } else {
-                    toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
-                    setSubmitting(-1);
-                }
+            if (res) {
+                incrementStage();
             } else {
-                toast(`Something went wrong, please try again!`);
                 setSubmitting(-1);
             }
         }

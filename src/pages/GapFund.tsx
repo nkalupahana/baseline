@@ -1,4 +1,3 @@
-import { getIdToken } from "@firebase/auth";
 import { DataSnapshot, off, ref } from "@firebase/database";
 import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { get, onValue } from "firebase/database";
@@ -10,7 +9,7 @@ import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db, signOutAndCleanUp } from "../firebase";
-import { checkKeys, goBackSafely, networkFailure, toast } from "../helpers";
+import { checkKeys, goBackSafely, makeRequest, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
@@ -102,40 +101,13 @@ const GapFund = () => {
             return;
         }
 
-        let response;
-        try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/gapFundEnc",{
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${await getIdToken(user)}`,
-                },
-                body: JSON.stringify({
-                    email,
-                    need,
-                    amount,
-                    method,
-                    keys: JSON.stringify(keys)
-                })
-            });
-        } catch (e: any) {
-            if (networkFailure(e.message)) {
-                toast(`We can't reach our servers. Check your internet connection and try again.`);
-            } else {
-                toast(`Something went wrong, please try again! \nError: ${e.message}`);
-            }
-            setSubmitting(false);
-            return;
-        }
-
-        if (response) {
-            if (!response.ok) {
-                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
-                setSubmitting(false);
-            }
-        } else {
-            toast(`Something went wrong, please try again!`);
-            setSubmitting(false);
-        }
+        makeRequest("gapFundEnc", user, {
+            email,
+            need,
+            amount,
+            method,
+            keys: JSON.stringify(keys)
+        }, setSubmitting);
     };
 
     return (

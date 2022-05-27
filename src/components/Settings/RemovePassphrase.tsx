@@ -1,9 +1,8 @@
 import { IonItem, IonLabel, IonSpinner } from "@ionic/react";
-import { getIdToken } from "firebase/auth";
 import { SyntheticEvent, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import { toast, networkFailure, checkPassphrase } from "../../helpers";
+import { toast, checkPassphrase, makeRequest } from "../../helpers";
 
 const RemovePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
     const [passphrase, setPassphrase] = useState("");
@@ -27,37 +26,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
         }
 
         finalize("");
-
-        let response;
-        try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/removePDP",{
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${await getIdToken(user)}`,
-                },
-                body: JSON.stringify({
-                    passphrase
-                })
-            });
-        } catch (e: any) {
-            if (networkFailure(e.message)) {
-                toast(`We can't reach our servers. Check your internet connection and try again.`);
-            } else {
-                toast(`Something went wrong, please try again! \nError: ${e.message}`);
-            }
-            setSubmitting(false);
-            return;
-        }
-
-        if (response) {
-            if (!response.ok) {
-                toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
-                setSubmitting(false);
-            }
-        } else {
-            toast(`Something went wrong, please try again!`);
-            setSubmitting(false);
-        }
+        makeRequest("removePDP", user, { passphrase }, setSubmitting);
     };
 
     return <>
