@@ -421,6 +421,11 @@ describe("Test Settings", () => {
         cy.get("ion-radio").eq(0).should("not.have.class", "radio-checked")
         cy.get("ion-spinner").should("not.exist")
 
+
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+        cy.contains("Test 0")
+
         cy.reload()
         cy.url().should("include", "/summary")
         cy.contains("first mood log").should("exist")
