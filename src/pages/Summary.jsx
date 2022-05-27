@@ -16,8 +16,6 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
-import AES from "crypto-js/aes";
-import aesutf8 from "crypto-js/enc-utf8";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
 
 const Summary = () => {

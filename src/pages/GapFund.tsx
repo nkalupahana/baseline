@@ -12,8 +12,6 @@ import { auth, db, signOutAndCleanUp } from "../firebase";
 import { checkKeys, decrypt, goBackSafely, makeRequest, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
-import AES from "crypto-js/aes";
-import aesutf8 from "crypto-js/enc-utf8";
 
 interface GapFundData {
     email: string;
