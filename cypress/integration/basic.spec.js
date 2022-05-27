@@ -350,6 +350,7 @@ describe("Test Settings", () => {
         cy.get(".finish-button").click()
         cy.get(".loader").should("exist")
         cy.get(".passphrase-box").should("not.exist")
+        cy.get("ion-spinner").should("not.exist")
         cy.contains("enabled").should("exist")
         cy.get("input[type=password]").should("not.exist")
 
@@ -400,6 +401,7 @@ describe("Test Settings", () => {
         cy.get("input[type=password]").eq(0).clear().type("password")
         cy.get(".finish-button").click()
         cy.get(".passphrase-box").should("not.exist")
+        cy.get("ion-spinner").should("not.exist")
         cy.contains("enabled").should("exist")
 
         cy.reload()
@@ -449,6 +451,7 @@ describe("Test Settings", () => {
         cy.get(".finish-button").click()
 
         cy.get(".passphrase-box").should("not.exist")
+        cy.get("ion-spinner").should("not.exist")
         cy.contains("Set a passphrase").should("exist")
         cy.get(".top-corner").click()
         cy.url().should("include", "/summary")

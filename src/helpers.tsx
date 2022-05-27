@@ -6,6 +6,7 @@ import { signOutAndCleanUp } from "./firebase";
 import history from "./history";
 import aesutf8 from "crypto-js/enc-utf8";
 import hash from "crypto-js/sha512";
+import { getIdToken, User } from "firebase/auth";
 
 export interface AnyMap {
     [key: string]: any;
@@ -189,4 +190,39 @@ export function checkPassphrase(passphrase: string): boolean {
     } catch {
         return false;
     }
+}
+
+export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting: (_: boolean) => void) {
+    let response;
+    let toasted = false;
+    try {
+        response = await fetch(`https://us-central1-getbaselineapp.cloudfunctions.net/${route}`,{
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${await getIdToken(user)}`,
+            },
+            body: JSON.stringify(body)
+        });
+    } catch (e: any) {
+        if (networkFailure(e.message)) {
+            toast(`We can't reach our servers. Check your internet connection and try again.`);
+        } else {
+            toast(`Something went wrong, please try again! \nError: ${e.message}`);
+        }
+        toasted = true;
+    }
+
+    if (response && !toasted) {
+        if (!response.ok) {
+            toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+        } else {
+            setSubmitting(false);
+            return true;
+        }
+    } else {
+        toast(`Something went wrong, please try again!`);
+    }
+
+    setSubmitting(false);
+    return false;
 }
