@@ -401,7 +401,7 @@ describe("Test Settings", () => {
         cy.get("input[type=password]").eq(0).clear().type("password")
         cy.get(".finish-button").click()
         cy.get(".passphrase-box").should("not.exist")
-        cy.get("Change Passphrase").should("exist")
+        cy.contains("Change Passphrase").should("exist")
         cy.contains("enabled").should("exist")
         cy.get("ion-spinner").should("not.exist")
 
