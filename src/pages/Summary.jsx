@@ -91,6 +91,10 @@ const Summary = () => {
                     if (pdpSetting) {
                         newData[key].ejournal = encrypt(newData[key].journal, pwd);
                         newData[key].journal = "";
+                        if (newData[key].files) {
+                            newData[key].efiles = encrypt(JSON.stringify(newData[key].files), pwd);
+                            delete newData[key].files;
+                        }
                     }
                 }
 
@@ -117,6 +121,9 @@ const Summary = () => {
             let l = JSON.parse(JSON.stringify(logsQuery));
             for (let i = 0; i < logsQuery.length; ++i) {
                 l[i].journal = decrypt(l[i].ejournal, pwd);
+                if (l[i].efiles) {
+                    l[i].files = JSON.parse(decrypt(l[i].efiles, pwd));
+                }
             }
 
             setLogs(l);

@@ -138,6 +138,10 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
         for (let i = 0; i < logs.length; ++i) {
             logs[i].journal = decrypt(logs[i].ejournal ?? "", oldPwd);
             logs[i].ejournal = "";
+            if (logs[i].efiles) {
+                logs[i].files = JSON.parse(decrypt(logs[i].efiles ?? "[]", oldPwd));
+                delete logs[i].efiles;
+            }
         }
         
         if (!newPwd) await ldb.logs.bulkPut(logs);
@@ -158,7 +162,12 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
         for (let i = 0; i < logs.length; ++i) {
             logs[i].ejournal = encrypt(logs[i].journal ?? "", newPwd);
             logs[i].journal = "";
+            if (logs[i].files) {
+                logs[i].efiles = encrypt(JSON.stringify(logs[i].files), newPwd);
+                delete logs[i].files;
+            }
         }
+        
         await ldb.logs.bulkPut(logs);
 
         // Set keys

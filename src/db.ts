@@ -12,6 +12,7 @@ export interface Log {
     ejournal?: string,
     average: string,
     files?: string[],
+    efiles?: string
 }
 
 interface DB extends Dexie {
