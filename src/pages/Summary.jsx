@@ -18,7 +18,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
 import aesutf8 from "crypto-js/enc-utf8";
-import { checkKeys, parseSettings, setSettings, toast } from "../helpers";
+import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
 
 const Summary = () => {
     const [user] = useAuthState(auth);
@@ -87,11 +87,11 @@ const Summary = () => {
                 const pwd = sessionStorage.getItem("pwd");
                 for (const key in newData) {
                     if ("data" in newData[key] && keys) {
-                        newData[key] = JSON.parse(AES.decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
+                        newData[key] = JSON.parse(decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`));
                     }
                     newData[key].timestamp = Number(key);
                     if (pdpSetting) {
-                        newData[key].ejournal = AES.encrypt(newData[key].journal, pwd).toString();
+                        newData[key].ejournal = encrypt(newData[key].journal, pwd);
                         newData[key].journal = "";
                     }
                 }
@@ -118,7 +118,7 @@ const Summary = () => {
 
             let l = JSON.parse(JSON.stringify(logsQuery));
             for (let i = 0; i < logsQuery.length; ++i) {
-                l[i].journal = AES.decrypt(l[i].ejournal, pwd).toString(aesutf8);
+                l[i].journal = decrypt(l[i].ejournal, pwd);
             }
 
             setLogs(l);

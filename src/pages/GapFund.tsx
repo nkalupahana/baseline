@@ -9,7 +9,7 @@ import EndSpacer from "../components/EndSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db, signOutAndCleanUp } from "../firebase";
-import { checkKeys, goBackSafely, makeRequest, toast } from "../helpers";
+import { checkKeys, decrypt, goBackSafely, makeRequest, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
 import AES from "crypto-js/aes";
@@ -67,7 +67,7 @@ const GapFund = () => {
                         return;
                     }
                     
-                    data = JSON.parse(AES.decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`).toString(aesutf8));
+                    data = JSON.parse(decrypt(data["data"], `${keys.visibleKey}${keys.encryptedKeyVisible}`));
                 }
                 setGapFundData(data);
             }

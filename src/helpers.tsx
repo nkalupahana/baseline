@@ -92,7 +92,7 @@ export function checkKeys() {
         if (pdpSetting) {
             const pwd = sessionStorage.getItem("pwd");
             if (pwd) {
-                const ekeys = AES.decrypt(JSON.parse(localStorage.getItem("ekeys") ?? "{}")["keys"], pwd).toString(aesutf8);
+                const ekeys = decrypt(JSON.parse(localStorage.getItem("ekeys") ?? "{}")["keys"], pwd);
                 if (!ekeys) {
                     toast("Something went wrong, please sign in again.");
                     signOutAndCleanUp();
@@ -136,7 +136,7 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
     // Undo encryption if we're changing passphrases or removing an old one
     if (oldPwd) {
         for (let i = 0; i < logs.length; ++i) {
-            logs[i].journal = AES.decrypt(logs[i].ejournal ?? "", oldPwd).toString(aesutf8);
+            logs[i].journal = decrypt(logs[i].ejournal ?? "", oldPwd);
             logs[i].ejournal = "";
         }
         
@@ -144,7 +144,7 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
         
         // Reconstruct keys
         let keys = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
-        localStorage.setItem("keys", AES.decrypt(keys.keys, oldPwd).toString(aesutf8));
+        localStorage.setItem("keys", decrypt(keys.keys, oldPwd));
         localStorage.removeItem("ekeys");
         sessionStorage.removeItem("pwd");
     }
@@ -156,7 +156,7 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
 
         // Encrypt data
         for (let i = 0; i < logs.length; ++i) {
-            logs[i].ejournal = AES.encrypt(logs[i].journal ?? "", newPwd).toString();
+            logs[i].ejournal = encrypt(logs[i].journal ?? "", newPwd);
             logs[i].journal = "";
         }
         await ldb.logs.bulkPut(logs);
@@ -169,7 +169,7 @@ export async function changeDatabaseEncryption(oldPwd: string, newPwd: string) {
 
 export function setEkeys(keys: string, pwd: string) {
     localStorage.setItem("ekeys", JSON.stringify({
-        keys: AES.encrypt(keys, pwd).toString(),
+        keys: encrypt(keys, pwd),
         hash: hash(keys).toString()
     }));
 
@@ -186,7 +186,7 @@ export function setSettings(key: string, value: string) {
 export function checkPassphrase(passphrase: string): boolean {
     try {
         const keyData = JSON.parse(localStorage.getItem("ekeys") ?? "{}");
-        return hash(AES.decrypt(keyData.keys, hash(passphrase).toString()).toString(aesutf8)).toString() === keyData.hash
+        return hash(decrypt(keyData.keys, hash(passphrase).toString())).toString() === keyData.hash
     } catch {
         return false;
     }
@@ -225,4 +225,24 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
 
     if (setSubmitting) setSubmitting(false);
     return false;
+}
+
+export function encrypt(data: string, key: string) {
+    try {
+        return AES.encrypt(data, key).toString();
+    } catch {
+        toast("Data encryption failed, so as a security precaution, we ask that you sign in again.");
+        signOutAndCleanUp();
+        return "";
+    }
+}
+
+export function decrypt(data: string, key: string) {
+    try {
+        return AES.decrypt(data, key).toString(aesutf8);
+    } catch {
+        toast("Data decryption failed, so as a security precaution, we ask that you sign in again.");
+        signOutAndCleanUp();
+        return "";
+    }
 }
