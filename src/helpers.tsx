@@ -225,7 +225,6 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
         if (!response.ok) {
             toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
         } else {
-            if (setSubmitting) setSubmitting(false);
             return true;
         }
     } else {
