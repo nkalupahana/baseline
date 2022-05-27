@@ -133,7 +133,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             });
             
             if (flowVal !== flow) return;
-            if (keyResponse && keyResponse.ok) {
+            if (keyResponse?.ok) {
                 const data = JSON.stringify(await keyResponse.json());
 
                 if (flowVal !== flow) return;
@@ -148,7 +148,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 
                 if (flowVal !== flow) return;
                 setLoggingIn(false);
-            } else if (keyResponse.status === 401) {
+            } else if (keyResponse?.status === 401) {
                 if (flowVal !== flow) return;
                 toast(await keyResponse.text());
                 setLoginState(LoginStates.UNLOCK);
