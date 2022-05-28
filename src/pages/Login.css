@@ -1,0 +1,36 @@
+.marketing {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    margin-top: 30px;
+}
+
+.login-button {
+    width: 100%;
+    max-width: 300px;
+    color: white;
+    border-radius: 25px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+.login-button.google {
+    background-color: #4285F4;
+}
+
+.login-button.apple {
+    background-color: black;
+}
+
+.login-button > ion-icon {
+    font-size: 1.3em;
+    margin-right: 8px;
+}
+
+.login-button.apple > ion-icon {
+    transform: translateY(-1px);
+}

@@ -1,4 +1,4 @@
-import { IonButton, IonPage } from "@ionic/react";
+import { IonButton, IonIcon } from "@ionic/react";
 import { GoogleAuthProvider, OAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
 import { auth, db, signOutAndCleanUp } from "../firebase";
 import "./Container.css";
@@ -14,6 +14,9 @@ import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
 import { get, ref } from "firebase/database";
 import hash from "crypto-js/sha512";
+import "./Login.css";
+import MarketingBox from "../components/Login/MarketingBox";
+import { analytics, globeOutline, lockClosedOutline, logoApple, logoGoogle, pencilOutline } from "ionicons/icons";
 
 enum LoginStates {
     START,
@@ -223,40 +226,57 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         });
     }
 
-    return (
-        <IonPage>
-            <div className="container column-flex text-center center-summary">
-                { loginState === LoginStates.START && <>
-                    <IonButton mode="ios" onClick={() => loginFlow(signInWithGoogle)}>Google</IonButton>
-                    <IonButton mode="ios" onClick={() => loginFlow(signInWithApple)}>Apple</IonButton>
-                    <IonButton mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous</IonButton>
-                </> }
-                { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
-                    <Preloader message="Logging in, please wait." />
-                    <br />
-                    <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
-                </> }
-                { loginState === LoginStates.CLOUDKIT_NEEDED && <div style={{"maxWidth": "500px"}}>
-                    <div className="title">One more time!</div>
-                    <p className="margin-bottom-0">To properly secure your data with iCloud, we need you to sign in one more time. You'll be ready to go after that, though!</p>
-                    <p>Sign in with Apple is still in beta. Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
-                    <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
-                </div> }
-                { loginState === LoginStates.UNLOCK && <>
-                    <UnlockCmp unlock={e => {
-                        e.preventDefault();
-                        continueLoginFlow(storedCredential!, flow);
-                    }} getter={passphrase} setter={setPassphrase} />
-                    <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
-                </> }
-                { loginState === LoginStates.GETTING_KEYS && <>
-                    <Preloader message="One moment! We're getting your encryption keys." />
-                    <br />
-                    <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
-                </> }
-            </div>
-        </IonPage>
-    );
+    return <div className="container">
+            <div className="column-flex text-center center-summary">
+            { loginState === LoginStates.START && <>
+                <div className="title">Welcome to baseline.</div>
+                <div className="marketing">
+                    <MarketingBox 
+                        icon={pencilOutline} 
+                        title={"Understand your brain."}
+                        description={"Journaling on baseline is designed to help you understand yourself better. By mood tracking, you'll start to get a better feel for who you are and what you need to become healthier."} />
+                    <MarketingBox
+                        icon={analytics}
+                        title={"Track your progress."}
+                        description={"Use baseline's visualizations to help you better understand your mood over time. You'll also get a chance to review your progress and overall health 'baseline' at the end of every week."} />
+                    <MarketingBox 
+                        icon={lockClosedOutline} 
+                        title={"Keep your data safe."}
+                        description={"We encrypt your data so that not even we can read it, let alone hackers. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
+                    <MarketingBox 
+                        icon={globeOutline} 
+                        title={"Accessible anywhere."}
+                        description={<>All of your data can be accessed at any time on iOS, Android, and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
+                </div>
+                <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
+                <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                <IonButton mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous</IonButton>
+            </> }
+            { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
+                <Preloader message="Logging in, please wait." />
+                <br />
+                <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+            </> }
+            { loginState === LoginStates.CLOUDKIT_NEEDED && <div style={{"maxWidth": "500px"}}>
+                <div className="title">One more time!</div>
+                <p className="margin-bottom-0">To properly secure your data with iCloud, we need you to sign in one more time. You'll be ready to go after that, though!</p>
+                <p>Sign in with Apple is still in beta. Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
+                <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
+            </div> }
+            { loginState === LoginStates.UNLOCK && <>
+                <UnlockCmp unlock={e => {
+                    e.preventDefault();
+                    continueLoginFlow(storedCredential!, flow);
+                }} getter={passphrase} setter={setPassphrase} />
+                <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
+            </> }
+            { loginState === LoginStates.GETTING_KEYS && <>
+                <Preloader message="One moment! We're getting your encryption keys." />
+                <br />
+                <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+            </> }
+        </div>
+    </div>;
 };
 
 export default Login;

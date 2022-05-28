@@ -1,0 +1,29 @@
+.marketing-box {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 80%;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "icon title"
+      "icon description";
+    margin-bottom: 24px;
+}
+
+.marketing-icon {
+    grid-area: icon;
+    width: 100%;
+    font-size: 2em;
+    align-self: center;
+}
+
+.marketing-title {
+    grid-area: title;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.marketing-desc {
+    grid-area: description;
+    margin: 0;
+    text-align: left;
+}
