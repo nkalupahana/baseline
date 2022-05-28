@@ -17,6 +17,7 @@ import hash from "crypto-js/sha512";
 import "./Login.css";
 import MarketingBox from "../components/Login/MarketingBox";
 import { analytics, globeOutline, lockClosedOutline, logoApple, logoGoogle, pencilOutline } from "ionicons/icons";
+import Notifications from "./Notifications";
 
 enum LoginStates {
     START,
@@ -24,7 +25,8 @@ enum LoginStates {
     CLOUDKIT_NEEDED,
     GETTING_CLOUDKIT,
     UNLOCK,
-    GETTING_KEYS
+    GETTING_KEYS,
+    SET_NOTIFICATIONS
 }
 
 const TOKENS: any = {
@@ -149,8 +151,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     localStorage.setItem("keys", data);
                 }
                 
-                if (flowVal !== flow) return;
-                setLoggingIn(false);
+                if (Capacitor.getPlatform() === "web") {
+                    setLoggingIn(false);
+                } else {
+                    setLoginState(LoginStates.SET_NOTIFICATIONS);
+                }
             } else if (keyResponse?.status === 401) {
                 if (flowVal !== flow) return;
                 toast(await keyResponse.text());
@@ -238,11 +243,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <MarketingBox
                         icon={analytics}
                         title={"Track your progress."}
-                        description={"Use baseline's visualizations to help you better understand your mood over time. You'll also get a chance to review your progress and overall health 'baseline' at the end of every week."} />
+                        description={"Use baseline's visualizations to help you better understand your mood over time. You'll also get a chance to review your progress and overall health 'baseline' at the end of each week."} />
                     <MarketingBox 
                         icon={lockClosedOutline} 
                         title={"Keep your data safe."}
-                        description={"We encrypt your data so that not even we can read it, let alone hackers. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
+                        description={"We encrypt your data so that not even we can see it, let alone hackers. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
                     <MarketingBox 
                         icon={globeOutline} 
                         title={"Accessible anywhere."}
@@ -250,7 +255,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 </div>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
-                <IonButton mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous</IonButton>
+                <IonButton mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>
             </> }
             { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
                 <Preloader message="Logging in, please wait." />
@@ -274,6 +279,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <Preloader message="One moment! We're getting your encryption keys." />
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+            </> }
+            { loginState === LoginStates.SET_NOTIFICATIONS && <>
+                <Notifications page={false} />
+                <br />
+                <div onClick={() => setLoggingIn(false)} className="finish-button" style={{"backgroundColor": "black"}}>All done!</div>
             </> }
         </div>
     </div>;
