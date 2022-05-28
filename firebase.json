@@ -8,20 +8,6 @@
   },
   "hosting": {
     "public": "build",
-    "rewrites": [
-      {
-        "source": "/api/moodLog",
-        "function": "moodLogEnc"
-      },
-      {
-        "source": "/api/survey",
-        "function": "surveyEnc"
-      },
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
     "headers": [
       {
         "source": "/.well-known/apple-app-site-association",

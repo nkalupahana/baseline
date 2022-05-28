@@ -42,7 +42,7 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
             }
 
             setSubmitting(q.value);
-            const res = await makeRequest("surveyEnc", user, {
+            const res = await makeRequest("survey", user, {
                 key: final._key,
                 results: final._results,
                 keys: JSON.stringify(checkKeys())

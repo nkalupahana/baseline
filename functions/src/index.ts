@@ -99,7 +99,7 @@ const validateKeys = async (keys_: string, db: Database, user_id: string) => {
     return `${keys.visibleKey}${keys.encryptedKeyVisible}`;
 }
 
-export const moodLogEnc = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
@@ -230,7 +230,7 @@ export const moodLogEnc = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCR
     res.sendStatus(200);
 });
 
-export const surveyEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
@@ -422,7 +422,7 @@ export const sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZ
     });
 });
 
-export const gapFundEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");

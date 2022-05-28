@@ -99,7 +99,7 @@ const GapFund = () => {
             return;
         }
 
-        makeRequest("gapFundEnc", user, {
+        makeRequest("gapFund", user, {
             email,
             need,
             amount,
