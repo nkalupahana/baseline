@@ -149,13 +149,13 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
     return <div className="notification-editor">
     { !editing && <>
         <p className="margin-bottom-0">
-            { formatTime(oldTime) } 
+            { formatTime(time) } 
             { !globalEditing && <IonIcon style={{transform: "translateY(2px)"}} icon={pencil} onClick={edit} /> }
         </p>
         <p style={{marginTop: "4px"}}>
-            { notificationData[oldTime].length === 7 ? 
+            { weekdays.length === 7 ? 
                 "Every Day" : 
-                notificationData[oldTime].sort((a, b) => a.weekday - b.weekday).map(n => WEEKDAY_TO_DAY[n.weekday]).join(", ") }
+                weekdays.sort((a, b) => a.weekday - b.weekday).map(n => WEEKDAY_TO_DAY[n.weekday]).join(", ") }
         </p>
     </> }
 

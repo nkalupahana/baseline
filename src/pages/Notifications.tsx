@@ -7,7 +7,7 @@ import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
 
 interface NotificationData {
-    [key:string]: Array<
+    [key: string]: Array<
         {
             id: Number,
             weekday: Number
