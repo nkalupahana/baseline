@@ -1,4 +1,4 @@
-import { IonIcon } from "@ionic/react";
+import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
@@ -7,7 +7,7 @@ import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
 
 interface NotificationData {
-    [key:string]: Array<
+    [key: string]: Array<
         {
             id: Number,
             weekday: Number
