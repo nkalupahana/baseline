@@ -1,4 +1,4 @@
-import { IonIcon, IonSpinner } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
