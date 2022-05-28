@@ -224,7 +224,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     }
 
     const setUpFCM = async () => {
-        await PushNotifications.requestPermissions();
         await PushNotifications.register();
         PushNotifications.addListener("registration", _ => {
             FCM.subscribeTo({ topic: "all" });
