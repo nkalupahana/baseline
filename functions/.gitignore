@@ -8,3 +8,4 @@ typings/
 node_modules/
 
 *.log
+openapi.yaml

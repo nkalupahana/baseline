@@ -120,7 +120,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         try {
             const idToken = await auth.currentUser?.getIdToken();
             if (flowVal !== flow) return;
-            const keyResponse = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/getOrCreateKeys", {
+            const keyResponse = await fetch("https://baseline-aqdnaimw.uc.gateway.dev/getOrCreateKeys", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${idToken}`,

@@ -205,7 +205,7 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
     let response;
     let toasted = false;
     try {
-        response = await fetch(`https://us-central1-getbaselineapp.cloudfunctions.net/${route}`,{
+        response = await fetch(`https://baseline-aqdnaimw.uc.gateway.dev/${route}`,{
             method: "POST",
             headers: {
                 Authorization: `Bearer ${await getIdToken(user)}`,

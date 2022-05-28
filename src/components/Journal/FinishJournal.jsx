@@ -52,7 +52,7 @@ const FinishJournal = props => {
 
         let response = undefined;
         try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLogEnc", {
+            response = await fetch("https://baseline-aqdnaimw.uc.gateway.dev/moodLog", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${await getIdToken(user)}`,

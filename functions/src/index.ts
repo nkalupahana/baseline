@@ -34,15 +34,14 @@ const CLOUDKIT: any = {
 };
 
 const validateAuth = async (req: Request, res: functions.Response<any>) => {
-    if ((!req.headers.authorization || !req.headers.authorization.startsWith("Bearer ")) && !(req.cookies && req.cookies.__session)) {
-        res.status(403).send("Unauthorized");
-        return;
-    }
-
     let idToken;
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    if (req.headers["x-apigateway-api-userinfo"]) {
+        const buf = Buffer.from(req.headers["x-apigateway-api-userinfo"] as string, 'base64');
+        req.user = JSON.parse(buf.toString());
+        return;
+    } else if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
         idToken = req.headers.authorization.split("Bearer ")[1];
-    } else if (req.cookies) {
+    } else if (req.cookies && req.cookies.__session) {
         idToken = req.cookies.__session;
     } else {
         res.status(403).send("Unauthorized");
@@ -99,7 +98,7 @@ const validateKeys = async (keys_: string, db: Database, user_id: string) => {
     return `${keys.visibleKey}${keys.encryptedKeyVisible}`;
 }
 
-export const moodLogEnc = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
@@ -230,7 +229,7 @@ export const moodLogEnc = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCR
     res.sendStatus(200);
 });
 
-export const surveyEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
@@ -422,7 +421,7 @@ export const sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZ
     });
 });
 
-export const gapFundEnc = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
