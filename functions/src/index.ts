@@ -16,6 +16,9 @@ import * as sharp from "sharp";
 import { auth as googleauth , sheets } from "@googleapis/sheets";
 
 admin.initializeApp();
+const quotaApp = admin.initializeApp({
+    databaseURL: "https://getbaselineapp-quotas.firebaseio.com/"
+}, "quota")
 
 export interface Request extends functions.https.Request {
     user?: DecodedIdToken;
@@ -99,19 +102,44 @@ const validateKeys = async (keys_: string, db: Database, user_id: string) => {
     return `${keys.visibleKey}${keys.encryptedKeyVisible}`;
 }
 
-export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+const checkQuota = async (req: Request, res: functions.Response<any>) => {
+    const user = req.user!.user_id;
+    const db = admin.database(quotaApp);
+    const now = DateTime.now();
+    const minute = now.hour * 60 + now.minute;
+    const ref = db.ref(`/${user}:${minute}`);
+    const numVals = Object.keys((await (await ref.get()).val()) ?? {}).length;
+    if (numVals > 60) {
+        res.status(429).send("Rate limit, try again in a minute.");
+        return false;
+    }
+    ref.push("q");
+    return true;
+}
+
+export const cleanUpQuotas = functions.pubsub.schedule("0 0 * * *").timeZone("America/Chicago").onRun(async _ => {
+    await admin.database(quotaApp).ref("/").set({});
+});
+
+const preflight = async (req: Request, res: functions.Response<any>): Promise<boolean> => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
     res.set("Access-Control-Allow-Headers", "Authorization");
 
-    // Preflight? Stop here.
+    // CORS Preflight? Stop here.
     if (req.method === "OPTIONS") {
         res.status(204).send("");
-        return;
+        return false;
     }
 
     await validateAuth(req, res);
-    if (!req.user) return;
+    if (!req.user) return false;
+    if (await checkQuota(req, res) === false) return false;
+    return true;
+};
+
+export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
+    if (!(await preflight(req, res))) return;
 
     let [data, files] = await new Promise((resolve, reject) => {
         new formidable.IncomingForm({ keepExtensions: true, multiples: true }).parse(req, (err: Error, fields: any, files: any) => {
@@ -125,7 +153,7 @@ export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPT
     });
 
     const db = admin.database();
-    const encryptionKey = await validateKeys(data.keys, db, req.user.user_id);
+    const encryptionKey = await validateKeys(data.keys, db, req.user!.user_id);
 
     if (!encryptionKey) {
         res.send(400);
@@ -222,32 +250,21 @@ export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPT
         files: filePaths,
     };
 
-    await db.ref(`/${req.user.user_id}/logs/${globalNow.toMillis()}`).set({
+    await db.ref(`/${req.user!.user_id}/logs/${globalNow.toMillis()}`).set({
         data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
     });
 
-    await db.ref(`/${req.user.user_id}/lastUpdated`).set(globalNow.toMillis());
+    await db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
     res.sendStatus(200);
 });
 
 export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Methods", "POST");
-    res.set("Access-Control-Allow-Headers", "Authorization");
-
-    // Preflight? Stop here.
-    if (req.method === "OPTIONS") {
-        res.status(204).send("");
-        return;
-    }
-
-    await validateAuth(req, res);
-    if (!req.user) return;
+    if (!(await preflight(req, res))) return;
 
     const body = JSON.parse(req.body);
 
     const db = admin.database();
-    const encryptionKey = await validateKeys(body.keys, db, req.user.user_id);
+    const encryptionKey = await validateKeys(body.keys, db, req.user!.user_id);
 
     if (!encryptionKey) {
         res.send(400);
@@ -354,7 +371,7 @@ export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).htt
     }
 
     // Add survey to database
-    await db.ref(`/${req.user.user_id}/surveys/${DateTime.utc().toMillis()}`).set({
+    await db.ref(`/${req.user!.user_id}/surveys/${DateTime.utc().toMillis()}`).set({
         key: body.key,
         results: AES.encrypt(JSON.stringify(body.results), encryptionKey).toString()
     });
@@ -423,22 +440,12 @@ export const sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZ
 });
 
 export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Methods", "POST");
-    res.set("Access-Control-Allow-Headers", "Authorization");
+    if (!(await preflight(req, res))) return;
 
-    // Preflight? Stop here.
-    if (req.method === "OPTIONS") {
-        res.status(204).send("");
-        return;
-    }
-
-    await validateAuth(req, res);
-    if (!req.user) return;
     const body = JSON.parse(req.body);
     
     const db = admin.database();
-    const encryptionKey = await validateKeys(body.keys, db, req.user.user_id);
+    const encryptionKey = await validateKeys(body.keys, db, req.user!.user_id);
 
     if (!encryptionKey) {
         res.send(400); 
@@ -454,7 +461,7 @@ export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).ht
     }
 
     // Get user statistics for fraud detection
-    const logRef = db.ref(`/${req.user.user_id}/logs`);
+    const logRef = db.ref(`/${req.user!.user_id}/logs`);
     const firstLog = Number(Object.keys(await (await logRef.limitToFirst(1).get()).val())[0]);
 
     const lastLogs = await (await logRef.limitToLast(25).get()).val();
@@ -470,7 +477,7 @@ export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).ht
     }
 
     // Put data in user's database
-    const gapFundRef = db.ref(`/${req.user.user_id}/gapFund`);
+    const gapFundRef = db.ref(`/${req.user!.user_id}/gapFund`);
     const currentData = await (await gapFundRef.get()).val();
     if (currentData) {
         res.send(400);
@@ -500,7 +507,7 @@ export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).ht
         valueInputOption: "USER_ENTERED",
         requestBody: {
             values: [[
-                req.user.user_id, 
+                req.user!.user_id, 
                 body.email, 
                 body.need, 
                 body.amount, 
@@ -509,7 +516,7 @@ export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).ht
                 DateTime.fromMillis(Number(firstLog)).toRFC2822(), // First log
                 "New", // Status
                 "Needs Review ASAP", // Progression
-                `https://console.firebase.google.com/u/0/project/getbaselineapp/database/getbaselineapp-default-rtdb/data/${req.user.user_id}~2FgapFund`
+                `https://console.firebase.google.com/u/0/project/getbaselineapp/database/getbaselineapp-default-rtdb/data/${req.user!.user_id}~2FgapFund`
             ]]
         }
     });
@@ -518,18 +525,7 @@ export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).ht
 });
 
 export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Methods", "POST");
-    res.set("Access-Control-Allow-Headers", "Authorization");
-
-    // Preflight? Stop here.
-    if (req.method === "OPTIONS") {
-        res.status(204).send("");
-        return;
-    }
-
-    await validateAuth(req, res);
-    if (!req.user) return;
+    if (!(await preflight(req, res))) return;
     
     const body = JSON.parse(req.body);
     if (typeof body.credential !== "object" || typeof body.credential.providerId !== "string" || typeof body.credential.accessToken !== "string") {
@@ -548,7 +544,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
     }
     
     const db = admin.database();
-    const pdp = await (await db.ref(`/${req.user.user_id}/pdp`).get()).val();
+    const pdp = await (await db.ref(`/${req.user!.user_id}/pdp`).get()).val();
     if (typeof pdp === "object" && pdp !== null && pdp.enabled) {
         if (typeof body.passphrase !== "string" || !bcrypt.compareSync(body.passphrase, pdp.passphraseHash)) {
             res.status(401).send("Your passphrase is incorrect.");
@@ -556,7 +552,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         }
     }
 
-    const encryptionData = await (await db.ref(`/${req.user.user_id}/encryption`).get()).val();
+    const encryptionData = await (await db.ref(`/${req.user!.user_id}/encryption`).get()).val();
 
     if (!process.env.KEY_ENCRYPTION_KEY) {
         res.send(500);
@@ -684,7 +680,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         id = "anonymous";
     }
 
-    await db.ref(`${req.user.user_id}/encryption`).set({
+    await db.ref(`${req.user!.user_id}/encryption`).set({
         encryptedKeyHash: bcrypt.hashSync(encryptedKey, bcrypt.genSaltSync(10)),
         id
     });
@@ -697,18 +693,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
 });
 
 export const enablePDP = functions.https.onRequest(async (req: Request, res) => { 
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Methods", "POST");
-    res.set("Access-Control-Allow-Headers", "Authorization");
-
-    // Preflight? Stop here.
-    if (req.method === "OPTIONS") {
-        res.status(204).send("");
-        return;
-    }
-
-    await validateAuth(req, res);
-    if (!req.user) return;
+    if (!(await preflight(req, res))) return;
     
     const body = JSON.parse(req.body);
     if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
@@ -717,12 +702,12 @@ export const enablePDP = functions.https.onRequest(async (req: Request, res) => 
     }
 
     const db = admin.database();
-    if (await (await db.ref(`${req.user.user_id}/pdp`).get()).val()) {
+    if (await (await db.ref(`${req.user!.user_id}/pdp`).get()).val()) {
         res.send(400);
         return;
     }
 
-    await db.ref(`${req.user.user_id}/pdp`).set({
+    await db.ref(`${req.user!.user_id}/pdp`).set({
         passphraseHash: bcrypt.hashSync(body.passphrase),
         passphraseUpdate: Math.random(),
         method: "upfront"
@@ -732,18 +717,7 @@ export const enablePDP = functions.https.onRequest(async (req: Request, res) => 
 });
 
 export const changePDPpassphrase = functions.https.onRequest(async (req: Request, res) => { 
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Methods", "POST");
-    res.set("Access-Control-Allow-Headers", "Authorization");
-
-    // Preflight? Stop here.
-    if (req.method === "OPTIONS") {
-        res.status(204).send("");
-        return;
-    }
-
-    await validateAuth(req, res);
-    if (!req.user) return;
+    if (!(await preflight(req, res))) return;
     
     const body = JSON.parse(req.body);
     if (typeof body.oldPassphrase !== "string" || body.oldPassphrase.length < 6) {
@@ -757,13 +731,13 @@ export const changePDPpassphrase = functions.https.onRequest(async (req: Request
     }
 
     const db = admin.database();
-    const oldHash = await (await db.ref(`${req.user.user_id}/pdp/passphraseHash`).get()).val();
+    const oldHash = await (await db.ref(`${req.user!.user_id}/pdp/passphraseHash`).get()).val();
     if (!oldHash || !bcrypt.compareSync(body.oldPassphrase, oldHash)) {
         res.send(400);
         return;
     }
 
-    await db.ref(`${req.user.user_id}/pdp`).update({
+    await db.ref(`${req.user!.user_id}/pdp`).update({
         passphraseHash: bcrypt.hashSync(body.newPassphrase),
         passphraseUpdate: Math.random()
     });
@@ -772,18 +746,7 @@ export const changePDPpassphrase = functions.https.onRequest(async (req: Request
 });
 
 export const removePDP = functions.https.onRequest(async (req: Request, res) => { 
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Methods", "POST");
-    res.set("Access-Control-Allow-Headers", "Authorization");
-
-    // Preflight? Stop here.
-    if (req.method === "OPTIONS") {
-        res.status(204).send("");
-        return;
-    }
-
-    await validateAuth(req, res);
-    if (!req.user) return;
+    if (!(await preflight(req, res))) return;
 
     const body = JSON.parse(req.body);
     if (typeof body.passphrase !== "string" || body.passphrase.length < 6) {
@@ -792,12 +755,12 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
     }
 
     const db = admin.database();
-    const hash = await (await db.ref(`${req.user.user_id}/pdp/passphraseHash`).get()).val();
+    const hash = await (await db.ref(`${req.user!.user_id}/pdp/passphraseHash`).get()).val();
     if (!hash || !bcrypt.compareSync(body.passphrase, hash)) {
         res.send(400);
         return;
     }
     
-    await db.ref(`${req.user.user_id}/pdp`).remove();
+    await db.ref(`${req.user!.user_id}/pdp`).remove();
     res.send(200);
 });
