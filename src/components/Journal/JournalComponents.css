@@ -25,6 +25,13 @@
     flex-direction: column;
 }
 
+.center-notifications {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .fakeTextArea {
     width: 80%;
     height: 300px;

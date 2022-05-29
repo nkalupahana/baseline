@@ -5,6 +5,7 @@ import history from "../history";
 import { LocalNotifications, Schedule } from "@moody-app/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
+import EndSpacer from "../components/EndSpacer";
 
 interface NotificationData {
     [key: string]: Array<
@@ -47,25 +48,30 @@ function notificationList(data: NotificationData, globalEditing: boolean, setGlo
     return list;
 }
 
-const Notifications = () => {
-    const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+enum NotificationsAllowed {
+    NEED_TO_ASK,
+    DENIED,
+    ALLOWED
+}
+
+const Notifications = ({ page=true } : { page: boolean}) => {
+    const [notificationsEnabled, setNotificationsEnabled] = useState(NotificationsAllowed.NEED_TO_ASK);
     const [notificationData, setNotificationData] = useState({});
     const [globalEditing, setGlobalEditing] = useState(false);
+    const [reloadAllowed, setReloadAllowed] = useState(0);
 
     useEffect(() => {
         if (Capacitor.getPlatform() === "web") return;
         LocalNotifications.checkPermissions().then(({ display }) => {
             if (display === "denied") {
-                setNotificationsEnabled(false);
-            } else if (display !== "granted") {
-                LocalNotifications.requestPermissions().then(({ display }) => {
-                    if (display === "denied") {
-                        setNotificationsEnabled(false);
-                    }
-                });
+                setNotificationsEnabled(NotificationsAllowed.DENIED);
+            } else if (display === "granted") {
+                setNotificationsEnabled(NotificationsAllowed.ALLOWED);
+            } else {
+                setNotificationsEnabled(NotificationsAllowed.NEED_TO_ASK)
             }
         });
-    }, []);
+    }, [reloadAllowed]);
 
     useEffect(() => {
         if (Capacitor.getPlatform() === "web") return;
@@ -89,24 +95,36 @@ const Notifications = () => {
     return (
     <>
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
-            <div className="center-journal container">
-                <div className="title">Customize Notifications</div>
+            { page && <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon> }
+            <div className={`container ${page ? "center-journal" : "center-notifications"}`}>
+                <div className="title">Notifications</div>
                 <p className="text-center margin-bottom-0">Notifications are a great way to ensure you mood log consistently, so you can build up an accurate picture of your mood over time.</p>
                 <p className="text-center">We recommend setting at least two per day, especially if you're just getting started and need reminders.</p>
-                { Capacitor.getPlatform() !== "web" && notificationsEnabled && 
+                { Capacitor.getPlatform() !== "web" && notificationsEnabled !== NotificationsAllowed.DENIED && 
                     <>
                         { notificationList(notificationData, globalEditing, setGlobalEditing) }
-                        { !globalEditing && <div onClick={() => {
+                        { !globalEditing && <div onClick={async () => {
+                            if (notificationsEnabled === NotificationsAllowed.NEED_TO_ASK) {
+                                const { display } = await LocalNotifications.requestPermissions();
+                                if (display === "denied") {
+                                    setNotificationsEnabled(NotificationsAllowed.DENIED);
+                                    return;
+                                } else {
+                                    setNotificationsEnabled(NotificationsAllowed.ALLOWED);
+                                }
+                            }
+
                             setGlobalEditing(true);
                             setNotificationData({...notificationData, "": []})
                         }} className="finish-button">Add Notification</div> }
                     </>
                 }
                 { Capacitor.getPlatform() === "web" && <p className="text-center italics">Notifications are not supported on web. Please get the iOS/Android app.</p> }
-                { !notificationsEnabled && <p className="text-center italics">You haven't allowed this app to send notifications. Go to Settings and enable notifications for baseline in order to use this feature.</p> }
+                { notificationsEnabled === NotificationsAllowed.DENIED && <p className="text-center italics">
+                    You haven't allowed this app to send notifications. Go to Settings and enable notifications for baseline in order to use this feature. 
+                    Once you've changed it, <span onClick={() => setReloadAllowed(Math.random())} className="fake-link">click here to reload.</span></p> }
             </div>
-            <br/><br/><br/><br/><br/><br/><br/><br/>
+            { page && <EndSpacer /> }
         </div>
     </>)
 };
