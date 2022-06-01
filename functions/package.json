@@ -25,7 +25,7 @@
     "formidable-serverless": "^1.1.1",
     "luxon": "^2.0.2",
     "node-fetch": "^2.6.7",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
