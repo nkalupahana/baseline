@@ -1,4 +1,3 @@
-import history from "../../history";
 import Help from "../Help";
 
 const Negative5 = () => {
