@@ -4,7 +4,7 @@ import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db, signOutAndCleanUp } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { analytics, cashOutline, cogOutline, menuOutline, notifications, pencil } from "ionicons/icons";
+import { analytics, cashOutline, cogOutline, helpBuoyOutline, menuOutline, notifications, pencil } from "ionicons/icons";
 import Media from "react-media";
 import WeekSummary from "../components/Summary/Week/WeekSummary";
 import MonthSummary from "../components/Summary/Month/MonthSummary";
@@ -185,6 +185,10 @@ const Summary = () => {
                         <IonItem>
                             <IonIcon icon={analytics} slot="start" />
                             <IonLabel>Surveys</IonLabel>
+                        </IonItem>
+                        <IonItem onClick={() => history.push("/gethelp")}>
+                            <IonIcon icon={helpBuoyOutline} slot="start" />
+                            <IonLabel>Get Help</IonLabel>
                         </IonItem>
                         <IonItem className="move-rest-down" onClick={() => history.push("/settings")}>
                             <IonIcon icon={cogOutline} slot="start" />
