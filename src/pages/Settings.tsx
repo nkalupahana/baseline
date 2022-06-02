@@ -27,6 +27,7 @@ const Settings = () => {
                 />
                 <PDP taskBlock={setDoingAsyncTask} />
             </div>
+            <p>Need help? Email us at </p>
         </div>
         <EndSpacer />
     </div>;

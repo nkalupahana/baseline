@@ -3,13 +3,6 @@ import { IonApp, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Switch } from "react-router";
 
-import Summary from "./pages/Summary";
-import Journal from "./pages/Journal";
-import Login from "./pages/Login";
-import Preloader from "./pages/Preloader";
-import Notifications from "./pages/Notifications";
-import WeekInReview from "./pages/WeekInReview";
-
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -33,16 +26,24 @@ import "./theme/variables.css";
 import { auth, signOutAndCleanUp } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
+import { checkKeys } from "./helpers";
 import history from "./history";
+import { Capacitor } from "@capacitor/core";
 import "./lifecycle";
 import smoothscroll from "smoothscroll-polyfill";
-import { Capacitor } from "@capacitor/core";
+
+import Summary from "./pages/Summary";
+import Journal from "./pages/Journal";
+import Login from "./pages/Login";
+import Preloader from "./pages/Preloader";
+import Notifications from "./pages/Notifications";
+import WeekInReview from "./pages/WeekInReview";
 import GapFund from "./pages/GapFund";
 import Donate from "./pages/Donate";
-import { checkKeys } from "./helpers";
 import Settings from "./pages/Settings";
 import Unlock from "./pages/Unlock";
 import RSummary from "./pages/RSummary";
+import GetHelp from "./pages/GetHelp";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -74,6 +75,7 @@ const App = () => {
                     <Route path="/donate" component={Donate} />
                     <Route path="/review" component={WeekInReview} />
                     <Route path="/settings" component={Settings} />
+                    <Route path="/gethelp" component={GetHelp} />
                     <Route path="/rsummary" component={RSummary} />
                     <Redirect to="/journal" />
                 </Switch>

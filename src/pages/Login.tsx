@@ -249,7 +249,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                         description={"We encrypt your data so that not even we can see it, let alone hackers. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
                     <MarketingBox 
                         icon={globeOutline} 
-                        title={"Accessible anywhere."}
+                        title={"Access your journals anywhere."}
                         description={<>All of your data can be accessed at any time on iOS, Android, and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
                 </div>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
