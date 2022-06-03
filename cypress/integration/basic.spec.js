@@ -194,6 +194,15 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "summary")
     })
 
+    it("Verify Get Help Page", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Get Help").should("exist").click()
+        cy.contains("Hi there").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get(".top-corner").click()
+        cy.url().should("include", "summary")
+    })
+
     it("Verify Non-Eligible Gap Fund Page", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Gap Fund").should("exist").click()
