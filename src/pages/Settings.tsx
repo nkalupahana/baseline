@@ -26,14 +26,15 @@ const Settings = () => {
                     description="Turn this on to disable animations. This typically won't increase performance by any noticable amount."
                 />
                 <PDP taskBlock={setDoingAsyncTask} />
+                <br />
+                <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
+                <p>baseline is an open source, volunteer-driven project. If there's a feature you'd like to see or 
+                    feedback you have for us, <a href="mailto:feedback@getbaseline.app">email us!</a> And if you'd like
+                    to contribute code to baseline, <a href="https://github.com/nkalupahana/baseline" target="_blank" rel="noreferrer">check us out on GitHub</a> — we 
+                    appreciate any help we can get. Finally, if you have financial resources to spare, please donate! 100% of 
+                    your donation goes right back to users through the gap fund, or to help get baseline to more people.
+                </p>
             </div>
-            <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
-            <p>baseline is an open source, volunteer-driven project. If there's a feature you'd like to see or 
-                feedback you have for us, <a href="mailto:feedback@getbaseline.app">email us!</a> And if you'd like
-                to contribute to baseline, <a href="https://github.com/nkalupahana/baseline" target="_blank" rel="noreferrer">check us out on GitHub.</a> Finally, 
-                if you have financial resources to spare, please donate! 100% of your donation goes right back to users through the gap fund, or
-                to help get baseline to more people.
-            </p>
         </div>
         <EndSpacer />
     </div>;
