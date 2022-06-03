@@ -1,6 +1,5 @@
 import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import Help from "../components/Help";
 import { goBackSafely } from "../helpers";
 
 const Donate = () => {
