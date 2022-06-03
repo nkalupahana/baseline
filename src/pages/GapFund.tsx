@@ -123,7 +123,7 @@ const GapFund = () => {
                 </p>
                 <p className="text-center">
                     This is a volunteer operation funded by donations. If you have money to spare to help people in need, 
-                    please <span className="fake-link" onClick={() => {history.push("/donate")}}>donate it here!</span> 100% of donations go to the gap fund.
+                    please <span className="fake-link" onClick={() => {history.push("/donate")}}>donate here!</span> 100% of donations go to the gap fund.
                 </p>
                 <div style={{width: "100%", height: "25px", borderTop: "1px #d2d1d1 solid"}}></div>
                 { gapFundData === SubmissionState.NO_DATA_YET && <Preloader /> }
