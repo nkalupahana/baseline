@@ -17,6 +17,7 @@ import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
+import { FCM } from "@capacitor-community/fcm";
 
 const Summary = () => {
     const [user] = useAuthState(auth);
@@ -27,6 +28,7 @@ const Summary = () => {
     const [logs, setLogs] = useState([]);
 
     useEffect(() => {
+        FCM.subscribeTo({ topic: "all" });
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();

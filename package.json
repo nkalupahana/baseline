@@ -50,6 +50,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.0",
     "smoothscroll-polyfill": "^0.4.4",
+    "swiper": "^8.2.2",
     "toastify-js": "github:nkalupahana/toastify-js#master",
     "typescript": "^4.6.4",
     "web-vitals": "^0.2.4",

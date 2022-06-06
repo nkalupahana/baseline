@@ -1,6 +1,29 @@
-import Screener from "./screener"
+import history from "../history";
+import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {
+    const generateScreenerRanges = (config: number[]): string[] => {
+        let ret: string[] = [];
+        let labels = ["normal", "mild", "moderate", "severe", "extremely severe"];
+        for (let i = 0; i < config.length; ++i) {
+            ret = ret.concat(Array(config[i]).fill(labels[i]));
+        }
+    
+        return ret;
+    };
+
+    const dRange = generateScreenerRanges([5, 2, 4, 3, 8]);
+    const aRange = generateScreenerRanges([4, 2, 2, 2, 12]);
+    const sRange = generateScreenerRanges([8, 2, 3, 4, 5]);
+
+    const getProblemFlag = function(results: any) {
+        let d = dRange[results.d];
+        let a = aRange[results.a];
+        let s = sRange[results.s];
+        const bad = ["severe", "extremely severe"];
+        return (bad.includes(d) || bad.includes(a) || bad.includes(s));
+    };
+
     return {
         _key: "dassv1",
         _currentQuestion: 0,
@@ -125,10 +148,35 @@ export default function DASS(): Screener {
             };
         },
         getRecommendation: function() {
-            return "To be completed";
+            let d = dRange[this._results.d];
+            let a = aRange[this._results.a];
+            let s = sRange[this._results.s];
+            const problemFlag = getProblemFlag(this._results);
+            
+            return <>
+                <p>Compared to the average person, you are experiencing <b>{ d }</b> levels of 
+                    depression, <b>{ a }</b> levels of anxiety, and <b>{ s }</b> levels of stress.
+                </p>
+                <p>Take a second to reflect on your results, especially if they've changed from before. If your results 
+                    have gotten worse, has anything changed in the past few weeks that led to that? For example, have 
+                    any of your routines changed, or has some major event taken place in your life? And if so, is there anything 
+                    you can do to mitigate the impacts of those changes?
+                </p>
+                <p>At the same time, if your results have gotten better, what might've changed in your life to make that happen — and 
+                    are there any steps you can take to sustain those changes and keep moving in that direction?
+                </p>
+                { problemFlag && <p>We understand your results today might be distressing or scary. If you can, take a minute to consider 
+                    why your results are the way they are. Is there anything you can do to help move them in a better direction? 
+                    If your results have been consistently severe over time, we recommend reaching out to others for 
+                    support. <span onClick={() => history.push("/gethelp")} className="fake-link">Check out our help resources for more information.</span>
+                </p> }
+            </>;
         },
         getClinicalInformation: function() {
-            return `DASS-21 raw scores: d=${this._results.d}, a=${this._results.a}, s=${this._results.s}. Raw scores for each question are not scaled (0 - 3). Standard cutoffs used.`;
+            return `DASS-21 (doi: 10.1348/014466505X29657) raw scores: d=${this._results.d}, a=${this._results.a}, s=${this._results.s}. Raw scores for each question are not scaled (0 - 3). Standard cutoffs used.`;
+        },
+        getPriority: function() {
+            return getProblemFlag(this._results) ? Priority.HIGH : Priority.LOW;
         }
     }
 }
