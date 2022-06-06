@@ -77,12 +77,10 @@ export default function EDE_QS(): Screener {
             };
         },
         getRecommendation: function() {
-            if (this._results < 8) {
-                return "Based on your answers to this screener, we do not believe you have an eating disorder.";
-            } else if (this._results < 15) {
-                return "Although this screener hasn't been able to definitively determine whether you have an eating disorder, your score is high enough that we believe that you are at the very least at risk of developing an eating disorder. TODO";
+            if (this._results < 15) {
+                return <>Based on your answers to this screener, we do not believe you have an eating disorder.</>;
             } else {
-                return "Your answers on this screener have indicated that you likely have an eating disorder. TODO";
+                return <>Your answers on this screener have indicated that you likely have an eating disorder. TODO</>;
             }
         },
         getClinicalInformation: function() {

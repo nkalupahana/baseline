@@ -24,7 +24,7 @@ export default interface Screener {
     _results: any;
     progress?: string;
     nextQuestion: (answer?: number) => Modifier | Done;
-    getRecommendation: () => string;
+    getRecommendation: () => JSX.Element;
     getClinicalInformation: () => string;
     question?: string;
     answers?: Answer[];

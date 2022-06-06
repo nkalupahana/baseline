@@ -1,3 +1,4 @@
+import history from "../history";
 import Screener from "./screener";
 
 export default function CAGE_AID(): Screener {
@@ -53,9 +54,25 @@ export default function CAGE_AID(): Screener {
         },
         getRecommendation: function() {
             if (this._results < 2) {
-                return "Based on your answers to this screener, we do not believe you have a substance use disorder.";
+                return <p>
+                    Based on your answers, we do not believe you have a substance use disorder. If you're worried you might 
+                    be developing an issue with substances, contact a professional for help. Additionally, if you're worried about 
+                    someone you know and their relationship with substances, 
+                    <span onClick={() => history.push("/gethelp")} className="fake-link">check out our help resources for more information.</span>
+                </p>;
             } else {
-                return "Your answers on this screener have indicated that you have issues with substance abuse, and likely have a substance use disorder. TODO";
+                return <>
+                    <p>
+                        Hi there. Your answers have indicated that you have issues with substance abuse, 
+                        and likely have a substance use disorder. Even if you don't think your substance use 
+                        is an issue, we highly recommend reaching out to a professional to talk about 
+                        your specific circumstances. Substance use can easily spiral into a bigger issue, and is 
+                        often also indicative of other mental health struggles.
+                    </p>
+                    <p>
+                        
+                    </p>
+                </>;
             }
         },
         getClinicalInformation: function() {

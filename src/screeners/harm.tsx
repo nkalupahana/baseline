@@ -56,7 +56,7 @@ export default function HARM(): Screener {
             };
         },
         getRecommendation: function() {
-            return "TODO";
+            return <>TODO</>;
         },
         getClinicalInformation: function() {
             return `Self-Harm ${this._results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this._results[1] ? "present" : "not present"}, ${this._results[2] ? "acute" : "non-acute"}. Screened with asQ (questions 1-3, question 5 for acuity).`;

@@ -58,11 +58,11 @@ export default function SPF(): Screener {
             const result = this._results["Social-Interpersonal"] + this._results["Cognitive-Individual"];
 
             if (result <= 32) {
-                return "High Resilience. TODO";
+                return <>High Resilience. TODO</>;
             } else if (result <= 42) {
-                return "Medium Resilience. TODO";
+                return <>Medium Resilience. TODO</>;
             } else {
-                return "Low Resilience. TODO";
+                return <>Low Resilience. TODO</>;
             }
         },
         getClinicalInformation: function() {

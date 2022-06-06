@@ -44,6 +44,7 @@ import Settings from "./pages/Settings";
 import Unlock from "./pages/Unlock";
 import RSummary from "./pages/RSummary";
 import GetHelp from "./pages/GetHelp";
+import WeekInReviewReview from "./components/Review/WeekInReviewReview";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -73,7 +74,7 @@ const App = () => {
                     <Route path="/notifications" component={Notifications} />
                     <Route path="/gap" component={GapFund} />
                     <Route path="/donate" component={Donate} />
-                    <Route path="/review" component={WeekInReview} />
+                    <Route path="/review" component={WeekInReviewReview} />
                     <Route path="/settings" component={Settings} />
                     <Route path="/gethelp" component={GetHelp} />
                     <Route path="/rsummary" component={RSummary} />
