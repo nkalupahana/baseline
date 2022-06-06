@@ -1,4 +1,4 @@
-interface Modifier {
+export interface Modifier {
     _currentQuestion: number;
     _results: any;
     progress: string;
@@ -6,14 +6,22 @@ interface Modifier {
     answers: Answer[];
 }
 
-interface Done {
+export interface Done {
     done: boolean;
     _results: any;
 }
 
-interface Answer {
+export interface Answer {
     answer: string;
     value: number;
+}
+
+export enum Priority {
+    DO_NOT_SHOW,
+    LOW,
+    NORMAL,
+    HIGH,
+    CRITICAL
 }
 
 export default interface Screener {
@@ -24,8 +32,9 @@ export default interface Screener {
     _results: any;
     progress?: string;
     nextQuestion: (answer?: number) => Modifier | Done;
-    getRecommendation: () => string;
+    getRecommendation: () => JSX.Element;
     getClinicalInformation: () => string;
+    getPriority: () => Priority;
     question?: string;
     answers?: Answer[];
     done?: boolean;

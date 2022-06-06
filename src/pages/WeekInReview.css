@@ -17,3 +17,21 @@
 .screener-container div:first-of-type {
     margin-top: auto;
 }
+
+.screener-slide {
+    height: calc(100% - 75px);
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.screener-slide::-webkit-scrollbar {
+    display: none;
+}
+
+.swiper-pagniation-controls {
+    font-size: 1.75em;
+}
+
+.swiper-pagniation-controls > ion-icon {
+    margin: 0 50px;
+}

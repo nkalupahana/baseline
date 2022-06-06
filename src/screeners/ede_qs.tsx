@@ -1,4 +1,6 @@
-import Screener from "./screener";
+import { FIND_HELP, GAP_FUND } from "../data";
+import history from "../history";
+import Screener, { Priority } from "./screener";
 
 export default function EDE_QS(): Screener {
     return {
@@ -77,16 +79,36 @@ export default function EDE_QS(): Screener {
             };
         },
         getRecommendation: function() {
-            if (this._results < 8) {
-                return "Based on your answers to this screener, we do not believe you have an eating disorder.";
-            } else if (this._results < 15) {
-                return "Although this screener hasn't been able to definitively determine whether you have an eating disorder, your score is high enough that we believe that you are at the very least at risk of developing an eating disorder. TODO";
+            if (this._results < 15) {
+                return <p>Based on your answers to this screener, we do not believe you have an eating disorder. If you're worried about 
+                someone you know and their relationship with eating, <span onClick={() => history.push("/gethelp")} className="fake-link">check out our help resources for more information.</span></p>;
             } else {
-                return "Your answers on this screener have indicated that you likely have an eating disorder. TODO";
+                return <>
+                    <p>
+                        Hi there! Your answers have indicated that you likely have an eating disorder. Eating disorders are 
+                        often treated in our culture as if they aren't as important as mental health issues - but they're just 
+                        as serious. We urge you to talk to a professional about how you feel about eating and your body, and to 
+                        get specialized treatment.
+                    </p>
+                    <p>
+                        To talk to someone about what you're going through right now, we recommmend contacting 
+                        the <a href="https://www.nationaleatingdisorders.org/help-support/contact-helpline">National Eating 
+                        Disorders Helpline</a>. If you're currently in crisis, you can also message the Crisis Text Line: text 
+                        NEDA to <a href="sms:741741">741741</a>. The helpline and other online resources can help you find long-term 
+                        professional resources to help you manage your eating disorder, which is ultimately what we recommend moving 
+                        towards. { FIND_HELP }
+                    </p>
+                    <p>
+                        If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND }
+                    </p>
+                </>;
             }
         },
         getClinicalInformation: function() {
-            return `EDE-QS raw score: ${this._results}. Raw scores for each question are not scaled (0 - 3). Major cutoff = 15 (validated), risk cutoff = 8 (arbitrary).`;
+            return `EDE-QS raw score: ${this._results}. Raw scores for each question are not scaled (0 - 3). Cutoff = 15 (validated, doi:10.1186/s12888-020-02565-5).`;
+        },
+        getPriority: function() {
+            return this._results < 15 ? Priority.LOW : Priority.HIGH;
         }
     }
 }
