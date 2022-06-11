@@ -37,14 +37,13 @@ import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Preloader from "./pages/Preloader";
 import Notifications from "./pages/Notifications";
-import WeekInReview from "./pages/WeekInReview";
 import GapFund from "./pages/GapFund";
 import Donate from "./pages/Donate";
 import Settings from "./pages/Settings";
 import Unlock from "./pages/Unlock";
 import RSummary from "./pages/RSummary";
 import GetHelp from "./pages/GetHelp";
-import WeekInReviewReview from "./components/Review/WeekInReviewReview";
+import WeekInReview from "./pages/WeekInReview";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -74,7 +73,7 @@ const App = () => {
                     <Route path="/notifications" component={Notifications} />
                     <Route path="/gap" component={GapFund} />
                     <Route path="/donate" component={Donate} />
-                    <Route path="/review" component={WeekInReviewReview} />
+                    <Route path="/review" component={WeekInReview} />
                     <Route path="/settings" component={Settings} />
                     <Route path="/gethelp" component={GetHelp} />
                     <Route path="/rsummary" component={RSummary} />

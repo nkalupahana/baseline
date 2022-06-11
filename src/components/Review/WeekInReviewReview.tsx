@@ -4,7 +4,7 @@ import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { toast } from "../../helpers";
 import history from "../../history";
-import Screener from "../../screeners/screener";
+import Screener, { Priority } from "../../screeners/screener";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import "swiper/css";
@@ -43,6 +43,26 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                         <div className="title">Hi there.</div>
                         <p className="text-center">Let's go over your results.</p>
                     </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="title">Results</div>
+                    { secondary.getPriority() > primary.getPriority() && <div className="text-center">
+                        { secondary.getRecommendation() }
+                    </div> }
+                    { secondary.getPriority() <= primary.getPriority() && <div className="text-center">
+                        { primary.getRecommendation() }
+                    </div> }
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="title">Results</div>
+                    { secondary.getPriority() <= primary.getPriority() 
+                        && secondary.getPriority() !== Priority.DO_NOT_SHOW 
+                        && <div className="text-center">
+                        { secondary.getRecommendation() }
+                    </div> }
+                    { secondary.getPriority() > primary.getPriority() && <div className="text-center">
+                        { primary.getRecommendation() }
+                    </div> }
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="finish-button" onClick={finish}>

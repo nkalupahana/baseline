@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import WeekInReviewInitial from "../components/Review/WeekInReviewInitial";
 import Surveyer from "../components/Review/Surveyer";
 import DASS from "../screeners/dass";
-import "./WeekInReview.css";
 import CAGE_AID from "../screeners/cage_aid";
 import SPF from "../screeners/spf";
 import EDE_QS from "../screeners/ede_qs";
@@ -13,6 +12,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
 import WeekInReviewReview from "../components/Review/WeekInReviewReview";
 import history from "../history";
+import "./WeekInReview.css";
 
 enum Stage {
     Initial,

@@ -1,6 +1,6 @@
 import { FIND_HELP, GAP_FUND, TALK_TO_SOMEONE } from "../data";
 import history from "../history";
-import Screener from "./screener";
+import Screener, { Priority } from "./screener";
 
 export default function CAGE_AID(): Screener {
     return {
@@ -87,6 +87,9 @@ export default function CAGE_AID(): Screener {
         },
         getClinicalInformation: function() {
             return `CAGE-AID, with increased sensitivity (instead of no/yes, not true/somewhat true/certainly true; doi: 10.1080/10826080802484264) and two extra questions regarding solo use around others and using to cope (not experimentally validated). Raw score: ${this._results}. Raw scores from 0 - 2 for each question. Cutoff = 2 (same paper).`;
+        },
+        getPriority: function() {
+            return this._results < 2 ? Priority.LOW : Priority.HIGH;
         }
     }
 }
