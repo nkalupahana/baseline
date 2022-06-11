@@ -1,3 +1,4 @@
+import { FIND_HELP, GAP_FUND, TALK_TO_SOMEONE } from "../data";
 import history from "../history";
 import Screener from "./screener";
 
@@ -55,8 +56,7 @@ export default function CAGE_AID(): Screener {
         getRecommendation: function() {
             if (this._results < 2) {
                 return <p>
-                    Based on your answers, we do not believe you have a substance use disorder. If you're worried you might 
-                    be developing an issue with substances, contact a professional for help. Additionally, if you're worried about 
+                    Based on your answers, we do not believe you have a substance use disorder. If you're worried about 
                     someone you know and their relationship with substances, 
                     <span onClick={() => history.push("/gethelp")} className="fake-link">check out our help resources for more information.</span>
                 </p>;
@@ -66,12 +66,22 @@ export default function CAGE_AID(): Screener {
                         Hi there. Your answers have indicated that you have issues with substance abuse, 
                         and likely have a substance use disorder. Even if you don't think your substance use 
                         is an issue, we highly recommend reaching out to a professional to talk about 
-                        your specific circumstances. Substance use can easily spiral into a bigger issue, and is 
-                        often also indicative of other mental health struggles.
+                        your specific circumstances. Substance use can easily spiral into a bigger issue, is 
+                        often also indicative of other mental health struggles, and can impact many other 
+                        facets of your life. It's really important that you get help.
                     </p>
                     <p>
-                        
+                        Alcoholics Anonymous, Narcotics Anonymous, and similar organizations are a big help for lots of people
+                        who are struggling with substance use. Additionally, if you're in the US, we recommend going to 
+                        <a href="https://www.findtreatment.gov/">findtreatment.gov</a> to find specific professional support for 
+                        substance use, or <a href="https://findtreatment.samhsa.gov/">findtreatment.samhsa.gov</a> for both substance 
+                        use and general mental health support. { FIND_HELP }
                     </p>
+                    <p>
+                        Beyond professional support, though, talking to others (and yourself!) about what you're going through is 
+                        super important. { TALK_TO_SOMEONE }
+                    </p>
+                    <p>If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND }</p>
                 </>;
             }
         },

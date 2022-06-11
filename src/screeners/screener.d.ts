@@ -16,6 +16,14 @@ interface Answer {
     value: number;
 }
 
+export enum Priority {
+    DO_NOT_SHOW,
+    LOW,
+    NORMAL,
+    HIGH,
+    CRITICAL
+}
+
 export default interface Screener {
     _key: string;
     _currentQuestion: number;
@@ -26,6 +34,7 @@ export default interface Screener {
     nextQuestion: (answer?: number) => Modifier | Done;
     getRecommendation: () => JSX.Element;
     getClinicalInformation: () => string;
+    getPriority: () => Priority;
     question?: string;
     answers?: Answer[];
     done?: boolean;

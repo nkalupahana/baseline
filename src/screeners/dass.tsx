@@ -1,5 +1,5 @@
 import history from "../history";
-import Screener from "./screener"
+import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {
     const generateScreenerRanges = (config: number[]): string[] => {
@@ -15,6 +15,14 @@ export default function DASS(): Screener {
     const dRange = generateScreenerRanges([5, 2, 4, 3, 8]);
     const aRange = generateScreenerRanges([4, 2, 2, 2, 12]);
     const sRange = generateScreenerRanges([8, 2, 3, 4, 5]);
+
+    const getProblemFlag = function(results: any) {
+        let d = dRange[results.d];
+        let a = aRange[results.a];
+        let s = sRange[results.s];
+        const bad = ["severe", "extremely severe"];
+        return (bad.includes(d) || bad.includes(a) || bad.includes(s));
+    };
 
     return {
         _key: "dassv1",
@@ -139,13 +147,11 @@ export default function DASS(): Screener {
                 }]
             };
         },
-
         getRecommendation: function() {
             let d = dRange[this._results.d];
             let a = aRange[this._results.a];
             let s = sRange[this._results.s];
-            const bad = ["severe", "extremely severe"];
-            let problemFlag = (bad.includes(d) || bad.includes(a) || bad.includes(s));
+            const problemFlag = getProblemFlag(this._results);
             
             return <>
                 <p>Compared to the average person, you are experiencing <b>{ d }</b> levels of 
@@ -168,6 +174,9 @@ export default function DASS(): Screener {
         },
         getClinicalInformation: function() {
             return `DASS-21 raw scores: d=${this._results.d}, a=${this._results.a}, s=${this._results.s}. Raw scores for each question are not scaled (0 - 3). Standard cutoffs used.`;
+        },
+        getPriority: function() {
+            return getProblemFlag(this._results) ? Priority.HIGH : Priority.LOW;
         }
     }
 }
