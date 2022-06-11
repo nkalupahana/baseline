@@ -1,4 +1,4 @@
-interface Modifier {
+export interface Modifier {
     _currentQuestion: number;
     _results: any;
     progress: string;
@@ -6,12 +6,12 @@ interface Modifier {
     answers: Answer[];
 }
 
-interface Done {
+export interface Done {
     done: boolean;
     _results: any;
 }
 
-interface Answer {
+export interface Answer {
     answer: string;
     value: number;
 }

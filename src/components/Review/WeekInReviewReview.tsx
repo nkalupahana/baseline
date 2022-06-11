@@ -1,15 +1,15 @@
-import { IonSpinner } from "@ionic/react";
+import { IonIcon, IonSpinner } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { toast } from "../../helpers";
 import history from "../../history";
 import Screener, { Priority } from "../../screeners/screener";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper";
+import { Pagination } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react"
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 
 interface Props {
     primary: Screener,
@@ -18,6 +18,7 @@ interface Props {
 
 const WeekInReviewReview = ({ primary, secondary }: Props) => {
     const [loading, setLoading] = useState(false);
+    const [swiper, setSwiper] = useState<any>(null);
     const finish = async () => {
         if (loading) return;
         setLoading(true);
@@ -30,13 +31,22 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
         }
     };
 
+    const screeners = [primary, secondary]
+        .filter(screener => screener.getPriority() !== Priority.DO_NOT_SHOW)
+        .sort((a, b) => {
+            return b.getPriority() - a.getPriority();
+        });
+    
+    console.log(screeners);
+
     return (<div className="center-summary container">
             <br />
             <Swiper 
-                modules={[Navigation, Pagination]}
+                modules={[Pagination]}
                 navigation={true}
                 pagination={true}
-                style={{"width": "95%", "maxWidth": "600px", "height": "calc(100vh - 100px)"}}
+                style={{"width": "95%", "maxWidth": "600px", "height": "calc(100vh - 110px)"}}
+                onSwiper={swiper => setSwiper(swiper)}
             >
                 <SwiperSlide style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}>
                     <div>
@@ -44,26 +54,14 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                         <p className="text-center">Let's go over your results.</p>
                     </div>
                 </SwiperSlide>
-                <SwiperSlide>
-                    <div className="title">Results</div>
-                    { secondary.getPriority() > primary.getPriority() && <div className="text-center">
-                        { secondary.getRecommendation() }
-                    </div> }
-                    { secondary.getPriority() <= primary.getPriority() && <div className="text-center">
-                        { primary.getRecommendation() }
-                    </div> }
-                </SwiperSlide>
-                <SwiperSlide>
-                    <div className="title">Results</div>
-                    { secondary.getPriority() <= primary.getPriority() 
-                        && secondary.getPriority() !== Priority.DO_NOT_SHOW 
-                        && <div className="text-center">
-                        { secondary.getRecommendation() }
-                    </div> }
-                    { secondary.getPriority() > primary.getPriority() && <div className="text-center">
-                        { primary.getRecommendation() }
-                    </div> }
-                </SwiperSlide>
+                { screeners.map(screener => {
+                    return <SwiperSlide key={screener._key}>
+                        <div className="title">Results</div>
+                        <div className="text-center screener-slide">
+                            { screener.getRecommendation() }
+                        </div>
+                    </SwiperSlide>
+                }) }
                 <SwiperSlide>
                     <div className="finish-button" onClick={finish}>
                         { !loading && <>Finish</> }
@@ -71,6 +69,10 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                     </div>
                 </SwiperSlide>
             </Swiper>
+            <div className="swiper-pagniation-controls">
+                <IonIcon onClick={() => swiper?.slidePrev()} icon={chevronBackOutline} />
+                <IonIcon onClick={() => swiper?.slideNext()} icon={chevronForwardOutline} />
+            </div>
         </div>);
 }
 

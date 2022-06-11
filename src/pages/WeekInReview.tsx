@@ -33,7 +33,7 @@ const KEY_MAP: KEY_MAP_INT = {
 };
 
 const WeekInReview = () => {
-    const [, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [stage, setStage] = useState(Stage.Initial);
     const incrementStage = function() {
         setStage(stage + 1);
@@ -43,8 +43,8 @@ const WeekInReview = () => {
 
     // Figure out secondary survey based on past surveys
     useEffect(() => {
-        if (loading || !auth.currentUser) return;
-        get(query(ref(db, `${auth.currentUser.uid}/surveys`), orderByKey(), limitToLast(6))).then(snap => {
+        if (!user) return;
+        get(query(ref(db, `${user.uid}/surveys`), orderByKey(), limitToLast(6))).then(snap => {
             const val = snap.val();
             let keys = Object.keys(KEY_MAP);
             if (val) {
@@ -60,10 +60,11 @@ const WeekInReview = () => {
             }
             setSecondary(KEY_MAP[keys[Math.floor(Math.random() * keys.length)]]());
         });
-    }, [loading]);
+    }, [user]);
 
     // Basic token check (mainly to ensure the user doesn't accidentally 
     // end up here again via browser history) 
+    /*
     useEffect(() => {
         if (!localStorage.getItem("wirtoken")) {
             history.replace("/summary");
@@ -71,6 +72,7 @@ const WeekInReview = () => {
             localStorage.removeItem("wirtoken");
         }
     }, []);
+    */
 
     return <>
         { stage === Stage.Initial && <WeekInReviewInitial incrementStage={() => {

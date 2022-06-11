@@ -58,7 +58,7 @@ export default function SPF(): Screener {
         getRecommendation: function() {
             const result = this._results["Social-Interpersonal"] + this._results["Cognitive-Individual"];
             const resilienceBasics = <p>
-                Resilence is a measure of how well someone can cope mentally/emotionally with a crisis, or how quickly they 
+                Resilence is a measure of how well someone can cope mentally/emotionally with a crisis, and how quickly they 
                 can "bounce back" to pre-crisis levels after one happens. It measures a person's ability to 
                 move on from a crisis without suffering longer-term consequences. Resilience is a super important 
                 thing to keep track of &mdash; if you're low on it, additional stress now could cause much bigger issues 
@@ -74,17 +74,17 @@ export default function SPF(): Screener {
                 return <>
                     { resilienceBasics }
                     <p>
-                        Based on your answers, you have { result <= 42 ? "medium" : "low" } resilence. Take a moment to consider what might be causing 
-                        your resilence to drop now. Is there anything you can do about those current issues?
+                        Based on your answers, you have <b>{ result <= 42 ? "medium" : "low" } resilence.</b> Take a moment to 
+                        consider what might be causing your resilence to drop currently. 
+                        Is there anything you can do about those current issues?
                     </p>
                     <p>
-                        Of course, resilence is a metric that is influenced by factors spanning across your entire life. 
+                        In addition to what you're going through now, resilence is influenced by factors spanning across your entire life. 
                         A lot of these factors aren't obvious, and a professional can help you understand what's going on, 
                         especially if you can see that your resilience level is affecting how you deal with stressors.
                     </p>
                     <p>
-                        Therapy, especially Cognitive Behavioral Therapy (CBT) can help increase resilience. 
-                        <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">Search for treatment providers here!</a> { FIND_HELP }
+                        Therapy, especially Cognitive Behavioral Therapy (CBT) can help increase resilience. <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">Search for treatment providers here!</a> { FIND_HELP }
                     </p>
                     <p>
                         If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND }

@@ -167,8 +167,8 @@ export default function DASS(): Screener {
                 </p>
                 { problemFlag && <p>We understand your results today might be distressing or scary. If you can, take a minute to consider 
                     why your results are the way they are. Is there anything you can do to help move them in a better direction? 
-                    If your results have been consistently severe over time, we recommend reaching out to others for support. 
-                    <span onClick={() => history.push("/gethelp")} className="fake-link">Check out our help resources for more information.</span>
+                    If your results have been consistently severe over time, we recommend reaching out to others for 
+                    support. <span onClick={() => history.push("/gethelp")} className="fake-link">Check out our help resources for more information.</span>
                 </p> }
             </>;
         },
