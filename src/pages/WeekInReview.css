@@ -22,6 +22,7 @@
     height: calc(100% - 75px);
     overflow-y: scroll;
     scrollbar-width: none;
+    margin-top: 12px;
 }
 
 .screener-slide::-webkit-scrollbar {

@@ -11,6 +11,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
+import SurveyGraph from "./SurveyGraph";
 
 interface Props {
     primary: Screener,
@@ -19,9 +20,9 @@ interface Props {
 
 const WeekInReviewReview = ({ primary, secondary }: Props) => {
     const [loading, setLoading] = useState(false);
-    const [swiper, setSwiper] = useState<SwiperType | null>(null);
+    const [swiper, setSwiper] = useState<SwiperType | undefined>(undefined);
     const [user] = useAuthState(auth);
-    const [surveyHistory, setSurveyHistory] = useState<AnyMap | null>(null);
+    const [surveyHistory, setSurveyHistory] = useState<AnyMap | undefined>(undefined);
     const finish = async () => {
         if (loading) return;
         setLoading(true);
@@ -43,19 +44,17 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
     useEffect(() => {
         const keys = checkKeys();
         get(query(ref(db, `${user.uid}/surveys`), orderByKey(), limitToLast(100))).then(snap => {
-            const val = snap.val();
-            let ret: AnyMap = {};
+            let val = snap.val();
             for (let key in val) {  
-                const type = val[key]["key"];
-                if (!(type in ret)) ret[key] = {};
                 if (typeof val[key]["results"] === "string") {
-                    ret[key]["results"] = JSON.parse(decrypt(val[key]["results"], `${keys.visibleKey}${keys.encryptedKeyVisible}`));
-                } else {
-                    ret[type][key] = val[key]["results"];
+                    val[key]["results"] = JSON.parse(decrypt(val[key]["results"], `${keys.visibleKey}${keys.encryptedKeyVisible}`));
                 }
             }
 
-            setSurveyHistory(ret);
+            console.log(val);
+            console.log(primary.processDataForGraph!(val));
+
+            setSurveyHistory(val);
         });
     }, [user]);
     
@@ -78,6 +77,9 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                     return <SwiperSlide key={screener._key}>
                         <div className="title">Results</div>
                         <div className="text-center screener-slide">
+                            { screener.graphConfig && 
+                                screener.processDataForGraph && 
+                                <SurveyGraph data={screener.processDataForGraph(surveyHistory)} graphConfig={screener.graphConfig} /> }
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>
                                 If you want to discuss these results with a 
