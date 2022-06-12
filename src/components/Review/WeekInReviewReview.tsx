@@ -51,14 +51,11 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                 }
             }
 
-            console.log(val);
-            console.log(primary.processDataForGraph!(val));
-
             setSurveyHistory(val);
         });
     }, [user]);
     
-    return (<div className="center-summary container">
+    return <div className="center-summary container">
             <br />
             <Swiper 
                 modules={[Pagination]}
@@ -99,7 +96,7 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                 <IonIcon onClick={() => swiper?.slidePrev()} icon={chevronBackOutline} />
                 <IonIcon onClick={() => swiper?.slideNext()} icon={chevronForwardOutline} />
             </div>
-        </div>);
+        </div>;
 }
 
 export default WeekInReviewReview;
