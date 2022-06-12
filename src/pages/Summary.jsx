@@ -28,7 +28,7 @@ const Summary = () => {
     const [logs, setLogs] = useState([]);
 
     useEffect(() => {
-        FCM.subscribeTo({ topic: "all" });
+        if (Capacitor.getPlatform() !== "web") FCM.subscribeTo({ topic: "all" });
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();

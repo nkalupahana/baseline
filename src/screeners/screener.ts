@@ -1,3 +1,5 @@
+import { AnyMap } from "../helpers";
+
 export interface Modifier {
     _currentQuestion: number;
     _results: any;
@@ -24,6 +26,17 @@ export enum Priority {
     CRITICAL
 }
 
+interface Line {
+    key: string;
+    color: string;
+}
+
+export interface GraphConfig {
+    yAxisLabel: string;
+    yDomain?: [(min: number) => number, (max: number) => number];
+    lines: Line[]
+}
+
 export default interface Screener {
     _key: string;
     _currentQuestion: number;
@@ -31,6 +44,8 @@ export default interface Screener {
     _questions: any[];
     _results: any;
     progress?: string;
+    graphConfig?: GraphConfig;
+    processDataForGraph?: (data?: AnyMap) => AnyMap[];
     nextQuestion: (answer?: number) => Modifier | Done;
     getRecommendation: () => JSX.Element;
     getClinicalInformation: () => string;

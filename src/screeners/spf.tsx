@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { FIND_HELP, GAP_FUND } from "../data";
 import Screener, { Priority } from "./screener";
 
@@ -97,6 +98,25 @@ export default function SPF(): Screener {
         },
         getPriority: function() {
             return Priority.NORMAL;
+        },
+        processDataForGraph: function(data) {
+            let d = [];
+            for (let key in data) {
+                if (data[key]["key"] !== this._key) continue;
+                d.push({
+                    date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
+                    score: data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"],
+                });
+            }
+
+            return d;
+        },
+        graphConfig: {
+            yAxisLabel: "Score (lower is better)",
+            lines: [{
+                key: "score",
+                color: "#ff6361"
+            }]
         }
     }
 }
