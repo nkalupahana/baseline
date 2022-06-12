@@ -1,7 +1,11 @@
 import { FIND_HELP, GAP_FUND, GAP_FUND_LINK, HOTLINES, TALK_TO_SOMEONE } from "../data";
 import Screener, { Priority } from "./screener";
 
-export default function HARM(): Screener {
+interface HARMScreener extends Screener {
+    _currentSection?: number;
+}
+
+export default function HARM(): HARMScreener {
     return {
         _key: "harmv1",
         _currentQuestion: 0,
@@ -23,21 +27,21 @@ export default function HARM(): Screener {
         _results: [0, 0, 0],
         nextQuestion: function(answer) {
             if (answer !== undefined) {
-                this._results[this._currentQuestion] = answer;
+                this._results[this._currentSection!] = answer;
                 ++this._currentQuestion;
             }
 
             if (answer === 1 || this._currentQuestion >= this._questions[(this._currentSection as number)].length) {
-                ++(this._currentSection as number);
+                ++this._currentSection!;
                 this._currentQuestion = 0;
             }
 
-            if ((this._currentSection as number) >= this._questions.length || (this._currentSection === 2 && this._results[1] === 0)) {
+            if (this._currentSection! >= this._questions.length || (this._currentSection === 2 && this._results[1] === 0)) {
                 return { _results: this._results, done: true };
             }
 
             let pastQuestions = 0;
-            for (let i = 0; i < (this._currentSection as number); ++i) {
+            for (let i = 0; i < this._currentSection!; ++i) {
                 pastQuestions += this._questions[i].length;
             }
 
@@ -64,7 +68,7 @@ export default function HARM(): Screener {
             if (this._results[0] === 1 && this._results[1] === 0 && this._results[2] === 0) {
                 return <>
                     <p>
-                        Hi there. It sounds like you've been struggling with self-harm. No matter 
+                        About your last survey: it sounds like you've been struggling with self-harm. No matter 
                         what you've been struggling with, we're here for you.
                     </p>
                     <p>
@@ -82,7 +86,7 @@ export default function HARM(): Screener {
             if (this._results[1] === 1 && this._results[2] === 0) {
                 return <>
                     <p>
-                        Hi there. It sounds like you've been struggling with a lot lately, including 
+                        About your last survey: it sounds like you've been struggling with a lot lately, including 
                         suicidal ideation. No matter what you've been struggling with, we're here for you.
                     </p>
                     <p>
@@ -104,8 +108,8 @@ export default function HARM(): Screener {
             if (this._results[2] === 1) {
                 return <>
                     <p>
-                        Hi there. Thank you for telling us what's going on. We can't imagine how much you're 
-                        dealing with right now, and we're here for you.
+                        About your last survey: thank you for telling us what's going on. We can't imagine how 
+                        much you're dealing with right now, and we're here for you.
                         We urge you to drop whatever you're doing and get help right now. It's so, so important 
                         that you talk to someone about how you're feeling. If there's nobody in your life you 
                         feel safe doing that with, try these 24/7 hotlines:
@@ -125,7 +129,7 @@ export default function HARM(): Screener {
             return <p>This should never appear.</p>
         },
         getClinicalInformation: function() {
-            return `Self-Harm ${this._results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this._results[1] ? "present" : "not present"}, ${this._results[2] ? "acute" : "non-acute"}. Screened with asQ (questions 1-3, question 5 for acuity).`;
+            return `Self-Harm ${this._results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this._results[1] ? "present" : "not present"}, ${this._results[2] ? "acute" : "non-acute"}. Screened with NIMH asQ (questions 1-3, question 5 for acuity).`;
         },
         getPriority: function() {
             if (this._results[0] === 1 && this._results[1] === 0 && this._results[2] === 0) {

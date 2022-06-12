@@ -11,7 +11,6 @@ import { get, limitToLast, orderByKey, query, ref } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
 import WeekInReviewReview from "../components/Review/WeekInReviewReview";
-import history from "../history";
 import "./WeekInReview.css";
 
 enum Stage {
@@ -39,7 +38,7 @@ const WeekInReview = () => {
         setStage(stage + 1);
     };
     const [primary, setPrimary] = useState(DASS());
-    const [secondary, setSecondary] = useState(SPF());
+    const [secondary, setSecondary] = useState(HARM());
 
     // Figure out secondary survey based on past surveys
     useEffect(() => {

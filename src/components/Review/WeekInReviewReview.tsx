@@ -1,15 +1,16 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
-import { ref, serverTimestamp, set } from "firebase/database";
-import { useState } from "react";
+import { get, limitToLast, orderByKey, query, ref, serverTimestamp, set } from "firebase/database";
+import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
-import { toast } from "../../helpers";
+import { AnyMap, checkKeys, decrypt, toast } from "../../helpers";
 import history from "../../history";
 import Screener, { Priority } from "../../screeners/screener";
-import { Pagination } from "swiper";
+import SwiperType, { Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react"
 import "swiper/css";
 import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 interface Props {
     primary: Screener,
@@ -18,7 +19,9 @@ interface Props {
 
 const WeekInReviewReview = ({ primary, secondary }: Props) => {
     const [loading, setLoading] = useState(false);
-    const [swiper, setSwiper] = useState<any>(null);
+    const [swiper, setSwiper] = useState<SwiperType | null>(null);
+    const [user] = useAuthState(auth);
+    const [surveyHistory, setSurveyHistory] = useState<AnyMap | null>(null);
     const finish = async () => {
         if (loading) return;
         setLoading(true);
@@ -36,9 +39,26 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
         .sort((a, b) => {
             return b.getPriority() - a.getPriority();
         });
-    
-    console.log(screeners);
 
+    useEffect(() => {
+        const keys = checkKeys();
+        get(query(ref(db, `${user.uid}/surveys`), orderByKey(), limitToLast(100))).then(snap => {
+            const val = snap.val();
+            let ret: AnyMap = {};
+            for (let key in val) {  
+                const type = val[key]["key"];
+                if (!(type in ret)) ret[key] = {};
+                if (typeof val[key]["results"] === "string") {
+                    ret[key]["results"] = JSON.parse(decrypt(val[key]["results"], `${keys.visibleKey}${keys.encryptedKeyVisible}`));
+                } else {
+                    ret[type][key] = val[key]["results"];
+                }
+            }
+
+            setSurveyHistory(ret);
+        });
+    }, [user]);
+    
     return (<div className="center-summary container">
             <br />
             <Swiper 
@@ -59,6 +79,10 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                         <div className="title">Results</div>
                         <div className="text-center screener-slide">
                             { screener.getRecommendation() }
+                            <p style={{"fontSize": "9px"}}>
+                                If you want to discuss these results with a 
+                                professional, show them this: { screener.getClinicalInformation() }
+                            </p>
                         </div>
                     </SwiperSlide>
                 }) }

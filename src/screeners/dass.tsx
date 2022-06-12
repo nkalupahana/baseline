@@ -173,7 +173,7 @@ export default function DASS(): Screener {
             </>;
         },
         getClinicalInformation: function() {
-            return `DASS-21 raw scores: d=${this._results.d}, a=${this._results.a}, s=${this._results.s}. Raw scores for each question are not scaled (0 - 3). Standard cutoffs used.`;
+            return `DASS-21 (doi: 10.1348/014466505X29657) raw scores: d=${this._results.d}, a=${this._results.a}, s=${this._results.s}. Raw scores for each question are not scaled (0 - 3). Standard cutoffs used.`;
         },
         getPriority: function() {
             return getProblemFlag(this._results) ? Priority.HIGH : Priority.LOW;
