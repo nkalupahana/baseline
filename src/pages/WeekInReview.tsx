@@ -63,15 +63,13 @@ const WeekInReview = () => {
 
     // Basic token check (mainly to ensure the user doesn't accidentally 
     // end up here again via browser history) 
-    /*
-    useEffect(() => {
+    /*useEffect(() => {
         if (!localStorage.getItem("wirtoken")) {
             history.replace("/summary");
         } else {
             localStorage.removeItem("wirtoken");
         }
-    }, []);
-    */
+    }, []);*/
 
     return <>
         { stage === Stage.Initial && <WeekInReviewInitial incrementStage={() => {

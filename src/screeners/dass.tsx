@@ -1,4 +1,4 @@
-import history from "../history";
+import { DateTime } from "luxon";
 import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {
@@ -168,7 +168,7 @@ export default function DASS(): Screener {
                 { problemFlag && <p>We understand your results today might be distressing or scary. If you can, take a minute to consider 
                     why your results are the way they are. Is there anything you can do to help move them in a better direction? 
                     If your results have been consistently severe over time, we recommend reaching out to others for 
-                    support. <span onClick={() => history.push("/gethelp")} className="fake-link">Check out our help resources for more information.</span>
+                    support. Check out the help resources in the main menu.
                 </p> }
             </>;
         },
@@ -177,6 +177,33 @@ export default function DASS(): Screener {
         },
         getPriority: function() {
             return getProblemFlag(this._results) ? Priority.HIGH : Priority.LOW;
+        },
+        processDataForGraph: function(data) {
+            let d = [];
+            for (let key in data) {
+                if (data[key]["key"] !== this._key) continue;
+                d.push({
+                    date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
+                    Depression: data[key]["results"]["d"],
+                    Anxiety: data[key]["results"]["a"],
+                    Stress: data[key]["results"]["s"]
+                });
+            }
+
+            return d;
+        },
+        graphConfig: {
+            yAxisLabel: "Score (lower is better)",
+            lines: [{
+                key: "Depression",
+                color: "#003f5c"
+            }, {
+                key: "Anxiety",
+                color: "#bc5090"
+            }, {
+                key: "Stress",
+                color: "#ffa600"
+            }]
         }
     }
 }

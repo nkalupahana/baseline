@@ -1,5 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
+import EndSpacer from "../components/EndSpacer";
 import Help from "../components/Help";
 import history from "../history";
 
@@ -13,6 +14,7 @@ const GetHelp = () => {
             </div>
             <p className="text-center margin-bottom-0">Take a minute to breathe, and read through this. We're here for you.</p>
             <Help />
+            <EndSpacer />
         </div>
         </div>
     </div>);
