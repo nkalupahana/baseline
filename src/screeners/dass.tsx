@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-import history from "../history";
 import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {

@@ -1,5 +1,4 @@
 import { FIND_HELP, GAP_FUND, TALK_TO_SOMEONE } from "../data";
-import history from "../history";
 import Screener, { Priority } from "./screener";
 
 export default function CAGE_AID(): Screener {
