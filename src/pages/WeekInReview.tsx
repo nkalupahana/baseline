@@ -12,7 +12,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
 import WeekInReviewReview from "../components/Review/WeekInReviewReview";
 import "./WeekInReview.css";
-import history from "../history";
 
 enum Stage {
     Initial,
