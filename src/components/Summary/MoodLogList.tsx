@@ -40,10 +40,9 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
             // If we've moved to the next day, push the day's log and add a locator
             if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
-                if (!reverse) today.reverse();
                 els.push(...today);
-                if ((top && reverse) || !reverse) {
-                    t = getDateFromLog((reverse && top) ? top : log);
+                if (top) {
+                    t = getDateFromLog(top ? top : log);
                     els.push(createLocator(t));
                 }
                 today = [];
@@ -60,42 +59,45 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} />);
         }
     
-        // Add final information based on whether the list should be reversed (different styles)
-        if (!reverse) today.reverse();
+        // Add final information
         els.push(...today);
-        if (reverse && top) {
+        if (top) {
             t = getDateFromLog(top);
             els.push(createLocator(t));
         }
     
-        if (reverse) els.reverse();
-    
-        els.push(
-            <div className="bold text-center" key="end">
-                <p>no more logs</p>
-                <br />
-            </div>
-        );
-    
-        if (reverse) {
-            els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * firstLogs + 250)}px)`}} key="spacer"></div>);
-        } else {
-            els.unshift(<br key="begin" />)
-        }
+        // Reverse for display
+        els.reverse();
 
+        const now = DateTime.now().startOf("day");
+        if (now.day !== first.day || now.month !== first.month || now.year !== first.year) {
+            els.push(createLocator(now));
+            els.push(<div className="text-center" key="end1">
+                <p>Write your first mood log for the day!</p>
+                <br />
+            </div>)
+            firstLogs = 0;
+        } else {
+            els.push(
+                <div className="bold text-center" key="end2">
+                    <p>no more logs</p>
+                    <br />
+                </div>
+            );
+        }
+    
+        els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * firstLogs + 250)}px)`}} key="spacer"></div>);
         setEls(els);
-    }, [logs, reverse, setMenuDisabled, settings.reduceMotion]);
+    }, [logs, setMenuDisabled, settings.reduceMotion]);
     
     // Scroll to last log item on load
     useEffect(() => {
-        if (reverse) {
-            const list = document.getElementById("moodLogList")!;
-            const ps = list.querySelectorAll("p");
-            // Scroll to last locator (skips "no more logs" <p> at the end)
-            if (ps.length < 3) return;
-            list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
-        }
-    }, [reverse, els]);
+        const list = document.getElementById("moodLogList")!;
+        const ps = list.querySelectorAll("p");
+        // Scroll to last locator (skips "no more logs" <p> at the end)
+        if (ps.length < 3) return;
+        list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
+    }, [els]);
 
     // Scroll to position if we get a request
     useEffect(() => {
