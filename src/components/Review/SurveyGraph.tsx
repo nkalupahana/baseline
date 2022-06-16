@@ -22,7 +22,7 @@ const SurveyGraph = ({ data, graphConfig }: Props) => {
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
-                <YAxis width={45}>
+                <YAxis width={45} domain={graphConfig.yDomain}>
                     <Label angle={-90} value={graphConfig.yAxisLabel} position='insideLeft' style={{textAnchor: 'middle'}} dy={"0.4em"} />
                 </YAxis>
                 <Legend />

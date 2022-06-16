@@ -115,7 +115,7 @@ export default function SPF(): Screener {
             yAxisLabel: "Score (lower is better)",
             lines: [{
                 key: "score",
-                color: "#ff636"
+                color: "#ff6361"
             }]
         }
     }

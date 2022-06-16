@@ -19,7 +19,7 @@
 }
 
 .screener-slide {
-    height: calc(100% - 75px);
+    height: calc(100% - 85px);
     overflow-y: scroll;
     scrollbar-width: none;
     margin-top: 12px;

@@ -33,6 +33,7 @@ interface Line {
 
 export interface GraphConfig {
     yAxisLabel: string;
+    yDomain?: [(min: number) => number, (max: number) => number];
     lines: Line[]
 }
 

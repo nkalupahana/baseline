@@ -35,10 +35,8 @@ const PromptWeekInReview = () => {
                 // and we've never done a week in review before,
                 // let's do it!
                 const firstLog = await ldb.logs.orderBy("timestamp").limit(1).first();
-                if (firstLog) {
-                    if (DateTime.now().startOf("day").minus({ days: 5 }).toMillis() > firstLog.timestamp) {
-                        setShow(true);
-                    }
+                if (firstLog && DateTime.now().startOf("day").minus({ days: 5 }).toMillis() > firstLog.timestamp) {
+                    setShow(true);
                 }
             }
         })();
