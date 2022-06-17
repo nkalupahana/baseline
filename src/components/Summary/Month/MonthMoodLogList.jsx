@@ -59,7 +59,7 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
                         if (child.id !== requestedDate.el && child.id !== requestedDate.list.last) {
                             setRequestedDate({
                                 ...requestedDate,
-                                el: child.id,
+                                el: child.id.replace("-bottom", ""),
                                 timeout: getTime(),
                                 list: {
                                     trustRegion: undefined,
@@ -85,7 +85,14 @@ const MonthMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDa
 
     return (
         <>
-            <MoodLogList logs={logs} container={container} setMenuDisabled={setMenuDisabled} reverse={true} requestedDate={requestedDate} />
+            <MoodLogList 
+                logs={logs} 
+                container={container} 
+                setMenuDisabled={setMenuDisabled} 
+                reverse={true} 
+                requestedDate={requestedDate} 
+                aHeight={"100vh - 150px"}
+            />
         </>
     )
 }
