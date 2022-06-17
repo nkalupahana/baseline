@@ -8,20 +8,24 @@ interface Props {
     logs: Log[],
     container: Ref<HTMLDivElement>,
     setMenuDisabled: (disabled: boolean) => void
-    reverse: boolean,
     requestedDate: {
         el: string,
         [key: string]: any
     }
+    aHeight: string
 }
 
 const createLocator = (t: DateTime) => {
     return (<p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${t.month}${t.day}${t.year}`}>
             { t.toFormat("DDDD") }
-        </p>)
+        </p>);
 }
 
-const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate } : Props) => {
+const createEmptyLocator = (t: DateTime) => {
+    return (<p id={`i-locator-${t.toISODate()}-bottom`} className="display-none" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
+}
+
+const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight } : Props) => {
     const [els, setEls] = useState<JSX.Element[]>([]);
     const settings = parseSettings();
 
@@ -40,6 +44,12 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
             // If we've moved to the next day, push the day's log and add a locator
             if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
+                const last = today.shift();
+                if (last) {
+                    if (top) today.unshift(createEmptyLocator(getDateFromLog(top)));
+                    today.unshift(last);
+                }
+
                 els.push(...today);
                 if (top) {
                     t = getDateFromLog(top ? top : log);
@@ -65,6 +75,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
             t = getDateFromLog(top);
             els.push(createLocator(t));
         }
+        els.push(<br key="top-br" />);
     
         // Reverse for display
         els.reverse();
@@ -73,22 +84,15 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
         if (now.day !== first.day || now.month !== first.month || now.year !== first.year) {
             els.push(createLocator(now));
             els.push(<div className="text-center" key="end1">
-                <p>Write your first mood log for the day!</p>
+                <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <br />
             </div>)
             firstLogs = 0;
-        } else {
-            els.push(
-                <div className="bold text-center" key="end2">
-                    <p>no more logs</p>
-                    <br />
-                </div>
-            );
         }
     
-        els.push(<div className="reversed-list-spacer" style={{"height": `calc(100vh - ${(107 * firstLogs + 250)}px)`}} key="spacer"></div>);
+        els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
-    }, [logs, setMenuDisabled, settings.reduceMotion]);
+    }, [logs, setMenuDisabled, settings.reduceMotion, aHeight]);
     
     // Scroll to last log item on load
     useEffect(() => {
@@ -96,7 +100,14 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
         const ps = list.querySelectorAll("p");
         // Scroll to last locator (skips "no more logs" <p> at the end)
         if (ps.length < 3) return;
-        list.scrollTop = ps[ps.length - 2].offsetTop - list.offsetTop - LOCATOR_OFFSET;
+        let i = ps.length - 2;
+        while (i > 0) {
+            if (ps[i].id.includes("locator") && !ps[i].id.includes("bottom")) {
+                list.scrollTop = ps[i].offsetTop - list.offsetTop - LOCATOR_OFFSET;
+                return;
+            }
+            --i;
+        }
     }, [els]);
 
     // Scroll to position if we get a request
@@ -111,7 +122,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, reverse, requestedDate 
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
                     behavior: settings.reduceMotion ? "auto" : "smooth"
-                })
+                });
             }
         }
     }, [requestedDate, settings.reduceMotion]);

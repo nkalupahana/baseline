@@ -26,9 +26,9 @@ const MonthSummary = ({ setMenuDisabled, logs } : Props) => {
                 <div className="title">Here's how your month has been looking.</div>
             </div>
             { logs && logs.length > 0 && <>
-                    <MonthCalendar logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}/>
-                    <MonthMoodLogList logs={logs} setMenuDisabled={setMenuDisabled} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
-                </> }
+                <MonthCalendar logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}/>
+                <MonthMoodLogList logs={logs} setMenuDisabled={setMenuDisabled} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
+            </> }
         </div>
     );
 };
