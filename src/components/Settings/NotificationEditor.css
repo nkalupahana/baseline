@@ -18,10 +18,6 @@
     font-style: italic;
 }
 
-.margin-bottom-0 {
-    margin-bottom: 0;
-}
-
 .weekday-selectors {
     display: flex;
     justify-content: space-evenly;
