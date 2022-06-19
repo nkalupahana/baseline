@@ -65,6 +65,7 @@ const Summary = () => {
             if (trueLastUpdated && lastLog) {
                 lastUpdated = lastLog.timestamp;
                 if (lastUpdated === trueLastUpdated) {
+                    window.location.hash = "";
                     console.log("Up to date!");
                     setGettingData(false);
                     return;
@@ -72,6 +73,7 @@ const Summary = () => {
             }
 
             console.log("Updating...");
+            window.location.hash = "#update";
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
 
             if (newData) {
@@ -79,6 +81,7 @@ const Summary = () => {
                 const keys = checkKeys();
                 if (keys === "discreet") {
                     setGettingData(false);
+                    window.location.hash = "";
                     return;
                 }
 
@@ -103,6 +106,7 @@ const Summary = () => {
                 await ldb.logs.bulkAdd(Object.values(newData));
             }
             setGettingData(false);
+            window.location.hash = "";
         };
         const lastUpdatedRef = ref(db, `/${auth.currentUser.uid}/lastUpdated`);
         onValue(lastUpdatedRef, listener);

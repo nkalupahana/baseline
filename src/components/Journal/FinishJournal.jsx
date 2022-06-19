@@ -27,7 +27,7 @@ const FinishJournal = props => {
 
     useEffect(() => {
         if (submitted && !history.location.pathname.includes("/neg")) {
-            history.push("/summary?update");
+            history.push("/summary#update");
         }
     }, [submitted]);
 

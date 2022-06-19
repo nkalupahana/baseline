@@ -1,3 +1,4 @@
+import { IonSpinner } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Ref, useEffect, useState } from "react";
 import { Log } from "../../db";
@@ -27,7 +28,19 @@ const createEmptyLocator = (t: DateTime) => {
 
 const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight } : Props) => {
     const [els, setEls] = useState<JSX.Element[]>([]);
+    const [updating, setUpdating] = useState(window.location.hash === "#update");
     const settings = parseSettings();
+
+    useEffect(() => {
+        const listener = () => {
+            setUpdating(window.location.hash === "#update");
+        };
+        window.addEventListener("hashchange", listener);
+
+        return () => {
+            window.removeEventListener("hashchange", listener);
+        };
+    }, []);
 
     useEffect(() => {
         let els = [];
@@ -90,17 +103,18 @@ const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight 
             firstLogs = 0;
         }
     
+        els.push(<div className="text-center">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
-    }, [logs, setMenuDisabled, settings.reduceMotion, aHeight]);
+    }, [logs, setMenuDisabled, settings.reduceMotion, aHeight, updating]);
     
     // Scroll to last log item on load
     useEffect(() => {
         const list = document.getElementById("moodLogList")!;
         const ps = list.querySelectorAll("p");
-        // Scroll to last locator (skips "no more logs" <p> at the end)
-        if (ps.length < 3) return;
-        let i = ps.length - 2;
+        // Scroll to last locator 
+        if (ps.length < 2) return;
+        let i = ps.length - 1;
         while (i > 0) {
             if (ps[i].id.includes("locator") && !ps[i].id.includes("bottom")) {
                 list.scrollTop = ps[i].offsetTop - list.offsetTop - LOCATOR_OFFSET;
