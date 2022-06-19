@@ -7,7 +7,6 @@ export default defineConfig({
     },
     baseUrl: "http://localhost:8100",
   },
-
   component: {
     setupNodeEvents(on, config) {
       return require("./cypress/plugins/index.js")(on, config);

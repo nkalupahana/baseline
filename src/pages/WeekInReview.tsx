@@ -12,6 +12,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Screener from "../screeners/screener";
 import WeekInReviewReview from "../components/Review/WeekInReviewReview";
 import "./WeekInReview.css";
+import history from "../history";
 
 enum Stage {
     Initial,
@@ -63,13 +64,13 @@ const WeekInReview = () => {
 
     // Basic token check (mainly to ensure the user doesn't accidentally 
     // end up here again via browser history) 
-    /*useEffect(() => {
+    useEffect(() => {
         if (!localStorage.getItem("wirtoken")) {
             history.replace("/summary");
         } else {
             localStorage.removeItem("wirtoken");
         }
-    }, []);*/
+    }, []);
 
     return <>
         { stage === Stage.Initial && <WeekInReviewInitial incrementStage={() => {

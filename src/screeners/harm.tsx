@@ -1,4 +1,4 @@
-import { FIND_HELP, GAP_FUND, GAP_FUND_LINK, HOTLINES, TALK_TO_SOMEONE } from "../data";
+import { FIND_HELP, GAP_FUND, GAP_FUND_LINK, GAP_FUND_REFER, HOTLINES, TALK_TO_SOMEONE } from "../data";
 import Screener, { Priority } from "./screener";
 
 interface HARMScreener extends Screener {
@@ -63,21 +63,21 @@ export default function HARM(): HARMScreener {
         getRecommendation: function() {
             const GAP_FUND_ALL = <p>
                 We understand that getting this type of help might also be cost-prohibitive. 
-                The baseline Gap Fund is here to help. { GAP_FUND }
+                The baseline Gap Fund is here to help. { GAP_FUND } { GAP_FUND_REFER }
             </p>
             if (this._results[0] === 1 && this._results[1] === 0 && this._results[2] === 0) {
                 return <>
                     <p>
                         About your last survey: it sounds like you've been struggling with self-harm. No matter 
-                        what you've been struggling with, we're here for you.
+                        what you've been going through, we're here for you.
                     </p>
                     <p>
-                        First of all, try to talk to someone about what you're going through. { TALK_TO_SOMEONE }
+                        First of all, it's important that you try to talk to someone about what you're going through. { TALK_TO_SOMEONE }
                     </p>
                     <p>
                         More importantly, though, self-harm is often just the first step in a serious mental health
-                        crisis. It is <b>crucial</b> that you seek professional help. 
-                        <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">Search for treatment providers here!</a> { FIND_HELP }
+                        crisis. It is <b>crucial</b> that you seek professional help. <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">Search for 
+                        treatment providers here!</a> { FIND_HELP }
                     </p>
                     { GAP_FUND_ALL }
                 </>;
@@ -87,14 +87,14 @@ export default function HARM(): HARMScreener {
                 return <>
                     <p>
                         About your last survey: it sounds like you've been struggling with a lot lately, including 
-                        suicidal ideation. No matter what you've been struggling with, we're here for you.
+                        suicidal ideation. No matter what you've been going through, we're here for you.
                     </p>
                     <p>
-                        First of all, try to talk to someone about what you're going through. { TALK_TO_SOMEONE }
+                        First of all, it's important that you try to talk to someone about what you're going through. { TALK_TO_SOMEONE }
                     </p>
                     <p>
-                        More importantly, though, it's <b>crucial</b> that you seek professional help. Here are some people 
-                        you can talk to right now:
+                        More importantly, though, it's <b>crucial</b> that you seek professional help. Here are some organizations 
+                        with real people you can talk to right now:
                     </p>
                     { HOTLINES }
                     <p>
@@ -129,7 +129,7 @@ export default function HARM(): HARMScreener {
             return <p>This should never appear.</p>
         },
         getClinicalInformation: function() {
-            return `Self-Harm ${this._results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this._results[1] ? "present" : "not present"}, ${this._results[2] ? "acute" : "non-acute"}. Screened with NIMH asQ (questions 1-3, question 5 for acuity).`;
+            return `Self-harm ${this._results[0] ? "present" : "not present"}. Screened with single question (doi: 10.1111/j.1467-9450.2007.00567.x). Suicidal ideation ${this._results[1] ? "present" : "not present"}, ${this._results[2] ? "acute" : "non-acute"}. Screened with NIMH asQ (questions 1-3, question 5 for acuity).`;
         },
         getPriority: function() {
             if (this._results[0] === 1 && this._results[1] === 0 && this._results[2] === 0) {

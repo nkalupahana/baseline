@@ -23,7 +23,7 @@ const createLocator = (t: DateTime) => {
 }
 
 const createEmptyLocator = (t: DateTime) => {
-    return (<p id={`i-locator-${t.toISODate()}-bottom`} className="display-none" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
+    return (<p id={`i-locator-${t.toISODate()}-bottom`} className="margin-0" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
 }
 
 const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight } : Props) => {
@@ -65,7 +65,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight 
 
                 els.push(...today);
                 if (top) {
-                    t = getDateFromLog(top ? top : log);
+                    t = getDateFromLog(top);
                     els.push(createLocator(t));
                 }
                 today = [];
@@ -103,7 +103,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight 
             firstLogs = 0;
         }
     
-        els.push(<div className="text-center">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
+        els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
     }, [logs, setMenuDisabled, settings.reduceMotion, aHeight, updating]);

@@ -2,6 +2,7 @@ import { Log } from "../../../db";
 import WeekMoodLogList from "./WeekMoodLogList";
 import WeekMoodGraph from "./WeekMoodGraph";
 import { useState } from "react";
+import { DateTime } from "luxon";
 
 interface Props {
     setMenuDisabled: (disabled: boolean) => void;
@@ -14,11 +15,11 @@ const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
         timeout: undefined,
         list: {
             trustRegion: undefined,
-            last: undefined
+            last: `i-locator-${DateTime.now().toISODate()}`
         },
         graph: {
             trustRegion: undefined,
-            last: undefined
+            last: `g-locator-${DateTime.now().toISODate()}`
         }
     });
 
