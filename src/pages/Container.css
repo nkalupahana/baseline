@@ -51,9 +51,14 @@
 .title {
     font-size: 2em;
     text-align: center;
+    font-weight: bold;
 }
 
 .fake-link {
     color: var(--ion-color-primary, #3880ff);
     cursor: pointer;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0;
 }

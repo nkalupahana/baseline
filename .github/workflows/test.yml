@@ -25,10 +25,11 @@ jobs:
       run: |
         PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
         sleep 60
-        npm run test
+        npm run test:e2e
       env:
         HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
-        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+        HAPPO_NONCE: ${{ github.run_id }}
     - name: Upload Test Video
       if: failure()
       uses: actions/upload-artifact@v2
@@ -41,6 +42,19 @@ jobs:
       with:
         name: test-screenshots
         path: cypress/screenshots
+    - name: Component Tests
+      run: |
+        npm run test:component
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
+        HAPPO_NONCE: ${{ github.run_id }}
+    - name: Upload to Happo
+      run: npx happo-e2e finalize
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
+        HAPPO_NONCE: ${{ github.run_id }}
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
