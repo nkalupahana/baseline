@@ -1,4 +1,4 @@
-import { FIND_HELP, GAP_FUND, TALK_TO_SOMEONE } from "../data";
+import { FIND_HELP, GAP_FUND, GAP_FUND_REFER, TALK_TO_SOMEONE } from "../data";
 import Screener, { Priority } from "./screener";
 
 export default function CAGE_AID(): Screener {
@@ -70,16 +70,18 @@ export default function CAGE_AID(): Screener {
                     </p>
                     <p>
                         Alcoholics Anonymous, Narcotics Anonymous, and similar organizations are a big help for lots of people
-                        who are struggling with substance use. Additionally, if you're in the US, we recommend going to 
-                        <a href="https://www.findtreatment.gov/">findtreatment.gov</a> to find specific professional support for 
-                        substance use, or <a href="https://findtreatment.samhsa.gov/">findtreatment.samhsa.gov</a> for both substance 
-                        use and general mental health support. { FIND_HELP }
+                        who are struggling with substance use. You can look online for a chapter near you. 
+                        Additionally, if you're in the US, we recommend going 
+                        to <a href="https://www.findtreatment.gov/" target="_blank" rel="noreferrer">findtreatment.gov</a> 
+                        to get professional support for specific types of substance use, 
+                        or <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">findtreatment.samhsa.gov</a> for 
+                        both substance use and general mental health support. { FIND_HELP }
                     </p>
                     <p>
                         Beyond professional support, though, talking to others (and yourself!) about what you're going through is 
                         super important. { TALK_TO_SOMEONE }
                     </p>
-                    <p>If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND }</p>
+                    <p>If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND } { GAP_FUND_REFER }</p>
                 </>;
             }
         },

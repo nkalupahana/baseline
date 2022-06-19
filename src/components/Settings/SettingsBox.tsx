@@ -18,7 +18,7 @@ const SettingsBox = ({ title, description, attr }: Props) => {
     }, [checked, attr]);
 
     return <div className="settings-box-grid">
-        <p className="bold margin-bottom-0" style={{"gridArea": "title"}}>{ title }</p>
+        <p className="bold margin-bottom-0 margin-top-8" style={{"gridArea": "title"}}>{ title }</p>
         <IonToggle style={{"gridArea": "toggle"}} checked={checked} onIonChange={e => setChecked(e.detail.checked)} />
         <p style={{"gridAutoColumns": "description"}}>{ description }</p>
     </div>

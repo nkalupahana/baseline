@@ -43,8 +43,7 @@ jobs:
         name: test-screenshots
         path: cypress/screenshots
     - name: Component Tests
-      run: |
-        npm run test:component
+      run: npm run test:component
       env:
         HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
         HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}

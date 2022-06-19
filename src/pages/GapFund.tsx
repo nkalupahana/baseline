@@ -56,7 +56,6 @@ const GapFund = () => {
                     setGapFundData(SubmissionState.NO_SUBMISSION);
                 }
             } else {
-                console.log(data);
                 if ("data" in data) {
                     if (!keys) {
                         signOutAndCleanUp();

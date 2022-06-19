@@ -82,10 +82,16 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
             let perDayDates = [];
             let perDayAverages = [];
             const now = DateTime.local();
+            // Aggregate average mood data per day
             while (currentDate < now) {
                 let todaySum = 0;
                 let ctr = 0;
-                while (ptr < logs.length && logs[ptr].day === currentDate.day && logs[ptr].month === currentDate.month && logs[ptr].year === currentDate.year) {
+                while (
+                    ptr < logs.length 
+                    && logs[ptr].day === currentDate.day 
+                    && logs[ptr].month === currentDate.month 
+                    && logs[ptr].year === currentDate.year
+                ) {
                     if (logs[ptr].average === "average") {
                         todaySum += logs[ptr].mood;
                         ++ctr;
@@ -108,14 +114,15 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                 sum += perDayAverages[i];
             }
 
+            // Start average with base 14 days
             let baseline = [];
             baseline.push({
                 date: perDayDates[i - 1],
                 Mood: sum / BASELINE_DAYS
             });
 
+            // Calculate rolling average to end of list
             while (i < perDayAverages.length) {
-                console.log(i);
                 sum -= perDayAverages[i - BASELINE_DAYS];
                 sum += perDayAverages[i];
                 baseline.push({
@@ -125,7 +132,6 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                 ++i;
             }
 
-            console.log(baseline);
             setBaselineGraph(baseline);
         })();
     }, []);
@@ -169,11 +175,11 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                             <p>
                                 Remember how every time you mood log, we ask you whether you're feeling below, at, 
                                 or above average? Well, here's what that's used for &mdash; your baseline. Your baseline 
-                                tracks what you consider to be your "average" mood to be over time, so you can see how 
+                                tracks what you believe your "average" mood is over time, so you can see how 
                                 your standards for your own average change over time. Notice your baseline falling? You 
-                                might want to make a conscious effort to bring more things into your life that typically are 
-                                associated with higher mood scores. If your baseline has fallen significantly, or isn't rebounding, 
-                                you might want to take some time to reflect on what's changed in your life.
+                                might want to make a conscious effort to bring more things into your life that you typically  
+                                associate with higher mood scores. If your baseline has fallen significantly, or isn't rebounding, 
+                                you might want to take some time to reflect on what might've changed in your life that led to that.
                             </p>
                             <p>
                                 Mood logging is a great start to that process &mdash; we recommend that you review your mood logs 

@@ -9,15 +9,16 @@ export const TALK_TO_SOMEONE = <>
 </>;
 
 export const GAP_FUND_LINK = <span className="fake-link" onClick={() => {history.push("/gap")}}>You can apply now by clicking here, or later from the menu on the summary page.</span>;
+export const GAP_FUND_REFER = <>You can apply at any time from the main menu.</>
 
 export const GAP_FUND = <>
     The gap fund exists to help you "fill in the gaps" in your financial situation, and can be used for pretty much anything, 
     including therapy, medication, transportation, basic necessities like food and shelter, and 
-    more. { GAP_FUND_LINK }
+    more.
 </>;
 
 export const FIND_HELP = <>
-    You can also check with your insurance provider to see what providers you're covered for. 
+    You can also check with your insurance provider to see what professionals you're covered for. 
     If you need help finding someone you're covered for, or if you don't have insurance, we're happy to help &mdash; just
     email us at <a href="mailto:findhelp@getbaseline.app" target="_blank" rel="noreferrer">findhelp@getbaseline.app</a>.
 </>;

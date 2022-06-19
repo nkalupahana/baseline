@@ -10,15 +10,15 @@ interface Props {
 const SurveyGraph = ({ data, graphConfig }: Props) => {
     return <ResponsiveContainer width="100%" height={370}>
             <LineChart
-              width={500}
-              height={400}
-              data={data}
-              margin={{
-                top: 5,
-                right: 5,
-                left: 5,
-                bottom: 5,
-              }}
+                width={500}
+                height={400}
+                data={data}
+                margin={{
+                    top: 5,
+                    right: 5,
+                    left: 5,
+                    bottom: 5,
+                }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
