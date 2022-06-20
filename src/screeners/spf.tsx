@@ -106,7 +106,7 @@ export default function SPF(): Screener {
                 if (data[key]["key"] !== this._key) continue;
                 d.push({
                     date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
-                    score: data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"],
+                    Score: data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"],
                 });
             }
 
@@ -115,7 +115,7 @@ export default function SPF(): Screener {
         graphConfig: {
             yAxisLabel: "Score (lower is better)",
             lines: [{
-                key: "score",
+                key: "Score",
                 color: "#ff6361"
             }]
         }
