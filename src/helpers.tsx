@@ -7,9 +7,17 @@ import history from "./history";
 import aesutf8 from "crypto-js/enc-utf8";
 import hash from "crypto-js/sha512";
 import { getIdToken, User } from "firebase/auth";
+import { get, orderByKey, query, ref } from "firebase/database";
+import { db } from "./firebase";
+import { GraphConfig } from "./screeners/screener";
 
 export interface AnyMap {
     [key: string]: any;
+}
+
+export enum BaselineStates {
+    NOT_STARTED,
+    NOT_ENOUGH_DATA
 }
 
 export function getTime() {
@@ -19,6 +27,14 @@ export function getTime() {
 export function getDateFromLog(log: Log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
 }
+
+export const BASELINE_GRAPH_CONFIG: GraphConfig = {
+    yAxisLabel: "baseline (-5 to 5 scale)",
+    lines: [{
+        key: "Mood",
+        color: "#955196"
+    }]
+};
 
 const SECONDS_IN_DAY = 86400;
 // https://materializecss.com/color
@@ -256,4 +272,80 @@ export function decrypt(data: string, key: string, signOut=true) {
     }
 
     return "";
+}
+
+export async function parseSurveyHistory(user: User, setSurveyHistory: (_: AnyMap[]) => void) {
+    if (!user) return;
+    const keys = checkKeys();
+    get(query(ref(db, `${user.uid}/surveys`), orderByKey())).then(snap => {
+        let val = snap.val();
+        for (let key in val) {  
+            if (typeof val[key]["results"] === "string") {
+                val[key]["results"] = JSON.parse(decrypt(val[key]["results"], `${keys.visibleKey}${keys.encryptedKeyVisible}`));
+            }
+        }
+
+        setSurveyHistory(val);
+    });
+}
+
+const BASELINE_DAYS = 14;
+export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | BaselineStates) => void) {
+    const logs = await ldb.logs.where("timestamp").above(DateTime.now().minus({ years: 1 }).toMillis()).toArray();
+    let currentDate = getDateFromLog(logs[0]);
+    let ptr = 0;
+    let perDayDates = [];
+    let perDayAverages = [];
+    const now = DateTime.local();
+    // Aggregate average mood data per day
+    while (currentDate < now) {
+        let todaySum = 0;
+        let ctr = 0;
+        while (
+            ptr < logs.length 
+            && logs[ptr].day === currentDate.day 
+            && logs[ptr].month === currentDate.month 
+            && logs[ptr].year === currentDate.year
+        ) {
+            if (logs[ptr].average === "average") {
+                todaySum += logs[ptr].mood;
+                ++ctr;
+            }
+            ++ptr;
+        }
+        perDayAverages.push(ctr === 0 ? 0 : todaySum / ctr);
+        perDayDates.push(currentDate.toFormat("LLL d"))
+        currentDate = currentDate.plus({"days": 1});
+    }
+
+    if (perDayAverages.length <= BASELINE_DAYS) {
+        setBaselineGraph(BaselineStates.NOT_ENOUGH_DATA);
+        return;
+    }
+
+    let sum = 0;
+    let i = 0;
+    for (i = 0; i < BASELINE_DAYS; ++i) {
+        sum += perDayAverages[i];
+    }
+
+    // Start average with base 14 days
+    let baseline = [];
+    baseline.push({
+        date: perDayDates[i - 1],
+        Mood: sum / BASELINE_DAYS
+    });
+
+    // Calculate rolling average to end of list
+    while (i < perDayAverages.length) {
+        sum -= perDayAverages[i - BASELINE_DAYS];
+        sum += perDayAverages[i];
+        baseline.push({
+            date: perDayDates[i],
+            Mood: sum / BASELINE_DAYS
+        });
+        ++i;
+    }
+
+    setBaselineGraph(baseline);
 }

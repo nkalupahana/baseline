@@ -188,7 +188,7 @@ const Summary = () => {
                             <IonIcon icon={cashOutline} slot="start" />
                             <IonLabel>Gap Fund</IonLabel>
                         </IonItem>
-                        <IonItem>
+                        <IonItem onClick={() => history.push("/surveys")}>
                             <IonIcon icon={analytics} slot="start" />
                             <IonLabel>Surveys</IonLabel>
                         </IonItem>

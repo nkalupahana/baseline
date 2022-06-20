@@ -44,6 +44,7 @@ import Unlock from "./pages/Unlock";
 import RSummary from "./pages/RSummary";
 import GetHelp from "./pages/GetHelp";
 import WeekInReview from "./pages/WeekInReview";
+import SurveyResults from "./pages/SurveyResults";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -77,6 +78,7 @@ const App = () => {
                     <Route path="/settings" component={Settings} />
                     <Route path="/gethelp" component={GetHelp} />
                     <Route path="/rsummary" component={RSummary} />
+                    <Route path="/surveys" component={SurveyResults} />
                     <Redirect to="/journal" />
                 </Switch>
             </IonReactRouter> }
