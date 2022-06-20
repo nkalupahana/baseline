@@ -24,7 +24,6 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
             <label data-value={props.text} className="input-sizer stacked">
                 <textarea ref={textarea} className="tx" value={props.text} onInput={e => props.setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
             </label>
-            <br />
             { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
             <br />
         </div>
