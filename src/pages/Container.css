@@ -54,6 +54,10 @@
     font-weight: bold;
 }
 
+.title > span {
+    display: inline-block;
+}
+
 .fake-link {
     color: var(--ion-color-primary, #3880ff);
     cursor: pointer;
