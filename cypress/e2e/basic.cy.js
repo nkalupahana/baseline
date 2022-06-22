@@ -477,4 +477,13 @@ describe("Test Settings", () => {
         cy.url().should("include", "/summary")
         cy.contains("Test 0")
     })
+
+    it("Test Survey Results", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Surveys").should("exist").click()
+        cy.contains("have enough data").should("exist")
+        cy.get(".recharts-responsive-container").should("have.length", 2)
+        cy.get(".top-corner").click()
+        cy.url().should("include", "/summary")
+    })
 })
