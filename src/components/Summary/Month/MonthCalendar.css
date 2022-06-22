@@ -12,6 +12,7 @@
 
 .calendar-date-strip > span {
     text-align: center;
+    white-space: nowrap;
     width: calc(100% / 7);
 }
 

@@ -5,7 +5,7 @@
 }
 
 .graph-card-date {
-    width: 12.5vw;
+    width: min(12.5vw, 75px);
     font-size: 0.8em;
     text-align: center;
 }

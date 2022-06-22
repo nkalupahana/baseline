@@ -143,8 +143,8 @@ const Summary = () => {
             <div id="mainContent">
                 <Media
                     queries={{
-                        week: "(max-width: 850px)",
-                        month: "(min-width: 851px)",
+                        week: "(max-width: 900px)",
+                        month: "(min-width: 901px)",
                     }}
                 >
                     {matches => (

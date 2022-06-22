@@ -78,6 +78,7 @@
     position: relative;
     width: 90%;
     margin: 0 auto;
+    max-width: 600px;
 }
 
 .month-summary-grid {
