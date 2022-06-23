@@ -33,7 +33,7 @@ const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
     return (
         <div className="week-summary-grid" style={(logs && logs.length > 0) ? {} : {"height": "100%"}}>
             <div style={{ gridArea: "heading" }} className="center-summary">
-                <div className="title"><span>Here's how your week has</span> <span>been looking.</span></div>
+                <div className="title"><span>Here's how your week</span> <span>has been looking.</span></div>
             </div>
             { logs && logs.length > 0 && <>
                 <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph>
