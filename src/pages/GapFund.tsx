@@ -1,5 +1,5 @@
 import { DataSnapshot, off, ref } from "@firebase/database";
-import { IonIcon, IonInput, IonItem, IonLabel, IonSpinner } from "@ionic/react";
+import { IonIcon, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
 import { DateTime } from "luxon";
@@ -135,11 +135,11 @@ const GapFund = () => {
                     <div style={{"width": "90%"}}>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Email</IonLabel>
-                            <IonInput id="email" value={email} inputMode="email" onIonChange={e => setEmail(e.detail.value!)}></IonInput>
+                            <input id="email" autoComplete="email" className="invisible-input" value={email} type="email" onChange={e => setEmail(e.target.value)} />
                         </IonItem>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Confirm Email</IonLabel>
-                            <IonInput id="confirmEmail" value={confirmEmail} inputMode="email" onIonChange={e => setConfirmEmail(e.detail.value!)}></IonInput>
+                            <input id="confirmEmail" autoComplete="email" className="invisible-input" value={confirmEmail} type="email" onChange={e => setConfirmEmail(e.target.value)} />
                         </IonItem>
                         <p>Make sure you get this right -- we'll be sending more information here. If your email is monitored by people
                             you don't want seeing this request, make a burner email, or list a safer contact method above.

@@ -298,27 +298,27 @@ describe("Desktop Flow", () => {
         cy.contains("Submit").click()
         cy.contains("complete all fields").should("exist")
 
-        cy.get("#email").should("be.enabled").type("hello@email.com")
+        cy.get("#email").should("be.enabled").type("hello@email.com",  { force: true })
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 2)
 
-        cy.get("#need").should("be.enabled").type("need")
+        cy.get("#need").should("be.enabled").type("need",  { force: true })
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 3)
 
-        cy.get("#amount").should("be.enabled").type("amount")
+        cy.get("#amount").should("be.enabled").type("amount",  { force: true })
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 4)
 
-        cy.get("#method").should("be.enabled").type("  ")
+        cy.get("#method").should("be.enabled").type("  ",  { force: true })
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 5)
 
-        cy.get("#method").should("be.enabled").clear().type("method")
+        cy.get("#method").should("be.enabled").clear({ force: true }).type("method",  { force: true })
         cy.contains("Submit").click()
         cy.contains("match").should("exist")
 
-        cy.get("#confirmEmail").should("be.enabled").type("hello@email.com")
+        cy.get("#confirmEmail").should("be.enabled").type("hello@email.com",  { force: true })
         cy.contains("Submit").click()
         cy.contains("went wrong").should("exist")
     })
@@ -360,12 +360,12 @@ describe("Test Settings", () => {
         cy.get(".finish-button").click()
         cy.contains("long").should("exist")
 
-        cy.get("input[type=password]").eq(0).should("be.enabled").type("password")
-        cy.get("input[type=password]").eq(1).should("be.enabled").type("password1")
+        cy.get("input[type=password]").eq(0).should("be.enabled").type("password", { force: true })
+        cy.get("input[type=password]").eq(1).should("be.enabled").type("password1",  { force: true })
         cy.get(".finish-button").click()
         cy.contains("match").should("exist")
 
-        cy.get("input[type=password]").eq(1).should("be.enabled").clear().type("password")
+        cy.get("input[type=password]").eq(1).should("be.enabled").clear({ force: true }).type("password",  { force: true })
         cy.get(".finish-button").click()
         cy.get(".loader").should("exist")
         cy.get(".passphrase-box").should("not.exist")
@@ -406,20 +406,20 @@ describe("Test Settings", () => {
         cy.get(".finish-button").click()
         cy.contains("long").should("exist")
 
-        cy.get("input[type=password]").eq(0).should("be.enabled").type("password1")
+        cy.get("input[type=password]").eq(0).should("be.enabled").type("password1",  { force: true })
         cy.get(".finish-button").click()
         cy.get(".toastify").should("have.length", 2)
 
-        cy.get("input[type=password]").eq(1).should("be.enabled").type("password1")
+        cy.get("input[type=password]").eq(1).should("be.enabled").type("password1",  { force: true })
         cy.get(".finish-button").click()
         cy.get(".toastify").should("have.length", 3)
 
-        cy.get("input[type=password]").eq(2).should("be.enabled").type("password1")
+        cy.get("input[type=password]").eq(2).should("be.enabled").type("password1",  { force: true })
         cy.get(".finish-button").click()
         cy.get(".toastify").should("have.length", 4)
         cy.contains("incorrect")
 
-        cy.get("input[type=password]").eq(0).should("be.enabled").clear().type("password")
+        cy.get("input[type=password]").eq(0).should("be.enabled").clear({ force: true }).type("password",  { force: true })
         cy.get(".finish-button").click()
         cy.get(".passphrase-box").should("not.exist")
         cy.contains("Change Passphrase").should("exist")
@@ -459,7 +459,7 @@ describe("Test Settings", () => {
         cy.get("ion-menu").should("not.exist")
 
         cy.url().should("include", "/unlock")
-        cy.get("input[type=password]").type("password1")
+        cy.get("input[type=password]").type("password1",  { force: true })
         cy.get(".finish-button").click()
         
         cy.url().should("include", "/summary")
@@ -474,11 +474,11 @@ describe("Test Settings", () => {
         cy.contains("Remove").click()
         cy.get(".finish-button").click()
         cy.contains("long").should("exist")
-        cy.get("input[type=password]").should("be.enabled").type("password")
+        cy.get("input[type=password]").should("be.enabled").type("password",  { force: true })
         cy.get(".finish-button").click()
 
         cy.contains("incorrect").should("exist")
-        cy.get("input[type=password]").should("be.enabled").clear().type("password1")
+        cy.get("input[type=password]").should("be.enabled").clear({ force: true }).type("password1",  { force: true })
         cy.get(".finish-button").click()
 
         cy.get(".passphrase-box").should("not.exist")
