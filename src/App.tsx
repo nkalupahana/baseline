@@ -16,7 +16,7 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
-import "toastify-js/src/toastify.css"
+import "toastify-js/src/toastify.css";
 
 /* Theme variables */
 import "./theme/variables.css";
@@ -46,14 +46,14 @@ import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
 
 setupIonicReact({
-    mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
+    mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
 });
 
 const App = () => {
     const [user, loading] = useAuthState(auth);
     const [loggingIn, setLoggingIn] = useState(false);
     const keys = checkKeys();
-    
+
     useEffect(() => {
         smoothscroll.polyfill();
         if (!keys) {
@@ -72,34 +72,33 @@ const App = () => {
         { path: "/settings", Component: Settings },
         { path: "/gethelp", Component: GetHelp },
         { path: "/rsummary", Component: RSummary },
-        { path: "/surveys", Component: SurveyResults }
+        { path: "/surveys", Component: SurveyResults },
     ];
 
     return (
         <>
             { loading && !keys && <Preloader /> }
             { !loading && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
-            { ((!loading && user && !loggingIn) || (loading && keys)) && <Router history={history}>
-                { routes.map(({ path, Component }) => {
-                    return <Route key={path} path={path}>
-                    {({ match }) => (
-                      <CSSTransition
-                        in={match != null}
-                        timeout={300}
-                        classNames="page"
-                        unmountOnExit
-                      >
-                        <div className="page">
-                          <Component />
-                        </div>
-                      </CSSTransition>
-                    )}
-                  </Route>
-                }) }
-                <Route exact path="/">
-                  <Redirect to="/journal" />
-                </Route>
-            </Router> }
+            { ((!loading && user && !loggingIn) || (loading && keys)) && (
+                <Router history={history}>
+                    {routes.map(({ path, Component }) => {
+                        return (
+                            <Route key={path} path={path}>
+                                {({ match }) => (
+                                    <CSSTransition in={match != null} timeout={300} classNames="page" unmountOnExit>
+                                        <div className="page">
+                                            <Component />
+                                        </div>
+                                    </CSSTransition>
+                                )}
+                            </Route>
+                        );
+                    })}
+                    <Route exact path="/">
+                        <Redirect to="/journal" />
+                    </Route>
+                </Router>
+            ) }
         </>
     );
 };
