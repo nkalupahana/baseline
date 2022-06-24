@@ -1,5 +1,4 @@
 import { IonPage, IonIcon } from "@ionic/react";
-import { Switch } from "react-router";
 import { Route } from "react-router-dom";
 import WriteJournal from "../components/Journal/WriteJournal";
 import FinishJournal from "../components/Journal/FinishJournal";
@@ -28,14 +27,12 @@ const Journal = () => {
         <IonPage>
             <div className="container">
                 <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
-                <Switch>
-                    <Route exact path="/journal">
-                        <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
-                    </Route>
-                    <Route path="/journal/finish">
-                        <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
-                    </Route>
-                </Switch>
+                <Route exact path="/journal">
+                    <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
+                </Route>
+                <Route path="/journal/finish">
+                    <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
+                </Route>
             </div>
         </IonPage>
     );

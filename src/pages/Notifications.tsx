@@ -54,7 +54,7 @@ enum NotificationsAllowed {
     ALLOWED
 }
 
-const Notifications = ({ page=true } : { page: boolean}) => {
+const Notifications = ({ page=true } : { page?: boolean}) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(NotificationsAllowed.NEED_TO_ASK);
     const [notificationData, setNotificationData] = useState({});
     const [globalEditing, setGlobalEditing] = useState(false);

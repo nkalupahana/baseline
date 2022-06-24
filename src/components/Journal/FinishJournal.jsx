@@ -10,7 +10,7 @@ import { Capacitor } from "@capacitor/core";
 import history from "../../history";
 import { attach, trashOutline } from "ionicons/icons";
 import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
-import { Route, Switch } from "react-router";
+import { Route } from "react-router";
 import EndSpacer from "../EndSpacer";
 import Negative5 from "./Negative5";
 import { checkKeys, networkFailure, toast } from "../../helpers";
@@ -129,82 +129,80 @@ const FinishJournal = props => {
 
     return (
         <div className="center-journal">
-            <Switch>
-                <Route exact path="/journal/finish">
-                    <div className="title">
-                        Let's summarize.
-                    </div>
-                    <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
-                    <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
-                    <br />
-                    <span className="bold">
-                        <CircularSlider
-                            width={190}
-                            label="nice find!"
-                            labelFontSize={0}
-                            valueFontSize="4rem"
-                            labelColor="#020856"
-                            knobColor="#020856"
-                            progressColorFrom="#1c88e3"
-                            progressColorTo="#1975e6"
-                            progressSize={20}
-                            trackColor="#eeeeee"
-                            trackSize={20}
-                            min={-5}
-                            max={5}
-                            direction={-1}
-                            dataIndex={props.moodRead + 5}
-                            animateKnob={false}
-                            knobDraggable={!submitting}
-                            verticalOffset="0.2em"
-                            onChange={ v => props.setMoodWrite(v) }
-                        />
-                    </span>
+            <Route exact path="/journal/finish">
+                <div className="title">
+                    Let's summarize.
+                </div>
+                <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
+                <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
+                <br />
+                <span className="bold">
+                    <CircularSlider
+                        width={190}
+                        label="nice find!"
+                        labelFontSize={0}
+                        valueFontSize="4rem"
+                        labelColor="#020856"
+                        knobColor="#020856"
+                        progressColorFrom="#1c88e3"
+                        progressColorTo="#1975e6"
+                        progressSize={20}
+                        trackColor="#eeeeee"
+                        trackSize={20}
+                        min={-5}
+                        max={5}
+                        direction={-1}
+                        dataIndex={props.moodRead + 5}
+                        animateKnob={false}
+                        knobDraggable={!submitting}
+                        verticalOffset="0.2em"
+                        onChange={ v => props.setMoodWrite(v) }
+                    />
+                </span>
 
-                    <br /><br />
+                <br /><br />
 
-                    <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
-                    <div className="container">
-                        <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
-                            <IonSegmentButton value="below">
-                                <IonLabel>Below Average</IonLabel>
-                            </IonSegmentButton>
-                            <IonSegmentButton value="average">
-                                <IonLabel>Average</IonLabel>
-                            </IonSegmentButton>
-                            <IonSegmentButton value="above">
-                                <IonLabel>Above Average</IonLabel>
-                            </IonSegmentButton>
-                        </IonSegment>
+                <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
+                <div className="container">
+                    <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
+                        <IonSegmentButton value="below">
+                            <IonLabel>Below Average</IonLabel>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="average">
+                            <IonLabel>Average</IonLabel>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="above">
+                            <IonLabel>Above Average</IonLabel>
+                        </IonSegmentButton>
+                    </IonSegment>
+                </div>
+                <br /><br />
+                { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
+                { props.files.length < 3 && 
+                    <>
+                        <label htmlFor="files">
+                            <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
+                        </label>
+                        <input disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
+                    </> 
+                }
+                <div style={bottomBarStyle} className="bottom-bar">
+                    <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
+                    <div onClick={submit} className="finish-button">
+                        { !submitting && "Done!" }
+                        { submitting && <IonSpinner className="loader" name="crescent" /> }
                     </div>
-                    <br /><br />
-                    { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
-                    { props.files.length < 3 && 
-                        <>
-                            <label htmlFor="files">
-                                <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
-                            </label>
-                            <input disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
-                        </> 
-                    }
-                    <div style={bottomBarStyle} className="bottom-bar">
-                        <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
-                        <div onClick={submit} className="finish-button">
-                            { !submitting && "Done!" }
-                            { submitting && <IonSpinner className="loader" name="crescent" /> }
-                        </div>
-                    </div>
-                </Route>
-                <Route exact path="/journal/finish/neg">
-                    <div className="container-desktop">
-                        <Negative5 />
-                        { !submitted && props.moodWrite === -5 && <div onClick={submit} className="finish-button">
-                            { !submitting && "Save Mood Log" }
-                            { submitting && <IonSpinner className="loader" name="crescent" /> }
-                        </div> }
-                    </div>
-                </Route>
-            </Switch>
+                </div>
+            </Route>
+            <Route exact path="/journal/finish/neg">
+                <div className="container-desktop">
+                    <Negative5 />
+                    { !submitted && props.moodWrite === -5 && <div onClick={submit} className="finish-button">
+                        { !submitting && "Save Mood Log" }
+                        { submitting && <IonSpinner className="loader" name="crescent" /> }
+                    </div> }
+                </div>
+            </Route>
             <EndSpacer />
         </div>
     );

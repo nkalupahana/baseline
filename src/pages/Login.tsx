@@ -58,10 +58,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     const resetFlow = () => {
         flow = Math.random();
-        signOutAndCleanUp();
         setLoggingIn(false);
         setLoginState(LoginStates.START);
         setPassphrase("");
+        signOutAndCleanUp();
     }
 
     const loginFlow = async (signInFunc: (flowVal: number) => Promise<AuthCredential | null | undefined>) => {
