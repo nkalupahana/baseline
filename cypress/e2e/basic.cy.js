@@ -41,7 +41,7 @@ describe("Mobile Flow", () => {
     })
 
     it("Check Mobile Summary Page", () => {
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.contains("week").should("exist")
         cy.contains("first mood log").should("exist")
         cy.get(".mood-card").should("not.exist")
@@ -73,6 +73,7 @@ describe("Mobile Flow", () => {
         cy.get(".loader").should("exist")
         cy.get("body").happoScreenshot()
         cy.url().should("include", "/summary")
+        cy.get("textarea").should("not.exist")
     })
 
     it("Verify Mood Log on Summary", () => {
@@ -83,7 +84,7 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 5; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.get("textarea").should("exist").focus().type(`Test ${i}`).should("have.value", `Test ${i}`)
+            cy.get("textarea").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
             cy.contains("Done!").should("exist").click({ force: true })
             cy.url().should("include", "/summary")
@@ -126,10 +127,10 @@ describe("Mobile Flow", () => {
         cy.contains("Gap Fund").should("exist")
 
         // Back to summary
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/neg")
         cy.contains("crisis").should("exist")
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
         cy.contains("week").should("exist")
     })
@@ -185,25 +186,28 @@ describe("Desktop Flow", () => {
         cy.contains("Notifications").should("exist")
         cy.get("ion-menu").happoScreenshot()
         cy.contains("Notifications").click()
+        cy.get("ion-menu").should("not.exist")
         cy.url().should("include", "notifications")
         cy.contains("not supported").should("exist")
         cy.get("body").happoScreenshot()
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "summary")
     })
 
     it("Verify Get Help Page", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Get Help").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.contains("Hi there").should("exist")
         cy.get("body").happoScreenshot()
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "summary")
     })
 
     it("Verify Non-Eligible Gap Fund Page", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Gap Fund").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.url().should("include", "gap")
         cy.contains("eligible").should("exist")
         cy.get("body").happoScreenshot()
@@ -211,11 +215,11 @@ describe("Desktop Flow", () => {
         cy.contains("donate").should("exist").click()
         cy.url().should("include", "donate")
         cy.get("body").happoScreenshot()
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "gap")
         cy.contains("eligible").should("exist")
 
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "summary")
     })
 
@@ -240,7 +244,7 @@ describe("Desktop Flow", () => {
 
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.contains("Week In Review").should("exist")
         cy.get(".prompt-prompt").happoScreenshot()
     })
@@ -250,7 +254,7 @@ describe("Desktop Flow", () => {
         cy.contains("Week In Review").should("not.exist")
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.contains("Week In Review").should("exist")
         cy.contains("Start").click()
 
@@ -287,33 +291,34 @@ describe("Desktop Flow", () => {
     it("Attempts Gap Fund Request", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Gap Fund").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.url().should("include", "gap")
         cy.contains("Make sure you get this right").should("exist")
 
         cy.contains("Submit").click()
         cy.contains("complete all fields").should("exist")
 
-        cy.get("#email").type("hello@email.com")
+        cy.get("#email").should("be.enabled").type("hello@email.com")
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 2)
 
-        cy.get("#need").type("need")
+        cy.get("#need").should("be.enabled").type("need")
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 3)
 
-        cy.get("#amount").type("amount")
+        cy.get("#amount").should("be.enabled").type("amount")
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 4)
 
-        cy.get("#method").type("  ")
+        cy.get("#method").should("be.enabled").type("  ")
         cy.contains("Submit").click()
         cy.get(".toastify").should("have.length", 5)
 
-        cy.get("#method").clear().type("method")
+        cy.get("#method").should("be.enabled").clear().type("method")
         cy.contains("Submit").click()
         cy.contains("match").should("exist")
 
-        cy.get("#confirmEmail").type("hello@email.com")
+        cy.get("#confirmEmail").should("be.enabled").type("hello@email.com")
         cy.contains("Submit").click()
         cy.contains("went wrong").should("exist")
     })
@@ -328,6 +333,7 @@ describe("Test Settings", () => {
         cy.visit("/summary")
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.contains("Reduce Motion").should("exist")
         cy.get(".settings-box-grid").happoScreenshot()
         cy.get("ion-toggle").should("not.have.class", "toggle-checked")
@@ -335,12 +341,13 @@ describe("Test Settings", () => {
         cy.get("ion-toggle").should("have.class", "toggle-checked")
         cy.get(".settings-box-grid").happoScreenshot()
 
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
         cy.contains("week").should("exist")
 
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.contains("Reduce Motion").should("exist")
         cy.get("ion-toggle").should("have.class", "toggle-checked")
     })
@@ -353,12 +360,12 @@ describe("Test Settings", () => {
         cy.get(".finish-button").click()
         cy.contains("long").should("exist")
 
-        cy.get("input[type=password]").eq(0).type("password")
-        cy.get("input[type=password]").eq(1).type("password1")
+        cy.get("input[type=password]").eq(0).should("be.enabled").type("password")
+        cy.get("input[type=password]").eq(1).should("be.enabled").type("password1")
         cy.get(".finish-button").click()
         cy.contains("match").should("exist")
 
-        cy.get("input[type=password]").eq(1).clear().type("password")
+        cy.get("input[type=password]").eq(1).should("be.enabled").clear().type("password")
         cy.get(".finish-button").click()
         cy.get(".loader").should("exist")
         cy.get(".passphrase-box").should("not.exist")
@@ -367,10 +374,11 @@ describe("Test Settings", () => {
         cy.get("ion-spinner").should("not.exist")
 
         cy.get("ion-radio").eq(0).should("have.class", "radio-checked")
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.get("ion-radio").eq(0).should("have.class", "radio-checked")
         cy.get("ion-radio").eq(1).should("not.have.class", "radio-checked")
     })
@@ -379,11 +387,11 @@ describe("Test Settings", () => {
         cy.reload()
         cy.url().should("include", "/unlock")
         cy.contains("Unlock").should("exist")
-        cy.get("input[type=password]").type("p")
+        cy.get("input[type=password]").should("be.enabled").type("p")
         cy.get(".finish-button").click()
         cy.contains("incorrect").should("exist")
 
-        cy.get("input[type=password]").clear().type("password")
+        cy.get("input[type=password]").should("be.enabled").clear().type("password")
         cy.get(".finish-button").click()
         cy.url().should("include", "/summary")
         cy.contains("Test 0")
@@ -393,24 +401,25 @@ describe("Test Settings", () => {
         cy.url().should("include", "/summary")
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.contains("Change").click()
         cy.get(".finish-button").click()
         cy.contains("long").should("exist")
 
-        cy.get("input[type=password]").eq(0).type("password1")
+        cy.get("input[type=password]").eq(0).should("be.enabled").type("password1")
         cy.get(".finish-button").click()
         cy.get(".toastify").should("have.length", 2)
 
-        cy.get("input[type=password]").eq(1).type("password1")
+        cy.get("input[type=password]").eq(1).should("be.enabled").type("password1")
         cy.get(".finish-button").click()
         cy.get(".toastify").should("have.length", 3)
 
-        cy.get("input[type=password]").eq(2).type("password1")
+        cy.get("input[type=password]").eq(2).should("be.enabled").type("password1")
         cy.get(".finish-button").click()
         cy.get(".toastify").should("have.length", 4)
         cy.contains("incorrect")
 
-        cy.get("input[type=password]").eq(0).clear().type("password")
+        cy.get("input[type=password]").eq(0).should("be.enabled").clear().type("password")
         cy.get(".finish-button").click()
         cy.get(".passphrase-box").should("not.exist")
         cy.contains("Change Passphrase").should("exist")
@@ -430,12 +439,13 @@ describe("Test Settings", () => {
     it("Test Discreet Mode", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.get("ion-radio").eq(1).click().should("have.class", "radio-checked")
         cy.get("ion-radio").eq(0).should("not.have.class", "radio-checked")
         cy.get("ion-spinner").should("not.exist")
 
 
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
         cy.contains("Test 0")
 
@@ -446,6 +456,7 @@ describe("Test Settings", () => {
 
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
 
         cy.url().should("include", "/unlock")
         cy.get("input[type=password]").type("password1")
@@ -458,22 +469,23 @@ describe("Test Settings", () => {
     it("Test Remove Passphrase", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
 
         cy.contains("Remove").click()
         cy.get(".finish-button").click()
         cy.contains("long").should("exist")
-        cy.get("input[type=password]").type("password")
+        cy.get("input[type=password]").should("be.enabled").type("password")
         cy.get(".finish-button").click()
 
         cy.contains("incorrect").should("exist")
-        cy.get("input[type=password]").clear().type("password1")
+        cy.get("input[type=password]").should("be.enabled").clear().type("password1")
         cy.get(".finish-button").click()
 
         cy.get(".passphrase-box").should("not.exist")
         cy.contains("Set a passphrase").should("exist")
         cy.get("ion-spinner").should("not.exist")
 
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
         cy.contains("Test 0")
     })
@@ -481,9 +493,10 @@ describe("Test Settings", () => {
     it("Test Survey Results", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Surveys").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
         cy.contains("have enough data").should("exist")
         cy.get(".recharts-responsive-container").should("have.length", 2)
-        cy.get(".top-corner").click()
+        cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
     })
 })

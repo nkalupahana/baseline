@@ -1,7 +1,5 @@
-import { Redirect, Route } from "react-router-dom";
-import { IonApp, setupIonicReact } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { Switch } from "react-router";
+import { Router, Redirect, Route } from "react-router-dom";
+import { setupIonicReact } from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -45,6 +43,7 @@ import RSummary from "./pages/RSummary";
 import GetHelp from "./pages/GetHelp";
 import WeekInReview from "./pages/WeekInReview";
 import SurveyResults from "./pages/SurveyResults";
+import { CSSTransition } from "react-transition-group";
 
 setupIonicReact({
     mode: (Capacitor.getPlatform() === "android" ? "md" : "ios")
@@ -62,27 +61,46 @@ const App = () => {
         }
     }, [keys]);
 
+    const routes = [
+        { path: "/journal", Component: Journal },
+        { path: "/unlock", Component: Unlock },
+        { path: "/summary", Component: Summary },
+        { path: "/notifications", Component: Notifications },
+        { path: "/gap", Component: GapFund },
+        { path: "/donate", Component: Donate },
+        { path: "/review", Component: WeekInReview },
+        { path: "/settings", Component: Settings },
+        { path: "/gethelp", Component: GetHelp },
+        { path: "/rsummary", Component: RSummary },
+        { path: "/surveys", Component: SurveyResults }
+    ];
+
     return (
-        <IonApp>
+        <>
             { loading && !keys && <Preloader /> }
             { !loading && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
-            { ((!loading && user && !loggingIn) || (loading && keys)) && <IonReactRouter history={history}>
-                <Switch>
-                    <Route path="/journal" component={Journal} />
-                    <Route path="/unlock" component={Unlock} />
-                    <Route path="/summary" component={Summary} />
-                    <Route path="/notifications" component={Notifications} />
-                    <Route path="/gap" component={GapFund} />
-                    <Route path="/donate" component={Donate} />
-                    <Route path="/review" component={WeekInReview} />
-                    <Route path="/settings" component={Settings} />
-                    <Route path="/gethelp" component={GetHelp} />
-                    <Route path="/rsummary" component={RSummary} />
-                    <Route path="/surveys" component={SurveyResults} />
-                    <Redirect to="/journal" />
-                </Switch>
-            </IonReactRouter> }
-        </IonApp>
+            { ((!loading && user && !loggingIn) || (loading && keys)) && <Router history={history}>
+                { routes.map(({ path, Component }) => {
+                    return <Route key={path} path={path}>
+                    {({ match }) => (
+                      <CSSTransition
+                        in={match != null}
+                        timeout={300}
+                        classNames="page"
+                        unmountOnExit
+                      >
+                        <div className="page">
+                          <Component />
+                        </div>
+                      </CSSTransition>
+                    )}
+                  </Route>
+                }) }
+                <Route exact path="/">
+                  <Redirect to="/journal" />
+                </Route>
+            </Router> }
+        </>
     );
 };
 

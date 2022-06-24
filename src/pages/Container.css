@@ -1,14 +1,6 @@
 .container {
     width: 65%;
     margin: 0 auto;
-    overflow: scroll;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;
-}
-
-
-.container::-webkit-scrollbar {
-    display: none;
 }
 
 @media only screen and (max-width: 800px) {
@@ -66,3 +58,44 @@
 .margin-bottom-0 {
     margin-bottom: 0;
 }
+
+.page {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    overflow: scroll;
+    height: 100%;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+    display: none;
+}
+
+
+.inner {
+    position: relative; height: auto;
+}
+
+.page-enter {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+.page-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.page-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.page-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+    }
