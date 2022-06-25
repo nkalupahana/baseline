@@ -230,7 +230,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         });
     }
 
-    return <div className="container">
+    return <div className="container inner-scroll">
             <div className="column-flex text-center center-summary">
             { loginState === LoginStates.START && <>
                 <div className="title">Welcome to baseline.</div>
