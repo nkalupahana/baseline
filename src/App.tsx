@@ -56,9 +56,11 @@ const App = () => {
     const keys = checkKeys();
 
     useEffect(() => {
-        Keyboard.setResizeMode({
-            mode: KeyboardResize.None
-        });
+        if (Capacitor.getPlatform() === "ios") {
+            Keyboard.setResizeMode({
+                mode: KeyboardResize.None
+            });
+        }
         
         smoothscroll.polyfill();
         if (!keys) {

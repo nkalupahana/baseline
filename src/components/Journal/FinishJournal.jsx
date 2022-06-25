@@ -13,17 +13,11 @@ import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
 import { checkKeys, networkFailure, toast } from "../../helpers";
-import EndSpacer from "../EndSpacer";
 
 const FinishJournal = props => {
     const [user, loading] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const BOTTOM_BAR_HEIGHT = 148;
-    const [bottomBarStyle, setBottomBarStyle] = useState({
-        height: BOTTOM_BAR_HEIGHT + "px",
-        bottom: "0px"
-    });
 
     useEffect(() => {
         if (submitted && !history.location.pathname.includes("/neg")) {
@@ -84,22 +78,6 @@ const FinishJournal = props => {
         }
     };
 
-    useEffect(() => {
-        if (Capacitor.getPlatform() === 'ios') {
-            setBottomBarStyle({
-                height: BOTTOM_BAR_HEIGHT + "px",
-                top: window.screen.height - BOTTOM_BAR_HEIGHT + "px"
-            });
-    
-            setTimeout(() => {
-                setBottomBarStyle({
-                    height: BOTTOM_BAR_HEIGHT + "px",
-                    bottom: "0px"
-                });
-            }, 1000);
-        }
-    }, []);
-
     const fileDesc = file => {
         return file.name + file.lastModified + file.size;
     }
@@ -128,7 +106,7 @@ const FinishJournal = props => {
     }
 
     return (
-        <div style={{"position": "absolute", "overflow": "hidden", "height": "100%"}}>
+        <div className="outer-noscroll">
             <div className="container">
                 <div className="inner-scroll">
                     <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
@@ -191,7 +169,7 @@ const FinishJournal = props => {
                                 </> 
                             }
                             <div style={{"height": "200px"}}></div>
-                            <div style={bottomBarStyle} className="bottom-bar">
+                            <div className="bottom-bar">
                                 <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
                                 <div onClick={submit} className="finish-button">
                                     { !submitting && "Done!" }

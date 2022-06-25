@@ -5,6 +5,7 @@ import { signOutAndCleanUp } from "../../firebase";
 import { Keyboard } from "@capacitor/keyboard";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
+import { Capacitor } from "@capacitor/core";
 
 const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
     const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -22,13 +23,15 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
     }, []);
 
     useEffect(() => {
+        if (Capacitor.getPlatform() !== "ios") return;
+
         const show = info => {
             setKeyboardHeight(info.keyboardHeight + 10);
-        }
+        };
         
         const hide = () => {
             setKeyboardHeight(0);
-        }
+        };
 
         Keyboard.addListener("keyboardDidShow", show);
         Keyboard.addListener("keyboardDidHide", hide);

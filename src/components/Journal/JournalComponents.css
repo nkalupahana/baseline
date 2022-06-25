@@ -154,6 +154,8 @@
     width: 65%;
     background-color: lightgray;
     border-radius: 10px 10px 0 0;
+    height: 148px;
+    bottom: 0px;
 }
 
 @media only screen and (max-width: 800px) {

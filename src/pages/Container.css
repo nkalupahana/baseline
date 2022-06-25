@@ -110,3 +110,10 @@
 .inner-scroll::-webkit-scrollbar {
     display: none;
 }
+
+.outer-noscroll {
+    position: absolute;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
