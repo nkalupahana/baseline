@@ -99,3 +99,14 @@
     transform: scale(0.9);
     transition: opacity 300ms, transform 300ms;
 }
+
+.inner-scroll {
+    overflow: scroll;
+    height: 100vh;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+}
+
+.inner-scroll::-webkit-scrollbar {
+    display: none;
+}
