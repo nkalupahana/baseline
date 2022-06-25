@@ -31,14 +31,14 @@ const SurveyResults = () => {
             <div className="center-journal">
                 <div className="title">Survey Results</div>
                 <br />
-                <p className="bold head2">Your baseline</p>
+                <p className="bold head2 text-center">Your baseline</p>
                 { typeof baselineGraph === "object" && <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} /> }
                 { baselineGraph === BaselineStates.NOT_ENOUGH_DATA && <p>We don't have enough data to calculate your baseline. Check back in later!</p>}
                 <br />
-                <p className="bold head2">Depression, Anxiety, and Stress Levels</p>
+                <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
                 { surveyHistory && <SurveyGraph data={dass.processDataForGraph!(surveyHistory)} graphConfig={dass.graphConfig!} /> }
                 <br />
-                <p className="bold head2">Resilience</p>
+                <p className="bold head2 text-center">Resilience</p>
                 { surveyHistory && <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> }
                 <EndSpacer />
             </div>

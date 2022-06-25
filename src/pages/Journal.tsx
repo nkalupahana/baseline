@@ -24,17 +24,15 @@ const Journal = () => {
     }, []);
 
     return (
-        <IonPage>
-            <div className="container">
-                <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
-                <Route exact path="/journal">
-                    <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
-                </Route>
-                <Route path="/journal/finish">
-                    <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
-                </Route>
-            </div>
-        </IonPage>
+        <div className="container">
+            <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
+            <Route exact path="/journal">
+                <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
+            </Route>
+            <Route path="/journal/finish">
+                <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
+            </Route>
+        </div>
     );
 };
 
