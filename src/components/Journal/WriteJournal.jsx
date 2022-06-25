@@ -1,9 +1,11 @@
 import "./JournalComponents.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import history from "../../history";
 import { signOutAndCleanUp } from "../../firebase";
+import { Keyboard } from "@capacitor/keyboard";
 
 const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
@@ -17,6 +19,24 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
         textarea.current?.focus();
     }, []);
 
+    useEffect(() => {
+        const show = info => {
+            setKeyboardHeight(info.keyboardHeight + 10);
+        }
+        
+        const hide = () => {
+            setKeyboardHeight(0);
+        }
+
+        Keyboard.addListener("keyboardDidShow", show);
+        Keyboard.addListener("keyboardDidHide", hide);
+
+        return () => {
+            Keyboard.removeListener("keyboardDidShow", show);
+            Keyboard.removeListener("keyboardDidHide", hide);
+        };
+    }, []);
+
     return (
         <div className="center-journal">
             <div className="title" onClick={signOutAndCleanUp}>What's happening?</div>
@@ -25,7 +45,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
                 <textarea ref={textarea} className="tx" value={props.text} onInput={e => props.setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
             </label>
             { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
-            <br />
+            <div style={{"height": `${keyboardHeight}px`, width: "100%"}}></div>
         </div>
     );
 };
