@@ -40,7 +40,6 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
     grid-area: logs;
-    z-index: 2;
 }
 
 .mood-log-list::-webkit-scrollbar {
