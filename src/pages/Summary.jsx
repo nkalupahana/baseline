@@ -21,7 +21,7 @@ import { FCM } from "@capacitor-community/fcm";
 
 const Summary = () => {
     const [user] = useAuthState(auth);
-    const [menuDisabled, setMenuDisabled] = useState(false);
+    const [inFullscreen, setInFullscreen] = useState(false);
     const [gettingData, setGettingData] = useState(true);
     const menuRef = useRef();
     const logsQuery = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
@@ -149,15 +149,15 @@ const Summary = () => {
                 >
                     {matches => (
                         <>
-                            { matches.week && <WeekSummary setMenuDisabled={setMenuDisabled} logs={logs} /> }
-                            { matches.month && <MonthSummary setMenuDisabled={setMenuDisabled} logs={logs} /> }
+                            { matches.week && <WeekSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
+                            { matches.month && <MonthSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
                             { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
                             { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
                         </>
                     )}
                 </Media>
             </div>
-            { !menuDisabled && <IonFab vertical="bottom" horizontal="end" slot="fixed" class="journal-fab" id="journal-fab">
+            { !inFullscreen && <IonFab vertical="bottom" horizontal="end" slot="fixed" class="journal-fab" id="journal-fab">
                 <IonFabButton
                     size="small"
                     color="light"
@@ -176,7 +176,7 @@ const Summary = () => {
                     <IonIcon icon={pencil} />
                 </IonFabButton>
             </IonFab> }
-            <IonMenu ref={menuRef} disabled={menuDisabled} side="end" contentId="mainContent" menuId="mainMenu">
+            <IonMenu ref={menuRef} disabled={inFullscreen} side="end" contentId="mainContent" menuId="mainMenu">
                 <IonContent>
                     <IonList className="menu">
                         <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>

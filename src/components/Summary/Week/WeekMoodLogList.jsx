@@ -7,7 +7,7 @@ import MoodLogList from "../MoodLogList";
 
 const TRUST_BOUND = 15;
 
-const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDate }) => {
+const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
     const [showSearch, setShowSearch] = useState(true);
 
     const container = useCallbackRef(useCallback(node => {
@@ -114,7 +114,8 @@ const WeekMoodLogList = ({ logs, setMenuDisabled, requestedDate, setRequestedDat
             <MoodLogList 
                 logs={logs} 
                 container={container} 
-                setMenuDisabled={setMenuDisabled} 
+                inFullscreen={inFullscreen}
+                setInFullscreen={setInFullscreen} 
                 reverse={true} 
                 requestedDate={requestedDate} 
                 aHeight={"100vh - 425px"} 

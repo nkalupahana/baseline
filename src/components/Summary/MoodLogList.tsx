@@ -8,7 +8,8 @@ import MoodLogCard from "./MoodLogCard";
 interface Props {
     logs: Log[],
     container: Ref<HTMLDivElement>,
-    setMenuDisabled: (disabled: boolean) => void
+    inFullscreen: boolean;
+    setInFullscreen: (disabled: boolean) => void
     requestedDate: {
         el: string,
         [key: string]: any
@@ -26,7 +27,7 @@ const createEmptyLocator = (t: DateTime) => {
     return (<p id={`i-locator-${t.toISODate()}-bottom`} className="margin-0" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
 }
 
-const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight } : Props) => {
+const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight } : Props) => {
     const [els, setEls] = useState<JSX.Element[]>([]);
     const [updating, setUpdating] = useState(window.location.hash === "#update");
     const settings = parseSettings();
@@ -79,7 +80,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight 
                 if (!log.time.includes(addZone)) log.time += " " + addZone;
             }
     
-            today.push(<MoodLogCard setMenuDisabled={setMenuDisabled} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} />);
+            today.push(<MoodLogCard setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} />);
         }
     
         // Add final information
@@ -106,7 +107,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight 
         els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
-    }, [logs, setMenuDisabled, settings.reduceMotion, aHeight, updating]);
+    }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating]);
     
     // Scroll to last log item on load
     useEffect(() => {
@@ -142,7 +143,7 @@ const MoodLogList = ({ logs, container, setMenuDisabled, requestedDate, aHeight 
     }, [requestedDate, settings.reduceMotion]);
 
     return (
-        <div ref={container} id="moodLogList" className="mood-log-list">
+        <div ref={container} id="moodLogList" className="mood-log-list" style={inFullscreen ? {} :  {"zIndex": 2}}>
             { els }
         </div>
     );

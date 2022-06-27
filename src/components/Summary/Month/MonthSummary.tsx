@@ -5,11 +5,12 @@ import "./MonthCalendar.css"
 import MonthMoodLogList from "./MonthMoodLogList";
 
 interface Props {
-    setMenuDisabled: (disabled: boolean) => void;
+    inFullscreen: boolean;
+    setInFullscreen: (disabled: boolean) => void;
     logs: Log[];
 }
 
-const MonthSummary = ({ setMenuDisabled, logs } : Props) => {
+const MonthSummary = ({ inFullscreen, setInFullscreen, logs } : Props) => {
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
         timeout: undefined,
@@ -27,7 +28,7 @@ const MonthSummary = ({ setMenuDisabled, logs } : Props) => {
             </div>
             { logs && logs.length > 0 && <>
                 <MonthCalendar logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate}/>
-                <MonthMoodLogList logs={logs} setMenuDisabled={setMenuDisabled} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
+                <MonthMoodLogList logs={logs} inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
             </> }
         </div>
     );
