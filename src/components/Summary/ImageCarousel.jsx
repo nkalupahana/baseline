@@ -8,7 +8,7 @@ import "flickity-fullscreen/fullscreen";
 import useCallbackRef from "../../useCallbackRef";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-const ImageCarousel = ({ files, setMenuDisabled }) => {
+const ImageCarousel = ({ files, setInFullscreen }) => {
     const [accessURLs, setAccessURLs] = useState([]);
     const [, loading] = useAuthState(auth);
 
@@ -27,7 +27,7 @@ const ImageCarousel = ({ files, setMenuDisabled }) => {
     const flkty = useCallbackRef(useCallbackRef(node => {
         if (!node) return;
         const listener = isFullscreen => {
-            setMenuDisabled(isFullscreen);
+            setInFullscreen(isFullscreen);
         }
 
         node.on("fullscreenChange", listener);

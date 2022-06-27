@@ -5,11 +5,12 @@ import { useState } from "react";
 import { DateTime } from "luxon";
 
 interface Props {
-    setMenuDisabled: (disabled: boolean) => void;
+    inFullscreen: boolean;
+    setInFullscreen: (disabled: boolean) => void;
     logs: Log[];
 }
 
-const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
+const WeekSummary = ({ inFullscreen, setInFullscreen, logs } : Props) => {
     const [requestedDate, setRequestedDate] = useState({
         el: undefined,
         timeout: undefined,
@@ -37,7 +38,7 @@ const WeekSummary = ({ setMenuDisabled, logs } : Props) => {
             </div>
             { logs && logs.length > 0 && <>
                 <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph>
-                <WeekMoodLogList setMenuDisabled={setMenuDisabled} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
+                <WeekMoodLogList inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} requestedDate={requestedDate} setRequestedDate={setRequestedDate} />
             </> }
         </div>
     );
