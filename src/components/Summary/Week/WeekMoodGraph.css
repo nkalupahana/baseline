@@ -5,7 +5,7 @@
 }
 
 .graph-card-date {
-    width: min(12.5vw, 75px);
+    width: min(12.5vw, 74px);
     font-size: 0.8em;
     text-align: center;
 }
@@ -36,6 +36,6 @@
 .graph-arrow {
     position: absolute;
     bottom: 10px;
-    right: calc(6.25vw - 10px);
+    right: calc(min(6.25vw, 37px) - 10px);
     grid-area: graph;
 }
