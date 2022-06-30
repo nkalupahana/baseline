@@ -167,7 +167,7 @@ export default function DASS(): Screener {
                 </p>
                 { problemFlag && <p>We understand your results today might be distressing or scary. If you can, take a minute to consider 
                     why your results are the way they are. Is there anything you can do to help move them in a better direction? 
-                    If your results have been consistently severe over time, we recommend reaching out to others for 
+                    And if your results have been consistently severe over time, we recommend reaching out to others for 
                     support. Check out the help resources in the main menu for more detailed guidance.
                 </p> }
             </>;
