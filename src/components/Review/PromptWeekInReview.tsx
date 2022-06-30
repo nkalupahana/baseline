@@ -15,29 +15,31 @@ const PromptWeekInReview = () => {
     useEffect(() => {
         if (!user || typeof checkKeys() !== "object") return;
         (async () => {
-            const lastWeekInReview = (await get(ref(db, `/${user.uid}/lastWeekInReview`))).val();
-            if (lastWeekInReview) {
-                // Go to next Friday (starting from day after last week in review)
-                let last = DateTime.fromMillis(lastWeekInReview).plus({ days: 1 });
-                let change = 1;
-                while (last.weekday !== 5) {
-                    last = last.plus({ days: 1 });
-                    change += 1;
+            const firstLog = await ldb.logs.orderBy("timestamp").limit(1).first();
+            // First, let's make sure the user's been on this app for at least five days. 
+            // Otherwise, this might be a little weird.
+            if (firstLog && DateTime.now().startOf("day").minus({ days: 5 }).toMillis() > firstLog.timestamp) {
+                const lastWeekInReview = (await get(ref(db, `/${user.uid}/lastWeekInReview`))).val();
+                // Datetime we trigger the notification at
+                let triggerDate;
+                if (lastWeekInReview) {
+                    // The next week in review is calculated by taking the last week
+                    // in review, adding six days, and then going to the Friday of that week
+                    // (start of week + 4 to friday) after noon.
+                    triggerDate = DateTime.fromMillis(lastWeekInReview)
+                        .plus({ days: 6 })
+                        .startOf("week").plus({ days: 4 })
+                        .startOf("day").plus({ hours: 12 });
+                } else {
+                    // If our first mood log was over 5 days ago
+                    // and we've never done a week in review before,
+                    // let's trigger it (starting after noon).
+                    triggerDate = DateTime.fromMillis(firstLog.timestamp).startOf("day").plus({ hours: 12 });
                 }
 
-                // If we're past the next Friday at noon, and it's been
-                // at least two days since our last week in review, trigger.
-                if (DateTime.now() > last.startOf("day").plus({ hours: 12 }) && change > 2) {
-                    setShow(true);
-                }
-            } else {
-                // If our first mood log was over 5 days ago
-                // and we've never done a week in review before,
-                // let's do it!
-                const firstLog = await ldb.logs.orderBy("timestamp").limit(1).first();
-                if (firstLog && DateTime.now().startOf("day").minus({ days: 5 }).toMillis() > firstLog.timestamp) {
-                    setShow(true);
-                }
+                // If we're after the trigger date,
+                // it's go time!
+                setShow(triggerDate < DateTime.now());
             }
         })();
     }, [user]);
