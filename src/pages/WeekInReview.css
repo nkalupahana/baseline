@@ -4,6 +4,7 @@
 
 .question {
     font-size: 19px;
+    max-width: 600px;
 }
 
 .screener-button {
@@ -12,6 +13,7 @@
 
 .screener-container {
     height: 100%;
+    max-width: 800px;
 }
 
 .screener-container div:first-of-type {
