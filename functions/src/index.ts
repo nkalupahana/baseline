@@ -574,7 +574,12 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
 
             const respData = await response.json();
             if ("error" in respData || !("properties" in respData)) {
-                res.send(400);
+                const message = respData.error?.message?.toLowerCase();
+                if (message && message.includes("insufficient") && message.includes("scopes")) {
+                    res.send(428);
+                } else {
+                    res.send(400);
+                }
                 return;
             }
 
