@@ -160,6 +160,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 if (flowVal !== flow) return;
                 toast(await keyResponse.text());
                 setLoginState(LoginStates.UNLOCK);
+            } else if (keyResponse?.status === 428) {
+                if (flowVal !== flow) return;
+                toast("Sorry, but we need you to sign in one more time!");
+                resetFlow();
+                return;
             } else {
                 throw new Error(`${keyResponse ? await keyResponse.text() : ""}`);
             }
