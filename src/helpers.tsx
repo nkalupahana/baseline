@@ -15,7 +15,7 @@ export interface AnyMap {
     [key: string]: any;
 }
 
-export enum BaselineStates {
+export enum PullDataStates {
     NOT_STARTED,
     NOT_ENOUGH_DATA
 }
@@ -274,7 +274,7 @@ export function decrypt(data: string, key: string, signOut=true) {
     return "";
 }
 
-export async function parseSurveyHistory(user: User, setSurveyHistory: (_: AnyMap[]) => void) {
+export async function parseSurveyHistory(user: User, setSurveyHistory: (_: (AnyMap[] | PullDataStates)) => void) {
     if (!user) return;
     const keys = checkKeys();
     get(query(ref(db, `${user.uid}/surveys`), orderByKey())).then(snap => {
@@ -285,13 +285,22 @@ export async function parseSurveyHistory(user: User, setSurveyHistory: (_: AnyMa
             }
         }
 
-        setSurveyHistory(val);
+        if (val) {
+            setSurveyHistory(val);
+        } else {
+            setSurveyHistory(PullDataStates.NOT_ENOUGH_DATA);
+        }
     });
 }
 
 const BASELINE_DAYS = 14;
-export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | BaselineStates) => void) {
+export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDataStates) => void) {
     const logs = await ldb.logs.where("timestamp").above(DateTime.now().minus({ years: 1 }).toMillis()).toArray();
+    if (!logs.length) {
+        setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
+        return;
+    }
+
     let currentDate = getDateFromLog(logs[0]);
     let ptr = 0;
     let perDayDates = [];
@@ -319,7 +328,7 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | Baselin
     }
 
     if (perDayAverages.length <= BASELINE_DAYS) {
-        setBaselineGraph(BaselineStates.NOT_ENOUGH_DATA);
+        setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
         return;
     }
 
