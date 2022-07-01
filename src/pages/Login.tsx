@@ -285,9 +285,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
             { loginState === LoginStates.SET_NOTIFICATIONS && <>
-                <Notifications page={false} />
-                <br />
-                <div onClick={() => setLoggingIn(false)} className="finish-button" style={{"backgroundColor": "black"}}>All done!</div>
+                <Notifications page={false} setLoggingIn={setLoggingIn} />
             </> }
         </div>
     </div>;
