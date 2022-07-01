@@ -2,7 +2,7 @@ import { IonIcon, IonSpinner } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
-import { AnyMap, BaselineStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
+import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
 import history from "../../history";
 import Screener, { Priority } from "../../screeners/screener";
 import SwiperType, { Pagination } from "swiper";
@@ -23,8 +23,8 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
     const [loading, setLoading] = useState(false);
     const [swiper, setSwiper] = useState<SwiperType | undefined>(undefined);
     const [user] = useAuthState(auth);
-    const [surveyHistory, setSurveyHistory] = useState<AnyMap | undefined>(undefined);
-    const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | BaselineStates>(BaselineStates.NOT_STARTED);
+    const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
+    const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
 
     const finish = async () => {
         if (loading) return;
@@ -71,7 +71,7 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                     return <SwiperSlide key={screener._key}>
                         <div className="title">Results</div>
                         <div className="text-center screener-slide">
-                            { screener.graphConfig && 
+                            { screener.graphConfig && typeof surveyHistory === "object" && 
                                 screener.processDataForGraph && 
                                 <SurveyGraph data={screener.processDataForGraph(surveyHistory)} graphConfig={screener.graphConfig} /> }
                             { screener.getRecommendation() }

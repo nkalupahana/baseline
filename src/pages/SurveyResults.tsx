@@ -1,19 +1,19 @@
-import { IonIcon } from "@ionic/react";
+import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
 import { auth } from "../firebase";
-import { AnyMap, BaselineStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory } from "../helpers";
+import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory } from "../helpers";
 import history from "../history";
 import DASS from "../screeners/dass";
 import SPF from "../screeners/spf";
 
 const SurveyResults = () => {
     const [user] = useAuthState(auth);
-    const [surveyHistory, setSurveyHistory] = useState<AnyMap | undefined>(undefined);
-    const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | BaselineStates>(BaselineStates.NOT_STARTED);
+    const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
+    const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const dass = DASS();
     const spf = SPF();
 
@@ -33,13 +33,18 @@ const SurveyResults = () => {
                 <br />
                 <p className="bold head2 text-center">Your baseline</p>
                 { typeof baselineGraph === "object" && <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} /> }
-                { baselineGraph === BaselineStates.NOT_ENOUGH_DATA && <p>We don't have enough data to calculate your baseline. Check back in later!</p>}
+                { baselineGraph === PullDataStates.NOT_STARTED && <IonSpinner className="loader" name="crescent" /> }
+                { baselineGraph === PullDataStates.NOT_ENOUGH_DATA && <p className="text-center margin-0">We don't have enough data to calculate your baseline. Check back in later!</p>}
                 <br />
-                <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
-                { surveyHistory && <SurveyGraph data={dass.processDataForGraph!(surveyHistory)} graphConfig={dass.graphConfig!} /> }
-                <br />
-                <p className="bold head2 text-center">Resilience</p>
-                { surveyHistory && <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> }
+                { surveyHistory === PullDataStates.NOT_STARTED && <IonSpinner className="loader" name="crescent" /> }
+                { surveyHistory === PullDataStates.NOT_ENOUGH_DATA && <p className="text-center">As you complete surveys each week, more data will show up here.</p>}
+                { typeof surveyHistory === "object" && <>
+                    <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
+                    <SurveyGraph data={dass.processDataForGraph!(surveyHistory)} graphConfig={dass.graphConfig!} />
+                    <br />
+                    <p className="bold head2 text-center">Resilience</p>
+                    <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> 
+                </> }
                 <EndSpacer />
             </div>
         </div>
