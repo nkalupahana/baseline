@@ -1,11 +1,9 @@
 import "./JournalComponents.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import history from "../../history";
 import { signOutAndCleanUp } from "../../firebase";
-import { Keyboard } from "@capacitor/keyboard";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
-import { Capacitor } from "@capacitor/core";
 import KeyboardSpacer from "../KeyboardSpacer";
 
 const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
