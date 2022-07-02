@@ -2,6 +2,7 @@ import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import EndSpacer from "../components/EndSpacer";
+import KeyboardSpacer from "../components/KeyboardSpacer";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { goBackSafely } from "../helpers";
@@ -36,6 +37,7 @@ const Settings = () => {
                 </p>
             </div>
         </div>
+        <KeyboardSpacer />
         <EndSpacer />
     </div>;
 };

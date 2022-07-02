@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
+import KeyboardSpacer from "../components/KeyboardSpacer";
 import Textarea from "../components/Textarea";
 import ldb from "../db";
 import { auth, db, signOutAndCleanUp } from "../firebase";
@@ -189,6 +190,7 @@ const GapFund = () => {
                     </div>
                 </> }
             </div>
+            <KeyboardSpacer />
             <EndSpacer />
         </div>
     );
