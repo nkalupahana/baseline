@@ -6,8 +6,7 @@ const KeyboardSpacer = () => {
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     useEffect(() => {
-        if (Capacitor.getPlatform() !== "ios") return;
-
+        if (Capacitor.getPlatform() === "web") return;
         const show = (info: KeyboardInfo) => {
             setKeyboardHeight(info.keyboardHeight + 10);
         };
