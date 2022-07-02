@@ -1,7 +1,7 @@
 import "./MoodLogCard.css";
 import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
-import { chevronUp, imagesOutline } from "ionicons/icons";
+import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 
 const MoodLogCard = ({ log, setInFullscreen, reduceMotion }) => {
@@ -28,16 +28,16 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion }) => {
         }
     }
 
-    // TODO: temp, need to be turned into official symbols
-    let symbol;
-    if (log.average === "average") symbol = "~";
-    if (log.average === "above") symbol = "↑";
-    if (log.average === "below") symbol = "↓";
+    const SYMBOL_MAP = {
+        "below": caretDownOutline,
+        "average": caretForwardOutline,
+        "above": caretUpOutline
+    };
 
     return (
         <div className="mood-card" ref={card}>
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
-            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}>{ symbol } { log.mood }</span>
+            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}><IonIcon style={{"transform": "translateY(3px)"}} icon={SYMBOL_MAP[log.average]} /> { log.mood }</span>
             { log.journal && 
             <div 
                 ref={logContainer} 
