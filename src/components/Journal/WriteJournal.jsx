@@ -6,9 +6,9 @@ import { Keyboard } from "@capacitor/keyboard";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import { Capacitor } from "@capacitor/core";
+import KeyboardSpacer from "../KeyboardSpacer";
 
 const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
@@ -22,26 +22,6 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
         textarea.current?.focus();
     }, []);
 
-    useEffect(() => {
-        if (Capacitor.getPlatform() !== "ios") return;
-
-        const show = info => {
-            setKeyboardHeight(info.keyboardHeight + 10);
-        };
-        
-        const hide = () => {
-            setKeyboardHeight(0);
-        };
-
-        Keyboard.addListener("keyboardDidShow", show);
-        Keyboard.addListener("keyboardDidHide", hide);
-
-        return () => {
-            Keyboard.removeListener("keyboardDidShow", show);
-            Keyboard.removeListener("keyboardDidHide", hide);
-        };
-    }, []);
-
     return (
         <div className="container">
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
@@ -52,7 +32,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
                     <textarea ref={textarea} className="tx" value={props.text} onInput={e => props.setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
-                <div style={{"height": `${keyboardHeight}px`, width: "100%"}}></div>
+                <KeyboardSpacer />
                 <br />
             </div>
         </div>

@@ -54,7 +54,7 @@ enum NotificationsAllowed {
     ALLOWED
 }
 
-const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggingIn: (_: boolean) => void }) => {
+const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggingIn?: (_: boolean) => void }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(NotificationsAllowed.NEED_TO_ASK);
     const [notificationData, setNotificationData] = useState({});
     const [globalEditing, setGlobalEditing] = useState(false);
@@ -126,7 +126,7 @@ const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggin
             </div>
             { !page && globalEditing && <>
                 <br />
-                <div onClick={() => setLoggingIn(false)} className="finish-button" style={{"backgroundColor": "black"}}>All done!</div>
+                <div onClick={() => setLoggingIn!(false)} className="finish-button" style={{"backgroundColor": "black"}}>All done!</div>
             </> }
             { page && <EndSpacer /> }
         </div>
