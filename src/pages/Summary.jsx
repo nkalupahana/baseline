@@ -180,27 +180,27 @@ const Summary = () => {
                 <IonContent>
                     <IonList className="menu">
                         <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>
-                        <IonItem onClick={() => history.push("/notifications")}>
+                        <IonItem onClick={() => history.push("/notifications")} mode="ios" >
                             <IonIcon icon={notifications} slot="start" />
                             <IonLabel>Notifications</IonLabel>
                         </IonItem>
-                        <IonItem onClick={() => history.push("/gap")}>
+                        <IonItem onClick={() => history.push("/gap")} mode="ios">
                             <IonIcon icon={cashOutline} slot="start" />
                             <IonLabel>Gap Fund</IonLabel>
                         </IonItem>
-                        <IonItem onClick={() => history.push("/surveys")}>
+                        <IonItem onClick={() => history.push("/surveys")} mode="ios">
                             <IonIcon icon={analytics} slot="start" />
                             <IonLabel>Surveys</IonLabel>
                         </IonItem>
-                        <IonItem onClick={() => history.push("/gethelp")}>
+                        <IonItem onClick={() => history.push("/gethelp")} mode="ios">
                             <IonIcon icon={helpBuoyOutline} slot="start" />
                             <IonLabel>Get Help</IonLabel>
                         </IonItem>
-                        <IonItem className="move-rest-down" onClick={() => history.push("/settings")}>
+                        <IonItem className="move-rest-down" onClick={() => history.push("/settings")} mode="ios">
                             <IonIcon icon={cogOutline} slot="start" />
                             <IonLabel>Settings</IonLabel>
                         </IonItem>
-                        <IonItem onClick={signOutAndCleanUp}>
+                        <IonItem onClick={signOutAndCleanUp} mode="ios">
                             <IonLabel>Sign Out</IonLabel>
                         </IonItem>
                         <div style={{"height": "20px"}}></div>
