@@ -37,7 +37,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion }) => {
     return (
         <div className="mood-card" ref={card}>
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
-            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}><IonIcon style={{"transform": "translateY(3px)"}} icon={SYMBOL_MAP[log.average]} /> { log.mood }</span>
+            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}><IonIcon style={{"transform": "translateY(2px)"}} icon={SYMBOL_MAP[log.average]} /> { log.mood }</span>
             { log.journal && 
             <div 
                 ref={logContainer} 
