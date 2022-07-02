@@ -124,7 +124,7 @@ const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggin
                     You haven't allowed this app to send notifications. Go to Settings and enable notifications for baseline in order to use this feature. 
                     Once you've changed it, <span onClick={() => setReloadAllowed(Math.random())} className="fake-link">click here to reload.</span></p> }
             </div>
-            { !page && globalEditing && <>
+            { !page && !globalEditing && <>
                 <br />
                 <div onClick={() => setLoggingIn!(false)} className="finish-button" style={{"backgroundColor": "black"}}>All done!</div>
             </> }
