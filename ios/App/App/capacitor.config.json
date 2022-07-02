@@ -13,6 +13,9 @@
 				"apple.com",
 				"google.com"
 			]
+		},
+		"Keyboard": {
+			"resize": "none"
 		}
 	}
 }

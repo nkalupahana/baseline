@@ -44,7 +44,6 @@ import GetHelp from "./pages/GetHelp";
 import WeekInReview from "./pages/WeekInReview";
 import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
-import { Keyboard, KeyboardResize } from "@capacitor/keyboard";
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -56,12 +55,6 @@ const App = () => {
     const keys = checkKeys();
 
     useEffect(() => {
-        if (Capacitor.getPlatform() === "ios") {
-            Keyboard.setResizeMode({
-                mode: KeyboardResize.None
-            });
-        }
-        
         smoothscroll.polyfill();
         if (!keys) {
             signOutAndCleanUp();
