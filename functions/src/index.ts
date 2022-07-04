@@ -599,7 +599,9 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
                 })
             });
             let respData = await response.json();
-            if ("serverErrorCode" in respData || !("records" in respData)) {
+            if ("serverErrorCode" in respData || !("records" in respData) || "serverErrorCode" in respData["records"][0]) {
+                console.log("KEY GET FAIL");
+                console.log(JSON.stringify(respData));
                 res.send(400);
                 return;
             }
@@ -679,7 +681,9 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         });
 
         const respData = await response.json();
-        if ("serverErrorCode" in respData) {
+        if (("serverErrorCode" in respData) || ("serverErrorCode" in respData["records"][0])) {
+            console.log("KEY SET FAIL");
+            console.log(JSON.stringify(respData));
             res.send(400);
             return;
         }
