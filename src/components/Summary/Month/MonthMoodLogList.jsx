@@ -1,11 +1,30 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
 import { getMoodLogListBound, getTime } from "../../../helpers";
 import MoodLogList from "../MoodLogList";
+import { IonSearchbar } from "@ionic/react";
+import Fuse from "fuse.js";
+
 
 const TRUST_BOUND = 15;
 
 const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
+    const [searchText, setSearchText] = useState("");
+    const [filteredLogs, setFilteredLogs] = useState(logs);
+
+    useEffect(() => {
+        if (!searchText) return;
+
+        const fuse = new Fuse(logs, {
+            keys: ["journal"],
+            shouldSort: false,
+            threshold: 0.4
+        });
+
+        const res = fuse.search(searchText).map(x => x.item);
+        setFilteredLogs(res);
+    }, [searchText, logs]);
+    
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
         const listener = e => {
@@ -83,14 +102,18 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
 
     return (
         <>
+            <div className="log-list-expand" style={{"height": "60px"}}>
+                <IonSearchbar style={{"width": "90%", "margin": "0 auto"}} value={searchText} onIonChange={e => setSearchText(e.detail.value)} />
+            </div>
             <MoodLogList 
-                logs={logs} 
+                logs={searchText ? filteredLogs: logs} 
                 container={container} 
                 inFullscreen={inFullscreen}
                 setInFullscreen={setInFullscreen} 
                 reverse={true} 
                 requestedDate={requestedDate} 
-                aHeight={"100vh - 150px"}
+                aHeight={"100vh - 300px"}
+                filtered={!!searchText}
             />
         </>
     )
