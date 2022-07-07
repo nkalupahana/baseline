@@ -119,6 +119,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 reverse={true} 
                 requestedDate={requestedDate} 
                 aHeight={"100vh - 425px"} 
+                filtered={false}
             />
         </>
     )

@@ -38,6 +38,7 @@
     "eslint-plugin-import": "^2.26.0",
     "firebase": "^9.6.10",
     "flickity-fullscreen": "github:nkalupahana/flickity-fullscreen#patch-1",
+    "fuse.js": "^6.6.2",
     "ionicons": "^5.4.0",
     "lodash": "^4.17.21",
     "luxon": "^2.0.2",

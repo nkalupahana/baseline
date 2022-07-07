@@ -15,6 +15,7 @@ interface Props {
         [key: string]: any
     }
     aHeight: string
+    filtered: boolean
 }
 
 const createLocator = (t: DateTime) => {
@@ -27,7 +28,7 @@ const createEmptyLocator = (t: DateTime) => {
     return (<p id={`i-locator-${t.toISODate()}-bottom`} className="margin-0" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
 }
 
-const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight } : Props) => {
+const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight, filtered } : Props) => {
     const [els, setEls] = useState<JSX.Element[]>([]);
     const [updating, setUpdating] = useState(window.location.hash === "#update");
     const settings = parseSettings();
@@ -89,13 +90,13 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             t = getDateFromLog(top);
             els.push(createLocator(t));
         }
-        els.push(<br key="top-br" />);
+        els.push(<div key="top-br" style={{"width": "100%", "height": "10px"}}></div>);
     
         // Reverse for display
         els.reverse();
 
         const now = DateTime.now().startOf("day");
-        if (now.day !== first.day || now.month !== first.month || now.year !== first.year) {
+        if ((now.day !== first.day || now.month !== first.month || now.year !== first.year) && !filtered) {
             els.push(createLocator(now));
             els.push(<div className="text-center" key="end1">
                 <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
