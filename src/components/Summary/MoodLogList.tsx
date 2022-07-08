@@ -108,7 +108,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
-    }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating]);
+    }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating, filtered]);
     
     // Scroll to last log item on load
     useEffect(() => {
