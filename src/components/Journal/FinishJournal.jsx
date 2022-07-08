@@ -20,8 +20,10 @@ const FinishJournal = props => {
     const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
-        if (submitted && !history.location.pathname.includes("/neg")) {
-            history.push("/summary#update");
+        if (submitted) {
+            localStorage.removeItem("autosave");
+            localStorage.removeItem("eautosave");
+            if (!history.location.pathname.includes("/neg")) history.push("/summary#update");
         }
     }, [submitted]);
 
