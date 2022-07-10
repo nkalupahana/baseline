@@ -1,7 +1,6 @@
 import "./JournalComponents.css";
 import { useEffect, useRef } from "react";
 import history from "../../history";
-import { signOutAndCleanUp } from "../../firebase";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
