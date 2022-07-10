@@ -5,10 +5,9 @@ import { signOutAndCleanUp } from "../../firebase";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
-import { checkKeys, decrypt, encrypt, parseSettings } from "../../helpers";
+import { decrypt, encrypt } from "../../helpers";
 
 const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
-    const keys = checkKeys();
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
@@ -20,10 +19,8 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
 
     useEffect(() => {
         if (localStorage.getItem("eautosave")) {
-            if (typeof keys === "object") {
-                const pwd = sessionStorage.getItem("pwd");
-                if (pwd) setText(decrypt(localStorage.getItem("eautosave"), pwd));
-            }
+            const pwd = sessionStorage.getItem("pwd");
+            if (pwd) setText(decrypt(localStorage.getItem("eautosave"), pwd));
         } else {
             const autosave = localStorage.getItem("autosave");
             if (autosave) {
@@ -32,10 +29,10 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
         }
 
         textarea.current?.focus();
-    }, [keys, setText]);
+    }, [setText]);
 
     useEffect(() => {
-        if (parseSettings()["pdp"]) {
+        if (sessionStorage.getItem("pwd")) {
             localStorage.setItem("eautosave", encrypt(props.text, sessionStorage.getItem("pwd")));
         } else {
             localStorage.setItem("autosave", props.text);
