@@ -4,8 +4,9 @@ import history from "../../history";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
+import { decrypt, encrypt } from "../../helpers";
 
-const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
+const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
@@ -16,8 +17,26 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
     }, [setMoodRead, moodWrite]);
 
     useEffect(() => {
+        if (localStorage.getItem("eautosave")) {
+            const pwd = sessionStorage.getItem("pwd");
+            if (pwd) setText(decrypt(localStorage.getItem("eautosave"), pwd));
+        } else {
+            const autosave = localStorage.getItem("autosave");
+            if (autosave) {
+                setText(autosave);
+            }
+        }
+
         textarea.current?.focus();
-    }, []);
+    }, [setText]);
+
+    useEffect(() => {
+        if (sessionStorage.getItem("pwd")) {
+            localStorage.setItem("eautosave", encrypt(props.text, sessionStorage.getItem("pwd")));
+        } else {
+            localStorage.setItem("autosave", props.text);
+        }
+    }, [props.text]);
 
     return (
         <div className="container">
@@ -26,7 +45,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, ...props }) => {
                 <div className="title">What's happening?</div>
                 <p className="text-center bold" onClick={next}>If you don't want to write right now, tap here to jump to mood logging.</p>
                 <label data-value={props.text} className="input-sizer stacked">
-                    <textarea ref={textarea} className="tx" value={props.text} onInput={e => props.setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
+                    <textarea ref={textarea} className="tx" value={props.text} onInput={e => setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
                 <KeyboardSpacer />

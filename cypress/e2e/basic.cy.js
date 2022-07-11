@@ -113,6 +113,7 @@ describe("Mobile Flow", () => {
         // -5 time
         cy.url().should("include", "/neg")
         cy.get(".loader").should("exist")
+        cy.get(".finish-button").should("not.exist")
         cy.contains("crisis").should("exist")
         cy.contains("apply now").should("exist").click()
 
