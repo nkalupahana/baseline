@@ -28,7 +28,7 @@ document.addEventListener("pause", setLastOpenedTime);
 document.addEventListener("visibilitychange", () => {
     if (parseSettings()["pdp"]) {
         sessionStorage.removeItem("pwd");
-        history.push(`/rsummary`);
+        window.location.href = "/rsummary";
     }
 });
 

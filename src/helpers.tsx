@@ -2,13 +2,12 @@ import AES from "crypto-js/aes";
 import { DateTime } from "luxon";
 import Toastify from "toastify-js";
 import ldb, { Log } from "./db";
-import { signOutAndCleanUp } from "./firebase";
+import { signOutAndCleanUp, db } from "./firebase";
 import history from "./history";
 import aesutf8 from "crypto-js/enc-utf8";
 import hash from "crypto-js/sha512";
 import { getIdToken, User } from "firebase/auth";
 import { get, orderByKey, query, ref } from "firebase/database";
-import { db } from "./firebase";
 import { GraphConfig } from "./screeners/screener";
 
 export interface AnyMap {
