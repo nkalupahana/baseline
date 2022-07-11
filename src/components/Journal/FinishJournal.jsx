@@ -84,6 +84,10 @@ const FinishJournal = props => {
         return file.name + file.lastModified + file.size;
     }
 
+    const beginAttachFiles = () => {
+        window.location.hash = "#attach";
+    }
+
     const attachFiles = () => {
         const fileEl = document.getElementById("files");
         if (fileEl.files.length === 0) return;
@@ -95,6 +99,10 @@ const FinishJournal = props => {
 
         props.setFiles(newFiles);
         fileEl.value = "";
+        // Temporary fix for iOS photo picker with PDP
+        setTimeout(() => {
+            window.location.hash = "";
+        }, 1000);
     }
 
     const truncate = str => {
@@ -167,8 +175,8 @@ const FinishJournal = props => {
                                     <label htmlFor="files">
                                         <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
                                     </label>
-                                    <input disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
-                                </> 
+                                    <input onClick={beginAttachFiles} disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
+                                </>
                             }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
