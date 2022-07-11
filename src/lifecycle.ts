@@ -26,12 +26,12 @@ document.addEventListener("resume", redirect);
 document.addEventListener("deviceready", redirect);
 document.addEventListener("pause", setLastOpenedTime);
 document.addEventListener("visibilitychange", () => {
-    if (parseSettings()["pdp"]) {
+    if (parseSettings()["pdp"] && (window.location.pathname !== "/journal/finish" || window.location.hash !== "#attach")) {
         sessionStorage.removeItem("pwd");
         window.location.href = "/rsummary";
     }
 });
 
 window.onbeforeunload = () => {
-    sessionStorage.removeItem("pwd");
+    if (window.location.pathname !== "/journal/finish" || window.location.hash !== "#attach") sessionStorage.removeItem("pwd");
 };
