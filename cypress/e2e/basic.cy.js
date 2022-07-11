@@ -16,12 +16,6 @@ describe("Mobile Flow", () => {
 
     it("Load Main Page", () => {
         cy.visit("/")
-        cy.get("body").then(($body) => {
-            if ($body.text().includes("What's happening")) {
-              cy.contains("What's happening").click()
-            }
-        })
-
         cy.contains("Anonymous").should("exist")
         cy.contains("Google").should("exist")
         cy.get("body").happoScreenshot()
