@@ -58,8 +58,8 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                 modules={[Pagination]}
                 navigation={true}
                 pagination={true}
-                style={{"width": "95%", "maxWidth": "600px", "height": "calc(100vh - 110px)"}}
                 onSwiper={swiper => setSwiper(swiper)}
+                className="swiper-container-mod"
             >
                 <SwiperSlide style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}>
                     <div>

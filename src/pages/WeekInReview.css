@@ -38,3 +38,9 @@
 .swiper-pagniation-controls > ion-icon {
     margin: 0 50px;
 }
+
+.swiper-container-mod {
+    width: 95%;
+    max-width: 600px;
+    height: calc(100vh - 110px - env(safe-area-inset-bottom))
+}
