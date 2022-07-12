@@ -48,7 +48,7 @@ const COLORS: AnyMap = {
     "2": "#cddc39",  // lime
     "3": "#8bc34a",  // light-green
     "4": "#43a047",  // green darken-1
-    "5": "black"
+    "5": "#00e676"
 };
 
 export function createPoints(data: Log[]) {
