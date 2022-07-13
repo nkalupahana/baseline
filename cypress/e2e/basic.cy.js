@@ -16,13 +16,12 @@ describe("Mobile Flow", () => {
 
     it("Load Main Page", () => {
         cy.visit("/")
-        cy.contains("Anonymous").should("exist")
         cy.contains("Google").should("exist")
         cy.get("body").happoScreenshot()
     })
 
     it("Login as Anonymous", () => {
-        cy.contains("Anonymous").click()
+        cy.get("ion-button").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("try again").should("exist").click()
         cy.contains("Anonymous").should("exist")
