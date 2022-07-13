@@ -26,7 +26,7 @@ describe("Mobile Flow", () => {
         cy.contains("try again").should("exist").click()
         cy.contains("Anonymous").should("exist")
         cy.wait(WAIT_FOR_AUTH)
-        cy.contains("Anonymous").should("exist").click()
+        cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
         cy.contains("What's happening").should("exist")
