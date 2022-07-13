@@ -60,7 +60,7 @@
     z-index: 3;
     width: 100%;
     text-align: center;
-    background-color: white;
+    background-color: var(--ion-background-color);
 }
 
 .week-summary-grid {

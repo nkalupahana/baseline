@@ -126,7 +126,7 @@ const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggin
             </div>
             { !page && !globalEditing && <>
                 <br />
-                <div onClick={() => setLoggingIn!(false)} className="finish-button" style={{"backgroundColor": "black"}}>All done!</div>
+                <div onClick={() => setLoggingIn!(false)} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>All done!</div>
             </> }
             { page && <EndSpacer /> }
         </div>

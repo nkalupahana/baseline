@@ -1,5 +1,5 @@
 .mood-card {
-    background-color: rgb(221, 219, 219);
+    background-color: var(--card-background);
     width: 100%;
     border-radius: 10px;
     padding: 15px;

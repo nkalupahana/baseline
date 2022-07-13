@@ -138,7 +138,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
                         key={weekday} 
                         onClick={() => toggle(weekday)} 
                         className="weekday-selector" 
-                        style={weekdays.includes(weekday) ? {backgroundColor: "#81c784"} : {backgroundColor: "#ef5350"}}>
+                        style={weekdays.includes(weekday) ? {backgroundColor: "var(--notification-green)"} : {backgroundColor: "#ef5350"}}>
                             { WEEKDAY_TO_LETTER[weekday] }
                     </div>)
         }

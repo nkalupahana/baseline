@@ -1,5 +1,5 @@
 .graph-card {
-    border-left: 1px solid rgb(221, 221, 221);
+    border-left: 1px solid var(--border-lines);
     height: 90%;
     position: relative;
 }
@@ -16,7 +16,7 @@
     left: 0;
     top: 57.5%;
     height: 3.5px;
-    border-bottom: 1px dashed rgb(212, 212, 212);
+    border-bottom: 1px dashed var(--border-lines);
 }
 
 .week-mood-graph::-webkit-scrollbar {

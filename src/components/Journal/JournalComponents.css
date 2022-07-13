@@ -152,7 +152,7 @@
     position: absolute;
     left: 17.5%;
     width: 65%;
-    background-color: lightgray;
+    background-color: var(--card-background);
     border-radius: 10px 10px 0 0;
     height: 148px;
     bottom: 0px;

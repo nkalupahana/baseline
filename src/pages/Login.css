@@ -24,7 +24,7 @@
 }
 
 .login-button.apple {
-    background-color: black;
+    background-color: var(--dark-action);
 }
 
 .login-button > ion-icon {

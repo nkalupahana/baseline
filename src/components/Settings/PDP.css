@@ -8,6 +8,7 @@
     border: none;
     width: 100%;
     padding-bottom: 7px;
+    background-color: var(--ion-item-background);
 }
 
 .invisible-input:focus {
