@@ -1,3 +1,5 @@
+import { parseSettings } from "../../helpers";
+
 const WeekInReviewInitial = ({ incrementStage } : { incrementStage: () => void }) => {
     return <div className="container">
         <div className="center-summary container" style={{display: "flex", flexDirection: "column"}}>
@@ -8,6 +10,7 @@ const WeekInReviewInitial = ({ incrementStage } : { incrementStage: () => void }
             <p className="p-inner">2. &nbsp;<b>A secondary survey</b>, which is different from week to week and will help you better understand any other mental health issues you might be struggling with.</p>
             <p className="p-inner">3. &nbsp;<b>A review of your mood logs</b> this week, which will help you compare your health this week with previous weeks.</p>
             <p className="text-center p-inner">The purpose of this is to give you some insight into your mental health, especially over time. It's often difficult to step back and think about these things, and we hope this review will give you a chance to do just that.</p>
+            { parseSettings()["pdp"] && <p className="text-center p-inner bold">Since you have a password set, try not to close this while doing Week In Review &mdash; for your safety, you'll have to start over.</p> }
             <br />
             <div className="finish-button" onClick={incrementStage}>Start Primary Survey</div>
             <br /><br /><br /><br />
