@@ -17,7 +17,7 @@
 
 .prompt-prompt {
     z-index: 1001;
-    background-color: white;
+    background-color: var(--ion-background-color);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     width: 100%;
@@ -29,10 +29,10 @@
 .finish-button.secondary {
     margin-top: 5px;
     margin-bottom: 3px;
-    background-color: white;
-    color: black;
+    background-color: var(--ion-background-color);
+    color: var(--background-color-inverted);
 }
 
 .finish-button.secondary:active {
-    background-color: white;
+    background-color: var(--ion-background-color);
 }

@@ -134,12 +134,12 @@ const FinishJournal = props => {
                                     label="nice find!"
                                     labelFontSize={0}
                                     valueFontSize="4rem"
-                                    labelColor="#020856"
-                                    knobColor="#020856"
+                                    labelColor="var(--circular-slider-label)"
+                                    knobColor="var(--circular-slider-knob)"
                                     progressColorFrom="#1c88e3"
                                     progressColorTo="#1975e6"
                                     progressSize={20}
-                                    trackColor="#eeeeee"
+                                    trackColor="var(--circular-slider-track)"
                                     trackSize={20}
                                     min={-5}
                                     max={5}
