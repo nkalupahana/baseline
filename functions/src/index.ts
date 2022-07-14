@@ -14,6 +14,8 @@ import * as formidable from "formidable-serverless";
 import { v4 as uuidv4 } from "uuid";
 import * as sharp from "sharp";
 import { auth as googleauth , sheets } from "@googleapis/sheets";
+import { BigQuery } from "@google-cloud/bigquery";
+import { Storage } from "@google-cloud/storage";
 
 admin.initializeApp();
 const quotaApp = admin.initializeApp({
@@ -777,4 +779,53 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
     
     await db.ref(`${req.user!.user_id}/pdp`).remove();
     res.send(200);
+});
+
+/* NON-PUBLIC */
+// Load actions data into BigQuery
+export const loadBIData = functions.pubsub.schedule("0 0/12 * * *").timeZone("America/Chicago").onRun(async _ => {
+    const bigquery = new BigQuery();
+    const storage = new Storage();
+    // Get all data
+    const db = (await admin.database().ref("/").get()).val();
+
+    // Create CSV row with required data
+    let actions: string[] = [];
+    const addAction = (userId: string, timestamp: string, action: string) => {
+        const dt = DateTime.fromMillis(Number(timestamp));
+        actions.push([timestamp, userId, dt.toISODate(), dt.toLocaleString(DateTime.TIME_24_WITH_SECONDS), action].join(","));
+    }
+
+    // Go through all users, and add actions to CSV
+    for (let userId in db) {
+        if (!("encryption" in db[userId]) || db[userId]["encryption"]["id"] === "anonymous") continue;
+
+        for (let timestamp in db[userId]["logs"] ?? {}) {
+            addAction(userId, timestamp, "moodLog");
+        }
+
+        for (let timestamp in db[userId]["surveys"] ?? {}) {
+            addAction(userId, timestamp, "survey");
+        }
+    }
+
+    // Send CSV to storage
+    await storage.bucket("baseline-bi").file("actions.csv").save(actions.join("\n"));
+
+    // Send stored CSV to BigQuery
+    const metadata = {
+        sourceFormat: "CSV",
+        schema: {
+          fields: [
+            { name: "timestamp", type: "INTEGER" },
+            { name: "userId", type: "STRING" },
+            { name: "date", type: "DATE" },
+            { name: "time", type: "TIME" },
+            { name: "action", type: "STRING" }
+          ],
+        },
+        location: "US",
+        writeDisposition: "WRITE_TRUNCATE"
+    };
+    await bigquery.dataset("bi").table("actions").load(storage.bucket("baseline-bi").file("actions.csv"), metadata);
 });
