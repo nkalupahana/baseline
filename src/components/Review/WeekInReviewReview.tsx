@@ -12,7 +12,6 @@ import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import SurveyGraph from "./SurveyGraph";
-import EndSpacer from "../EndSpacer";
 
 interface Props {
     primary: Screener,
@@ -79,7 +78,7 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                                 If you want to discuss these results with a 
                                 professional, show them this: { screener.getClinicalInformation() }
                             </p>
-                            <EndSpacer />
+                            <br />
                         </div>
                     </SwiperSlide>
                 }) }
@@ -111,7 +110,7 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                             { !loading && <>Finish</> }
                             { loading && <IonSpinner className="loader" name="crescent" /> }
                         </div>
-                        <EndSpacer />
+                        <br />
                     </div>
                 </SwiperSlide>
             </Swiper>
