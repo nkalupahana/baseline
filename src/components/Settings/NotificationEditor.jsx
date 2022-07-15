@@ -155,7 +155,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
         <p style={{marginTop: "4px"}}>
             { weekdays.length === 7 ? 
                 "Every Day" : 
-                weekdays.sort((a, b) => a.weekday - b.weekday).map(n => WEEKDAY_TO_DAY[n.weekday]).join(", ") }
+                weekdays.sort().map(n => WEEKDAY_TO_DAY[n]).join(", ") }
         </p>
     </> }
 
