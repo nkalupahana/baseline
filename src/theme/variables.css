@@ -56,6 +56,10 @@ http://ionicframework.com/docs/theming/ */
         --ion-color-light-tint: #383a3e;
         --ion-item-border-color: #afaeb4;
 
+        --ion-background-color-rgb: 8, 8, 8;
+        --ion-background-color: rgb(8, 8, 8);
+        --ion-item-background: rgb(8, 8, 8);
+
         --card-background: rgb(22, 22, 22);
         --background-color-inverted: white;
         --graph-label: #666666;
@@ -72,17 +76,12 @@ http://ionicframework.com/docs/theming/ */
     }
 
     .ios body {
-        --ion-background-color: rgb(8, 8, 8);
-        --ion-background-color-rgb: 8, 8, 8;
-        --ion-item-background: rgb(8, 8, 8);
         --ion-color-step-100: #1a1a1a;
         --ion-color-step-150: #373737;
         --ion-color-step-350: #595959;
     }
 
     .md body {
-        --ion-background-color-rgb: 8, 8, 8;
-        --ion-background-color: rgb(8, 8, 8);
         --ion-color-step-100: #2a2a2a;
         --ion-color-step-150: #363636;
         --ion-color-step-350: #656565;
