@@ -15,5 +15,5 @@ export default defineConfig({
       framework: "create-react-app",
       bundler: "webpack",
     }
-  },
+  }
 });

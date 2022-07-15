@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: "baseline",
   webDir: "build",
   bundledWebRuntime: false,
+  backgroundColor: "#000000",
   ios: {
     scheme: "baseline"
   },
