@@ -72,8 +72,8 @@ export default function CAGE_AID(): Screener {
                         Alcoholics Anonymous, Narcotics Anonymous, and similar organizations are a big help for lots of people
                         who are struggling with substance use. You can look online for a chapter near you. 
                         Additionally, if you're in the US, we recommend going 
-                        to <a href="https://www.findtreatment.gov/" target="_blank" rel="noreferrer">findtreatment.gov</a> 
-                        to get professional support for specific types of substance use, 
+                        to <a href="https://www.findtreatment.gov/" target="_blank" rel="noreferrer">findtreatment.gov</a> to 
+                        get professional support for specific types of substance use, 
                         or <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">findtreatment.samhsa.gov</a> for 
                         both substance use and general mental health support. { FIND_HELP }
                     </p>
