@@ -783,7 +783,7 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
 
 /* NON-PUBLIC */
 // Load actions data into BigQuery
-export const loadBIData = functions.pubsub.schedule("* 0,12 * * *").timeZone("America/Chicago").onRun(async _ => {
+export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("America/Chicago").onRun(async _ => {
     const bigquery = new BigQuery();
     const storage = new Storage();
     // Get all data
