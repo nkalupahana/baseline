@@ -782,7 +782,12 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
 });
 
 /* NON-PUBLIC */
-// Load actions data into BigQuery
+/*
+ * Load data into BigQuery:
+ * - action data per user
+ * - average mood log length per user
+*/
+
 export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("America/Chicago").onRun(async _ => {
     const bigquery = new BigQuery();
     const storage = new Storage();
@@ -796,12 +801,30 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
         actions.push([timestamp, userId, dt.toISODate(), dt.toLocaleString(DateTime.TIME_24_WITH_SECONDS), action].join(","));
     }
 
-    // Go through all users, and add actions to CSV
+    let logLengths: string[] = [];
+    const addLength = (userId: string, logLength: number) => {
+        const bucket = Math.floor(logLength / 600);
+        logLengths.push([userId, Math.round(logLength), `${bucket}: ${bucket * 600} - ${(bucket * 600) + 599}`].join(","));
+    };
+
+    // Go through all users, and add data to CSVs
     for (let userId in db) {
         if (!("encryption" in db[userId]) || db[userId]["encryption"]["id"] === "anonymous") continue;
 
         for (let timestamp in db[userId]["logs"] ?? {}) {
             addAction(userId, timestamp, "moodLog");
+
+            // Calculate log length data
+            const log = db[userId]["logs"][timestamp];
+            if ("data" in log) {
+                // Regress approximate log length from encrypted content
+                let logLength = (0.748879 * log["data"].length) - 158.323;
+                if (logLength < 0) logLength = 0;
+                addLength(userId, logLength);
+            } else if ("journal" in log) {
+                // For the rare unencrypted journals from the pre-encryption days
+                addLength(userId, log["journal"].length);
+            }
         }
 
         for (let timestamp in db[userId]["surveys"] ?? {}) {
@@ -809,11 +832,12 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
         }
     }
 
-    // Send CSV to storage
+    // Send CSVs to storage
     await storage.bucket("baseline-bi").file("actions.csv").save(actions.join("\n"));
+    await storage.bucket("baseline-bi").file("lengths.csv").save(logLengths.join("\n"));
 
-    // Send stored CSV to BigQuery
-    const metadata = {
+    // Send actions CSV to BigQuery
+    const actionsMetadata = {
         sourceFormat: "CSV",
         schema: {
           fields: [
@@ -827,5 +851,20 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    await bigquery.dataset("bi").table("actions").load(storage.bucket("baseline-bi").file("actions.csv"), metadata);
+    await bigquery.dataset("bi").table("actions").load(storage.bucket("baseline-bi").file("actions.csv"), actionsMetadata);
+
+    // Send lengths CSV to BigQuery
+    const lengthsMetadata = {
+        sourceFormat: "CSV",
+        schema: {
+          fields: [
+            { name: "userId", type: "STRING" },
+            { name: "len", type: "INTEGER" },
+            { name: "bucket", type: "STRING" }
+          ],
+        },
+        location: "US",
+        writeDisposition: "WRITE_TRUNCATE"
+    };
+    await bigquery.dataset("bi").table("log_length").load(storage.bucket("baseline-bi").file("lengths.csv"), lengthsMetadata);
 });
