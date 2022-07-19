@@ -116,7 +116,7 @@ const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggin
 
                             setGlobalEditing(true);
                             setNotificationData({...notificationData, "": []})
-                        }} className="finish-button">Add Notification</div> }
+                        }} className="finish-button" style={{"maxWidth": "400px"}}>Add Notification</div> }
                     </>
                 }
                 { Capacitor.getPlatform() === "web" && <p className="text-center italics">Notifications are not supported on web. Please get the iOS/Android app.</p> }

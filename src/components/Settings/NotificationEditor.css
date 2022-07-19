@@ -4,6 +4,7 @@
     border-radius: 10px;
     margin-bottom: 12px;
     text-align: center;
+    max-width: 300px;
 }
 
 .weekday-selector {

@@ -3,9 +3,15 @@
     margin: 0 auto;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 900px) {
+    @media only screen and (max-width: 800px) {
+        .container {
+            width: 90%;
+        }
+    }
+
     .container {
-        width: 90%;
+        width: 85%;
     }
 }
 
