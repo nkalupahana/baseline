@@ -18,10 +18,13 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
         const fuse = new Fuse(logs, {
             keys: ["journal"],
             shouldSort: false,
-            threshold: 0.4
+            findAllMatches: true,
+            ignoreLocation: true,
+            threshold: 0.2
         });
 
         const res = fuse.search(searchText).map(x => x.item);
+        console.log(res);
         setFilteredLogs(res);
     }, [searchText, logs]);
     
