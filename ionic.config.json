@@ -3,6 +3,5 @@
   "integrations": {
     "capacitor": {}
   },
-  "type": "react",
-  "backgroundColor": "black"
+  "type": "react"
 }
