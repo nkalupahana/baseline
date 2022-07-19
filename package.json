@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "@capacitor-community/fcm": "^2.0.2",
-    "@capacitor/android": "^3.4.3",
+    "@capacitor/android": "github:nkalupahana/capacitor-android",
     "@capacitor/app": "1.0.5",
     "@capacitor/core": "^3.3.3",
     "@capacitor/haptics": "1.1.2",
-    "@capacitor/ios": "3.4.3",
+    "@capacitor/ios": "github:nkalupahana/capacitor-ios",
     "@capacitor/keyboard": "^1.1.2",
     "@capacitor/status-bar": "1.0.5",
     "@ionic-native/google-plus": "^5.36.0",

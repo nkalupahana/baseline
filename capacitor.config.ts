@@ -5,7 +5,6 @@ const config: CapacitorConfig = {
   appName: "baseline",
   webDir: "build",
   bundledWebRuntime: false,
-  backgroundColor: "#000000",
   ios: {
     scheme: "baseline"
   },
@@ -17,6 +16,10 @@ const config: CapacitorConfig = {
     Keyboard: {
       "resize": "none"
     }
+  },
+  backgroundColor: {
+    light: "#FFFFFF",
+    dark: "#080808"
   }
 };
 
