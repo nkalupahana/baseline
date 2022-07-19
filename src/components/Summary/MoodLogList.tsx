@@ -50,6 +50,11 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         const zone = DateTime.now().zone.name;
     
         let firstLogs = 0;
+        if (logs.length === 0) {
+            setEls([<div style={{"width": "100%", "height": "60px"}}></div>, <p className="text-center">No Results</p>]);
+            return;
+        }
+        
         const first = getDateFromLog(logs[0]);
         
         let t;
