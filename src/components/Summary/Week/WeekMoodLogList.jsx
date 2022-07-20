@@ -121,8 +121,8 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 setInFullscreen={setInFullscreen} 
                 reverse={true} 
                 requestedDate={requestedDate} 
-                aHeight={"100vh - 425px"} 
-                filtered={!!search.get}
+                aHeight={search.get ? "0px" : "100vh - 425px"} 
+                filtered={search.get}
             />
         </>
     )

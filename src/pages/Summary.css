@@ -155,3 +155,7 @@
     margin: calc(max(env(safe-area-inset-top), 20px) + 7px) auto 0 auto;
     width: 75%;
 }
+
+.grid-heading {
+    grid-area: heading;
+}

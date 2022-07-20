@@ -22,7 +22,7 @@ const Unlock = () => {
     };
 
     return <>
-        <div style={{ gridArea: "heading" }} className="center-summary container">
+        <div className="center-summary container grid-heading">
             <UnlockCmp unlock={unlock} getter={passphrase} setter={setPassphrase} />
             <p>Stuck? <span onClick={signOutAndCleanUp} className="fake-link">Click here to sign out.</span> Note that in order to sign back in, you will still need this passphrase.</p>
         </div>
