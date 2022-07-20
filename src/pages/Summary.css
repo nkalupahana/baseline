@@ -150,3 +150,8 @@
     padding-top: 4px;
     font-family: "Lato", sans-serif;
 }
+
+.invisible-input.searchbar.week {
+    margin: calc(max(env(safe-area-inset-top), 20px) + 7px) auto 0 auto;
+    width: 75%;
+}

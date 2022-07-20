@@ -26,6 +26,7 @@ const Summary = () => {
     const menuRef = useRef();
     const logsQuery = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
     const [logs, setLogs] = useState([]);
+    const [searchMode, setSearchMode] = useState(false);
 
     useEffect(() => {
         if (Capacitor.getPlatform() !== "web") FCM.subscribeTo({ topic: "all" });
@@ -149,7 +150,15 @@ const Summary = () => {
                 >
                     {matches => (
                         <>
-                            { matches.week && <WeekSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
+                            { matches.week && <WeekSummary 
+                                inFullscreen={inFullscreen} 
+                                setInFullscreen={setInFullscreen} 
+                                search={{
+                                    get: searchMode,
+                                    set: setSearchMode
+                                }} 
+                                logs={logs} 
+                            /> }
                             { matches.month && <MonthSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
                             { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
                             { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }

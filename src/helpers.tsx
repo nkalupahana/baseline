@@ -9,6 +9,7 @@ import hash from "crypto-js/sha512";
 import { getIdToken, User } from "firebase/auth";
 import { get, orderByKey, query, ref } from "firebase/database";
 import { GraphConfig } from "./screeners/screener";
+import Fuse from "fuse.js";
 
 export interface AnyMap {
     [key: string]: any;
@@ -356,4 +357,19 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     }
 
     setBaselineGraph(baseline);
+}
+
+export function filterLogs(searchText: string, logs: Log[], setFilteredLogs: (logs: Log[]) => void) {
+    if (!searchText) return;
+    const fuse = new Fuse(logs, {
+        keys: ["journal"],
+        shouldSort: false,
+        findAllMatches: true,
+        ignoreLocation: true,
+        threshold: 0.2
+    });
+
+    const res = fuse.search(searchText).map(x => x.item);
+    console.log(res);
+    setFilteredLogs(res);
 }
