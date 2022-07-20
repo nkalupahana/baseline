@@ -49,19 +49,19 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
 
     return (
         <div className="week-summary-grid" style={(logs && logs.length > 0) ? {} : {"height": "100%"}}>
-            { !search.get && <div style={{ gridArea: "heading" }} className="center-summary">
+            { !search.get && <div className="center-summary grid-heading">
                 <div className="title">Here's how your week has been looking.</div>
-            </div> }
+            </div> } 
             { logs && logs.length > 0 && <>
                 { !search.get && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
-                { search.get && <div style={{ gridArea: "heading", height: "100px", "display": "flex" }}>
+                { search.get && <div className="grid-heading" style={{ height: "100px", "display": "flex" }}>
                     <IonIcon style={{"position": "absolute"}} class="top-corner x" icon={closeOutline} onClick={() => search.set(false)}></IonIcon>
                     <input placeholder="Search" type="text" className="invisible-input searchbar week" onChange={e => debounceSetSearchText(e.target.value)}/>
                 </div> }
                 <WeekMoodLogList 
                     inFullscreen={inFullscreen} 
                     setInFullscreen={setInFullscreen} 
-                    logs={searchText ? filteredLogs : logs} 
+                    logs={search.get && searchText ? filteredLogs : logs} 
                     requestedDate={requestedDate} 
                     setRequestedDate={setRequestedDate} 
                     search={search}

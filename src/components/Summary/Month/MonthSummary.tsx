@@ -23,7 +23,7 @@ const MonthSummary = ({ inFullscreen, setInFullscreen, logs } : Props) => {
 
     return (
         <div className="month-summary-grid" style={(logs && logs.length > 0) ? {} : {"height": "100%"}}>
-            <div style={{ gridArea: "heading", paddingBottom: "30px" }} className="center-summary">
+            <div style={{ paddingBottom: "30px" }} className="center-summary grid-heading">
                 <div className="title">Here's how your month has been looking.</div>
             </div>
             { logs && logs.length > 0 && <>
