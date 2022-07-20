@@ -139,3 +139,14 @@
 .head2 {
     font-size: 20px;
 }
+
+.invisible-input.searchbar {
+    width: 85%;
+    background-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.07);
+    border-radius: 5px; 
+    height: 35px;
+    text-align: center;
+    font-size: 18px;
+    padding-top: 4px;
+    font-family: "Lato", sans-serif;
+}

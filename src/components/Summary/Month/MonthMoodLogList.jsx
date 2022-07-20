@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
 import { getMoodLogListBound, getTime } from "../../../helpers";
 import MoodLogList from "../MoodLogList";
-import { IonSearchbar } from "@ionic/react";
 import Fuse from "fuse.js";
+import { debounce } from "lodash";
 
 
 const TRUST_BOUND = 15;
@@ -11,10 +11,11 @@ const TRUST_BOUND = 15;
 const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
     const [searchText, setSearchText] = useState("");
     const [filteredLogs, setFilteredLogs] = useState(logs);
+    
+    const debounceSetSearchText = debounce(setSearchText, 500);
 
     useEffect(() => {
         if (!searchText) return;
-
         const fuse = new Fuse(logs, {
             keys: ["journal"],
             shouldSort: false,
@@ -106,7 +107,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
     return (
         <>
             <div className="log-list-expand" style={{"height": "60px"}}>
-                <IonSearchbar style={{"width": "90%", "margin": "0 auto"}} value={searchText} onIonChange={e => setSearchText(e.detail.value)} />
+                <input placeholder="Search" type="text" className="invisible-input searchbar" onChange={e => debounceSetSearchText(e.target.value)}/>
             </div>
             <MoodLogList 
                 logs={searchText ? filteredLogs: logs} 
