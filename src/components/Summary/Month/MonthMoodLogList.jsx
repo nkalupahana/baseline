@@ -1,32 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { getMoodLogListBound, getTime } from "../../../helpers";
+import { filterLogs, getMoodLogListBound, getTime } from "../../../helpers";
 import MoodLogList from "../MoodLogList";
-import Fuse from "fuse.js";
 import { debounce } from "lodash";
-
 
 const TRUST_BOUND = 15;
 
 const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
     const [searchText, setSearchText] = useState("");
     const [filteredLogs, setFilteredLogs] = useState(logs);
-    
     const debounceSetSearchText = debounce(setSearchText, 500);
 
     useEffect(() => {
-        if (!searchText) return;
-        const fuse = new Fuse(logs, {
-            keys: ["journal"],
-            shouldSort: false,
-            findAllMatches: true,
-            ignoreLocation: true,
-            threshold: 0.2
-        });
-
-        const res = fuse.search(searchText).map(x => x.item);
-        console.log(res);
-        setFilteredLogs(res);
+        filterLogs(searchText, logs, setFilteredLogs);
     }, [searchText, logs]);
     
     const container = useCallbackRef(useCallback(node => {
@@ -110,7 +96,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                 <input placeholder="Search" type="text" className="invisible-input searchbar" onChange={e => debounceSetSearchText(e.target.value)}/>
             </div>
             <MoodLogList 
-                logs={searchText ? filteredLogs: logs} 
+                logs={searchText ? filteredLogs : logs} 
                 container={container} 
                 inFullscreen={inFullscreen}
                 setInFullscreen={setInFullscreen} 

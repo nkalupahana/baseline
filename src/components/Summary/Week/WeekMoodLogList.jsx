@@ -7,7 +7,7 @@ import MoodLogList from "../MoodLogList";
 
 const TRUST_BOUND = 15;
 
-const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
+const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate, search }) => {
     const [showSearch, setShowSearch] = useState(true);
 
     const container = useCallbackRef(useCallback(node => {
@@ -108,9 +108,12 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
 
     return (
         <>
-            <div style={showSearch ? {height: "30px"} : {height: "0px", overflow: "hidden"}} className="log-list-expand">
-                <IonIcon icon={searchOutline} ></IonIcon> <span style={{fontSize: "14px", position: "relative", bottom: "5px"}}>Search and filter logs</span>
-            </div>
+            { !search.get && <div style={showSearch ? {height: "30px"} : {height: "0px", overflow: "hidden"}} className="log-list-expand">
+                <span onClick={() => search.set(true)}>
+                    <IonIcon icon={searchOutline} /> 
+                    <span style={{fontSize: "14px", position: "relative", bottom: "5px"}}>Search and filter logs</span>
+                </span>
+            </div> }
             <MoodLogList 
                 logs={logs} 
                 container={container} 
@@ -119,7 +122,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 reverse={true} 
                 requestedDate={requestedDate} 
                 aHeight={"100vh - 425px"} 
-                filtered={false}
+                filtered={!!search.get}
             />
         </>
     )
