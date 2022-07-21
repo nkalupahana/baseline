@@ -95,7 +95,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
 
     return (
         <>
-            <div className="log-list-expand grid">
+            <div className="log-list-expand filter-area">
                 <SearchAndFilter 
                     setSearchText={setSearchText} 
                     averageFilter={averageFilter}

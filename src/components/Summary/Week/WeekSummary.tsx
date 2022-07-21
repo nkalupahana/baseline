@@ -33,6 +33,10 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
     // is toggled, ensuring view isn't stale later on
     useEffect(() => {
         setSearchText("");
+        setNumberFilter([]);
+        setAverageFilter([]);
+        setImageFilter(false);
+        setFilteredLogs(logs);
     }, [search.get]);
     
     const [requestedDate, setRequestedDate] = useState({
@@ -62,7 +66,7 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
             </div> } 
             { logs && logs.length > 0 && <>
                 { !search.get && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
-                { search.get && <div className="grid-heading grid week">
+                { search.get && <div className="grid-heading filter-area">
                     <IonIcon style={{"position": "absolute"}} class="top-corner x" icon={closeOutline} onClick={() => search.set(false)}></IonIcon>
                     <SearchAndFilter 
                         setSearchText={setSearchText} 

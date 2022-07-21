@@ -63,16 +63,16 @@
     background-color: var(--ion-background-color);
 }
 
-.log-list-expand.grid, .grid-heading.grid {
+.log-list-expand.filter-area, .grid-heading.filter-area {
     display: flex;
     flex-direction: column;
 }
 
-.log-list-expand.grid {
+.log-list-expand.filter-area {
     height: 84px;
 }
 
-.grid-heading.grid {
+.grid-heading.filter-area {
     height: 140px;
 }
 
