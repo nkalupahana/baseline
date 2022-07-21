@@ -195,6 +195,14 @@ describe("Desktop Flow", () => {
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
     })
 
+    it("Test Search and Filter", () => {
+        cy.get(".image-btn").click()
+        cy.contains("No Results").should("exist")
+        
+        cy.get(".image-btn").click()
+        cy.contains("No Results").should("not.exist")
+    })
+
     it("Verify Notifications Page", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Notifications").should("exist")
@@ -512,13 +520,5 @@ describe("Test Settings", () => {
         cy.get(".recharts-responsive-container").should("have.length", 2)
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
-    })
-
-    it("Test Search and Filter", () => {
-        cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
-        
-        cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
     })
 })
