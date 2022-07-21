@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 
-const MoodLogCard = ({ log, setInFullscreen, reduceMotion }) => {
+const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET }) => {
     const [grow, setGrow] = useState(false);
     const card = useRef();
     const logContainer = useRef();
@@ -21,7 +21,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion }) => {
 
         if (card.current.parentElement.getBoundingClientRect().y > card.current.getBoundingClientRect().y) {
             card.current.parentElement.scrollTo({
-                top: card.current.offsetTop - card.current.parentElement.offsetTop - 50,
+                top: card.current.offsetTop - card.current.parentElement.offsetTop - LOCATOR_OFFSET - 25,
                 left: 0,
                 behavior: reduceMotion ? "auto" : "smooth"
             });
