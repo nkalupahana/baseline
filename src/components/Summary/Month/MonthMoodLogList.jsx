@@ -12,10 +12,11 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
     const [filteredLogs, setFilteredLogs] = useState(logs);
     const [numberFilter, setNumberFilter] = useState([]);
     const [averageFilter, setAverageFilter] = useState([]);
+    const [imageFilter, setImageFilter] = useState(false);
 
     useEffect(() => {
-        filterLogs(searchText, numberFilter, averageFilter, logs, setFilteredLogs);
-    }, [searchText, numberFilter, averageFilter, logs]);
+        filterLogs(searchText, numberFilter, averageFilter, imageFilter, logs, setFilteredLogs);
+    }, [searchText, numberFilter, averageFilter, imageFilter, logs]);
     
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
@@ -101,6 +102,8 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                     setAverageFilter={setAverageFilter} 
                     numberFilter={numberFilter}
                     setNumberFilter={setNumberFilter} 
+                    imageFilter={imageFilter}
+                    setImageFilter={setImageFilter}
                 />
             </div>
             <MoodLogList 
@@ -110,7 +113,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                 setInFullscreen={setInFullscreen} 
                 reverse={true} 
                 requestedDate={requestedDate} 
-                aHeight={"100vh - 330px"}
+                aHeight={"100vh - 280px"}
                 filtered={logs.length !== filteredLogs.length}
                 LOCATOR_OFFSET={LOCATOR_OFFSET}
             />

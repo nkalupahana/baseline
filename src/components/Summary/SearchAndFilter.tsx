@@ -1,3 +1,5 @@
+import { IonIcon } from "@ionic/react";
+import { imagesOutline } from "ionicons/icons";
 import { debounce } from "lodash";
 import { MultiSelect } from "react-multi-select-component";
 
@@ -7,6 +9,8 @@ interface Props {
     setNumberFilter: (numbers: number[]) => void;
     averageFilter: string[];
     setAverageFilter: (avgs: string[]) => void;
+    imageFilter: boolean;
+    setImageFilter: (image: boolean) => void;
     inputClass?: string;
 }
 
@@ -15,7 +19,7 @@ interface Selected {
     value: string;
 }
 
-const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, averageFilter, setAverageFilter, inputClass } : Props) => {
+const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, averageFilter, setAverageFilter, imageFilter, setImageFilter, inputClass } : Props) => {
     const debounceSetSearchText = debounce(setSearchText, 500);
 
     const expand = (x: any) => {
@@ -44,6 +48,8 @@ const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, average
                 overrideStrings={{"selectSomeItems": "Average"}}
                 disableSearch={true}
             />
+            <span style={{"width": "20px", "height": "100%"}}></span>
+            <IonIcon onClick={() => setImageFilter(!imageFilter)} style={imageFilter ? {"color": "lightblue"} : {}} className="image-btn" icon={imagesOutline} />
         </span>
     </>
 };

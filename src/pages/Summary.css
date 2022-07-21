@@ -192,3 +192,13 @@
 .dropdown-content {
     z-index: 3 !important;
 }
+
+.image-filter {
+
+}
+
+.image-btn {
+    padding-top: 6px;
+    padding-left: 8px;
+    font-size: 1.1em;
+}
