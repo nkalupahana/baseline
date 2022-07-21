@@ -94,7 +94,27 @@ describe("Mobile Flow", () => {
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
         cy.get(".log-list-expand").should("have.css", "height").and("match", /^0px$/)
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
-        cy.get(".log-list-expand").should("have.css", "height").and("not.match", /^0px$/)
+        cy.get(".log-list-expand").should("have.css", "height").and("not.match", /^0px$/)        
+    })
+
+    it("Test Search and Filter", () => {
+        cy.contains("Search").click()
+        cy.get(".searchbar").type("Hello world")
+        cy.get(".mood-card").should("have.length", 1)
+
+        cy.get(".searchbar").clear().type("Nonsense")
+        cy.contains("No Results").should("exist")
+
+        cy.get(".searchbar").clear()
+        cy.get("No Results").should("not.exist")
+        cy.get(".img-button").click()
+        cy.contains("No Results").should("exist")
+
+        cy.get(".img-button").click()
+        cy.contains("No Results").should("not.exist")
+
+        cy.get(".top-corner").click()
+        cy.contains("week has been looking").should("exist")
     })
 
     it("Test -5 Warning Behavior", () => {
@@ -492,5 +512,13 @@ describe("Test Settings", () => {
         cy.get(".recharts-responsive-container").should("have.length", 2)
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
+    })
+
+    it("Test Search and Filter", () => {
+        cy.get(".img-button").click()
+        cy.contains("No Results").should("exist")
+        
+        cy.get(".img-button").click()
+        cy.contains("No Results").should("not.exist")
     })
 })
