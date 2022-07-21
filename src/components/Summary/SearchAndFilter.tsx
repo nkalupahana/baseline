@@ -48,7 +48,7 @@ const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, average
                 overrideStrings={{"selectSomeItems": "Average"}}
                 disableSearch={true}
             />
-            <span style={{"width": "20px", "height": "100%"}}></span>
+            <span style={{"width": "10px", "height": "100%"}}></span>
             <IonIcon onClick={() => setImageFilter(!imageFilter)} style={imageFilter ? {"color": "lightblue"} : {}} className="image-btn" icon={imagesOutline} />
         </span>
     </>
