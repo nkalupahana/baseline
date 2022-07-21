@@ -73,7 +73,7 @@
 }
 
 .grid-heading.grid {
-    height: 120px;
+    height: 140px;
 }
 
 .filter-selects {
@@ -187,4 +187,8 @@
 
 .filter-average {
     grid-area: average;
+}
+
+.dropdown-content {
+    z-index: 3 !important;
 }

@@ -6,6 +6,7 @@ import { searchOutline } from "ionicons/icons";
 import MoodLogList from "../MoodLogList";
 
 const TRUST_BOUND = 15;
+const LOCATOR_OFFSET = 30;
 
 const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate, search }) => {
     const [showSearch, setShowSearch] = useState(true);
@@ -35,7 +36,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 const id = "i" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
-                    const bound = getMoodLogListBound(el, node);
+                    const bound = getMoodLogListBound(el, node, LOCATOR_OFFSET);
                     // If we have, remove it
                     // and set it to the trust region
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
@@ -55,7 +56,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 if (requestedDate.list.trustRegion) {
                     // If we're in the trust region, it might not be a user scroll,
                     // so let's check for that
-                    const bound = getMoodLogListBound(requestedDate.list.trustRegion, node);
+                    const bound = getMoodLogListBound(requestedDate.list.trustRegion, node, LOCATOR_OFFSET);
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
@@ -123,6 +124,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 requestedDate={requestedDate} 
                 aHeight={search.get ? "0px" : "100vh - 425px"} 
                 filtered={search.get}
+                LOCATOR_OFFSET={search.get ? 0 : LOCATOR_OFFSET}
             />
         </>
     )

@@ -2,7 +2,7 @@ import { IonSpinner } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Ref, useEffect, useState } from "react";
 import { Log } from "../../db";
-import { getDateFromLog, LOCATOR_OFFSET, parseSettings } from "../../helpers";
+import { getDateFromLog, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 
 interface Props {
@@ -15,7 +15,8 @@ interface Props {
         [key: string]: any
     }
     aHeight: string
-    filtered: boolean
+    filtered: boolean,
+    LOCATOR_OFFSET: number
 }
 
 const createLocator = (t: DateTime) => {
@@ -28,7 +29,7 @@ const createEmptyLocator = (t: DateTime) => {
     return (<p id={`i-locator-${t.toISODate()}-bottom`} className="margin-0" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
 }
 
-const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight, filtered } : Props) => {
+const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight, filtered, LOCATOR_OFFSET } : Props) => {
     const [els, setEls] = useState<JSX.Element[]>([]);
     const [updating, setUpdating] = useState(window.location.hash === "#update");
     const settings = parseSettings();
@@ -95,7 +96,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             t = getDateFromLog(top);
             els.push(createLocator(t));
         }
-        els.push(<div key={filtered ? "top-br-filtered" : "top-br"} style={{"width": "100%", "height": filtered ? "80px" : "10px"}}></div>);
+        els.push(<div key={filtered ? "top-br-filtered" : "top-br"} style={{"width": "100%", "height": `${LOCATOR_OFFSET}px`}}></div>);
     
         // Reverse for display
         els.reverse();
@@ -114,7 +115,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         console.log(`first logs: ${firstLogs}`)
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
-    }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating, filtered]);
+    }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating, filtered, LOCATOR_OFFSET]);
     
     // Scroll to last log item on load
     useEffect(() => {
@@ -130,7 +131,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             }
             --i;
         }
-    }, [els]);
+    }, [els, LOCATOR_OFFSET]);
 
     // Scroll to position if we get a request
     useEffect(() => {
@@ -147,7 +148,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 });
             }
         }
-    }, [requestedDate, settings.reduceMotion]);
+    }, [requestedDate, settings.reduceMotion, LOCATOR_OFFSET]);
 
     return (
         <div ref={container} id="moodLogList" className="mood-log-list" style={inFullscreen ? {} :  {"zIndex": 2}}>
