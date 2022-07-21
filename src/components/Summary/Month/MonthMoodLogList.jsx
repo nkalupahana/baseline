@@ -2,18 +2,19 @@ import { useCallback, useEffect, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
 import { filterLogs, getMoodLogListBound, getTime } from "../../../helpers";
 import MoodLogList from "../MoodLogList";
-import { debounce } from "lodash";
+import SearchAndFilter from "../SearchAndFilter";
 
 const TRUST_BOUND = 15;
 
 const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
     const [searchText, setSearchText] = useState("");
     const [filteredLogs, setFilteredLogs] = useState(logs);
-    const debounceSetSearchText = debounce(setSearchText, 500);
+    const [numberFilter, setNumberFilter] = useState([]);
+    const [averageFilter, setAverageFilter] = useState([]);
 
     useEffect(() => {
-        filterLogs(searchText, logs, setFilteredLogs);
-    }, [searchText, logs]);
+        filterLogs(searchText, numberFilter, averageFilter, logs, setFilteredLogs);
+    }, [searchText, numberFilter, averageFilter, logs]);
     
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
@@ -92,18 +93,24 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
 
     return (
         <>
-            <div className="log-list-expand" style={{"height": "60px"}}>
-                <input placeholder="Search" type="text" className="invisible-input searchbar" onChange={e => debounceSetSearchText(e.target.value)}/>
+            <div className="log-list-expand grid">
+                <SearchAndFilter 
+                    setSearchText={setSearchText} 
+                    averageFilter={averageFilter}
+                    setAverageFilter={setAverageFilter} 
+                    numberFilter={numberFilter}
+                    setNumberFilter={setNumberFilter} 
+                />
             </div>
             <MoodLogList 
-                logs={searchText ? filteredLogs : logs} 
+                logs={filteredLogs} 
                 container={container} 
                 inFullscreen={inFullscreen}
                 setInFullscreen={setInFullscreen} 
                 reverse={true} 
                 requestedDate={requestedDate} 
-                aHeight={"100vh - 300px"}
-                filtered={!!searchText}
+                aHeight={"100vh - 330px"}
+                filtered={logs.length !== filteredLogs.length}
             />
         </>
     )
