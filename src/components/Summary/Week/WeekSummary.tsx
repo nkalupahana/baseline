@@ -36,7 +36,6 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
         setNumberFilter([]);
         setAverageFilter([]);
         setImageFilter(false);
-        setFilteredLogs(logs);
     }, [search.get]);
     
     const [requestedDate, setRequestedDate] = useState({
