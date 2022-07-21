@@ -87,7 +87,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 if (!log.time.includes(addZone)) log.time += " " + addZone;
             }
     
-            today.push(<MoodLogCard setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} />);
+            today.push(<MoodLogCard setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} />);
         }
     
         // Add final information

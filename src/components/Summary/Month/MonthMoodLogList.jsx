@@ -113,7 +113,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                 setInFullscreen={setInFullscreen} 
                 reverse={true} 
                 requestedDate={requestedDate} 
-                aHeight={"100vh - 280px"}
+                aHeight={"100vh - 250px"}
                 filtered={logs.length !== filteredLogs.length}
                 LOCATOR_OFFSET={LOCATOR_OFFSET}
             />
