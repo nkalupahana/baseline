@@ -107,10 +107,10 @@ describe("Mobile Flow", () => {
 
         cy.get(".searchbar").clear()
         cy.get("No Results").should("not.exist")
-        cy.get(".img-button").click()
+        cy.get(".image-btn").click()
         cy.contains("No Results").should("exist")
 
-        cy.get(".img-button").click()
+        cy.get(".image-btn").click()
         cy.contains("No Results").should("not.exist")
 
         cy.get(".top-corner").click()
@@ -515,10 +515,10 @@ describe("Test Settings", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get(".img-button").click()
+        cy.get(".image-btn").click()
         cy.contains("No Results").should("exist")
         
-        cy.get(".img-button").click()
+        cy.get(".image-btn").click()
         cy.contains("No Results").should("not.exist")
     })
 })
