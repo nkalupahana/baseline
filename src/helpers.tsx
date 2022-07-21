@@ -359,17 +359,33 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     setBaselineGraph(baseline);
 }
 
-export function filterLogs(searchText: string, logs: Log[], setFilteredLogs: (logs: Log[]) => void) {
-    if (!searchText) return;
-    const fuse = new Fuse(logs, {
-        keys: ["journal"],
-        shouldSort: false,
-        findAllMatches: true,
-        ignoreLocation: true,
-        threshold: 0.2
-    });
+export function filterLogs(
+    searchText: string,
+    numberFilter: number[],
+    averageFilter: string[],
+    logs: Log[], 
+    setFilteredLogs: (logs: Log[]) => void
+) {
+    if (!searchText && !numberFilter.length && !averageFilter.length) {
+        setFilteredLogs(logs);
+        return;
+    }
+    
+    if (numberFilter.length) logs = logs.filter(x => numberFilter.includes(x.mood));
+    if (averageFilter.length) logs = logs.filter(x => averageFilter.includes(x.average));
 
-    const res = fuse.search(searchText).map(x => x.item);
-    console.log(res);
-    setFilteredLogs(res);
+    if (searchText) {
+        const fuse = new Fuse(logs, {
+            keys: ["journal"],
+            shouldSort: false,
+            findAllMatches: true,
+            ignoreLocation: true,
+            threshold: 0.2
+        });
+
+        logs = fuse.search(searchText).map(x => x.item);
+    }
+
+    console.log(logs);
+    setFilteredLogs(logs);
 }

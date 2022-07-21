@@ -51,7 +51,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
     
         let firstLogs = 0;
         if (logs.length === 0) {
-            setEls([<div style={{"width": "100%", "height": "60px"}}></div>, <p className="text-center">No Results</p>]);
+            setEls([<div key="top-spacer-no-results" style={{"width": "100%", "height": "90px"}}></div>, <p key="no-results" className="text-center">No Results</p>]);
             return;
         }
         
@@ -95,7 +95,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             t = getDateFromLog(top);
             els.push(createLocator(t));
         }
-        els.push(<div key="top-br" style={{"width": "100%", "height": "10px"}}></div>);
+        els.push(<div key={filtered ? "top-br-filtered" : "top-br"} style={{"width": "100%", "height": filtered ? "80px" : "10px"}}></div>);
     
         // Reverse for display
         els.reverse();
@@ -106,11 +106,12 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             els.push(<div className="text-center" key="end1">
                 <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <br />
-            </div>)
+            </div>);
             firstLogs = 0;
         }
     
         els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
+        console.log(`first logs: ${firstLogs}`)
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
         setEls(els);
     }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating, filtered]);

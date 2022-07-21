@@ -63,6 +63,25 @@
     background-color: var(--ion-background-color);
 }
 
+.log-list-expand.grid, .grid-heading.grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.log-list-expand.grid {
+    height: 84px;
+}
+
+.grid-heading.grid {
+    height: 120px;
+}
+
+.filter-selects {
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+}
+
 .week-summary-grid {
     display: grid;
     grid-template-rows: auto min-content auto;
@@ -149,6 +168,8 @@
     font-size: 18px;
     padding-top: 4px;
     font-family: "Lato", sans-serif;
+    grid-area: search;
+    margin: 0 auto;
 }
 
 .invisible-input.searchbar.week {
@@ -158,4 +179,12 @@
 
 .grid-heading {
     grid-area: heading;
+}
+
+.filter-number {
+    grid-area: number;
+}
+
+.filter-average {
+    grid-area: average;
 }

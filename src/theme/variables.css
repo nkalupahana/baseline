@@ -36,6 +36,11 @@ http://ionicframework.com/docs/theming/ */
     --notification-green: #81c784;
 }
 
+.rmsc.multi {
+    width: 120px;
+    --rmsc-h: 30px;
+}
+
 @media (prefers-color-scheme: dark) {
     .flickity-page-dots .dot {
         background: #cacaca !important;
@@ -85,6 +90,13 @@ http://ionicframework.com/docs/theming/ */
         --ion-color-step-100: #2a2a2a;
         --ion-color-step-150: #363636;
         --ion-color-step-350: #656565;
+    }
+
+    .rmsc.multi {
+        --rmsc-bg: rgb(16, 16, 16);
+        --rmsc-border: rgb(32, 32, 32);
+        --rmsc-hover: rgb(32, 32, 32);
+        --rmsc-selected: rgb(42, 42, 42);
     }
 }
 
