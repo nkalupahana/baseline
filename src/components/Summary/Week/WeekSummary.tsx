@@ -23,10 +23,11 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
     const [filteredLogs, setFilteredLogs] = useState(logs);
     const [numberFilter, setNumberFilter] = useState<number[]>([]);
     const [averageFilter, setAverageFilter] = useState<string[]>([]);
+    const [imageFilter, setImageFilter] = useState(false);
 
     useEffect(() => {
-        filterLogs(searchText, numberFilter, averageFilter, logs, setFilteredLogs);
-    }, [searchText, numberFilter, averageFilter, logs]);
+        filterLogs(searchText, numberFilter, averageFilter, imageFilter, logs, setFilteredLogs);
+    }, [searchText, numberFilter, averageFilter, imageFilter, logs]);
 
     // Clear search terms whenever search view
     // is toggled, ensuring view isn't stale later on
@@ -69,6 +70,8 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
                         setAverageFilter={setAverageFilter}
                         numberFilter={numberFilter}
                         setNumberFilter={setNumberFilter}
+                        imageFilter={imageFilter}
+                        setImageFilter={setImageFilter}
                         inputClass={"week"}
                     />
                 </div> }

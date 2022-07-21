@@ -361,14 +361,16 @@ export function filterLogs(
     searchText: string,
     numberFilter: number[],
     averageFilter: string[],
+    imageFilter: boolean,
     logs: Log[], 
     setFilteredLogs: (logs: Log[]) => void
 ) {
-    if (!searchText && !numberFilter.length && !averageFilter.length) {
+    if (!searchText && !numberFilter.length && !averageFilter.length && !imageFilter) {
         setFilteredLogs(logs);
         return;
     }
-    
+
+    if (imageFilter) logs = logs.filter(x => x.files && x.files.length > 0);
     if (numberFilter.length) logs = logs.filter(x => numberFilter.includes(x.mood));
     if (averageFilter.length) logs = logs.filter(x => averageFilter.includes(x.average));
 
