@@ -5,6 +5,7 @@ import MoodLogList from "../MoodLogList";
 import SearchAndFilter from "../SearchAndFilter";
 
 const TRUST_BOUND = 15;
+const LOCATOR_OFFSET = 95;
 
 const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
     const [searchText, setSearchText] = useState("");
@@ -26,7 +27,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                 const id = "i" + requestedDate.el.slice(1);
                 const el = node.querySelector("#" + id);
                 if (el) {
-                    const bound = getMoodLogListBound(el, node);
+                    const bound = getMoodLogListBound(el, node, LOCATOR_OFFSET);
                     // If we have, remove it
                     // and set it to the trust region
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
@@ -45,7 +46,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                 if (requestedDate.list.trustRegion) {
                     // If we're in the trust region, it might not be a user scroll,
                     // so let's check for that
-                    const bound = getMoodLogListBound(requestedDate.list.trustRegion, node);
+                    const bound = getMoodLogListBound(requestedDate.list.trustRegion, node, LOCATOR_OFFSET);
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
@@ -111,6 +112,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                 requestedDate={requestedDate} 
                 aHeight={"100vh - 330px"}
                 filtered={logs.length !== filteredLogs.length}
+                LOCATOR_OFFSET={LOCATOR_OFFSET}
             />
         </>
     )

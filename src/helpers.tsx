@@ -73,10 +73,8 @@ export function createPoints(data: Log[]) {
     return points;
 }
 
-export const LOCATOR_OFFSET = 30;
-
-export function getMoodLogListBound(el: HTMLElement, node: HTMLElement) {
-    return node.offsetTop - el.getBoundingClientRect().y + LOCATOR_OFFSET;
+export function getMoodLogListBound(el: HTMLElement, node: HTMLElement, offset: number) {
+    return node.offsetTop - el.getBoundingClientRect().y + offset;
 }
 
 export function toast(message: string, gravity?: Toastify.Options["gravity"]) {
@@ -386,6 +384,5 @@ export function filterLogs(
         logs = fuse.search(searchText).map(x => x.item);
     }
 
-    console.log(logs);
     setFilteredLogs(logs);
 }

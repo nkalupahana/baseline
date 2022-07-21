@@ -1,8 +1,10 @@
 import { DateTime } from "luxon";
-import { createPoints, getDateFromLog, getTime, LOCATOR_OFFSET, parseSettings } from "../../../helpers";
+import { createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
 import { chunk } from "lodash";
 import useCallbackRef from "../../../useCallbackRef";
 import { useCallback, useEffect, useState } from "react";
+
+const LOCATOR_OFFSET = 30;
 
 function createCalendarCard(date, data=[]) {
     const points = createPoints(data);

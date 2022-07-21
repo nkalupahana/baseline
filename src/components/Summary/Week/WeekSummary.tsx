@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { debounce } from "lodash";
 import { filterLogs } from "../../../helpers";
 import SearchAndFilter from "../SearchAndFilter";
 
@@ -27,7 +26,7 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
 
     useEffect(() => {
         filterLogs(searchText, numberFilter, averageFilter, logs, setFilteredLogs);
-    }, [searchText, logs]);
+    }, [searchText, numberFilter, averageFilter, logs]);
 
     // Clear search terms whenever search view
     // is toggled, ensuring view isn't stale later on
@@ -76,7 +75,7 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
                 <WeekMoodLogList 
                     inFullscreen={inFullscreen} 
                     setInFullscreen={setInFullscreen} 
-                    logs={search.get && searchText ? filteredLogs : logs} 
+                    logs={search.get ? filteredLogs : logs} 
                     requestedDate={requestedDate} 
                     setRequestedDate={setRequestedDate} 
                     search={search}
