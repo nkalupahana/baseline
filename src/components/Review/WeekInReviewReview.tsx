@@ -92,7 +92,9 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                                 or above average? Well, here's what that's used for &mdash; your baseline. Your baseline 
                                 tracks what you believe your "average" mood is over time, so you can see how 
                                 your standards for your own average change over time. The numbers don't mean anything by themselves, 
-                                so don't compare your baseline to other people. What matters is how your baseline changes over time.
+                                so don't compare your baseline to other people. What matters is how your baseline 
+                                changes <i>over time.</i> (And if you're just starting out and don't have enough data 
+                                to see a trend, don't worry about your baseline just yet.)
                             </p>
                             <p>
                                 Notice your baseline falling? You might want to make a conscious effort to bring more things 
@@ -107,8 +109,8 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                             </p>
                         </> }
                         { typeof baselineGraph === "number" && <p>
-                            Unfortunately, you haven't used baseline for at least two weeks yet &mdash; and that's how
-                            much data we need to calculated your baseline! We'll try again next week.
+                            Unfortunately, you haven't used baseline for at least three weeks yet &mdash; and that's how
+                            much data we need to calculate your baseline! We'll try again next week.
                         </p> }
                         <div className="finish-button" onClick={finish}>
                             { !loading && <>Finish</> }
