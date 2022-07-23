@@ -34,6 +34,7 @@ interface Line {
 export interface GraphConfig {
     yAxisLabel: string;
     yDomain?: [(min: number) => number, (max: number) => number];
+    yAxisWidth?: number;
     lines: Line[]
 }
 

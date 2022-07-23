@@ -22,7 +22,7 @@ const SurveyGraph = ({ data, graphConfig }: Props) => {
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
-                <YAxis tickFormatter={(v, i) => { return String(v).substring(0, 4); }} width={45} domain={graphConfig.yDomain}>
+                <YAxis tickFormatter={(v, i) => { return String(v).substring(0, 4); }} width={graphConfig.yAxisWidth ?? 45} domain={graphConfig.yDomain}>
                     <Label className={"svg-text-color"} angle={-90} value={graphConfig.yAxisLabel} position='insideLeft' style={{textAnchor: 'middle'}} dy={"0.1em"} />
                 </YAxis>
                 <Legend />
