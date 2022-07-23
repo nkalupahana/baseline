@@ -61,14 +61,14 @@ export default function SPF(): Screener {
             const resilienceBasics = <p>
                 Resilience is a measure of how well you can cope mentally and emotionally with a crisis, 
                 and how quickly you can move on from it without suffering longer-term consequences. It's an important 
-                metric to keep track of &mdash; if you're low on it, stress could cause much bigger impacts 
-                on you than it would normally.
+                metric to keep track of &mdash; if you're low on it, stress could have a much bigger 
+                impact on you than it would normally.
             </p>
 
             if (result <= 32) {
                 return <>
                     { resilienceBasics }
-                    <p>Based on your answers, you have high resilence!</p>
+                    <p>Based on your answers, you have high resilence (high is best)!</p>
                 </>;
             } else {
                 return <>
@@ -95,7 +95,7 @@ export default function SPF(): Screener {
             }
         },
         getClinicalInformation: function() {
-            return `SPF-12 raw scores: Social-Interpersonal ${this._results["Social-Interpersonal"]}, Cognitive-Individual ${this._results["Cognitive-Individual"]}. Raw scores unscaled, from 1 - 5 for each question (Likert). Cutoffs and scale from doi: 10.1007/s12144-018-0110-6.`;
+            return `SPF-12 raw scores: Social-Interpersonal ${this._results["Social-Interpersonal"]}, Cognitive-Individual ${this._results["Cognitive-Individual"]}. Raw scores unscaled, from 1 - 5 for each question (Likert). Score is inverted on graph for understandability. Cutoffs and scale from doi: 10.1007/s12144-018-0110-6.`;
         },
         getPriority: function() {
             return Priority.NORMAL;
@@ -104,16 +104,17 @@ export default function SPF(): Screener {
             let d = [];
             for (let key in data) {
                 if (data[key]["key"] !== this._key) continue;
+                // Invert score so higher is better (makes more sense)
                 d.push({
                     date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
-                    Score: data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"],
+                    Score: 60 - (data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"]),
                 });
             }
 
             return d;
         },
         graphConfig: {
-            yAxisLabel: "Score (lower is better)",
+            yAxisLabel: "Score (higher is better)",
             lines: [{
                 key: "Score",
                 color: "#ff6361"

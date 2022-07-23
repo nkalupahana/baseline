@@ -91,10 +91,14 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                                 Remember how every time you mood log, we ask you whether you're feeling below, at, 
                                 or above average? Well, here's what that's used for &mdash; your baseline. Your baseline 
                                 tracks what you believe your "average" mood is over time, so you can see how 
-                                your standards for your own average change over time. Notice your baseline falling? You 
-                                might want to make a conscious effort to bring more things into your life that you typically  
-                                associate with higher mood scores. If your baseline has fallen significantly, or isn't rebounding, 
-                                you might want to take some time to reflect on what might've changed in your life that led to that.
+                                your standards for your own average change over time. The numbers don't mean anything by themselves, 
+                                so don't compare your baseline to other people. What matters is how your baseline changes over time.
+                            </p>
+                            <p>
+                                Notice your baseline falling? You might want to make a conscious effort to bring more things 
+                                into your life that you typically associate with higher mood scores. If your baseline has 
+                                fallen significantly, or isn't rebounding, you should to take some time to reflect on what 
+                                might've changed in your life that led to that.
                             </p>
                             <p>
                                 Mood logging is a great start to that process &mdash; we recommend that you review your mood logs 
