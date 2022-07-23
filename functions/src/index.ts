@@ -385,28 +385,27 @@ export const cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsu
     let promises: Promise<any>[] = [];
     let usersToDelete: string[]  = [];
 
-    const listAllUsers = (nextPageToken?: string) => {
-        return admin.auth()
-            .listUsers(1000, nextPageToken)
-            .then(async listUsersResult => {
-                listUsersResult.users.forEach((userRecord) => {
-                    const userData = userRecord.toJSON() as UserRecord;
-                    if (userData.providerData.length === 0) {
-                        // Anonymous account -- delete artifacts and get UID for deletion from Auth
-                        promises.push(admin.database().ref(`/${userData.uid}`).remove());
-                        promises.push(admin.storage().bucket().deleteFiles({ prefix: `user/${userData.uid}` }));
-                        usersToDelete.push(userData.uid);
-                    }
-                });
-                
-                // List next batch of users, if it exists.
-                if (listUsersResult.pageToken) {
-                    await listAllUsers(listUsersResult.pageToken);
+    const listAllUsers = async (nextPageToken?: string) => {
+        try {
+            const listUsersResult = await admin.auth()
+                .listUsers(1000, nextPageToken);
+            listUsersResult.users.forEach((userRecord) => {
+                const userData = userRecord.toJSON() as UserRecord;
+                if (userData.providerData.length === 0) {
+                    // Anonymous account -- delete artifacts and get UID for deletion from Auth
+                    promises.push(admin.database().ref(`/${userData.uid}`).remove());
+                    promises.push(admin.storage().bucket().deleteFiles({ prefix: `user/${userData.uid}` }));
+                    usersToDelete.push(userData.uid);
                 }
-            })
-            .catch((error) => {
-                console.log("Error listing users:", error);
             });
+
+            // List next batch of users, if it exists.
+            if (listUsersResult.pageToken) {
+                await listAllUsers(listUsersResult.pageToken);
+            }
+        } catch (error) {
+            console.log("Error listing users:", error);
+        }
     };
 
     // Get users, and wait for user data deletion to finish
@@ -810,7 +809,7 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
     // Go through all users, and add data to CSVs
     for (let userId in db) {
         if (!("encryption" in db[userId]) || db[userId]["encryption"]["id"] === "anonymous") continue;
-
+        
         for (let timestamp in db[userId]["logs"] ?? {}) {
             addAction(userId, timestamp, "moodLog");
 
@@ -832,9 +831,34 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
         }
     }
 
-    // Send CSVs to storage
+    // A list of emails
+    let emails: string[] = [];
+    const getAllUsers = async (nextPageToken?: string) => {
+        try {
+            const listUsersResult = await admin.auth()
+                .listUsers(1000, nextPageToken);
+            listUsersResult.users.forEach((userRecord) => {
+                const userData = userRecord.toJSON() as UserRecord;
+                if (userData.providerData.length !== 0 && userData.email) {
+                    emails.push(userData.email);
+                }
+            });
+
+            // List next batch of users, if it exists.
+            if (listUsersResult.pageToken) {
+                await getAllUsers(listUsersResult.pageToken);
+            }
+        } catch (error) {
+            console.log("Error listing users:", error);
+        }
+    };
+
+    await getAllUsers();
+
+    // Send CSVs/data to storage
     await storage.bucket("baseline-bi").file("actions.csv").save(actions.join("\n"));
     await storage.bucket("baseline-bi").file("lengths.csv").save(logLengths.join("\n"));
+    await storage.bucket("baseline-bi").file("emails.txt").save(emails.join("\n"));
 
     // Send actions CSV to BigQuery
     const actionsMetadata = {
