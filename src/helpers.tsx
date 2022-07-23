@@ -33,7 +33,8 @@ export const BASELINE_GRAPH_CONFIG: GraphConfig = {
     lines: [{
         key: "Mood",
         color: "#955196"
-    }]
+    }],
+    yAxisWidth: 60
 };
 
 const SECONDS_IN_DAY = 86400;
