@@ -25,7 +25,7 @@ export const FIND_HELP = <>
 
 export const HOTLINES = <>
     <p className="text-center margin-bottom-0">Crisis Text Line: <br />Text HOME to <a href="sms:741741" target="_blank" rel="noreferrer">741741</a></p>
-    <p className="text-center margin-bottom-0">National Suicide Prevention Lifeline: <br /><a href="tel:988" target="_blank" rel="noreferrer">Call</a> or <a href="sms:988" target="_blank" rel="noreferrer">Text</a> 988, or <a target="_blank" rel="noreferrer" href="https://suicidepreventionlifeline.org/chat/">Online Chat</a></p>
+    <p className="text-center margin-bottom-0">National Suicide Prevention Lifeline: <br /><a href="tel:988" target="_blank" rel="noreferrer">Call</a> or <a href="sms:988" target="_blank" rel="noreferrer">Text</a> 988, or <a target="_blank" rel="noreferrer" href="https://988lifeline.org/chat/">Online Chat</a></p>
     <p className="text-center margin-bottom-0">Trevor Line for LGBTQ+ Youth: <br /><a href="tel:1-866-488-7386" target="_blank" rel="noreferrer">Call</a> or <a href="sms:678678" target="_blank" rel="noreferrer">Text</a>, or <a href="https://trevorproject.secure.force.com/apex/TrevorChatPreChatForm" target="_blank" rel="noreferrer">Online Chat</a></p>
     <p className="text-center margin-bottom-0"><a href="https://www.apa.org/topics/crisis-hotlines" target="_blank" rel="noreferrer">Other Specialized Hotlines (drugs/assault/abuse/etc.)</a></p>
 </>;

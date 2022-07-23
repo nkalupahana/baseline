@@ -326,7 +326,9 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         currentDate = currentDate.plus({"days": 1});
     }
 
-    if (perDayAverages.length <= BASELINE_DAYS) {
+    // We're adding an extra week to the base days,
+    // to ensure people can actually see a trend
+    if (perDayAverages.length <= BASELINE_DAYS + 7) {
         setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
         return;
     }
