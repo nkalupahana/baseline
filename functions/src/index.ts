@@ -780,6 +780,24 @@ export const removePDP = functions.https.onRequest(async (req: Request, res) => 
     res.send(200);
 });
 
+export const deleteAccount = functions.https.onRequest(async (req: Request, res) => {
+    if (!(await preflight(req, res))) return;
+
+    // Delete database data
+    const db = admin.database();
+    await db.ref(`${req.user!.user_id}`).remove();
+
+    // Delete storage data
+    await admin.storage().bucket().deleteFiles({
+        prefix: `user/${req.user!.user_id}/`
+    });
+
+    // Delete user in auth
+    await admin.auth().deleteUser(req.user!.user_id);
+
+    res.send(200);
+});
+
 /* NON-PUBLIC */
 /*
  * Load data into BigQuery:
