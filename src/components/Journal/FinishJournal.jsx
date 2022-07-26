@@ -180,7 +180,7 @@ const FinishJournal = props => {
                             }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
-                                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onIonFocus={() => { if (!submitting) history.goBack() }} />
+                                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
                                 <div onClick={submit} className="finish-button">
                                     { !submitting && "Done!" }
                                     { submitting && <IonSpinner className="loader" name="crescent" /> }
