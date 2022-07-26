@@ -529,13 +529,15 @@ describe("Test Settings", () => {
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(0).click()
-        cy.get("ion-alert").should("not.be.visible")
+        cy.get("ion-alert").should("not.exist")
 
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(1).click()
+        cy.get("ion-alert").should("not.exist")
         
         cy.contains("Google").should("exist")
         cy.contains("delete").should("exist")
+        cy.get(".toastify").should("exist")
     })
 })
