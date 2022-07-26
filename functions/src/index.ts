@@ -170,9 +170,9 @@ export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPT
     }
 
     // Journal validation
-    const MAX_CHARS = 10000;
+    const MAX_CHARS = 25000;
     if (typeof data.journal !== "string" || data.journal.length > MAX_CHARS) {
-        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters.`);
+        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters. You can split up your journal into multiple logs if you need to.`);
         return;
     }
 
