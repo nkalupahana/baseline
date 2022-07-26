@@ -1,4 +1,4 @@
-import { IonButton, IonIcon } from "@ionic/react";
+import { IonButton, IonIcon, IonSpinner } from "@ionic/react";
 import { GoogleAuthProvider, OAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
 import { auth, db, signOutAndCleanUp } from "../firebase";
 import "./Container.css";
@@ -8,7 +8,7 @@ import { AuthCredential, FirebaseAuthentication } from "@moody-app/capacitor-fir
 import { Capacitor } from "@capacitor/core";
 import { FCM } from "@capacitor-community/fcm";
 import { PushNotifications } from "@moody-app/capacitor-push-notifications";
-import { networkFailure, setEkeys, setSettings, toast } from "../helpers";
+import { makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
@@ -26,7 +26,8 @@ enum LoginStates {
     GETTING_CLOUDKIT,
     UNLOCK,
     GETTING_KEYS,
-    SET_NOTIFICATIONS
+    SET_NOTIFICATIONS,
+    DELETE_ACCOUNT
 }
 
 const TOKENS: any = {
@@ -51,6 +52,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [loginState, setLoginState] = useState<LoginStates>(LoginStates.START);
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
     const [passphrase, setPassphrase] = useState("");
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         ldb.logs.clear();
@@ -150,7 +152,13 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 } else {
                     localStorage.setItem("keys", data);
                 }
-                
+
+                if (sessionStorage.getItem("deleteAccount") && sessionStorage.getItem("deleteAccount") === auth.currentUser?.uid) {
+                    setLoginState(LoginStates.DELETE_ACCOUNT);
+                    return;
+                }
+
+                sessionStorage.removeItem("deleteAccount");
                 if (Capacitor.getPlatform() === "web") {
                     setLoggingIn(false);
                 } else {
@@ -235,6 +243,14 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         });
     }
 
+    const deleteAccount = async () => {
+        sessionStorage.removeItem("deleteAccount");
+        setDeleting(true);
+        await makeRequest("deleteAccount", auth.currentUser!, {}, setDeleting);
+        resetFlow();
+        toast("Your account has been deleted.");
+    }
+
     return <div className="container inner-scroll">
             <div className="column-flex text-center center-summary">
             { loginState === LoginStates.START && <>
@@ -251,7 +267,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <MarketingBox 
                         icon={lockClosedOutline} 
                         title={"Keep your data safe."}
-                        description={"We encrypt your data so that not even we can see it, let alone hackers. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
+                        description={"We encrypt your data so that not even we can see it. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
                     <MarketingBox 
                         icon={globeOutline} 
                         title={"Access your journals anywhere."}
@@ -284,9 +300,22 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
-            { loginState === LoginStates.SET_NOTIFICATIONS && <>
-                <Notifications page={false} setLoggingIn={setLoggingIn} />
-            </> }
+            { loginState === LoginStates.SET_NOTIFICATIONS && <Notifications page={false} setLoggingIn={setLoggingIn} /> }
+            { loginState === LoginStates.DELETE_ACCOUNT && <div style={{"maxWidth": "500px"}}>
+                <div className="title">Delete Account?</div>
+                <p>
+                    If you're sure you'd like to delete your account, click the delete button below. Your data will
+                    be irreversibly lost. This cannot be undone. Otherwise, click <span onClick={() => {
+                        sessionStorage.removeItem("deleteAccount");
+                        resetFlow();
+                        toast("Account deletion cancelled.");
+                    }} className="fake-link">here</span> to cancel account deletion.
+                </p>
+                <div className="finish-button" onClick={deleteAccount}>
+                    { !deleting && <>Delete Account</> }
+                    { deleting && <IonSpinner className="loader" name="crescent" /> }
+                </div>
+            </div> }
         </div>
     </div>;
 };

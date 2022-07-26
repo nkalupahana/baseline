@@ -123,3 +123,7 @@
     height: 100%;
     width: 100%;
 }
+
+.small-text {
+    font-size: 12px;
+}

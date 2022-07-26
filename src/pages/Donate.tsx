@@ -5,8 +5,7 @@ import { goBackSafely } from "../helpers";
 const Donate = () => {
     return (<div className="container">
         <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
-        <div className="center-journal">
-        <div className="container-desktop">
+        <div className="center-journal container">
             <div className="title">
                 Donate!
             </div>
@@ -21,7 +20,6 @@ const Donate = () => {
                 open source on <a href="https://github.com/nkalupahana/baseline" target="_blank" rel="noreferrer">GitHub.</a> And of course, 
                 if you have any feedback, please send it our way at <a href="mailto:feedback@getbaseline.app">feedback@getbaseline.app</a>.
             </p>
-        </div>
         </div>
     </div>);
 };

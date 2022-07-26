@@ -521,4 +521,23 @@ describe("Test Settings", () => {
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
     })
+
+    it("Start Deletion", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        cy.contains("click here").click()
+        cy.get("ion-alert").should("be.visible")
+        cy.get("button").eq(0).click()
+        cy.get("ion-alert").should("not.exist")
+
+        cy.contains("click here").click()
+        cy.get("ion-alert").should("be.visible")
+        cy.get("button").eq(1).click()
+        cy.get("ion-alert").should("not.exist")
+        
+        cy.contains("Google").should("exist")
+        cy.contains("delete").should("exist")
+        cy.get(".toastify").should("exist")
+    })
 })
