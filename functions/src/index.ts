@@ -806,6 +806,8 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
         logLengths.push([userId, Math.round(logLength), `${bucket}: ${bucket * 600} - ${(bucket * 600) + 599}`].join(","));
     };
 
+    let gapFund: string[] = [];
+
     // Go through all users, and add data to CSVs
     for (let userId in db) {
         if (!("encryption" in db[userId]) || db[userId]["encryption"]["id"] === "anonymous") continue;
@@ -828,6 +830,10 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
 
         for (let timestamp in db[userId]["surveys"] ?? {}) {
             addAction(userId, timestamp, "survey");
+        }
+
+        if ("gapFund" in db[userId]) {
+            gapFund.push(userId);
         }
     }
 
@@ -858,6 +864,7 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
     // Send CSVs/data to storage
     await storage.bucket("baseline-bi").file("actions.csv").save(actions.join("\n"));
     await storage.bucket("baseline-bi").file("lengths.csv").save(logLengths.join("\n"));
+    await storage.bucket("baseline-bi").file("gapfund.csv").save(gapFund.join("\n"));
     await storage.bucket("baseline-bi").file("emails.txt").save(emails.join("\n"));
 
     // Send actions CSV to BigQuery
@@ -891,4 +898,17 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
         writeDisposition: "WRITE_TRUNCATE"
     };
     await bigquery.dataset("bi").table("log_length").load(storage.bucket("baseline-bi").file("lengths.csv"), lengthsMetadata);
+
+    // Send gap fund CSV to BigQuery
+    const gapMetadata = {
+        sourceFormat: "CSV",
+        schema: {
+          fields: [
+            { name: "userId", type: "STRING" }
+          ]
+        },
+        location: "US",
+        writeDisposition: "WRITE_TRUNCATE"
+    };
+    await bigquery.dataset("bi").table("gap_fund").load(storage.bucket("baseline-bi").file("gapfund.csv"), gapMetadata);
 });
