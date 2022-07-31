@@ -24,7 +24,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Splash" width="341.33334350585938" height="341.33334350585938"/>
+        <image name="Splash" width="1024" height="1024"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
