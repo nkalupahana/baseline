@@ -77,6 +77,10 @@
 			"c c c c c c c c c c c c"
 			"f f f f f f f f f f f f";
 	}
+
+	.container.home-page {
+		grid-template-rows: 30px auto auto auto auto;
+	}
 }
 
 .page {
