@@ -2,6 +2,8 @@ name: Build, Test, & Deploy
 
 on:
   push
+  paths-ignore:
+    - 'docs/**'
 
 jobs:
   test:
