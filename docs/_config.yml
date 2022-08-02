@@ -21,23 +21,23 @@ features                                  :
     description                           : By mood logging, you'll start to get a better feel for who you are and what you need to become healthier.
     fontawesome_icon_name                 : pencil
 
-  - title                                 : Keep a schedule.
-    description                           : Set granular notifications to keep yourself accountable to your mental health goals.
-    fontawesome_icon_name                 : calendar-days
-
   - title                                 : Recap your week.
     description                           : At the end of each week, you'll get a chance to take some mental health surveys and review your overall health baseline.
     fontawesome_icon_name                 : backward
+
+  - title                                 : Track your progress.
+    description                           : baseline uses clean visualizations to help you better understand how your mood changes over time. 
+    fontawesome_icon_name                 : chart-line
 
   - title                                 : Keep private thoughts private.
     description                           : You can set a passphrase in-app to hide your data from people who might have access to your device.
     fontawesome_icon_name                 : key
 
-  - title                                 : Track your progress.
-    description                           : baseline has visualizations to help you better understand how your mood changes over time. 
-    fontawesome_icon_name                 : chart-line
+  - title                                 : Make a schedule.
+    description                           : Set granular notifications to keep yourself accountable to your mental health goals.
+    fontawesome_icon_name                 : calendar-days
 
-  - title                                 : Lock your data away.
+  - title                                 : Protect your information.
     description                           : We encrypt your data so that not even we can see it, let alone anyone else.
     fontawesome_icon_name                 : lock
 
