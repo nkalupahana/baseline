@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Developers
+title: Developer Info
 include_in_header: false
 permalink: /developers
 ---

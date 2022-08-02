@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Privacy Policy
+title: Privacy
 include_in_header: false
 permalink: /privacy
 ---
