@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Terms and Conditions
+title: Terms
 include_in_header: false
 permalink: /terms
 ---
