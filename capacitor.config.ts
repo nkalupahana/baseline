@@ -15,6 +15,11 @@ const config: CapacitorConfig = {
     },
     Keyboard: {
       "resize": "none"
+    },
+    LocalNotifications: {
+      largeIcon: "notification_logo",
+      smallIcon: "notification_icon",
+      iconColor: "#03A9F4"
     }
   },
   backgroundColor: {
