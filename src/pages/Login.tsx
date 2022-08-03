@@ -266,12 +266,12 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                         description={"Use baseline's visualizations to help you better understand your mood over time. You'll also get a chance to review your progress and overall health 'baseline' at the end of each week."} />
                     <MarketingBox 
                         icon={lockClosedOutline} 
-                        title={"Keep your data safe."}
+                        title={"Protect your data."}
                         description={"We encrypt your data so that not even we can see it. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
                     <MarketingBox 
                         icon={globeOutline} 
                         title={"Access your journals anywhere."}
-                        description={<>All of your data can be accessed at any time on iOS, Android, and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
+                        description={<>All of your mood logs can be accessed at any time on iOS, Android, and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
                 </div>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
