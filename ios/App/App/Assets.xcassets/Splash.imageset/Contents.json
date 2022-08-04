@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "splash 1.png",
+      "filename" : "splash1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "splash 1-1.png",
+      "filename" : "splash1-1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,12 +23,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "splash dark 1.png",
+      "filename" : "splashdark1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "splash 2.png",
+      "filename" : "splash2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -39,7 +39,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "splash 2-1.png",
+      "filename" : "splash2-2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -50,12 +50,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "splash dark 2.png",
+      "filename" : "splashdark2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "splash 3.png",
+      "filename" : "splash2-1.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -66,7 +66,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "splash 3-1.png",
+      "filename" : "splash2-3.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -77,7 +77,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "splash dark 3.png",
+      "filename" : "splashdark2-1.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
