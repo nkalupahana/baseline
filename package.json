@@ -43,6 +43,7 @@
     "lodash": "^4.17.21",
     "luxon": "^2.0.2",
     "react": "^17.0.1",
+    "react-device-detect": "^2.2.2",
     "react-dom": "^17.0.1",
     "react-firebase-hooks": "^3.0.5",
     "react-flickity-component": "^3.6.2",
