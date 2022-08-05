@@ -1,5 +1,6 @@
 import { Router, Redirect, Route } from "react-router-dom";
 import { setupIonicReact } from "@ionic/react";
+import { isMobile } from "react-device-detect";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -53,6 +54,12 @@ const App = () => {
     const [user, loading] = useAuthState(auth);
     const [loggingIn, setLoggingIn] = useState(false);
     const keys = checkKeys();
+    const mobileIntervention = isMobile && !localStorage.getItem("mobileOverride") && Capacitor.getPlatform() === "web";
+
+    const overrideWeb = () => {
+        localStorage.setItem("mobileOverride", "true");
+        window.location.reload();
+    };
 
     useEffect(() => {
         smoothscroll.polyfill();
@@ -77,9 +84,21 @@ const App = () => {
 
     return (
         <>
-            { loading && !keys && <Preloader /> }
-            { !loading && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
-            { ((!loading && user && !loggingIn) || (loading && keys)) && (
+            { loading && !keys && !mobileIntervention && <Preloader /> }
+            { !loading && !mobileIntervention && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
+            { mobileIntervention && <div className="container center-summary">
+                <div className="title">One second!</div>
+                    <p className="text-center">
+                        It looks like you're using a mobile browser. 
+                        baseline has a mobile app for Android and iOS, and it's
+                        a way better experience than this website &mdash; in fact, the web 
+                        version will likely have issues running on a mobile devices. Search for 
+                        baseline on your local app store to install it. <br /><br/>
+                        Or, click <span className="fake-link" onClick={overrideWeb}>here</span> to 
+                        continue to web version anyways.
+                    </p>
+            </div> }
+            { !mobileIntervention && ((!loading && user && !loggingIn) || (loading && keys)) && (
                 <Router history={history}>
                     {routes.map(({ path, Component }) => {
                         return (
