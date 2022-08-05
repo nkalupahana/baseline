@@ -164,7 +164,7 @@ const Summary = () => {
                             { matches.tooShortMonth && <div className="center-summary">
                                 <div className="title">Turn your device or resize your window!</div>
                                 <p className="text-center" style={{"maxWidth": "600px"}}>
-                                    Right now, your screen is simultaneously too wide and short to display baseline's month summary view correctly. 
+                                    Right now, your screen is too wide and short to display baseline's month summary view correctly. 
                                     Either rotate your screen if you're on a mobile device, or make your window taller on desktop.
                                 </p>
                             </div> }
