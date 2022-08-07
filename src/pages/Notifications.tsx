@@ -6,7 +6,6 @@ import { LocalNotifications, Schedule } from "@getbaseline/capacitor-local-notif
 import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
 import EndSpacer from "../components/EndSpacer";
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
 
 interface NotificationData {
     [key: string]: Array<
