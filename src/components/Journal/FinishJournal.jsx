@@ -9,7 +9,7 @@ import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
 import { attach, closeOutline, trashOutline } from "ionicons/icons";
-import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
+import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
 import { checkKeys, networkFailure, toast } from "../../helpers";

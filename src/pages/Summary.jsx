@@ -12,12 +12,12 @@ import history from "../history";
 import "./Container.css";
 import "./Summary.css";
 import PromptWeekInReview from "../components/Review/PromptWeekInReview";
-import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
+import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
-import { FCM } from "@capacitor-community/fcm";
+import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging"
 
 const Summary = () => {
     const [user] = useAuthState(auth);
@@ -29,7 +29,7 @@ const Summary = () => {
     const [searchMode, setSearchMode] = useState(false);
 
     useEffect(() => {
-        if (Capacitor.getPlatform() !== "web") FCM.subscribeTo({ topic: "all" });
+        if (Capacitor.getPlatform() !== "web") FirebaseMessaging.subscribeToTopic({ topic: "all" });
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();

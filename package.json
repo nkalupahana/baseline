@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@capacitor-firebase/authentication": "^0.5.1-dev.01021f0.1659726888",
-    "@capacitor-firebase/messaging": "^0.5.1-dev.01021f0.1659726888",
     "@capacitor/android": "^4.0.0",
     "@capacitor/app": "^4.0.0",
     "@capacitor/core": "^4.0.0",
@@ -12,7 +11,8 @@
     "@capacitor/ios": "^4.0.0",
     "@capacitor/keyboard": "^4.0.0",
     "@capacitor/status-bar": "^4.0.0",
-    "@getbaseline/capacitor-local-notifications": "^4.0.1",
+    "@getbaseline/capacitor-firebase-messaging": "^0.5.2",
+    "@getbaseline/capacitor-local-notifications": "^4.0.2",
     "@ionic/core": "^6.0.2",
     "@ionic/react": "^6.0.2",
     "@ionic/react-router": "^6.0.2",
