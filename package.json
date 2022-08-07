@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "@capacitor-firebase/authentication": "^0.5.1-dev.01021f0.1659726888",
-    "@capacitor/android": "^4.0.0",
+    "@capacitor/android": "github:nkalupahana/capacitor-android",
     "@capacitor/app": "^4.0.0",
     "@capacitor/core": "^4.0.0",
     "@capacitor/haptics": "^4.0.0",
-    "@capacitor/ios": "^4.0.0",
+    "@capacitor/ios": "github:nkalupahana/capacitor-ios",
     "@capacitor/keyboard": "^4.0.0",
     "@capacitor/status-bar": "^4.0.0",
     "@getbaseline/capacitor-firebase-messaging": "^0.5.3",
