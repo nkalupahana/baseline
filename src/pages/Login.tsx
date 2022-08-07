@@ -220,8 +220,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     const signInWithAnonymous = async (flowVal: number) => {
         if (flowVal !== flow) return;
-        
-        if (flowVal !== flow) return;
         await signInAnonymously(auth);
         
         return {
