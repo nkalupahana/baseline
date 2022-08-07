@@ -78,7 +78,7 @@ const Summary = () => {
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
 
             if (newData) {
-                if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
+                if (Capacitor.getPlatform() !== "web") LocalNotifications.removeAllDeliveredNotifications();
                 const keys = checkKeys();
                 if (keys === "discreet") {
                     setGettingData(false);
