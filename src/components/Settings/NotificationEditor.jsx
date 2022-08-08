@@ -1,5 +1,5 @@
 import { IonDatetime, IonIcon } from "@ionic/react";
-import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
+import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { checkmarkOutline, closeOutline, pencil, trashOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import "./NotificationEditor.css";
@@ -93,6 +93,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
                             title: "What's happening?",
                             body: "Take a minute to journal.",
                             threadIdentifier: "reminder",
+                            timeSensitive: true,
                             schedule: {
                                 allowWhileIdle: true,
                                 on: {

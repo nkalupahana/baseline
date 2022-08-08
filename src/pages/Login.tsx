@@ -4,10 +4,8 @@ import { auth, db, signOutAndCleanUp } from "../firebase";
 import "./Container.css";
 import { useEffect, useState } from "react";
 import ldb from '../db';
-import { AuthCredential, FirebaseAuthentication } from "@moody-app/capacitor-firebase-authentication";
+import { AuthCredential, FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { Capacitor } from "@capacitor/core";
-import { FCM } from "@capacitor-community/fcm";
-import { PushNotifications } from "@moody-app/capacitor-push-notifications";
 import { makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
@@ -18,6 +16,7 @@ import "./Login.css";
 import MarketingBox from "../components/Login/MarketingBox";
 import { analytics, globeOutline, lockClosedOutline, logoApple, logoGoogle, pencilOutline } from "ionicons/icons";
 import Notifications from "./Notifications";
+import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
 
 enum LoginStates {
     START,
@@ -198,8 +197,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
         if (Capacitor.getPlatform() !== "web") {
             if (flowVal !== flow) return;
-            await setUpFCM();
-            if (flowVal !== flow) return;
             await signInWithCredential(auth, GoogleAuthProvider.credential(result.credential?.idToken));
         }
 
@@ -212,8 +209,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
         if (Capacitor.getPlatform() !== "web") {
             if (flowVal !== flow) return;
-            await setUpFCM();
-            if (flowVal !== flow) return;
             await signInWithCredential(auth, new OAuthProvider("apple.com").credential({
                 idToken: result.credential?.idToken,
                 rawNonce: result.credential?.nonce
@@ -225,9 +220,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     const signInWithAnonymous = async (flowVal: number) => {
         if (flowVal !== flow) return;
-        if (Capacitor.getPlatform() !== "web") await setUpFCM();
-        
-        if (flowVal !== flow) return;
         await signInAnonymously(auth);
         
         return {
@@ -236,19 +228,21 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         };
     }
 
-    const setUpFCM = async () => {
-        await PushNotifications.register();
-        PushNotifications.addListener("registration", _ => {
-            FCM.subscribeTo({ topic: "all" });
-        });
-    }
-
     const deleteAccount = async () => {
         sessionStorage.removeItem("deleteAccount");
         setDeleting(true);
         await makeRequest("deleteAccount", auth.currentUser!, {}, setDeleting);
         resetFlow();
         toast("Your account has been deleted.");
+    }
+
+    const finishSignIn = async () => {
+        try {
+            await FirebaseMessaging.requestPermissions();
+            await FirebaseMessaging.getToken();
+            await FirebaseMessaging.subscribeToTopic({ topic: "all" });
+        } catch {}
+        setLoggingIn(false);
     }
 
     return <div className="container inner-scroll">
@@ -300,7 +294,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
-            { loginState === LoginStates.SET_NOTIFICATIONS && <Notifications page={false} setLoggingIn={setLoggingIn} /> }
+            { loginState === LoginStates.SET_NOTIFICATIONS && <Notifications page={false} finishSignIn={finishSignIn} /> }
             { loginState === LoginStates.DELETE_ACCOUNT && <div style={{"maxWidth": "500px"}}>
                 <div className="title">Delete Account?</div>
                 <p>

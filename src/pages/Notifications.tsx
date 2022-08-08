@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
-import { LocalNotifications, Schedule } from "@moody-app/capacitor-local-notifications";
+import { LocalNotifications, Schedule } from "@getbaseline/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
 import EndSpacer from "../components/EndSpacer";
@@ -54,7 +54,7 @@ enum NotificationsAllowed {
     ALLOWED
 }
 
-const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggingIn?: (_: boolean) => void }) => {
+const Notifications = ({ page=true, finishSignIn } : { page?: boolean, finishSignIn?: () => void }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(NotificationsAllowed.NEED_TO_ASK);
     const [notificationData, setNotificationData] = useState({});
     const [globalEditing, setGlobalEditing] = useState(false);
@@ -126,7 +126,7 @@ const Notifications = ({ page=true, setLoggingIn } : { page?: boolean, setLoggin
             </div>
             { !page && !globalEditing && <>
                 <br />
-                <div onClick={() => setLoggingIn!(false)} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>All done!</div>
+                <div onClick={finishSignIn} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>All done!</div>
             </> }
             { page && <EndSpacer /> }
         </div>

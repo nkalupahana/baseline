@@ -12,12 +12,12 @@ import history from "../history";
 import "./Container.css";
 import "./Summary.css";
 import PromptWeekInReview from "../components/Review/PromptWeekInReview";
-import { LocalNotifications } from "@moody-app/capacitor-local-notifications";
+import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
-import { FCM } from "@capacitor-community/fcm";
+import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging"
 
 const Summary = () => {
     const [user] = useAuthState(auth);
@@ -29,7 +29,7 @@ const Summary = () => {
     const [searchMode, setSearchMode] = useState(false);
 
     useEffect(() => {
-        if (Capacitor.getPlatform() !== "web") FCM.subscribeTo({ topic: "all" });
+        if (Capacitor.getPlatform() !== "web") FirebaseMessaging.subscribeToTopic({ topic: "all" });
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();
@@ -78,7 +78,7 @@ const Summary = () => {
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
 
             if (newData) {
-                if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
+                if (Capacitor.getPlatform() !== "web") LocalNotifications.removeAllDeliveredNotifications();
                 const keys = checkKeys();
                 if (keys === "discreet") {
                     setGettingData(false);
@@ -145,7 +145,8 @@ const Summary = () => {
                 <Media
                     queries={{
                         week: "(max-width: 900px)",
-                        month: "(min-width: 901px)",
+                        month: "(min-width: 901px) and (min-height: 501px)",
+                        tooShortMonth: "(min-width: 901px) and (max-height: 500px)",
                     }}
                 >
                     {matches => (
@@ -160,6 +161,13 @@ const Summary = () => {
                                 logs={logs} 
                             /> }
                             { matches.month && <MonthSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
+                            { matches.tooShortMonth && <div className="center-summary">
+                                <div className="title">Turn your device or resize your window!</div>
+                                <p className="text-center" style={{"maxWidth": "600px"}}>
+                                    Right now, your screen is too wide and short to display baseline's month summary view correctly. 
+                                    Either rotate your screen if you're on a mobile device, or make your window taller on desktop.
+                                </p>
+                            </div> }
                             { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
                             { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
                         </>

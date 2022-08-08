@@ -1,7 +1,7 @@
 [
 	{
-		"pkg": "@capacitor-community/fcm",
-		"classpath": "com.getcapacitor.community.fcm.FCMPlugin"
+		"pkg": "@capacitor-firebase/authentication",
+		"classpath": "io.capawesome.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin"
 	},
 	{
 		"pkg": "@capacitor/app",
@@ -20,16 +20,12 @@
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
-		"pkg": "@moody-app/capacitor-firebase-authentication",
-		"classpath": "dev.robingenz.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin"
+		"pkg": "@getbaseline/capacitor-firebase-messaging",
+		"classpath": "io.capawesome.capacitorjs.plugins.firebase.messaging.FirebaseMessagingPlugin"
 	},
 	{
-		"pkg": "@moody-app/capacitor-local-notifications",
+		"pkg": "@getbaseline/capacitor-local-notifications",
 		"classpath": "com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin"
-	},
-	{
-		"pkg": "@moody-app/capacitor-push-notifications",
-		"classpath": "com.capacitorjs.plugins.pushnotifications.PushNotificationsPlugin"
 	},
 	{
 		"pkg": "capacitor-cloudkit",
