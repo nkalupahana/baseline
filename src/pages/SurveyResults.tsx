@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
-import { RESILIENCE_EXP } from "../data";
+import { BASELINE_EXP, RESILIENCE_EXP } from "../data";
 import { auth } from "../firebase";
 import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory } from "../helpers";
 import history from "../history";
@@ -36,10 +36,7 @@ const SurveyResults = () => {
                 { typeof baselineGraph === "object" && <>
                     <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                     <p className="text-center margin-bottom-0 max-width-600">
-                        Your baseline tracks what you believe your "average" mood is over time, so you can 
-                        see how your standards for your own average change over time. The numbers 
-                        don't mean anything by themselves, so don't compare your baseline to other 
-                        people. What matters is how your baseline changes <i>over time.</i>
+                        { BASELINE_EXP }
                     </p>
                     <p className="text-center margin-bottom-0 max-width-600">
                         Notice your baseline falling? You might want to make a conscious effort to bring more things 
