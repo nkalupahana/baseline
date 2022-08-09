@@ -29,3 +29,10 @@ export const HOTLINES = <>
     <p className="text-center margin-bottom-0">Trevor Line for LGBTQ+ Youth: <br /><a href="tel:1-866-488-7386" target="_blank" rel="noreferrer">Call</a> or <a href="sms:678678" target="_blank" rel="noreferrer">Text</a>, or <a href="https://trevorproject.secure.force.com/apex/TrevorChatPreChatForm" target="_blank" rel="noreferrer">Online Chat</a></p>
     <p className="text-center margin-bottom-0"><a href="https://www.apa.org/topics/crisis-hotlines" target="_blank" rel="noreferrer">Other Specialized Hotlines (drugs/assault/abuse/etc.)</a></p>
 </>;
+
+export const RESILIENCE_EXP = <>
+    Resilience is a measure of how well you can cope mentally and emotionally with a crisis, 
+    and how quickly you can move on from it without suffering longer-term consequences. It's an important 
+    metric to keep track of &mdash; if you're low on it, stress could have a much bigger 
+    impact on you than it would normally.
+</>

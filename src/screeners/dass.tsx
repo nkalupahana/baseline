@@ -157,10 +157,11 @@ export default function DASS(): Screener {
                 <p>Compared to the average person, you are experiencing <b>{ d }</b> levels of 
                     depression, <b>{ a }</b> levels of anxiety, and <b>{ s }</b> levels of stress.
                 </p>
-                <p>Take a moment to reflect on your results, especially if they've changed from before. If your results 
+                <p>Take a moment to reflect on your results, especially if they've changed from before. (All three metrics 
+                    on the graph are on separate scales, so we don't recommend comparing them to each other.) If your results 
                     have gotten worse, has anything happened in the past few weeks that might've led to that? For example, have 
                     any of your routines changed, or has some major event taken place in your life? And if so, is there anything 
-                    you can do to mitigate the impacts of those changes?
+                    you can do to help yourself mitigate the impacts of those changes?
                 </p>
                 <p>At the same time, if your results have gotten better, what might've changed in your life to make that happen &mdash; and 
                     are there any steps you can take to sustain those changes and keep moving in that direction?
@@ -168,7 +169,8 @@ export default function DASS(): Screener {
                 { problemFlag && <p>We understand your results today might be distressing or scary. If you can, take a minute to consider 
                     why your results are the way they are. Is there anything you can do to help move them in a better direction? 
                     And if your results have been consistently severe over time, we recommend reaching out to others for 
-                    support and seeking professional help. Take a minute to read the help resources in the main menu for more detailed guidance.
+                    support and seeking professional help. We know this might seem like a big step, but we promise it's worth it. 
+                    Take a minute to read the help resources in the main menu for more detailed guidance.
                 </p> }
             </>;
         },

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { FIND_HELP, GAP_FUND, GAP_FUND_REFER } from "../data";
+import { FIND_HELP, GAP_FUND, GAP_FUND_REFER, RESILIENCE_EXP } from "../data";
 import Screener, { Priority } from "./screener";
 
 export default function SPF(): Screener {
@@ -58,12 +58,7 @@ export default function SPF(): Screener {
         },
         getRecommendation: function() {
             const result = this._results["Social-Interpersonal"] + this._results["Cognitive-Individual"];
-            const resilienceBasics = <p>
-                Resilience is a measure of how well you can cope mentally and emotionally with a crisis, 
-                and how quickly you can move on from it without suffering longer-term consequences. It's an important 
-                metric to keep track of &mdash; if you're low on it, stress could have a much bigger 
-                impact on you than it would normally.
-            </p>
+            const resilienceBasics = <p>{ RESILIENCE_EXP }</p>
 
             if (result <= 32) {
                 return <>
