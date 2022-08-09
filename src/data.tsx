@@ -31,8 +31,15 @@ export const HOTLINES = <>
 </>;
 
 export const RESILIENCE_EXP = <>
-    Resilience is a measure of how well you can cope mentally and emotionally with a crisis, 
-    and how quickly you can move on from it without suffering longer-term consequences. It's an important 
-    metric to keep track of &mdash; if you're low on it, stress could have a much bigger 
-    impact on you than it would normally.
-</>
+    Resilience is a measure of how well you can cope mentally and emotionally 
+    with a crisis, and how quickly you can move on from it without suffering 
+    longer-term consequences. It's an important metric to keep track of &mdash; if 
+    you're low on it, stress could have a much bigger impact on you than it would normally.
+</>;
+
+export const BASELINE_EXP = <>
+    Your baseline tracks what you believe your "average" mood is, so you can 
+    see how your standards for your average change over time. The numbers 
+    don't mean anything by themselves, so don't compare your baseline to other 
+    people. What matters is how <i>your</i> baseline changes as time goes on.
+</>;

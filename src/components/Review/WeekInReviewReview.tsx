@@ -12,6 +12,7 @@ import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import SurveyGraph from "./SurveyGraph";
+import { BASELINE_EXP } from "../../data";
 
 interface Props {
     primary: Screener,
@@ -89,11 +90,8 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                             <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                             <p>
                                 Remember how every time you mood log, we ask you whether you're feeling below, at, 
-                                or above average? Well, here's what that's used for &mdash; your baseline. Your baseline 
-                                tracks what you believe your "average" mood is over time, so you can see how 
-                                your standards for your own average change over time. The numbers don't mean anything by themselves, 
-                                so don't compare your baseline to other people. What matters is how your baseline 
-                                changes <i>over time.</i> (And if you're just starting out and don't have enough data 
+                                or above average? Well, here's what that's used for &mdash; your baseline. 
+                                { BASELINE_EXP } (And if you're just starting out and don't have enough data 
                                 to see a trend, don't worry about your baseline just yet.)
                             </p>
                             <p>
