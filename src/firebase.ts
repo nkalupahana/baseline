@@ -18,7 +18,7 @@ enableLogging(true);
 
 export const firebase = initializeApp({
     apiKey: "AIzaSyCtzcuoGrYQfj-PaXGLNTD22Ro0JecPLl4",
-    authDomain: "getbaselineapp.firebaseapp.com",
+    authDomain: "web.getbaseline.app",
     projectId: "getbaselineapp",
     storageBucket: "getbaselineapp.appspot.com",
     messagingSenderId: "841063163864",
