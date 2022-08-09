@@ -642,8 +642,17 @@ footer {
 .footerLinks {
 	display: flex;
 	text-align: center;
-	padding-bottom: 70px;
+	padding-bottom: 20px;
 	padding-top: 50px;
+	width: 100%;
+	justify-content: center;
+}
+
+.contact {
+	color: grey;
+	padding-bottom: 50px;
+	text-align: center;
+	line-height: 1.3em;
 }
 
 .footerLinks a {
