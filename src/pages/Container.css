@@ -127,3 +127,7 @@
 .small-text {
     font-size: 12px;
 }
+
+.max-width-600 {
+    max-width: 600px;
+}

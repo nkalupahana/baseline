@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
+import { RESILIENCE_EXP } from "../data";
 import { auth } from "../firebase";
 import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory } from "../helpers";
 import history from "../history";
@@ -32,7 +33,19 @@ const SurveyResults = () => {
                 <div className="title">Survey Results</div>
                 <br />
                 <p className="bold head2 text-center">Your baseline</p>
-                { typeof baselineGraph === "object" && <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} /> }
+                { typeof baselineGraph === "object" && <>
+                    <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
+                    <p className="text-center margin-bottom-0 max-width-600">
+                        Your baseline tracks what you believe your "average" mood is over time, so you can 
+                        see how your standards for your own average change over time. The numbers 
+                        don't mean anything by themselves, so don't compare your baseline to other 
+                        people. What matters is how your baseline changes <i>over time.</i>
+                    </p>
+                    <p className="text-center margin-bottom-0 max-width-600">
+                        Notice your baseline falling? You might want to make a conscious effort to bring more things 
+                        into your life that you typically associate with higher mood scores.
+                    </p>
+                </> }
                 { baselineGraph === PullDataStates.NOT_STARTED && <IonSpinner className="loader" name="crescent" /> }
                 { baselineGraph === PullDataStates.NOT_ENOUGH_DATA && <p className="text-center margin-0">We don't have enough data to calculate your baseline. Check back in later!</p>}
                 <br />
@@ -41,9 +54,15 @@ const SurveyResults = () => {
                 { typeof surveyHistory === "object" && <>
                     <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
                     <SurveyGraph data={dass.processDataForGraph!(surveyHistory)} graphConfig={dass.graphConfig!} />
+                    <p className="text-center margin-bottom-0 max-width-600">
+                        All three metrics on the graph are on separate scales, so we don't 
+                        recommend comparing them to each other. Just compare them to what they 
+                        were in the past.
+                    </p>
                     <br />
                     <p className="bold head2 text-center">Resilience</p>
                     <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> 
+                    <p className="text-center margin-bottom-0 max-width-600">{ RESILIENCE_EXP }</p>
                 </> }
                 <EndSpacer />
             </div>
