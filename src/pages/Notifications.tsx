@@ -1,4 +1,4 @@
-import { IonIcon } from "@ionic/react";
+import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
@@ -54,7 +54,7 @@ enum NotificationsAllowed {
     ALLOWED
 }
 
-const Notifications = ({ page=true, finishSignIn } : { page?: boolean, finishSignIn?: () => void }) => {
+const Notifications = ({ page=true, finishSignIn, fcmLoading } : { page?: boolean, fcmLoading?: boolean, finishSignIn?: () => void }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(NotificationsAllowed.NEED_TO_ASK);
     const [notificationData, setNotificationData] = useState({});
     const [globalEditing, setGlobalEditing] = useState(false);
@@ -126,7 +126,10 @@ const Notifications = ({ page=true, finishSignIn } : { page?: boolean, finishSig
             </div>
             { !page && !globalEditing && <>
                 <br />
-                <div onClick={finishSignIn} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>All done!</div>
+                <div onClick={finishSignIn} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>
+                    { !fcmLoading && <>All done!</> }
+                    { fcmLoading && <IonSpinner className="loader" name="crescent" /> }
+                </div>
             </> }
             { page && <EndSpacer /> }
         </div>
