@@ -40,8 +40,8 @@ export const BASELINE_GRAPH_CONFIG: GraphConfig = {
 const SECONDS_IN_DAY = 86400;
 // https://materializecss.com/color
 const COLORS: AnyMap = {
-    "-5": "var(--background-color-inverted)",
-    "-4": "#d50000", // red accent-4
+    "-5": "#d50000",
+    "-4": "#f44336", // red accent-4
     "-3": "#f57c00", // orange darken-2
     "-2": "#ffb300", // amber darken-1
     "-1": "#fdd835", // yellow darken-1
@@ -50,7 +50,7 @@ const COLORS: AnyMap = {
     "2": "#cddc39",  // lime
     "3": "#8bc34a",  // light-green
     "4": "#43a047",  // green darken-1
-    "5": "var(--background-color-inverted)"
+    "5": "#1b5e20"   // green darken-3
 };
 
 export function createPoints(data: Log[]) {
