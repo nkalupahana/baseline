@@ -52,6 +52,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
     const [passphrase, setPassphrase] = useState("");
     const [deleting, setDeleting] = useState(false);
+    const [fcmLoading, setFcmLoading] = useState(false);
 
     useEffect(() => {
         ldb.logs.clear();
@@ -161,6 +162,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 if (Capacitor.getPlatform() === "web") {
                     setLoggingIn(false);
                 } else {
+                    setFcmLoading(false);
                     setLoginState(LoginStates.SET_NOTIFICATIONS);
                 }
             } else if (keyResponse?.status === 401) {
@@ -237,6 +239,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     }
 
     const finishSignIn = async () => {
+        setFcmLoading(true);
         try {
             await FirebaseMessaging.requestPermissions();
             await FirebaseMessaging.getToken();
@@ -298,7 +301,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
-            { loginState === LoginStates.SET_NOTIFICATIONS && <Notifications page={false} finishSignIn={finishSignIn} /> }
+            { loginState === LoginStates.SET_NOTIFICATIONS && <Notifications page={false} fcmLoading={fcmLoading} finishSignIn={finishSignIn} /> }
             { loginState === LoginStates.DELETE_ACCOUNT && <div style={{"maxWidth": "500px"}}>
                 <div className="title">Delete Account?</div>
                 <p>
