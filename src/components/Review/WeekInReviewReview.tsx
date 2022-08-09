@@ -90,8 +90,8 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
                             <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                             <p>
                                 Remember how every time you mood log, we ask you whether you're feeling below, at, 
-                                or above average? Well, here's what that's used for &mdash; your baseline. 
-                                { BASELINE_EXP } (And if you're just starting out and don't have enough data 
+                                or above average? Well, here's what that's used for &mdash; your baseline. { BASELINE_EXP } (And 
+                                if you're just starting out and don't have enough data 
                                 to see a trend, don't worry about your baseline just yet.)
                             </p>
                             <p>
