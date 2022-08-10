@@ -1,5 +1,4 @@
-import { getDownloadURL, ref } from "@firebase/storage";
-import { storage, auth } from "../../firebase";
+import { auth } from "../../firebase";
 import { useEffect, useState } from "react";
 import Flickity from "react-flickity-component";
 import "flickity/dist/flickity.min.css";
@@ -7,22 +6,38 @@ import "flickity-fullscreen/fullscreen.css";
 import "flickity-fullscreen/fullscreen";
 import useCallbackRef from "../../useCallbackRef";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { BASE_URL, checkKeys } from "../../helpers";
+import { getIdToken } from "firebase/auth";
 
 const ImageCarousel = ({ files, setInFullscreen }) => {
     const [accessURLs, setAccessURLs] = useState([]);
-    const [, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
 
     useEffect(() => {
-        if (loading) return;
+        if (!user) return;
         (async () => {
             let promises = [];
-            for (let file of files) {
-                promises.push(getDownloadURL(ref(storage, `user/${auth.currentUser.uid}/${file}`)));
+            const idToken = await getIdToken(user);
+            const keys = JSON.stringify(checkKeys());
+            for (let filename of files) {
+                promises.push(fetch(`${BASE_URL}/getImage`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${idToken}`,
+                    },
+                    body: JSON.stringify({
+                        filename,
+                        keys
+                    })
+                }));
             }
 
-            await Promise.all(promises).then(setAccessURLs);
+            await Promise.all(promises)
+                .then(resps => resps.map(resp => resp.text()))
+                .then(p => Promise.all(p))
+                .then(setAccessURLs);
         })();
-    }, [files, loading]);
+    }, [files, user]);
     
     const flkty = useCallbackRef(useCallbackRef(node => {
         if (!node) return;

@@ -15,7 +15,7 @@ import Negative5 from "./Negative5";
 import { checkKeys, networkFailure, toast } from "../../helpers";
 
 const FinishJournal = props => {
-    const [user, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
@@ -30,7 +30,7 @@ const FinishJournal = props => {
     const submit = async () => {
         if (submitting) return;
         if (props.moodWrite === -5) history.push("/journal/finish/neg");
-        if (loading) {
+        if (!user) {
             toast("No internet connectivity -- please try again.");
             return;
         }

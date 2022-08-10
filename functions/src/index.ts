@@ -219,9 +219,10 @@ export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPT
                             fs.rmSync(file.path);
 
                             // Upload
-                            const fileName = `${uuidv4()}.webp`;
+                            const fileName = `${uuidv4()}.webp.enc`;
                             filePaths.push(fileName);
-                            return admin.storage().bucket().file(`user/${req.user!.user_id}/${fileName}`).save(buf);
+                            const data = AES.encrypt(`data:image/webp;base64,${buf.toString("base64")}`, encryptionKey).toString();
+                            return admin.storage().bucket().file(`user/${req.user!.user_id}/${fileName}`).save(data);
                         })
                 );
             } catch (e: any) {
@@ -258,6 +259,47 @@ export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPT
 
     await db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
     res.sendStatus(200);
+});
+
+export const getImage = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], minInstances: 1 }).https.onRequest(async (req: Request, res) => {
+    if (!(await preflight(req, res))) return;
+
+    const body = JSON.parse(req.body);
+    const db = admin.database();
+
+    const encryptionKey = await validateKeys(body.keys, db, req.user!.user_id);
+    if (!encryptionKey) {
+        res.send(400);
+        return;
+    }
+
+    const filename = body.filename;
+    // Max length: 32-char UUID.webp.enc
+    if (typeof filename !== "string" || filename.length > 45) {
+        res.send(400);
+        return;
+    }
+
+    let file;
+    try {
+        file = await admin.storage().bucket().file(`user/${req.user!.uid}/${filename}`).download();
+    } catch {
+        // File doesn't exist, fail
+        res.send(400);
+        return;
+    }
+
+    // Null check for type safety
+    if (!file) {
+        res.send(400);
+        return;
+    }
+
+    if (filename.endsWith(".enc")) {
+        res.send(AES.decrypt(file[0].toString("utf8"), encryptionKey).toString(aesutf8));
+    } else {
+        res.send(`data:image/webp;base64,${file[0].toString("base64")}`);
+    }
 });
 
 export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], minInstances: 1 }).https.onRequest(async (req: Request, res) => {

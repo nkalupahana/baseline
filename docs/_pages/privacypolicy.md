@@ -16,7 +16,6 @@ The only data we ever get about you is the data you give us when using our servi
 - Given email address (can be obfuscated with Sign In With Apple)
 - Timestamps of mood logs
 - Timestamps of surveys, and names of surveys completed
-- Image data (this will likely be encrypted in the future, but for now, our internal policies forbid us from ever looking at or otherwise analyzing any user’s image data)
 - Whether you’ve enabled Personal Data Protection, and what type (upfront/discreet)
 - Plain text of any Gap Fund requests you submit (which, of course, we need to process your request)
 
@@ -25,10 +24,11 @@ Other than the use of your email address detailed above, though, our internal da
 All other data you submit to us is encrypted with keys that are unique to each user, are stored by each user individually, and thus cannot be accessed by us no matter what:
 - Contents of mood logs (written portion, average, mood score, image storage location, etc.)
 - Scores/Results on surveys
+- Image data
 
 Your data is processed and stored within Google Cloud Platform in the United States. Google does not own any of the information you submit to baseline. You can learn more about Google Cloud Platform’s data processing and privacy agreements [here](https://cloud.google.com/privacy).
 
-We will never sell or otherwise provide any of your information to any third party. Ever. Since most of the information anyone would ever want from baseline is encrypted with keys we don’t possess, we don’t really have much to give away anyways. User keys are also encrypted by baseline, and we will fight as hard as we need to to protect that encryption key to keep user data safe from people and organizations that wish to access it (including but not limited to state-level actors).
+We will never sell or otherwise provide any of your information to any third party. Ever. Since most of the information anyone would ever want from baseline is encrypted with keys we don’t possess, we don’t really have much to give away anyways. User keys are also further encrypted by baseline. We will fight as hard as we need to to protect our internal keys to keep user data safe from people and organizations that wish to access it (including but not limited to state-level actors).
 
 baseline has no interest in selling you anything. You won’t be receiving marketing emails from us.
 
@@ -78,8 +78,8 @@ All of our cookie and other local storage use is for required website functional
 baseline services contain links to other websites. Our privacy policy applies only to our website, so if you click on a link to another website, you should read their privacy policy.
 
 ## Changes to our privacy policy
-baseline keeps its privacy policy under regular review and places any updates on this web page. This privacy policy was last updated on July 22nd, 2022.
+baseline keeps its privacy policy under regular review and places any updates on this web page. This privacy policy was last updated on August 10th, 2022.
 
 ## Contact Us 
 
-If you have any questions about baseline’s privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us. Email us at [privacy@getbaseline.app](mailto:privacy@getbaseline.app). You can also contact us here if you’d like to report a complaint about any privacy-related issue at baseline.
+If you have any questions about baseline’s privacy policy, the data we have on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us. Email us at [privacy@getbaseline.app](mailto:privacy@getbaseline.app). You can also contact us here if you’d like to report a complaint about any privacy-related issue at baseline.

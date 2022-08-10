@@ -10,12 +10,12 @@ Thank you for using baseline!
 
 baseline (the "Service") provides services to you subject to the notices, terms, and conditions set forth in this agreement and our [Privacy Policy](https://getbaseline.app/privacy) (the "Agreement"). In addition, when you use any of our services, you will be subject to the rules, guidelines, policies, terms, and conditions applicable to such service, and they are incorporated into this Agreement. We reserve the right to change this Service and this Agreement at any time. Accessing, browsing, or otherwise using the service indicates your agreement to all the terms and conditions in this Agreement.
 
-This Agreement is effective July 22nd 2022, and will be governed in accordance with the laws of the State of Oregon.
+This Agreement is effective August 10th 2022, and will be governed in accordance with the laws of the State of Oregon.
 
 Please only use baseline for its intended purpose. You may not use the Service to do or share anything that breaches this Agreement, that is unlawful, or infringes or breaches someone else’s rights.
 
 Here are some additional restrictions:
-- Using baseline to host data (including but not limited to text or images) for a service not related to the direct betterment of user mental health, or any paid service or service with a paid/premium tier, is prohibited.
+- Using baseline to host data (including but not limited to text or images) for a service not related to the direct betterment of user mental health, or **any** paid service or service with a paid/premium tier, is prohibited.
 = You may not upload viruses or malicious code, or do anything that could disable, overburden or impair the proper working of the Service.
 - You may not attempt to access data that you do not have permission to access.
 
