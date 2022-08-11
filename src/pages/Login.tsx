@@ -268,7 +268,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <MarketingBox 
                         icon={globeOutline} 
                         title={"Access your journals anywhere."}
-                        description={<>All of your mood logs can be accessed at any time on iOS, Android, and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
+                        description={<>All of your mood logs can be accessed at any time on { Capacitor.getPlatform() !== "ios" ? <>your device,</> : <>iOS, Android,</> } and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
                 </div>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
@@ -286,7 +286,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             { loginState === LoginStates.CLOUDKIT_NEEDED && <div style={{"maxWidth": "500px"}}>
                 <div className="title">One more time!</div>
                 <p className="margin-bottom-0">To properly secure your data with iCloud, we need you to sign in one more time. You'll be ready to go after that, though!</p>
-                <p>Sign in with Apple is still in beta. Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
+                <p>Having issues? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                 <IonButton mode="ios" onClick={signInWithCloudKit}>Sign In</IonButton>
             </div> }
             { loginState === LoginStates.UNLOCK && <>
