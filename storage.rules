@@ -2,9 +2,7 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /user/{userId}/{documents=**} {
-      allow get: if request.auth != null && request.auth.uid == userId;
-      allow write: if false;
-      allow list: if false;
+    	allow read, write: if false;
     }
   }
 }
