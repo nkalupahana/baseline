@@ -268,7 +268,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     <MarketingBox 
                         icon={globeOutline} 
                         title={"Access your journals anywhere."}
-                        description={<>All of your mood logs can be accessed at any time on { Capacitor.getPlatform() !== "ios" ? <>your device,</> : <>iOS, Android,</> } and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
+                        description={<>All of your mood logs can be accessed at any time on { Capacitor.getPlatform() === "ios" ? <>your device,</> : <>iOS, Android,</> } and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
                 </div>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
