@@ -302,7 +302,7 @@ export const getImage = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], min
     }
 });
 
-export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], minInstances: 1 }).https.onRequest(async (req: Request, res) => {
+export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     if (!(await preflight(req, res))) return;
 
     const body = JSON.parse(req.body);
