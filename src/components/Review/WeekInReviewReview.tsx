@@ -26,11 +26,18 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
 
+    useEffect(() => {
+        if (!user) return;
+        // Try to set timestamp on load, to prevent duplicate surveys
+        // in case the user doesn't hit the finish button
+        set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
+    }, [user]);
+
     const finish = async () => {
         if (loading) return;
         setLoading(true);
         try {
-            await set(ref(db, `/${auth?.currentUser?.uid}/lastWeekInReview`), serverTimestamp());
+            await set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
             history.push("/summary");
         } catch (e: any) {
             toast(`Something went wrong, please try again. ${e.message}`);
