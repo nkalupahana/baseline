@@ -58,15 +58,20 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
     }
     
     const cancelNotifications = async notifications => {
-        if (!oldTime) return;
+        // Cancel notifications on old time,
+        // and anything on this new time we're setting to
+        let times = [oldTime, newTime];
 
         let toCancel = [];
-        const split = oldTime.split(":");
-        const hour = parseInt(split[0]);
-        const minute = parseInt(split[1]);
-        for (let notification of notifications) {
-            if (notification.schedule.on.hour === hour && notification.schedule.on.minute === minute) {
-                toCancel.push({ id: notification.id });
+        for (let time of times) {
+            if (!time) continue;
+            const split = time.split(":");
+            const hour = parseInt(split[0]);
+            const minute = parseInt(split[1]);
+            for (let notification of notifications) {
+                if (notification.schedule.on.hour === hour && notification.schedule.on.minute === minute) {
+                    toCancel.push({ id: notification.id });
+                }
             }
         }
 
