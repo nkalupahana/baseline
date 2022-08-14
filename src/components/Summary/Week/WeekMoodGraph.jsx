@@ -22,7 +22,7 @@ const TRUST_BOUND = 25;
 function getBound(el, node) {
     const elBox = el.getBoundingClientRect();
     const nodeBox = node.getBoundingClientRect();
-    return (elBox.x + elBox.width) - (nodeBox.x + nodeBox.width) - elBox.width / 2;
+    return (elBox.x + elBox.width) - (nodeBox.x + nodeBox.width);
 }
 
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
@@ -62,9 +62,10 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     // so let's check for that
                     const bound = getBound(requestedDate.graph.trustRegion, node);
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
+                        console.log("[Graph] User scroll in trust region | Bound: " + bound);
                         return;
                     } else {
-                        console.log("[Graph] Left trust region");
+                        console.log("[Graph] Left trust region | Bound: " + bound);
                         // And if we've left the trust region, remove it
                         setRequestedDate({
                             el: requestedDate.el,

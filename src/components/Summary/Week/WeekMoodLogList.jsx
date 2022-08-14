@@ -59,6 +59,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                     // so let's check for that
                     const bound = getMoodLogListBound(requestedDate.list.trustRegion, node, LOCATOR_OFFSET);
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
+                        console.log("[List] User scroll in trust region | Bound: " + bound);
                         return;
                     } else {
                         console.log("[List] Left trust region");
