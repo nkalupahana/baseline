@@ -40,6 +40,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                 const el = node.querySelector("#" + id);
                 if (el) {
                     const bound = getBound(el, node);
+                    console.log(`[Graph] Check automated scroll. Bound: ${bound} | Trust: ${TRUST_BOUND}`);
                     // If we have, remove it
                     // and set it to the trust region
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
@@ -63,6 +64,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
+                        console.log("[Graph] Left trust region");
                         // And if we've left the trust region, remove it
                         setRequestedDate({
                             el: requestedDate.el,
@@ -84,6 +86,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
                     if (child.getBoundingClientRect().x < node.getBoundingClientRect().right - (node.offsetWidth / 15)) {
                         const locator = child.id;
                         if (locator !== requestedDate.el && locator !== requestedDate.graph.last) {
+                            console.log("[Graph] Moved by user, syncing list to " + locator);
                             setRequestedDate({
                                 el: locator,
                                 timeout: getTime() + 5,
@@ -119,6 +122,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             const id = "g" + requestedDate.el.slice(1);
             const el = node.querySelector("#" + id);
             if (el) {
+                console.log("[Graph] List request received, going to " + id);
                 node.scrollTo({
                     top: 0,
                     left: (el.offsetLeft + el.offsetWidth) - (node.offsetLeft + node.offsetWidth),

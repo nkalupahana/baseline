@@ -57,7 +57,7 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
         console.log(requestedDate);
     }, [requestedDate]);
     */
-
+    
     return (
         <div className="week-summary-grid" style={(logs && logs.length > 0) ? {} : {"height": "100%"}}>
             { !search.get && <div className="center-summary grid-heading">

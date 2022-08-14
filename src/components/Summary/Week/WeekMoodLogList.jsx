@@ -37,6 +37,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                 const el = node.querySelector("#" + id);
                 if (el) {
                     const bound = getMoodLogListBound(el, node, LOCATOR_OFFSET);
+                    console.log(`[List] Check automated scroll. Bound: ${bound} | Trust: ${TRUST_BOUND}`);
                     // If we have, remove it
                     // and set it to the trust region
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
@@ -60,6 +61,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                     if (bound < TRUST_BOUND && bound > -TRUST_BOUND) {
                         return;
                     } else {
+                        console.log("[List] Left trust region");
                         // And if we've left the trust region, remove it
                         setRequestedDate({
                             el: requestedDate.el,
@@ -80,6 +82,7 @@ const WeekMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, s
                     const childBox = child.getBoundingClientRect();
                     if (childBox.y > parentBox.top && childBox.y < parentBox.top + (parentBox.height / 3)) {
                         if (child.id !== requestedDate.el && child.id !== requestedDate.list.last) {
+                            console.log("[List] Moved by user, syncing graph to " + child.id);
                             setRequestedDate({
                                 el: child.id.replace("-bottom", ""),
                                 timeout: getTime() + 5,

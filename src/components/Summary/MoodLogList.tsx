@@ -140,6 +140,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             const id = "i" + requestedDate.el.slice(1);
             const el = node.querySelector("#" + id) as HTMLElement;
             if (el) {
+                console.log("[List] Graph request received, going to " + id);
                 node.scrollTo({
                     top: el.offsetTop - node.offsetTop - LOCATOR_OFFSET,
                     left: 0,
