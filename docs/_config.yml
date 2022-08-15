@@ -5,8 +5,8 @@ page_title                                : baseline
 ios_app_id                                : 1621132298
 ios_app_country                           : us
 
-appstore_link                             :
-playstore_link                            :
+appstore_link                             : https://apps.apple.com/us/app/baseline-mood-journaling/id1621132298
+playstore_link                            : https://play.google.com/store/apps/details?id=app.getbaseline.baseline
 
 wide_word_mark                            : assets/widewordmark.png
 word_mark                                 : assets/wordmark.png
