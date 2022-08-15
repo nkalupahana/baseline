@@ -60,7 +60,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
     const cancelNotifications = async notifications => {
         // Cancel notifications on old time,
         // and anything on this new time we're setting to
-        let times = [oldTime, newTime];
+        let times = [oldTime, time];
 
         let toCancel = [];
         for (let time of times) {
