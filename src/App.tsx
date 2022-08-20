@@ -92,10 +92,11 @@ const App = () => {
                         It looks like you're using a mobile browser. 
                         baseline has a mobile app for Android and iOS, and it's
                         a way better experience than this website &mdash; in fact, the web 
-                        version will likely have issues running on a mobile devices. Search for 
-                        baseline on your local app store to install it. <br /><br/>
+                        version will likely have issues running on a mobile 
+                        device. <a href="https://getbaseline.app">Check out 
+                        our website to install the app!</a> <br /><br/>
                         Or, click <span className="fake-link" onClick={overrideWeb}>here</span> to 
-                        continue to web version anyways.
+                        continue to the web version anyways.
                     </p>
             </div> }
             { !mobileIntervention && ((!loading && user && !loggingIn) || (loading && keys)) && (
