@@ -119,7 +119,11 @@ const Notifications = ({ page=true, finishSignIn, fcmLoading } : { page?: boolea
                         }} className="finish-button" style={{"maxWidth": "400px"}}>Add Notification</div> }
                     </>
                 }
-                { Capacitor.getPlatform() === "web" && <p className="text-center italics">Notifications are not supported on web. Please get the iOS/Android app.</p> }
+                { Capacitor.getPlatform() === "web" && <p className="text-center italics">
+                    Notifications are not supported on web. 
+                    Please get our <a href="https://getbaseline.app" target="_blank" rel="noreferrer">iOS/Android 
+                    app</a> to use this feature.
+                </p> }
                 { notificationsEnabled === NotificationsAllowed.DENIED && <p className="text-center italics">
                     You haven't allowed this app to send notifications. Go to Settings and enable notifications for baseline in order to use this feature. 
                     Once you've changed it, <span onClick={() => setReloadAllowed(Math.random())} className="fake-link">click here to reload.</span></p> }
