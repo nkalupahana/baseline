@@ -261,7 +261,7 @@ export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPT
     res.sendStatus(200);
 });
 
-export const getImage = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], minInstances: 1 }).https.onRequest(async (req: Request, res) => {
+export const getImage = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], memory: "2GB" }).https.onRequest(async (req: Request, res) => {
     if (!(await preflight(req, res))) return;
 
     const body = JSON.parse(req.body);
