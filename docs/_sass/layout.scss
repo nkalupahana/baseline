@@ -273,7 +273,9 @@ nav > ul li a:active {
 }
 
 .appIconLarge {
-	height: 80px;
+	max-height: 80px;
+	height: auto;
+	max-width: 75vw;
 }
 
 .appNamePriceContainer {
@@ -374,7 +376,7 @@ nav > ul li a:active {
 
 	.playStore {
 		margin-right: 0px;
-		margin-bottom: 24px;
+		margin-bottom: 12px;
 	}
 	
 } 
