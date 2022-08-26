@@ -16,7 +16,7 @@ Please only use baseline for its intended purpose. You may not use the Service t
 
 Here are some additional restrictions:
 - Using baseline to host data (including but not limited to text or images) for a service not related to the direct betterment of user mental health, or **any** paid service or service with a paid/premium tier, is prohibited.
-= You may not upload viruses or malicious code, or do anything that could disable, overburden or impair the proper working of the Service.
+- You may not upload viruses or malicious code, or do anything that could disable, overburden or impair the proper working of the Service.
 - You may not attempt to access data that you do not have permission to access.
 
 Now, baseline is [open source](https://github.com/nkalupahana/baseline), and we encourage you to submit issues and new features. If you’ve found a security vulnerability, as long as you’re not needlessly pulling personal user information, we will not seek damages or otherwise – please just promptly report it to [security@getbaseline.app](mailto:security@getbaseline.app). Additionally, if you want to create a service that adds some data to baseline, or visualizes baseline data in a different way, or something like that, that’s encouraged! We will gladly help you integrate with our system, including but not limited to issuing you an API key and SSO authentication access for users. If you want to release a service to be used by people other than you, you are required to email us at [hello@getbaseline.app](mailto:hello@getbaseline.app) for integration help and review. (Please, just do things the right way and talk with us. This is an open source project. That’s what we’re all about.)
