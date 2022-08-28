@@ -6,6 +6,7 @@ import CAGE_AID from "../screeners/cage_aid";
 import SPF from "../screeners/spf";
 import EDE_QS from "../screeners/ede_qs";
 import HARM from "../screeners/harm";
+import WAST from "../screeners/wast";
 import { auth, db } from "../firebase";
 import { get, limitToLast, orderByKey, query, ref } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -29,7 +30,8 @@ const KEY_MAP: KEY_MAP_INT = {
     "cagev1": CAGE_AID,
     "edev1": EDE_QS,
     "harmv1": HARM,
-    "spfv1": SPF
+    "spfv1": SPF,
+    "wastv1": WAST
 };
 
 const WeekInReview = () => {
@@ -44,7 +46,7 @@ const WeekInReview = () => {
     // Figure out secondary survey based on past surveys
     useEffect(() => {
         if (!user) return;
-        get(query(ref(db, `${user.uid}/surveys`), orderByKey(), limitToLast(6))).then(snap => {
+        get(query(ref(db, `${user.uid}/surveys`), orderByKey(), limitToLast(8))).then(snap => {
             const val = snap.val();
             let keys = Object.keys(KEY_MAP);
             if (val) {

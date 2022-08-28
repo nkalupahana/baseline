@@ -345,6 +345,11 @@ export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).htt
             keys: ["Social-Interpersonal", "Cognitive-Individual"],
             min: [6, 6],
             max: [30, 30]
+        },
+        wastv1: {
+            type: "number",
+            min: 0,
+            max: 24
         }
     };
 
@@ -360,7 +365,7 @@ export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).htt
         return;
     }
 
-    const RESULT_VAL = VALIDATION[body.key as ("dassv1" | "edev1" | "harmv1" | "cagev1" | "spfv1")];
+    const RESULT_VAL = VALIDATION[body.key as ("dassv1" | "edev1" | "harmv1" | "cagev1" | "spfv1" | "wastv1")];
     const results = body.results;
     if (RESULT_VAL.type === "number") {
         // Result should be a number
