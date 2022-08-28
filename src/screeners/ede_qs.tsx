@@ -86,14 +86,15 @@ export default function EDE_QS(): Screener {
                     <p>
                         Your answers have indicated that you likely have an eating disorder. Eating disorders are 
                         often treated in our culture as if they aren't "serious" mental health issues &mdash; but they're 
-                        just as important to address. We urge you to talk to a professional about how you feel 
-                        about eating and your body, and to get specialized treatment.
+                        just as important to address, and often have just as severe consequences. We urge you to talk 
+                        to a professional about how you feel about eating and your body, and to get specialized treatment.
                     </p>
                     <p>
                         To talk to someone about what you're going through right now, we recommmend contacting 
                         the <a href="https://www.nationaleatingdisorders.org/help-support/contact-helpline" target="_blank" rel="noreferrer">National Eating 
-                        Disorders Helpline</a>. If you're currently in crisis, you can also message the Crisis Text Line: text 
-                        NEDA to <a href="sms:741741">741741</a>. The helpline and other online resources can assist you with 
+                        Disorders Helpline</a>. If you're currently in crisis, you can also message the 
+                        24/7 Crisis Text Line: <a href="sms:741741?&body=NEDA">text NEDA to 741741</a>. The 
+                        helpline and other online resources can assist you with 
                         finding long-term professional resources for managing your eating disorder, 
                         which is ultimately what we recommend moving towards. { FIND_HELP }
                     </p>
