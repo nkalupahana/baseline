@@ -4,6 +4,7 @@ import CAGE_AID from "../../src/screeners/cage_aid"
 import HARM from "../../src/screeners/harm"
 import EDE_QS from "../../src/screeners/ede_qs"
 import SPF from "../../src/screeners/spf"
+import WAST from "../../src/screeners/wast"
 
 describe("Display health-related components", () => {
     beforeEach(() => {
@@ -135,6 +136,17 @@ describe("Display health-related components", () => {
             { spf.getRecommendation() }
             { spf.getClinicalInformation() }
             <p>Priority: { spf.getPriority() }</p>
+        </>)
+        cy.get("body").happoScreenshot()
+    })
+
+    it("WAST", () => {
+        let wast = WAST();
+        wast._results = 12;
+        cy.mount(<>
+            { wast.getRecommendation() }
+            { wast.getClinicalInformation() }
+            <p>Priority: { wast.getPriority() }</p>
         </>)
         cy.get("body").happoScreenshot()
     })
