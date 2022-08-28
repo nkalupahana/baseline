@@ -280,9 +280,9 @@ describe("Desktop Flow", () => {
         cy.contains("Week In Review").should("exist")
         cy.contains("Start").click()
 
-        cy.contains("three parts").should("exist")
+        cy.contains("Let's get started").should("exist")
         cy.get("body").happoScreenshot()
-        cy.contains("Start Primary").click()
+        cy.contains("Start Surveys").click()
         cy.contains("Question 1/21").should("exist")
         for (let i = 0; i < 21; ++i) {
             cy.contains("Never").click()
