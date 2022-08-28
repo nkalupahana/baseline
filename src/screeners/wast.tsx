@@ -116,7 +116,7 @@ export default function WAST(): WASTScreener {
                     </p>
                     <p>
                         That being said, we understand that it's always harder than "just leaving". 
-                        As a first step, we recommend confiding in someone you know about what's going on.
+                        As a first step, we recommend confiding in someone you trust about what's going on.
                         Talking to others is a good way to sort out your feelings and get immediate help.
                         If you need additional help, advice, or a second opinion for getting out of your 
                         relationship, you should also reach out to one of these hotlines:
