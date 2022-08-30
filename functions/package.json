@@ -16,7 +16,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google-cloud/bigquery": "^6.0.1",
-    "@google-cloud/storage": "^6.2.3",
+    "@google-cloud/storage": "^6.4.1",
     "@googleapis/drive": "^2.3.0",
     "@googleapis/sheets": "^2.0.1",
     "bcryptjs": "^2.4.3",
