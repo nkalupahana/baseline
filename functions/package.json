@@ -26,7 +26,7 @@
     "firebase-functions": "^3.22.0",
     "formidable-serverless": "^1.1.1",
     "luxon": "^2.0.2",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.2.10",
     "sharp": "^0.30.5",
     "uuid": "^8.3.2"
   },
