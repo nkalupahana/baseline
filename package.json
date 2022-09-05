@@ -15,7 +15,7 @@
     "@getbaseline/capacitor-local-notifications": "^4.0.2",
     "@ionic/core": "^6.0.2",
     "@ionic/react": "^6.0.2",
-    "@ionic/react-router": "^6.0.2",
+    "@ionic/react-router": "^6.2.5",
     "@nkalupahana/react-circular-slider": "github:nkalupahana/react-circular-slider",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
