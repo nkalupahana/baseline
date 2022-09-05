@@ -14,7 +14,7 @@
     "@getbaseline/capacitor-firebase-messaging": "^0.5.3",
     "@getbaseline/capacitor-local-notifications": "^4.0.2",
     "@ionic/core": "^6.0.2",
-    "@ionic/react": "^6.0.2",
+    "@ionic/react": "^6.2.5",
     "@ionic/react-router": "^6.0.2",
     "@nkalupahana/react-circular-slider": "github:nkalupahana/react-circular-slider",
     "@testing-library/jest-dom": "^5.11.9",
