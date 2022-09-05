@@ -55,7 +55,7 @@
     "swiper": "^8.2.2",
     "toastify-js": "github:nkalupahana/toastify-js#master",
     "typescript": "^4.6.4",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
