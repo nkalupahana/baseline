@@ -17,7 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
+<<<<<<< HEAD
 	<string>$(MARKETING_VERSION)</string>
+=======
+	<string>1.0.3</string>
+>>>>>>> 44f120b ([PROD-4] Version codes updated for next sprint)
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
