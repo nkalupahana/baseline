@@ -977,3 +977,7 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
     };
     await bigquery.dataset("bi").table("gap_fund").load(storage.bucket("baseline-bi").file("gapfund.csv"), gapMetadata);
 });
+
+export const monitoringTest = functions.pubsub.schedule("0 13 2 * *").timeZone("America/Chicago").onRun(async _ => {
+    throw Error("This is a test error to ensure monitoring and PagerDuty are working.");
+});
