@@ -852,7 +852,7 @@ export const deleteAccount = functions.https.onRequest(async (req: Request, res)
  * - average mood log length per user
 */
 
-export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("America/Chicago").onRun(async _ => {
+export const loadBIData = functions.runWith({ memory: "1GB" }).pubsub.schedule("0 0,12 * * *").timeZone("America/Chicago").onRun(async _ => {
     const bigquery = new BigQuery();
     const storage = new Storage();
     // Get all data
