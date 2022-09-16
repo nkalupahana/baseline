@@ -861,7 +861,7 @@ export const loadBIData = functions.pubsub.schedule("0 0,12 * * *").timeZone("Am
     // Create CSV row with required data
     let actions: string[] = [];
     const addAction = (userId: string, timestamp: string, action: string) => {
-        const dt = DateTime.fromMillis(Number(timestamp));
+        const dt = DateTime.fromMillis(Number(timestamp), { zone: "utc" });
         actions.push([timestamp, userId, dt.toISODate(), dt.toLocaleString(DateTime.TIME_24_WITH_SECONDS), action].join(","));
     }
 
