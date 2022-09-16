@@ -170,6 +170,12 @@ admin.initializeApp({
 
 // Marketing user UID
 const uid = "AW5CwvuMioWpifdwViryDrjU5eq1"
-admin.database().ref(`${uid}/logs`).set(logs).then(() => {
+const db = admin.database();
+
+(async () => {
+    await db.ref(`${uid}/logs`).set(logs);
+    const lastUpdated = Number(Object.keys(logs).sort().pop());
+    await db.ref(`${uid}/lastUpdated`).set(lastUpdated);
+    await db.ref(`${uid}/lastWeekInReview`).set(lastUpdated);
     process.exit();
-});
+})();
