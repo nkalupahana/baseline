@@ -12,7 +12,7 @@
     "@capacitor/keyboard": "^4.0.0",
     "@capacitor/status-bar": "^4.0.0",
     "@getbaseline/capacitor-firebase-messaging": "^0.5.3",
-    "@getbaseline/capacitor-local-notifications": "^4.0.2",
+    "@getbaseline/capacitor-local-notifications": "^4.0.3",
     "@ionic/core": "^6.0.2",
     "@ionic/react": "^6.0.2",
     "@ionic/react-router": "^6.0.2",
