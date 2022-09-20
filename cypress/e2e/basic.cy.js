@@ -271,13 +271,28 @@ describe("Desktop Flow", () => {
         cy.get(".prompt-prompt").happoScreenshot()
     })
 
-    it("Complete Week In Review", () => {
+    it("Test Skip WIR", () => {
+        cy.contains("Skip").should("not.exist")
         cy.contains("Later").click()
         cy.contains("Week In Review").should("not.exist")
-        cy.get(".fab-button-close-active").click()
-        cy.contains("What's happening").should("exist")
+
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        cy.contains("Skip").should("exist")
+        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+        cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(1).click()
+        cy.get("ion-toggle").eq(1).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+
         cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
         cy.contains("Week In Review").should("exist")
+        cy.contains("Skip").should("exist")
+    })
+
+    it("Complete Week In Review", () => {
         cy.contains("Start").click()
 
         cy.contains("Let's get started").should("exist")
@@ -357,11 +372,11 @@ describe("Test Settings", () => {
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         cy.contains("Reduce Motion").should("exist")
-        cy.get(".settings-box-grid").happoScreenshot()
-        cy.get("ion-toggle").should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").click()
-        cy.get("ion-toggle").should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").happoScreenshot()
+        cy.get(".settings-box-grid").eq(0).happoScreenshot()
+        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(0).click()
+        cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(0).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")

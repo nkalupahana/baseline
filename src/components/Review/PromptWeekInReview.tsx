@@ -1,16 +1,22 @@
-import { get, ref } from "firebase/database";
+import { get, ref, serverTimestamp, set } from "firebase/database";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ldb from "../../db";
 import { auth, db } from "../../firebase";
-import { checkKeys } from "../../helpers";
+import { checkKeys, parseSettings } from "../../helpers";
 import history from "../../history";
 import "./PromptWeekInReview.css";
 
 const PromptWeekInReview = () => {
     const [user] = useAuthState(auth);
     const [show, setShow] = useState(false);
+    const skipWIR = parseSettings()["skipWIR"];
+
+    const skipWeek = () => {
+        set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
+        setShow(false);
+    };
 
     useEffect(() => {
         if (!user || typeof checkKeys() !== "object") return;
@@ -54,7 +60,10 @@ const PromptWeekInReview = () => {
                         localStorage.setItem("wirtoken", "wirtoken");
                         history.push("/review");
                     }} className="finish-button">Start</div>
-                    <div onClick={() => {setShow(false)}} className="finish-button secondary">Remind Me Later</div>
+                    <div className="wir-skip-buttons">
+                        <div onClick={() => {setShow(false)}} className="finish-button secondary">Remind Me Later</div>
+                        { skipWIR && <div onClick={skipWeek} className="finish-button secondary">Skip This Week</div> }
+                    </div>
                 </div>
             </div>
         </div> }

@@ -36,3 +36,9 @@
 .finish-button.secondary:active {
     background-color: var(--ion-background-color);
 }
+
+.wir-skip-buttons {
+    width: 75%;
+    display: flex;
+    margin: 0 auto;
+}
