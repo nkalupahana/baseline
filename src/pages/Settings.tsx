@@ -32,6 +32,11 @@ const Settings = () => {
                     attr="reduceMotion"
                     description="Turn this on to disable animations. This typically won't increase performance by any noticable amount."
                 />
+                <SettingsBox 
+                    title="Skip Week In Review"
+                    attr="skipWIR"
+                    description="Turn this on to get the option to skip Week In Review each week. (We don't recommend turning this on — Week In Review is quite useful, and only takes a few minutes each week.)"
+                />
                 <PDP taskBlock={setDoingAsyncTask} />
                 <br />
                 <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
