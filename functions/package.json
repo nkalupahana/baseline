@@ -23,7 +23,7 @@
     "crypto-js": "^4.1.1",
     "crypto-random-string": "^3.3.1",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.22.0",
+    "firebase-functions": "^3.23.0",
     "formidable-serverless": "^1.1.1",
     "luxon": "^2.0.2",
     "node-fetch": "^2.6.7",
