@@ -17,6 +17,7 @@ import MarketingBox from "../components/Login/MarketingBox";
 import { analytics, globeOutline, lockClosedOutline, logoApple, logoGoogle, pencilOutline } from "ionicons/icons";
 import Notifications from "./Notifications";
 import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+import history from "../history";
 
 enum LoginStates {
     START,
@@ -56,6 +57,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     useEffect(() => {
         ldb.logs.clear();
+        history.replace("/");
     }, []);
 
     const resetFlow = () => {
@@ -172,6 +174,13 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             } else if (keyResponse?.status === 428) {
                 if (flowVal !== flow) return;
                 toast("Sorry, but we need you to sign in one more time!");
+                resetFlow();
+                return;
+            } else if (keyResponse?.status === 406) {
+                if (flowVal !== flow) return;
+                toast(`Sorry, but there's something wrong with your iCloud account, so we can't 
+                    secure your data correctly. You'll have you sign in with Google. Sorry for the
+                    inconvenience, but this unfortunately isn't in our control.`, "top", 10000);
                 resetFlow();
                 return;
             } else {

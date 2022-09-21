@@ -650,7 +650,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
             if ("serverErrorCode" in respData || !("records" in respData) || "serverErrorCode" in respData["records"][0]) {
                 console.log("KEY GET FAIL");
                 console.log(JSON.stringify(respData));
-                res.send(400);
+                res.send(406);
                 return;
             }
 
@@ -732,7 +732,7 @@ export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY
         if (("serverErrorCode" in respData) || ("serverErrorCode" in respData["records"][0])) {
             console.log("KEY SET FAIL");
             console.log(JSON.stringify(respData));
-            res.send(400);
+            res.send(406);
             return;
         }
 
