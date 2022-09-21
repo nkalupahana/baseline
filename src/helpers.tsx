@@ -80,10 +80,10 @@ export function getMoodLogListBound(el: HTMLElement, node: HTMLElement, offset: 
     return node.offsetTop - el.getBoundingClientRect().y + offset;
 }
 
-export function toast(message: string, gravity?: Toastify.Options["gravity"]) {
+export function toast(message: string, gravity?: Toastify.Options["gravity"], duration?: number) {
     Toastify({
         text: message,
-        duration: 3000,
+        duration: duration || 3000,
         gravity: gravity || "top",
         position: "center",
         style: {
