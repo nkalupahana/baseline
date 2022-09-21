@@ -71,3 +71,11 @@
 .flickity-enabled.is-fullscreen ol.flickity-page-dots {
     bottom: 25px;
 }
+
+.display-point {
+    height: 12px;
+    width: 12px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 4px;
+}

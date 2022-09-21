@@ -39,7 +39,7 @@ export const BASELINE_GRAPH_CONFIG: GraphConfig = {
 
 const SECONDS_IN_DAY = 86400;
 // https://materializecss.com/color
-const COLORS: AnyMap = {
+export const COLORS: AnyMap = {
     "-5": "#d50000",
     "-4": "#f44336", // red accent-4
     "-3": "#f57c00", // orange darken-2

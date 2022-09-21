@@ -3,6 +3,7 @@ import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
 import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
+import { COLORS } from "../../helpers";
 
 const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET }) => {
     const [grow, setGrow] = useState(false);
@@ -37,7 +38,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET }) => 
     return (
         <div className="mood-card" ref={card}>
             <span className="bold" style={{"gridArea": "time", "paddingLeft": "8px"}}>{ log.time }</span>
-            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}><IonIcon style={{"transform": "translateY(2px)"}} icon={SYMBOL_MAP[log.average]} /> { log.mood }</span>
+            <span className="bold" style={{"gridArea": "labels", "paddingRight": "10px", "textAlign": "right"}}><div className="display-point" style={{"backgroundColor": COLORS[log.mood]}}></div><IonIcon style={{"transform": "translateY(2px)"}} icon={SYMBOL_MAP[log.average]} /> { log.mood }</span>
             { log.journal && 
             <div 
                 ref={logContainer} 
