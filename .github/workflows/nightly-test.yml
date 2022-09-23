@@ -1,0 +1,29 @@
+name: Build, Test, & Deploy
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: "16.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Build Tests
+      run: |
+        npm install -g ionic
+        npm run build
+        ionic cap sync
+    - name: Integration Tests
+      run: |
+        PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
+        sleep 60
+        npm run test:e2e
