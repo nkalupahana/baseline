@@ -27,7 +27,3 @@ jobs:
         PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
         sleep 60
         npm run test:e2e
-      env:
-        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
-        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
-        HAPPO_NONCE: ${{ github.run_id }}
