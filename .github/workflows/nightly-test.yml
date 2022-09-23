@@ -1,8 +1,9 @@
-name: Build, Test, & Deploy
+name: Nightly Test
 
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 4 * * *'
+  workflow_dispatch:
 
 jobs:
   test:
@@ -24,6 +25,6 @@ jobs:
         ionic cap sync
     - name: Integration Tests
       run: |
-        PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
+        PORT=8100 npx react-scripts start &
         sleep 60
-        npm run test:e2e
+        npm run test:e2e:noinst

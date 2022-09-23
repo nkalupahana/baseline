@@ -61,6 +61,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test:e2e": "npx happo-e2e -- cypress run --e2e",
+    "test:e2e:noinst": "npx cypress run --e2e",
     "test:component": "npx happo-e2e -- cypress run --component",
     "eject": "react-scripts eject",
     "cypress:open": "cypress open"
