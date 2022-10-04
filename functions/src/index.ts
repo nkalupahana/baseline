@@ -863,23 +863,19 @@ export const syncUserInfo = functions.https.onRequest(async (req: Request, res) 
     };
 
     // FCM data
-    if ("deviceId" in body && "fcmToken" in body) {
-        if (typeof body.deviceId !== "string" || !body.deviceId || body.deviceId.length > 100) {
-            res.send(400);
-            return;
+    const checkToken = () => {
+        if ("deviceId" in body && "fcmToken" in body) {
+            if (typeof body.deviceId !== "string" || !body.deviceId || body.deviceId.length > 100) return;
+            if (typeof body.fcmToken !== "string" || !body.fcmToken || body.fcmToken.length > 1000) return;
+    
+            update["fcm"][body["deviceId"]] = {
+                token: body["fcmToken"],
+                lastSync: admin.database.ServerValue.TIMESTAMP
+            };
         }
-
-        if (typeof body.fcmToken !== "string" || !body.fcmToken || body.fcmToken.length > 1000) {
-            res.send(400);
-            return;
-        }
-
-        update["fcm"][body["deviceId"]] = {
-            token: body["fcmToken"],
-            lastSync: admin.database.ServerValue.TIMESTAMP
-        };
-    }
-
+    };
+    checkToken();
+    
     // Referrer for app install
     if ("referrer" in body) {
         if (typeof body.referrer !== "string" || !body.referrer || body.referrer.length > 100) {
