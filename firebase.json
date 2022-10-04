@@ -6,7 +6,7 @@
     ],
     "source": "functions"
   },
-  "hosting": {
+  "hosting": [{
     "public": "build",
     "headers": [
       {
@@ -33,7 +33,18 @@
         "destination": "/index.html"
       }
     ]
-  },
+  }, {
+    "target": "baseline-links",
+    "public": "public",
+    "ignore": [ "*" ],
+    "appAssociation": "AUTO",
+    "rewrites": [
+      {
+        "source": "**",
+        "dynamicLinks": true
+      }
+    ]
+  }],
   "storage": {
     "rules": "storage.rules"
   },
