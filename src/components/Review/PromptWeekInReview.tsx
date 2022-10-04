@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ldb from "../../db";
 import { auth, db } from "../../firebase";
-import { checkKeys, makeRequest, parseSettings } from "../../helpers";
+import { AnyMap, checkKeys, makeRequest, parseSettings } from "../../helpers";
 import history from "../../history";
 import { Device } from "@capacitor/device";
 import "./PromptWeekInReview.css";
+import { Capacitor } from "@capacitor/core";
 
 const PromptWeekInReview = () => {
     const [user] = useAuthState(auth);
@@ -55,12 +56,16 @@ const PromptWeekInReview = () => {
     useEffect(() => {
         if (!user || !show) return;
         (async () => {
-            const token = await FirebaseMessaging.getToken();
-            await makeRequest("syncUserInfo", auth.currentUser!, {
-                offset: DateTime.now().offset,
-                fcmToken: token,
-                deviceId: (await Device.getId()).uuid,
-            });
+            let data: AnyMap = {
+                offset: DateTime.now().offset
+            };
+
+            if (Capacitor.getPlatform() !== "web") {
+                const token = await FirebaseMessaging.getToken();
+                data["fcmToken"] = token;
+                data["deviceId"] = (await Device.getId()).uuid;
+            }
+            await makeRequest("syncUserInfo", auth.currentUser!, data);
         })();
     }, [user, show]);
 
