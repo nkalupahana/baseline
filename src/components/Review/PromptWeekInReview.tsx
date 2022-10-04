@@ -1,11 +1,13 @@
+import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
 import { get, ref, serverTimestamp, set } from "firebase/database";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ldb from "../../db";
 import { auth, db } from "../../firebase";
-import { checkKeys, parseSettings } from "../../helpers";
+import { checkKeys, makeRequest, parseSettings } from "../../helpers";
 import history from "../../history";
+import { Device } from "@capacitor/device";
 import "./PromptWeekInReview.css";
 
 const PromptWeekInReview = () => {
@@ -49,6 +51,18 @@ const PromptWeekInReview = () => {
             }
         })();
     }, [user]);
+
+    useEffect(() => {
+        if (!user || !show) return;
+        (async () => {
+            const token = await FirebaseMessaging.getToken();
+            await makeRequest("syncUserInfo", auth.currentUser!, {
+                offset: DateTime.now().offset,
+                fcmToken: token,
+                deviceId: (await Device.getId()).uuid,
+            });
+        })();
+    }, [user, show]);
 
     return <>
         { show && <div className="prompt-overlay">

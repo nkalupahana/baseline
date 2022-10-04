@@ -16,6 +16,7 @@ import * as sharp from "sharp";
 import { auth as googleauth , sheets } from "@googleapis/sheets";
 import { BigQuery } from "@google-cloud/bigquery";
 import { Storage } from "@google-cloud/storage";
+import * as bent from "bent";
 
 admin.initializeApp();
 const quotaApp = admin.initializeApp({
@@ -842,6 +843,61 @@ export const deleteAccount = functions.https.onRequest(async (req: Request, res)
     // Delete user in auth
     await admin.auth().deleteUser(req.user!.user_id);
 
+    res.send(200);
+});
+
+export const syncUserInfo = functions.https.onRequest(async (req: Request, res) => {
+    if (!(await preflight(req, res))) return;
+    const getJSON = bent("json");
+    const body = JSON.parse(req.body);
+
+    // Time zone offset
+    if (typeof body.offset !== "number" || body.offset < -1000 || body.offset > 1000) {
+        res.send(400);
+        return;
+    }
+
+    let update: any = {
+        offset: body.offset,
+        fcm: {}
+    };
+
+    // FCM data
+    if ("deviceId" in body && "fcmToken" in body) {
+        if (typeof body.deviceId !== "string" || !body.deviceId || body.deviceId.length > 100) {
+            res.send(400);
+            return;
+        }
+
+        if (typeof body.fcmToken !== "string" || !body.fcmToken || body.fcmToken.length > 1000) {
+            res.send(400);
+            return;
+        }
+
+        update["fcm"][body["deviceId"]] = {
+            token: body["fcmToken"],
+            lastSync: admin.database.ServerValue.TIMESTAMP
+        };
+    }
+
+    // Referrer for app install
+    if ("referrer" in body) {
+        if (typeof body.referrer !== "string" || !body.referrer || body.referrer.length > 100) {
+            res.send(400);
+            return;
+        }
+
+        update["referrer"] = body["referrer"];
+    }
+
+    // Broad geolocation
+    const geo = await getJSON(`http://ip-api.com/json/${req.ip}`);
+    if (geo.status === "success") {
+        update["country"] = geo["country"];
+        update["region"] = geo["regionName"];
+    }
+
+    await admin.database().ref(`${req.user!.user_id}/info`).update(update);
     res.send(200);
 });
 

@@ -7,6 +7,7 @@
     "@capacitor/android": "github:nkalupahana/capacitor-android",
     "@capacitor/app": "^4.0.0",
     "@capacitor/core": "^4.0.0",
+    "@capacitor/device": "^4.0.1",
     "@capacitor/haptics": "^4.0.0",
     "@capacitor/ios": "github:nkalupahana/capacitor-ios",
     "@capacitor/keyboard": "^4.0.0",
