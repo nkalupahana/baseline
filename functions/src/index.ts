@@ -877,14 +877,16 @@ export const syncUserInfo = functions.https.onRequest(async (req: Request, res) 
     checkToken();
     
     // Referrer for app install
-    if ("referrer" in body) {
-        if (typeof body.referrer !== "string" || !body.referrer || body.referrer.length > 100) {
-            res.send(400);
-            return;
+    const checkRefer = () => {
+        if ("utm_source" in body && "utm_campaign" in body) {
+            if (typeof body.utm_source !== "string" || !body.utm_source || body.utm_source.length > 100) return;
+            if (typeof body.utm_campaign !== "string" || !body.utm_campaign || body.utm_campaign.length > 100) return;
+    
+            update["utm_source"] = body["utm_source"];
+            update["utm_campaign"] = body["utm_campaign"];
         }
-
-        update["referrer"] = body["referrer"];
     }
+    checkRefer();
 
     // Broad geolocation
     const geo = await getJSON(`http://ip-api.com/json/${req.ip}`);
