@@ -45,6 +45,12 @@ import GetHelp from "./pages/GetHelp";
 import WeekInReview from "./pages/WeekInReview";
 import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
+import { App as CapacitorApp } from "@capacitor/app";
+
+CapacitorApp.addListener("appUrlOpen", data => {
+    console.log("OPEN");
+    console.log(data);
+})
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",

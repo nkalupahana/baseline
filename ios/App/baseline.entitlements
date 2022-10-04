@@ -11,7 +11,10 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>activitycontinuation:web.getbaseline.app</string>
+		<string>applinks:link.getbaseline.app</string>
 	</array>
+	<key>com.apple.developer.icloud-container-environment</key>
+	<string>Production</string>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
 		<string>iCloud.baseline.getbaseline.app</string>
@@ -22,7 +25,5 @@
 	</array>
 	<key>com.apple.developer.usernotifications.time-sensitive</key>
 	<true/>
-	<key>com.apple.developer.icloud-container-environment</key>
-	<string>Production</string>
 </dict>
 </plist>
