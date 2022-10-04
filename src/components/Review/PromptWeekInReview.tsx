@@ -62,7 +62,7 @@ const PromptWeekInReview = () => {
 
             if (Capacitor.getPlatform() !== "web") {
                 const token = await FirebaseMessaging.getToken();
-                data["fcmToken"] = token;
+                data["fcmToken"] = token.token;
                 data["deviceId"] = (await Device.getId()).uuid;
             }
             await makeRequest("syncUserInfo", auth.currentUser!, data);

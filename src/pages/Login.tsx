@@ -259,7 +259,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             const token = await FirebaseMessaging.getToken();
             await makeRequest("syncUserInfo", auth.currentUser!, {
                 offset: DateTime.now().offset,
-                fcmToken: token,
+                fcmToken: token.token,
                 deviceId: (await Device.getId()).uuid
             });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
