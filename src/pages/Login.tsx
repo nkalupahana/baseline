@@ -18,6 +18,8 @@ import { analytics, globeOutline, lockClosedOutline, logoApple, logoGoogle, penc
 import Notifications from "./Notifications";
 import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
 import history from "../history";
+import { DateTime } from "luxon";
+import { Device } from "@capacitor/device";
 
 enum LoginStates {
     START,
@@ -162,6 +164,9 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
                 sessionStorage.removeItem("deleteAccount");
                 if (Capacitor.getPlatform() === "web") {
+                    await makeRequest("syncUserInfo", auth.currentUser!, {
+                        offset: DateTime.now().offset,
+                    });
                     setLoggingIn(false);
                 } else {
                     setFcmLoading(false);
@@ -251,7 +256,12 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         setFcmLoading(true);
         try {
             await FirebaseMessaging.requestPermissions();
-            await FirebaseMessaging.getToken();
+            const token = await FirebaseMessaging.getToken();
+            await makeRequest("syncUserInfo", auth.currentUser!, {
+                offset: DateTime.now().offset,
+                fcmToken: token,
+                deviceId: (await Device.getId()).uuid
+            });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
         } catch {}
         setLoggingIn(false);
