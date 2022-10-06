@@ -51,8 +51,8 @@
                             </p>
                         </div>
                         <div class="downloadButtonsContainer">
-                            <a class="playStoreLink" href="{{ site.appstore_link }}"><img alt="Get it on Google Play"  class="playStore" src="assets/appstore.png"></a>
-                            <a class="appStoreLink" href="{{ site.playstore_link }}"><img alt="Download on the App Store" class="appStore" src="assets/playstore.png"></a>
+                            <a class="appStoreLink" id="appStoreLink" href="{{ site.appstore_link }}"><img alt="Download on the App Store"  class="playStore" src="assets/appstore.png"></a>
+                            <a class="playStoreLink" id="playStoreLink" href="{{ site.playstore_link }}"><img alt="Get it on Google Play" class="appStore" src="assets/playstore.png"></a>
                             <br /><br />
                             <p style="color: white;">Or, use the <a target="_self" style="color: #93b8ff;" href="https://web.getbaseline.app">web version</a> from a computer!</p>
                         </div>
@@ -62,5 +62,26 @@
                 </div>
             </div>
         </div>
+        <script>
+            function ready() {
+                let utm_source = "web";
+                let utm_campaign = "web";
+                if (location.search.includes("utm_source=") && location.search.includes("utm_campaign=")) {
+                    utm_source = location.search.split("utm_source=")[1].split("&")[0];
+                    utm_campaign = location.search.split("utm_campaign=")[1].split("&")[0];
+                }
+
+                utm_campaign = encodeURIComponent(utm_campaign);
+                utm_source = encodeURIComponent(utm_source);
+                document.getElementById("appStoreLink").href = `https://link.getbaseline.app/?link=https://apps.apple.com/us/app/baseline-mood-journaling/id1621132298&apn=app.getbaseline.baseline&isi=1621132298&ibi=app.getbaseline.baseline&st=Click+below+to+continue+to+the+App+Store.&sd=&utm_campaign=${utm_campaign}&utm_source=${utm_source}`;
+                document.getElementById("playStoreLink").href = `https://link.getbaseline.app/?link=https://play.google.com/store/apps/details?id=app.getbaseline.baseline&apn=app.getbaseline.baseline&isi=1621132298&ibi=app.getbaseline.baseline&st=Click+below+to+continue+to+the+App+Store.&sd=&utm_campaign=${utm_campaign}&utm_source=${utm_source}`;
+            }
+            
+            if (document.readyState !== 'loading') {
+                ready();
+            } else {
+                document.addEventListener('DOMContentLoaded', ready);
+            }
+        </script>
 </body>
 </html>
