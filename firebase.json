@@ -35,7 +35,7 @@
     ]
   }, {
     "target": "baseline-links",
-    "public": "public",
+    "public": "empty",
     "ignore": [ "*" ],
     "appAssociation": "AUTO",
     "rewrites": [
