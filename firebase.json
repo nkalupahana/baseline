@@ -8,7 +8,7 @@
   },
   "hosting": [{
     "public": "build",
-    "target": "web",
+    "target": "getbaselineapp",
     "headers": [
       {
         "source": "/.well-known/apple-app-site-association",
