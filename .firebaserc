@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "getbaselineapp"
+  },
+  "targets": {
+    "getbaselineapp": {
+      "hosting": {
+        "baseline-links": [
+          "baseline-links"
+        ],
+        "getbaselineapp": [
+          "getbaselineapp"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

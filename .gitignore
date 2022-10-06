@@ -28,7 +28,6 @@ yarn-error.log*
 .eslintcache
 
 .env
-.firebaserc
 *.log
 .nyc_output/
 .firebase/
