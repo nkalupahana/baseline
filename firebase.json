@@ -8,6 +8,7 @@
   },
   "hosting": [{
     "public": "build",
+    "target": "web",
     "headers": [
       {
         "source": "/.well-known/apple-app-site-association",
