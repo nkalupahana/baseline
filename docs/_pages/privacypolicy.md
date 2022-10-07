@@ -8,7 +8,7 @@ permalink: /privacy
 # Privacy Policy
 Thanks for using baseline!
 
-baseline is owned and operated privately by Nisala Kalupahana. This privacy policy will explain how we use the data we collect from you when you use our website, app, and other services.
+baseline is owned and operated by BASELINE HEALTH, incorporated as a Domestic Nonprofit Organization in the State of Oregon, USA. This privacy policy will explain how we use the data we collect from you when you use our website, app, and other services.
 
 baseline collects your email address when you sign in with Apple or Google. If you’d rather we didn’t have your email, you can use a private email address when signing in with Apple. (Google does not have an equivalent feature.) We do not collect any other personally identifiable information. We may use your email address to send you informational emails about baseline (likely asking for feedback or the like).
 
@@ -78,7 +78,7 @@ All of our cookie and other local storage use is for required website functional
 baseline services contain links to other websites. Our privacy policy applies only to our website, so if you click on a link to another website, you should read their privacy policy.
 
 ## Changes to our privacy policy
-baseline keeps its privacy policy under regular review and places any updates on this web page. This privacy policy was last updated on August 10th, 2022.
+baseline keeps its privacy policy under regular review and places any updates on this web page. This privacy policy was last updated on October 7th, 2022.
 
 ## Contact Us 
 
