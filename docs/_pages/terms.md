@@ -8,7 +8,7 @@ permalink: /terms
 # Terms and Conditions
 Thank you for using baseline!
 
-baseline (the "Service") provides services to you subject to the notices, terms, and conditions set forth in this agreement and our [Privacy Policy](https://getbaseline.app/privacy) (the "Agreement"). In addition, when you use any of our services, you will be subject to the rules, guidelines, policies, terms, and conditions applicable to such service, and they are incorporated into this Agreement. We reserve the right to change this Service and this Agreement at any time. Accessing, browsing, or otherwise using the service indicates your agreement to all the terms and conditions in this Agreement.
+BASELINE HEALTH provides baseline (the "Service"), which provides services to you subject to the notices, terms, and conditions set forth in this agreement and our [Privacy Policy](https://getbaseline.app/privacy) (the "Agreement"). In addition, when you use any of our services, you will be subject to the rules, guidelines, policies, terms, and conditions applicable to such service, and they are incorporated into this Agreement. We reserve the right to change this Service and this Agreement at any time. Accessing, browsing, or otherwise using the service indicates your agreement to all the terms and conditions in this Agreement.
 
 This Agreement is effective August 10th 2022, and will be governed in accordance with the laws of the State of Oregon.
 
