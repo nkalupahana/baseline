@@ -27,6 +27,7 @@ target 'baseline' do
   # Add your Pods here
   pod 'CapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@capacitor-firebase/authentication'
   pod 'FirebaseDynamicLinks'
+  pod 'FirebaseCrashlytics'
 end
 
 
