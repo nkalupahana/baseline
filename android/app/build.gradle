@@ -1,3 +1,7 @@
+plugins {
+    id 'com.google.firebase.crashlytics'
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -40,6 +44,8 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-cordova-android-plugins')
+
+    implementation "com.google.firebase:firebase-crashlytics:18.2.13"
 }
 
 apply from: 'capacitor.build.gradle'
