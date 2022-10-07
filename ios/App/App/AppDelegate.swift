@@ -3,6 +3,7 @@ import Capacitor
 
 import Firebase
 import FirebaseAuth
+import OSLog
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         activity.title = "Using baseline"
         self.userActivity = activity
         self.userActivity?.becomeCurrent()
-        
+                
         return true
     }
 
@@ -54,12 +55,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
         
+        if #available(iOS 14.0, *) {
+            Logger().log("DYNAMIC LINK RECEIVED 1 \(url, privacy: .public)")
+        }
+        
         // Called when the app was launched with a url. Feel free to add additional processing here,
         // but if you want the App API to support tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        
+        if #available(iOS 14.0, *) {
+            let url = userActivity.webpageURL?.absoluteString ?? "no url"
+            Logger().log("DYNAMIC LINK RECEIVED 2 \(url, privacy: .public)")
+        }
+        
         // Called when the app was launched with an activity, including Universal Links.
         // Feel free to add additional processing here, but if you want the App API to support
         // tracking app url opens, make sure to keep this call
