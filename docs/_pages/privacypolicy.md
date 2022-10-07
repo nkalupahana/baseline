@@ -19,6 +19,17 @@ The only data we ever get about you is the data you give us when using our servi
 - Whether you’ve enabled Personal Data Protection, and what type (upfront/discreet)
 - Plain text of any Gap Fund requests you submit (which, of course, we need to process your request)
 
+We also collect the region (state in the United States) and country your IP address is located in, in order to
+send Large-Scale Event notifications to users in certain areas when important events happen there. For example, a 
+significant Supreme Court case in the United States may trigger a notification to all US IPs to remind them to 
+journal and reflect on how they're feeling. In order to facilitate these notifications, we also store baseline-specific
+device IDs and Firebase Cloud Messaging tokens for each mobile device you're sign into baseline with. 
+These tokens are all specific to baseline and cannot be used to track you across other apps or websites.
+
+Finally, if you sign up for baseline via a referral link, we can see who the referrer is. For example, if you 
+install baseline via a Twitter ad, we can see the ad campaign you came from. We only store this information to make 
+our advertising more effective.
+
 Other than the use of your email address detailed above, though, our internal data use policies forbid us to view any of this data in any deanonymized fashion without express permission from the user. We have no interest, financial or otherwise, in figuring out who you are and matching any of this data to you or any personal identifiers, and we never will.
 
 All other data you submit to us is encrypted with keys that are unique to each user, are stored by each user individually, and thus cannot be accessed by us no matter what:
