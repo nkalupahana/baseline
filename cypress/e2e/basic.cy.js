@@ -315,7 +315,7 @@ describe("Desktop Flow", () => {
 
         cy.get(".loader").should("exist")
         cy.get(".loader").should("not.exist", { timeout: 10000 })
-        cy.contains("Hi there").should("exist")
+        cy.contains("Hi there").should("exist", { timeout: 10000 })
         cy.get("ion-icon").eq(1).click()
         cy.contains("Results").should("exist")
         cy.contains("d=0, a=0, s=0").should("exist")
