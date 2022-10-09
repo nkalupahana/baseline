@@ -24,6 +24,10 @@
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
+		"pkg": "@getbaseline/capacitor-community-media",
+		"classpath": "com.getcapacitor.community.media.MediaPlugin"
+	},
+	{
 		"pkg": "@getbaseline/capacitor-firebase-messaging",
 		"classpath": "io.capawesome.capacitorjs.plugins.firebase.messaging.FirebaseMessagingPlugin"
 	},
