@@ -58,7 +58,8 @@ const ImageCarousel = ({ files, setInFullscreen }) => {
                 link.click();
             } else {
                 Media.savePhoto({
-                    path: dataurl
+                    path: dataurl,
+                    album: "baseline"
                 });
             }
         };
