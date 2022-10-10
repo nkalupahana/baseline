@@ -308,6 +308,7 @@ describe("Desktop Flow", () => {
         cy.contains("Question 1/").should("exist").then(el => {
             let questions = Number(el.text().split("/")[1]);
             if (questions === 5) --questions; // Removes skipped question in asQ
+            if (questions === 9) questions = 1; // Relationship screener only has one question
             for (let i = 0; i < questions; ++i) {
                 cy.get(".finish-button").first().click()
             }

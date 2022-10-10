@@ -15,6 +15,7 @@ dependencies {
     implementation project(':capacitor-haptics')
     implementation project(':capacitor-keyboard')
     implementation project(':capacitor-status-bar')
+    implementation project(':getbaseline-capacitor-community-media')
     implementation project(':getbaseline-capacitor-firebase-messaging')
     implementation project(':getbaseline-capacitor-local-notifications')
     implementation project(':capacitor-cloudkit')

@@ -17,6 +17,7 @@ def capacitor_pods
   pod 'CapacitorHaptics', :path => '../../node_modules/@capacitor/haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
   pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
+  pod 'GetbaselineCapacitorCommunityMedia', :path => '../../node_modules/@getbaseline/capacitor-community-media'
   pod 'GetbaselineCapacitorFirebaseMessaging', :path => '../../node_modules/@getbaseline/capacitor-firebase-messaging'
   pod 'GetbaselineCapacitorLocalNotifications', :path => '../../node_modules/@getbaseline/capacitor-local-notifications'
   pod 'CapacitorCloudkit', :path => '../../node_modules/capacitor-cloudkit'

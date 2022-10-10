@@ -20,6 +20,9 @@ project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
+include ':getbaseline-capacitor-community-media'
+project(':getbaseline-capacitor-community-media').projectDir = new File('../node_modules/@getbaseline/capacitor-community-media/android')
+
 include ':getbaseline-capacitor-firebase-messaging'
 project(':getbaseline-capacitor-firebase-messaging').projectDir = new File('../node_modules/@getbaseline/capacitor-firebase-messaging/android')
 

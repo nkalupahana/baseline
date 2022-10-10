@@ -64,7 +64,11 @@
     z-index: 2000;
 }
 
-.flickity-fullscreen-button.flickity-fullscreen-button-exit {
+div.flickity-enabled.is-fullscreen > .flickity-fullscreen-button {
+    top: max(env(safe-area-inset-top), 10px);
+}
+
+div.flickity-enabled.is-fullscreen > .flickity-download-button {
     top: max(env(safe-area-inset-top), 10px);
 }
 
