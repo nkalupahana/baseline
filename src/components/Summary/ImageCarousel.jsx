@@ -59,7 +59,12 @@ const ImageCarousel = ({ files, setInFullscreen }) => {
             } else {
                 let opts = { path: dataurl };
                 if (Capacitor.getPlatform() === "android") opts["album"] = "baseline";
-                Media.savePhoto(opts);
+                Media.savePhoto(opts).catch(e => {
+                    document.querySelectorAll(".toastify").forEach(node => {
+                        node.remove();
+                    });
+                    toast(e);
+                });
                 toast("Image saved!");
             }
         };
