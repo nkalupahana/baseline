@@ -38,7 +38,7 @@
     "eslint-plugin-import": "^2.26.0",
     "firebase": "^9.6.10",
     "flickity-download": "github:nkalupahana/flickity-download#main",
-    "flickity-fullscreen": "github:nkalupahana/flickity-fullscreen#patch-1",
+    "flickity-fullscreen": "github:nkalupahana/flickity-fullscreen#patch-and-new-icons",
     "fuse.js": "^6.6.2",
     "ionicons": "^5.4.0",
     "lodash": "^4.17.21",
