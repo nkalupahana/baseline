@@ -17,6 +17,7 @@ import { auth as googleauth , sheets } from "@googleapis/sheets";
 import { BigQuery } from "@google-cloud/bigquery";
 import { Storage } from "@google-cloud/storage";
 import * as bent from "bent";
+import * as _ from "lodash";
 
 admin.initializeApp();
 const quotaApp = admin.initializeApp({
@@ -895,7 +896,9 @@ export const syncUserInfo = functions.https.onRequest(async (req: Request, res) 
         update["region"] = geo["regionName"];
     }
 
-    await admin.database().ref(`${req.user!.user_id}/info`).update(update);
+    const ref = admin.database().ref(`${req.user!.user_id}/info`);
+    const oldInfo = await (await ref.get()).val() ?? {};
+    await ref.set(_.merge(oldInfo, update));
     res.send(200);
 });
 
