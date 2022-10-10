@@ -8,7 +8,7 @@ import "flickity-download/download.css";
 import "flickity-download/download";
 import useCallbackRef from "../../useCallbackRef";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { BASE_URL, checkKeys } from "../../helpers";
+import { BASE_URL, checkKeys, toast } from "../../helpers";
 import { getIdToken } from "firebase/auth";
 import { Capacitor } from "@capacitor/core";
 import { Media } from "@getbaseline/capacitor-community-media";
@@ -57,10 +57,10 @@ const ImageCarousel = ({ files, setInFullscreen }) => {
                 link.download = "image.webp";
                 link.click();
             } else {
-                Media.savePhoto({
-                    path: dataurl,
-                    album: "baseline"
-                });
+                let opts = { path: dataurl };
+                if (Capacitor.getPlatform() === "android") opts["album"] = "baseline";
+                Media.savePhoto(opts);
+                toast("Image saved!");
             }
         };
 

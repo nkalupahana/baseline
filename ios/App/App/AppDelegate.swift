@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         activity.title = "Using baseline"
         self.userActivity = activity
         self.userActivity?.becomeCurrent()
-                
+        
         return true
     }
 
