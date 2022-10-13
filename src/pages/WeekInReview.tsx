@@ -22,11 +22,11 @@ enum Stage {
     Review
 };
 
-interface KEY_MAP_INT {
+interface ScreenerMap {
     [key: string]: () => Screener;
 }
 
-const KEY_MAP: KEY_MAP_INT = {
+export const SCREENERS: ScreenerMap = {
     "cagev1": CAGE_AID,
     "edev1": EDE_QS,
     "harmv1": HARM,
@@ -48,7 +48,7 @@ const WeekInReview = () => {
         if (!user) return;
         get(query(ref(db, `${user.uid}/surveys`), orderByKey(), limitToLast(8))).then(snap => {
             const val = snap.val();
-            let keys = Object.keys(KEY_MAP);
+            let keys = Object.keys(SCREENERS);
             if (val) {
                 for (let surveyKey in val) {
                     // https://eslint.org/docs/rules/guard-for-in
@@ -60,7 +60,7 @@ const WeekInReview = () => {
                     }
                 }
             }
-            setSecondary(KEY_MAP[keys[Math.floor(Math.random() * keys.length)]]());
+            setSecondary(SCREENERS[keys[Math.floor(Math.random() * keys.length)]]());
         });
     }, [user]);
 
@@ -90,7 +90,7 @@ const WeekInReview = () => {
             incrementStage();
         }} /> }
         { stage === Stage.Secondary && <Surveyer stage="Secondary" survey={secondary} setSurvey={setSecondary} incrementStage={incrementStage} /> }
-        { stage === Stage.Review && <WeekInReviewReview primary={primary} secondary={secondary} />}
+        { stage === Stage.Review && <WeekInReviewReview primary={primary} secondary={secondary} update={true} />}
     </>
 };
 
