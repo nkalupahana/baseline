@@ -139,13 +139,13 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
         }
 
         for (let weekday in WEEKDAY_TO_LETTER) {
-            weekday = Number(weekday);
+            const nweekday = Number(weekday);
             ret.push(<div 
-                        key={weekday} 
-                        onClick={() => toggle(weekday)} 
+                        key={nweekday} 
+                        onClick={() => toggle(nweekday)} 
                         className="weekday-selector" 
-                        style={weekdays.includes(weekday) ? {backgroundColor: "var(--notification-green)"} : {backgroundColor: "#ef5350"}}>
-                            { WEEKDAY_TO_LETTER[weekday] }
+                        style={weekdays.includes(nweekday) ? {backgroundColor: "var(--notification-green)"} : {backgroundColor: "#ef5350"}}>
+                            { WEEKDAY_TO_LETTER[nweekday] }
                     </div>)
         }
 
