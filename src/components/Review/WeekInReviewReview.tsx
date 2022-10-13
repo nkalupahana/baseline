@@ -39,7 +39,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
         setLoading(true);
         try {
             if (update) await set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
-            history.push("/summary");
+            history.push(update ? "/summary" : "/surveys");
         } catch (e: any) {
             toast(`Something went wrong, please try again. ${e.message}`);
             setLoading(false);
