@@ -250,7 +250,7 @@ describe("Desktop Flow", () => {
         cy.contains("Surveys").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         
-        cy.contains("Last Week").should("not exist")
+        cy.contains("Last Week").should("not.exist")
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
