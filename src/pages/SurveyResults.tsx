@@ -15,6 +15,7 @@ const SurveyResults = () => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
+    const [showLastWeek, setShowLastWeek] = useState(false);
     const dass = DASS();
     const spf = SPF();
 
@@ -25,6 +26,14 @@ const SurveyResults = () => {
     useEffect(() => {
         calculateBaseline(setBaselineGraph);
     }, []);
+    
+    useEffect(() => {
+        if (typeof surveyHistory !== "object") return;
+        const values = Object.values(surveyHistory);
+        if (values.findIndex(x => x.key === "dassv1") === -1) return;
+        if (values.findIndex(x => x.key !== "dassv1") === -1) return;
+        setShowLastWeek(true);
+    }, [surveyHistory]);
 
     return (
         <div className="container">
@@ -32,6 +41,9 @@ const SurveyResults = () => {
             <div className="center-journal">
                 <div className="title">Survey Results</div>
                 <br />
+                { showLastWeek && <div className="finish-button" onClick={() => history.push("/lastreview")} style={{"width": "80%", "maxWidth": "500px"}}>
+                    View Last Week's Results
+                </div> }
                 <p className="bold head2 text-center">Your baseline</p>
                 { typeof baselineGraph === "object" && <>
                     <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />

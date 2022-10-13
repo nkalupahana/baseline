@@ -245,6 +245,22 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "summary")
     })
 
+    it("Test WIR Button on Survey Results", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Surveys").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        
+        cy.contains("Last Week").should("not.exist")
+
+        cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
+
+        cy.visit("/lastreview")
+        cy.url().should("contain", "/surveys")
+        cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
+    })
+
     it("Makes User Eligible (Week In Review, Gap Fund)", () => {
         const ldb = new Dexie('ldb');
         ldb.version(1).stores({
@@ -532,8 +548,21 @@ describe("Test Settings", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Surveys").should("exist").click()
         cy.get("ion-menu").should("not.exist")
+
         cy.contains("have enough data").should("exist")
         cy.get(".recharts-responsive-container").should("have.length", 2)
+
+        cy.contains("Last Week").should("exist").click()
+        cy.url().should("include", "/lastreview")
+        cy.contains("Hi there").should("exist")
+        cy.get("ion-icon").eq(1).click()
+        cy.contains("Results").should("exist")
+        cy.contains("d=0, a=0, s=0").should("exist")
+        cy.get("ion-icon").eq(1).click()
+        cy.get("ion-icon").eq(1).click()
+        cy.contains("Finish").should("exist").click()
+        cy.url().should("include", "/surveys")
+
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
     })

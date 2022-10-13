@@ -46,6 +46,7 @@ import WeekInReview from "./pages/WeekInReview";
 import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
 import { App as CapacitorApp } from "@capacitor/app";
+import LastWeekInReview from "./pages/LastWeekInReview";
 
 CapacitorApp.addListener("appUrlOpen", data => {
     try {
@@ -88,6 +89,7 @@ const App = () => {
         { path: "/gap", Component: GapFund },
         { path: "/donate", Component: Donate },
         { path: "/review", Component: WeekInReview },
+        { path: "/lastreview", Component: LastWeekInReview },
         { path: "/settings", Component: Settings },
         { path: "/gethelp", Component: GetHelp },
         { path: "/rsummary", Component: RSummary },

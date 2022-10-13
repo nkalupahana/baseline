@@ -16,10 +16,11 @@ import { BASELINE_EXP } from "../../data";
 
 interface Props {
     primary: Screener,
-    secondary: Screener
+    secondary: Screener,
+    update: boolean
 }
 
-const WeekInReviewReview = ({ primary, secondary }: Props) => {
+const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     const [loading, setLoading] = useState(false);
     const [swiper, setSwiper] = useState<SwiperType | undefined>(undefined);
     const [user] = useAuthState(auth);
@@ -30,15 +31,15 @@ const WeekInReviewReview = ({ primary, secondary }: Props) => {
         if (!user) return;
         // Try to set timestamp on load, to prevent duplicate surveys
         // in case the user doesn't hit the finish button
-        set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
-    }, [user]);
+        if (update) set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
+    }, [user, update]);
 
     const finish = async () => {
         if (loading) return;
         setLoading(true);
         try {
-            await set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
-            history.push("/summary");
+            if (update) await set(ref(db, `/${user.uid}/lastWeekInReview`), serverTimestamp());
+            history.push(update ? "/summary" : "/surveys");
         } catch (e: any) {
             toast(`Something went wrong, please try again. ${e.message}`);
             setLoading(false);
