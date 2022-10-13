@@ -9,11 +9,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Use Node.js 16
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: "16.x"
         cache: "npm"
@@ -34,13 +34,13 @@ jobs:
         HAPPO_NONCE: ${{ github.run_id }}
     - name: Upload Test Video
       if: failure()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test-video
         path: cypress/videos
     - name: Upload Test Screenshots
       if: failure()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test-screenshots
         path: cypress/screenshots
@@ -71,9 +71,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js 16
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: "16.x"
         cache: "npm"
@@ -96,7 +96,7 @@ jobs:
         ./gradlew build
         ./gradlew bundleDebug
     - name: Send to Artifacts
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       with:
         name: outputs
         path: android/app/build/outputs
@@ -110,9 +110,9 @@ jobs:
     needs: test
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js 16
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: "16.x"
         cache: "npm"
