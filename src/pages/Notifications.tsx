@@ -10,10 +10,10 @@ import EndSpacer from "../components/EndSpacer";
 interface NotificationData {
     [key: string]: Array<
         {
-            id: Number,
-            weekday: Number
+            id: number,
+            weekday: number
         }>
-};
+}
 
 function getTime(schedule: Schedule) {
     const { hour: nHour, minute: nMinute } = schedule.on!;

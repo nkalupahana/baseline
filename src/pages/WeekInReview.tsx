@@ -20,7 +20,7 @@ enum Stage {
     Primary,
     Secondary,
     Review
-};
+}
 
 interface ScreenerMap {
     [key: string]: () => Screener;
@@ -32,7 +32,7 @@ export const SCREENERS: ScreenerMap = {
     "harmv1": HARM,
     "spfv1": SPF,
     "wastv1": WAST
-};
+}
 
 const WeekInReview = () => {
     const [user] = useAuthState(auth);

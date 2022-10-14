@@ -337,8 +337,9 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
 
     let sum = 0;
     let i = 0;
-    for (i = 0; i < BASELINE_DAYS; ++i) {
+    while (i < BASELINE_DAYS) {
         sum += perDayAverages[i];
+        ++i;
     }
 
     // Start average with base 14 days

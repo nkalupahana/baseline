@@ -36,7 +36,7 @@ const FinishJournal = props => {
         }
         setSubmitting(true);
 
-        var data = new FormData();
+        let data = new FormData();
         data.append("timezone", DateTime.local().zoneName);
         data.append("mood", props.moodWrite);
         data.append("journal", props.text);
