@@ -13,6 +13,8 @@ import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
 import { checkKeys, networkFailure, toast } from "../../helpers";
+import ldb from "../../db";
+import { RateApp } from "capacitor-rate-app";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -67,7 +69,12 @@ const FinishJournal = props => {
 
         if (response) {
             if (response.ok) {
-                if (Capacitor.getPlatform() !== "web") LocalNotifications.clearDeliveredNotifications();
+                if (Capacitor.getPlatform() !== "web") {
+                    LocalNotifications.clearDeliveredNotifications();
+                    ldb.logs.count().then(count => {
+                        if (count > 10 && props.average === "above") RateApp.requestReview();
+                    });
+                }
                 toast("Mood log saved!", "bottom");
                 setSubmitted(true);
             } else {
