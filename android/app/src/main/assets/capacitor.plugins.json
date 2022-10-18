@@ -38,5 +38,9 @@
 	{
 		"pkg": "capacitor-cloudkit",
 		"classpath": "cloudkit.baseline.getbaseline.app.CloudKitPlugin"
+	},
+	{
+		"pkg": "capacitor-rate-app",
+		"classpath": "com.capacitor.rateapp.CapacitorRateAppPlugin"
 	}
 ]

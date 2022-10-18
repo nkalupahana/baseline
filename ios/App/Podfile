@@ -21,6 +21,7 @@ def capacitor_pods
   pod 'GetbaselineCapacitorFirebaseMessaging', :path => '../../node_modules/@getbaseline/capacitor-firebase-messaging'
   pod 'GetbaselineCapacitorLocalNotifications', :path => '../../node_modules/@getbaseline/capacitor-local-notifications'
   pod 'CapacitorCloudkit', :path => '../../node_modules/capacitor-cloudkit'
+  pod 'CapacitorRateApp', :path => '../../node_modules/capacitor-rate-app'
 end
 
 target 'baseline' do
