@@ -19,6 +19,7 @@ dependencies {
     implementation project(':getbaseline-capacitor-firebase-messaging')
     implementation project(':getbaseline-capacitor-local-notifications')
     implementation project(':capacitor-cloudkit')
+    implementation project(':capacitor-rate-app')
 
 }
 
