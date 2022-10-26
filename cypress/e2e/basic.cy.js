@@ -29,7 +29,7 @@ describe("Mobile Flow", () => {
         cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
-        cy.contains("What's happening").should("exist")
+        cy.contains("What's happening").should("exist", { timeout: 16000 })
         cy.get("body").happoScreenshot()
     })
 
