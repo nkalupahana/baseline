@@ -193,6 +193,23 @@ describe("Desktop Flow", () => {
         })
         cy.get("#moodLogList").scrollTo(0, 500, { ensureScrollable: false, duration: 1000 })
         cy.get("#moodLogList").scrollTo(0, 0, { ensureScrollable: false, duration: 1000 })
+        cy.get(".marker").last().happoScreenshot()
+    })
+
+    it("Test Colorblind Mode", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        cy.contains("Skip").should("exist")
+        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+        cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(1).click()
+        cy.get("ion-toggle").eq(1).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+
+        cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
+        cy.get(".marker").last().happoScreenshot()
     })
 
     it("Test Search and Filter", () => {
@@ -296,11 +313,11 @@ describe("Desktop Flow", () => {
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         cy.contains("Skip").should("exist")
-        cy.get(".settings-box-grid").eq(1).happoScreenshot()
-        cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(1).click()
-        cy.get("ion-toggle").eq(1).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+        cy.get(".settings-box-grid").eq(2).happoScreenshot()
+        cy.get("ion-toggle").eq(2).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(2).click()
+        cy.get("ion-toggle").eq(2).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(2).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
