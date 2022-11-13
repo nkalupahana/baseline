@@ -1,13 +1,13 @@
 import { DateTime } from "luxon";
-import { createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
+import { COLORS, COLORS_CB, createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
 import { chunk } from "lodash";
 import useCallbackRef from "../../../useCallbackRef";
 import { useCallback, useEffect, useState } from "react";
 
 const LOCATOR_OFFSET = 30;
 
-function createCalendarCard(date, data=[]) {
-    const points = createPoints(data);
+function createCalendarCard(date, colors, data=[]) {
+    const points = createPoints(data, colors);
     const locator = "g-locator-" + date.toISODate();
     let dayHighlight = "";
     const today = DateTime.local();
@@ -40,6 +40,7 @@ function createCalendarCard(date, data=[]) {
 const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
     const settings = parseSettings();
     const [rows, setRows] = useState([]);
+    const colors = settings["colorblind"] ? COLORS_CB : COLORS;
 
     const calendar = useCallbackRef(useCallback(node => {
         if (!node) return;
@@ -126,7 +127,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
         }
     
         while (!now.equals(current) && now > current) {
-            els.push(createCalendarCard(now));
+            els.push(createCalendarCard(now, colors));
             now = now.minus({days: 1});
         }
     
@@ -138,27 +139,27 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             }
     
             // Create card for current day
-            els.push(createCalendarCard(current, todaysLogs));
+            els.push(createCalendarCard(current, colors, todaysLogs));
             if (i === logs.length) break;
     
             // Create cards back to next populated day
             let next = getDateFromLog(logs[i]);
             while (!current.equals(next)) {
                 current = current.minus({ days: 1 });
-                if (!current.equals(next)) els.push(createCalendarCard(current));
+                if (!current.equals(next)) els.push(createCalendarCard(current, colors));
             }
         }
     
         // 7 days in a week, 6 rows by default = 42
         while (els.length < 42) {
             current = current.minus({ days: 1 });
-            els.push(createCalendarCard(current));
+            els.push(createCalendarCard(current, colors));
         }
     
         // Create empty cards for final week (stop on sunday = 7)
         while (current.weekday !== 7) {
             current = current.minus({ days: 1 });
-            els.push(createCalendarCard(current));
+            els.push(createCalendarCard(current, colors));
         }
     
         let rows = [];
@@ -167,7 +168,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
         });
 
         setRows(rows);
-    }, [logs]);
+    }, [logs, colors]);
 
     useEffect(() => {
         const el = document.querySelector(".less-highlight-day");

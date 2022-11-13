@@ -3,7 +3,7 @@ const faker = require("faker");
 const admin = require("firebase-admin");
 
 let time = DateTime.local().minus({ weeks: 3 }).startOf("day");
-const now = DateTime.local().endOf("day");
+const now = DateTime.local().endOf("day").minus({ days: 1 });
 let logs = {}
 const hours = [9, 13, 16, 19];
 let currentMood = 0;

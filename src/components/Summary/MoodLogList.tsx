@@ -2,7 +2,7 @@ import { IonSpinner } from "@ionic/react";
 import { DateTime } from "luxon";
 import { Ref, useEffect, useState } from "react";
 import { Log } from "../../db";
-import { getDateFromLog, parseSettings } from "../../helpers";
+import { COLORS, COLORS_CB, getDateFromLog, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 
 interface Props {
@@ -20,13 +20,13 @@ interface Props {
 }
 
 const createLocator = (t: DateTime) => {
-    return (<p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${t.month}${t.day}${t.year}`}>
+    return (<p id={"i-locator-" + t.toISODate()} className="bold text-center" key={`${t.toISODate()}`}>
             { t.toFormat("DDDD") }
         </p>);
 }
 
 const createEmptyLocator = (t: DateTime) => {
-    return (<p id={`i-locator-${t.toISODate()}-bottom`} className="margin-0" key={`${t.month}${t.day}${t.year}-bottom`}></p>);
+    return (<p id={`i-locator-${t.toISODate()}-bottom`} className="margin-0" key={`${t.toISODate()}-bottom`}></p>);
 }
 
 const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight, filtered, LOCATOR_OFFSET } : Props) => {
@@ -60,6 +60,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         
         let t;
         let today = [];
+        const colors = parseSettings()["colorblind"] ? COLORS_CB : COLORS;
         for (let log of logs) {
             // Count number of first day logs, for bottom spacing for calendar
             if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
@@ -87,7 +88,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 if (!log.time.includes(addZone)) log.time += " " + addZone;
             }
     
-            today.push(<MoodLogCard setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} />);
+            today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} />);
         }
     
         // Add final information

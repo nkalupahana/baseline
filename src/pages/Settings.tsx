@@ -30,7 +30,12 @@ const Settings = () => {
                 <SettingsBox 
                     title="Reduce Motion"
                     attr="reduceMotion"
-                    description="Turn this on to disable animations. This typically won't increase performance by any noticable amount."
+                    description="Turn this on to disable some animations. This typically won't increase performance by any noticable amount."
+                />
+                <SettingsBox 
+                    title="Use Colorblind-Friendly Colors"
+                    attr="colorblind"
+                    description="Turn this on to use colorblind-friendly colors on the summary page graphs."
                 />
                 <SettingsBox 
                     title="Skip Week In Review"
