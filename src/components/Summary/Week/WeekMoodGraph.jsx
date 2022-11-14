@@ -2,12 +2,12 @@ import "./WeekMoodGraph.css";
 import { DateTime } from "luxon";
 import { useEffect, useCallback, useState } from "react";
 import useCallbackRef from "../../../useCallbackRef";
-import { createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
+import { COLORS, COLORS_CB, createPoints, getDateFromLog, getTime, parseSettings } from "../../../helpers";
 import { IonIcon } from "@ionic/react";
 import { caretUp } from "ionicons/icons";
 
-function createGraphCard(date, data=[]) {
-    const points = createPoints(data);
+function createGraphCard(date, colors, data=[]) {
+    const points = createPoints(data, colors);
 
     const locator = "g-locator-" + date.toISODate();
     return (<div key={locator} id={locator} className="graph-card">
@@ -28,6 +28,7 @@ function getBound(el, node) {
 const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
     const settings = parseSettings();
     const [els, setEls] = useState([]);
+    const colors = settings["colorblind"] ? COLORS_CB : COLORS;
 
     const container = useCallbackRef(useCallback(node => {
         if (!node) return;
@@ -136,7 +137,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         // Create cards from today to first entry
         let now = DateTime.now().startOf("day");
         while (!now.equals(current) && now > current) {
-            els.push(createGraphCard(now));
+            els.push(createGraphCard(now, colors));
             now = now.minus({days: 1});
         }
 
@@ -148,25 +149,25 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             }
 
             // Create card for current day
-            els.push(createGraphCard(current, todaysLogs));
+            els.push(createGraphCard(current, colors, todaysLogs));
             if (i === logs.length) break;
 
             // Create cards back to next populated day
             let next = getDateFromLog(logs[i]);
             while (!current.equals(next)) {
                 current = current.minus({ days: 1 });
-                if (!current.equals(next)) els.push(createGraphCard(current));
+                if (!current.equals(next)) els.push(createGraphCard(current, colors));
             }
         }
 
         // Create empty cards for final week
         for (let i = 0; i < 6; i++) {
             current = current.minus({ days: 1 });
-            els.push(createGraphCard(current));
+            els.push(createGraphCard(current, colors));
         }
 
         setEls(els);
-    }, [logs]);
+    }, [logs, colors]);
 
     return (
         <>

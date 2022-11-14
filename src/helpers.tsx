@@ -53,9 +53,24 @@ export const COLORS: AnyMap = {
     "5": "#1b5e20"   // green darken-3
 };
 
+// based on jet color scale
+export const COLORS_CB: AnyMap = {
+    "-5": "var(--background-color-inverted)",
+    "-4": "#120176",
+    "-3": "#4000B5",
+    "-2": "#9301D1",
+    "-1": "#AD0293",
+    "0": "#D2123A",
+    "1": "#F25701",
+    "2": "#FFA500",
+    "3": "#FDC803",
+    "4": "#FFE704",
+    "5": "var(--background-color-inverted)"
+};
+
 export const BASE_URL = "https://us-central1-getbaselineapp.cloudfunctions.net";
 
-export function createPoints(data: Log[]) {
+export function createPoints(data: Log[], colors: AnyMap) {
     let points = [];
     for (let point of data) {
         let [h, rest] = point.time.split(":");
@@ -68,7 +83,7 @@ export function createPoints(data: Log[]) {
         const style = {
             left: `min(${seconds / SECONDS_IN_DAY * 100}%, calc(100% - 6px))`,
             top: `${(10 - (point.mood + 5)) * 6.5 + 25}%`,
-            backgroundColor: COLORS[point.mood]
+            backgroundColor: colors[point.mood]
         };
         points.push(<div className="marker" key={point.timestamp} style={style}></div>);
     }
