@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import { checkQuota, UserRequest, validateAuth } from "./helpers";
 import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp";
-import { deleteAccount, reportForwards, sync } from "./accounts";
+import { deleteAccount, getOrCreateKeys, sync } from "./accounts";
 
 const app = express();
 admin.initializeApp();
@@ -43,7 +43,7 @@ app.post("/pdp/change", changePDPpassphrase);
 // Account Info & Management
 app.post("/accounts/delete", deleteAccount);
 app.post("/accounts/sync", sync);
-app.post("/accounts/reportForwardingHeader", reportForwards);
+app.post("/accounts/getOrCreateKeys", getOrCreateKeys);
 
 app.use(Sentry.Handlers.errorHandler());
 
