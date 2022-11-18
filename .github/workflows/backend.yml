@@ -1,11 +1,10 @@
 name: Deploy Backend
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
