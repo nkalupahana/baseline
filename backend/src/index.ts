@@ -25,14 +25,9 @@ app.get("/", (_, res) => {
     res.status(200).send("baseline API up and running.");
 });
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-    throw new Error("My first Sentry error!");
-});
-
 app.use(Sentry.Handlers.errorHandler());
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log("Listening on port", port);
-    console.log(process.env.NODE_ENV);
 });
