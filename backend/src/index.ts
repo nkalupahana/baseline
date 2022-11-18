@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import cors from "cors";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import { checkQuota, UserRequest, validateAuth } from "./helpers";
 
 const app = express();
 admin.initializeApp();
@@ -20,6 +21,12 @@ Sentry.init({
 app.use(cors());
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
+app.use(async (req: UserRequest, res, next) => {
+    await validateAuth(req, res);
+    if (req.user && await checkQuota(req, res)) {
+        next();
+    }
+});
 
 app.get("/", (_, res) => {
     res.status(200).send("baseline API up and running.");

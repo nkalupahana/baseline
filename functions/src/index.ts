@@ -40,33 +40,6 @@ const CLOUDKIT: any = {
     BASE: "https://api.apple-cloudkit.com"
 };
 
-const validateAuth = async (req: Request, res: functions.Response<any>) => {
-    if ((!req.headers.authorization || !req.headers.authorization.startsWith("Bearer ")) && !(req.cookies && req.cookies.__session)) {
-        res.status(403).send("Unauthorized");
-        return;
-    }
-
-    let idToken;
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
-        idToken = req.headers.authorization.split("Bearer ")[1];
-    } else if (req.cookies) {
-        idToken = req.cookies.__session;
-    } else {
-        res.status(403).send("Unauthorized");
-        return;
-    }
-
-    try {
-        const decodedIdToken = await admin.auth().verifyIdToken(idToken);
-        req.user = decodedIdToken;
-        return;
-    } catch (error) {
-        console.log(error);
-        res.status(403).send("Unauthorized");
-        return;
-    }
-};
-
 const validateKeys = async (keys_: string, db: Database, user_id: string) => {
     if (typeof keys_ !== "string") {
         return false;
