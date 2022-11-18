@@ -1,0 +1,25 @@
+name: Deploy Backend
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.x"
+        cache: "npm"
+    - run: npm ci
+    - run: npm run build
+    - run: |
+        echo $GOOGLE_APPLICATION_CREDENTIALS > ./google-credentials.json
+        gcloud auth activate-service-account --key-file ./google-credentials.json
+        npm run deploy
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
