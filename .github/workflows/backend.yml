@@ -23,8 +23,8 @@ jobs:
     - run: npm run build
     - name: Deploy to Cloud Run
       run: |
-        echo $GOOGLE_APPLICATION_CREDENTIALS > ./google-credentials.json
-        gcloud auth activate-service-account --key-file ./google-credentials.json
+        echo $GOOGLE_APPLICATION_CREDENTIALS > /google-credentials.json
+        gcloud auth activate-service-account --key-file /google-credentials.json
         npm run deploy
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
