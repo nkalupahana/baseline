@@ -7,6 +7,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
     - uses: actions/checkout@v3
       with:
@@ -18,7 +21,8 @@ jobs:
         cache: "npm"
     - run: npm ci
     - run: npm run build
-    - run: |
+    - name: Deploy to Cloud Run
+      run: |
         echo $GOOGLE_APPLICATION_CREDENTIALS > ./google-credentials.json
         gcloud auth activate-service-account --key-file ./google-credentials.json
         npm run deploy
