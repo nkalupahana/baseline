@@ -5,7 +5,7 @@ import * as bcrypt from "bcryptjs";
 import _ from "lodash";
 import * as AES from "crypto-js/aes";
 import * as aesutf8 from "crypto-js/enc-utf8";
-import random from "crypto-random-string";
+import * as random from "crypto-random-string";
 
 const TOKENS: any = {
     web: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
