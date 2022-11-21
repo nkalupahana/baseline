@@ -7,9 +7,12 @@ import { checkQuota, UserRequest, validateAuth } from "./helpers.js";
 import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp.js";
 import { deleteAccount, getOrCreateKeys, sync } from "./accounts.js";
 import { getImage, moodLog, survey } from "./main.js";
+import { gapFund } from "./gap.js";
 
 const app = express();
-initializeApp();
+initializeApp({
+    databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
+});
 
 Sentry.init({
     dsn: "https://4fb379f6ae1a4e569ae826f066adf8ba@o4504179120472064.ingest.sentry.io/4504179121717248",
@@ -49,7 +52,9 @@ app.post("/accounts/getOrCreateKeys", getOrCreateKeys);
 // Main Functions
 app.post("/moodLog", moodLog);
 app.post("/survey", survey);
-app.post("/image", getImage);
+app.post("/getImage", getImage);
+
+app.post("/gap", gapFund);
 
 app.use(Sentry.Handlers.errorHandler());
 

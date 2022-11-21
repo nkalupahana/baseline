@@ -3,7 +3,7 @@ import { UserRequest } from "./helpers.js";
 import { Response } from "express";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
-import * as AES from "crypto-js/aes.js";
+import AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 import random from "crypto-random-string";
 import { getDatabase } from "firebase-admin/database";

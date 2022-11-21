@@ -2,7 +2,7 @@ import { Response } from "express";
 import { UserRequest, validateKeys } from "./helpers.js";
 import { getDatabase } from "firebase-admin/database";
 import { getStorage } from "firebase-admin/storage";
-import * as AES from "crypto-js/aes.js";
+import AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 import { DateTime } from "luxon";
 import formidable from "formidable";
@@ -173,14 +173,14 @@ export const survey = async (req: UserRequest, res: Response) => {
 }
 
 export const moodLog = async (req: UserRequest, res: Response) => {
-    let { data, files }: any = await new Promise((resolve, reject) => {
-        formidable({ keepExtensions: true, multiples: true }).parse(req, (err: Error, fields: any, files: any) => {
+    let { data, files } : any = await new Promise((resolve, reject) => {
+        formidable({ keepExtensions: true, multiples: true }).parse(req, (err: Error, data: any, files: any) => {
             if (err) {
                 reject(err);
                 return;
             }
 
-            resolve({ fields, files });
+            resolve({ data, files });
         });
     });
 
