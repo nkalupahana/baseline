@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
-import * as admin from "firebase-admin";
-import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
+import { initializeApp } from "firebase-admin/app";
+import { Database, getDatabase } from "firebase-admin/database";
+import { getAuth, DecodedIdToken } from "firebase-admin/auth";
 import { DateTime } from "luxon";
+import { AES } from "crypto-js";
+import aesutf8 from "crypto-js/enc-utf8.js";
+import bcrypt from "bcryptjs";
 
-const quotaApp = admin.initializeApp({
+const quotaApp = initializeApp({
     databaseURL: "https://getbaselineapp-quotas.firebaseio.com/"
 }, "quota");
-const quotaDb = admin.database(quotaApp);
+const quotaDb = getDatabase(quotaApp);
 
 export interface UserRequest extends Request {
     user?: DecodedIdToken;
@@ -29,11 +33,11 @@ export const validateAuth = async (req: UserRequest, res: Response) => {
     }
 
     try {
-        const decodedIdToken = await admin.auth().verifyIdToken(idToken);
+        const decodedIdToken = await getAuth().verifyIdToken(idToken);
         req.user = decodedIdToken;
         return;
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log(error.message);
         res.status(403).send("Unauthorized");
         return;
     }
@@ -51,4 +55,43 @@ export const checkQuota = async (req: UserRequest, res: Response) => {
     }
     ref.push("q");
     return true;
+}
+
+export const validateKeys = async (keys_: string, db: Database, user_id: string) => {
+    if (typeof keys_ !== "string") {
+        return false;
+    }
+
+    let keys;
+    try {
+        keys = JSON.parse(keys_);
+    } catch {
+        return false;
+    }
+
+    if (!keys || Object.keys(keys).length !== 3) {
+        return false;
+    }
+
+    for (const key of ["visibleKey", "encryptedKey", "encryptedKeyVisible"]) {
+        if (!(key in keys) || typeof keys[key] !== "string") {
+            return false;
+        }
+    }
+
+    const encryptionData = await (await db.ref(`/${user_id}/encryption`).get()).val();
+
+    if (!bcrypt.compareSync(keys.encryptedKey, encryptionData.encryptedKeyHash)) {
+        return false;
+    }
+
+    if (!process.env.KEY_ENCRYPTION_KEY) {
+        throw Error("Encryption key not set in env!");
+    }
+
+    if (AES.decrypt(keys.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8) !== keys.encryptedKeyVisible) {
+        return false;
+    }
+
+    return `${keys.visibleKey}${keys.encryptedKeyVisible}`;
 }

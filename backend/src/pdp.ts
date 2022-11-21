@@ -1,7 +1,7 @@
-import { UserRequest } from "./helpers";
+import { UserRequest } from "./helpers.js";
 import { Response } from "express";
-import * as admin from "firebase-admin";
-import * as bcrypt from "bcryptjs";
+import { getDatabase } from "firebase-admin/database";
+import bcrypt from "bcryptjs";
 
 export const changePDPpassphrase = async (req: UserRequest, res: Response) => {
     const body = req.body;
@@ -15,7 +15,7 @@ export const changePDPpassphrase = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const db = admin.database();
+    const db = getDatabase();
     const oldHash = await (await db.ref(`${req.user!.user_id}/pdp/passphraseHash`).get()).val();
     if (!oldHash || !bcrypt.compareSync(body.oldPassphrase, oldHash)) {
         res.send(400);
@@ -37,7 +37,7 @@ export const enablePDP = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const db = admin.database();
+    const db = getDatabase();
     if (await (await db.ref(`${req.user!.user_id}/pdp`).get()).val()) {
         res.send(400);
         return;
@@ -59,7 +59,7 @@ export const disablePDP = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const db = admin.database();
+    const db = getDatabase();
     const hash = await (await db.ref(`${req.user!.user_id}/pdp/passphraseHash`).get()).val();
     if (!hash || !bcrypt.compareSync(body.passphrase, hash)) {
         res.send(400);

@@ -1,11 +1,12 @@
 import * as admin from "firebase-admin";
-import { UserRequest } from "./helpers";
+import { UserRequest } from "./helpers.js";
 import { Response } from "express";
-import * as bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import _ from "lodash";
-import * as AES from "crypto-js/aes";
-import * as aesutf8 from "crypto-js/enc-utf8";
-import * as random from "crypto-random-string";
+import { AES } from "crypto-js"
+import aesutf8 from "crypto-js/enc-utf8.js";
+import random from "crypto-random-string";
+import { getDatabase } from "firebase-admin/database";
 
 const TOKENS: any = {
     web: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
@@ -36,7 +37,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         return;
     }
     
-    const db = admin.database();
+    const db = getDatabase();
     const pdp = await (await db.ref(`/${req.user!.user_id}/pdp`).get()).val();
     if (pdp && typeof pdp === "object") {
         if (typeof body.passphrase !== "string" || !bcrypt.compareSync(body.passphrase, pdp.passphraseHash)) {
@@ -201,7 +202,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
 
 export const deleteAccount = async (req: UserRequest, res: Response) => {
     // Delete database data
-    await admin.database().ref(`${req.user!.user_id}`).remove();
+    await getDatabase().ref(`${req.user!.user_id}`).remove();
 
     // Delete storage data
     await admin.storage().bucket().deleteFiles({
@@ -262,7 +263,7 @@ export const sync = async (req: UserRequest, res: Response) => {
         update["region"] = geo["regionName"];
     }
 
-    const ref = admin.database().ref(`${req.user!.user_id}/info`);
+    const ref = getDatabase().ref(`${req.user!.user_id}/info`);
     const oldInfo = await (await ref.get()).val() ?? {};
     await ref.set(_.merge(oldInfo, update));
     res.send(200);

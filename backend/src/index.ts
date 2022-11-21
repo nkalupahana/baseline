@@ -1,14 +1,15 @@
 import express from "express";
-import * as admin from "firebase-admin";
+import { initializeApp } from "firebase-admin/app";
 import cors from "cors";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
-import { checkQuota, UserRequest, validateAuth } from "./helpers";
-import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp";
-import { deleteAccount, getOrCreateKeys, sync } from "./accounts";
+import { checkQuota, UserRequest, validateAuth } from "./helpers.js";
+import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp.js";
+import { deleteAccount, getOrCreateKeys, sync } from "./accounts.js";
+import { getImage, moodLog, survey } from "./main.js";
 
 const app = express();
-admin.initializeApp();
+initializeApp();
 
 Sentry.init({
     dsn: "https://4fb379f6ae1a4e569ae826f066adf8ba@o4504179120472064.ingest.sentry.io/4504179121717248",
@@ -44,6 +45,11 @@ app.post("/pdp/change", changePDPpassphrase);
 app.post("/accounts/delete", deleteAccount);
 app.post("/accounts/sync", sync);
 app.post("/accounts/getOrCreateKeys", getOrCreateKeys);
+
+// Main Functions
+app.post("/moodLog", moodLog);
+app.post("/survey", survey);
+app.post("/image", getImage);
 
 app.use(Sentry.Handlers.errorHandler());
 
