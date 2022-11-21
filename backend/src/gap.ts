@@ -3,7 +3,7 @@ import { getDatabase } from "firebase-admin/database";
 import { DateTime } from "luxon";
 import { UserRequest, validateKeys } from "./helpers.js";
 import { auth as googleauth , sheets } from "@googleapis/sheets";
-import { AES } from "crypto-js";
+import * as AES from "crypto-js/aes.js";
 
 export const gapFund = async (req: UserRequest, res: Response) => {
     const body = req.body;

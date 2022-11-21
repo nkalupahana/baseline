@@ -2,7 +2,7 @@ import { Response } from "express";
 import { UserRequest, validateKeys } from "./helpers.js";
 import { getDatabase } from "firebase-admin/database";
 import { getStorage } from "firebase-admin/storage";
-import { AES } from "crypto-js";
+import * as AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 import { DateTime } from "luxon";
 import formidable from "formidable";

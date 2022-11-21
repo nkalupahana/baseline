@@ -3,7 +3,7 @@ import { initializeApp } from "firebase-admin/app";
 import { Database, getDatabase } from "firebase-admin/database";
 import { getAuth, DecodedIdToken } from "firebase-admin/auth";
 import { DateTime } from "luxon";
-import { AES } from "crypto-js";
+import * as AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 import bcrypt from "bcryptjs";
 
