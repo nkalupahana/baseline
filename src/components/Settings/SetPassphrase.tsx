@@ -27,7 +27,7 @@ const SetPassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
         }
 
         finalize(passphrase);
-        makeRequest("enablePDP", user, { passphrase }, setSubmitting);
+        makeRequest("pdp/enable", user, { passphrase }, setSubmitting);
     };
 
     return <div className="margin-bottom-0 passphrase-box">

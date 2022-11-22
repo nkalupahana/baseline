@@ -240,13 +240,13 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             // Promises array for parallel processing
             try {
                 promises.push(
-                    sharp(file.path)
+                    sharp(file.filepath)
                         .rotate()
                         .webp()
                         .toBuffer()
                         .then((buf: Buffer) => {
                             // Clean up temp file: https://firebase.google.com/docs/functions/tips#always_delete_temporary_files
-                            fs.rmSync(file.path);
+                            fs.rmSync(file.filepath);
 
                             // Upload
                             const fileName = `${uuidv4()}.webp.enc`;

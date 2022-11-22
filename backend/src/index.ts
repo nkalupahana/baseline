@@ -12,6 +12,7 @@ import { gapFund } from "./gap.js";
 const app = express();
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
+    storageBucket: "getbaselineapp.appspot.com"
 });
 
 Sentry.init({
@@ -33,7 +34,12 @@ app.use(async (req: UserRequest, res, next) => {
         next();
     }
 });
-app.use(express.json());
+
+app.use(express.json({
+    type(req) {
+        return req.headers["content-type"] === "application/json" || !req.headers["content-type"];
+    }
+}));
 
 app.get("/", (_, res) => {
     res.status(200).send("baseline API up and running.");
