@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "module": "Node16",
-		"moduleResolution": "Node16",
+        "moduleResolution": "Node16",
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "outDir": "lib",
@@ -9,7 +9,7 @@
         "strict": true,
         "target": "es2017",
         "skipLibCheck": true,
-        "esModuleInterop": true,
+        "esModuleInterop": true
     },
     "compileOnSave": true,
     "include": ["src"]
