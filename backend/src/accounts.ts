@@ -6,7 +6,7 @@ import _ from "lodash";
 import AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 import random from "crypto-random-string";
-import { getDatabase } from "firebase-admin/database";
+import { getDatabase, ServerValue } from "firebase-admin/database";
 
 const TOKENS: any = {
     web: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
@@ -238,7 +238,7 @@ export const sync = async (req: UserRequest, res: Response) => {
     
             update["fcm"][body["deviceId"]] = {
                 token: body["fcmToken"],
-                lastSync: admin.database.ServerValue.TIMESTAMP
+                lastSync: ServerValue.TIMESTAMP
             };
         }
     };
