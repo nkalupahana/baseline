@@ -7,6 +7,8 @@ import AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 import random from "crypto-random-string";
 import { getDatabase, ServerValue } from "firebase-admin/database";
+import { getStorage } from "firebase-admin/storage";
+import { getAuth } from "firebase-admin/auth";
 
 const TOKENS: any = {
     web: "d43e4a0f0eac5ab776190238b97c415e847d045760d3608d75994379dd02a565",
@@ -205,12 +207,12 @@ export const deleteAccount = async (req: UserRequest, res: Response) => {
     await getDatabase().ref(`${req.user!.user_id}`).remove();
 
     // Delete storage data
-    await admin.storage().bucket().deleteFiles({
+    await getStorage().bucket().deleteFiles({
         prefix: `user/${req.user!.user_id}/`
     });
 
     // Delete user in auth
-    await admin.auth().deleteUser(req.user!.user_id);
+    await getAuth().deleteUser(req.user!.user_id);
 
     res.send(200);
 };
