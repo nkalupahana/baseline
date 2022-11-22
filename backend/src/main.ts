@@ -262,7 +262,8 @@ export const moodLog = async (req: UserRequest, res: Response) => {
                         })
                 );
             } catch (e: any) {
-                res.status(400).send(e.message);
+                console.log(e);
+                res.status(400).send("Something's wrong with your images. Please remove them and try again.");
                 return;
             }
         }
@@ -271,7 +272,8 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         try {
             await Promise.all(promises);
         } catch (e: any) {
-            res.status(400).send(e.message);
+            console.log(e);
+            res.status(400).send("Something's wrong with your images. Please remove them and try again.");
             return;
         }
     }
