@@ -1,4 +1,3 @@
-import * as admin from "firebase-admin";
 import { UserRequest } from "./helpers.js";
 import { Response } from "express";
 import bcrypt from "bcryptjs";
