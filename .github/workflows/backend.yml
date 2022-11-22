@@ -1,7 +1,6 @@
 name: Deploy Backend
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
