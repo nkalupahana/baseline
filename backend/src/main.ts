@@ -173,16 +173,22 @@ export const survey = async (req: UserRequest, res: Response) => {
 }
 
 export const moodLog = async (req: UserRequest, res: Response) => {
-    let { data, files } : any = await new Promise((resolve, reject) => {
-        formidable({ keepExtensions: true, multiples: true }).parse(req, (err: Error, data: any, files: any) => {
+    const MEGABYTE = 1024 * 1024;
+    let { data, files } : any = await new Promise(resolve => {
+        formidable({ keepExtensions: true, multiples: true, maxFileSize: (20 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
             if (err) {
-                reject(err);
-                return;
+                if (err.httpCode === 413) {
+                    res.status(400).send("Please keep your images under 20MB.");
+                } else {
+                    res.status(400).send("Something's wrong with your images. Please remove them and try again.");
+                }
             }
 
             resolve({ data, files });
         });
     });
+
+    if (res.headersSent) return;
 
     const db = getDatabase();
     const encryptionKey = await validateKeys(data.keys, db, req.user!.user_id);
