@@ -26,7 +26,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
         }
 
         finalize("");
-        makeRequest("removePDP", user, { passphrase }, setSubmitting);
+        makeRequest("pdp/disable", user, { passphrase }, setSubmitting);
     };
 
     return <>

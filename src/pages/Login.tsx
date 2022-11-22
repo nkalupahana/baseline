@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import ldb from '../db';
 import { AuthCredential, FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { Capacitor } from "@capacitor/core";
-import { makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
+import { BASE_URL, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
@@ -131,10 +131,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         try {
             const idToken = await auth.currentUser?.getIdToken();
             if (flowVal !== flow) return;
-            const keyResponse = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/getOrCreateKeys", {
+            const keyResponse = await fetch(`${BASE_URL}/accounts/getOrCreateKeys`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${idToken}`,
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     credential,
@@ -164,7 +165,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
                 sessionStorage.removeItem("deleteAccount");
                 if (Capacitor.getPlatform() === "web") {
-                    await makeRequest("syncUserInfo", auth.currentUser!, {
+                    await makeRequest("accounts/sync", auth.currentUser!, {
                         offset: DateTime.now().offset,
                     });
                     setLoggingIn(false);
@@ -247,7 +248,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const deleteAccount = async () => {
         sessionStorage.removeItem("deleteAccount");
         setDeleting(true);
-        await makeRequest("deleteAccount", auth.currentUser!, {}, setDeleting);
+        await makeRequest("accounts/delete", auth.currentUser!, {}, setDeleting);
         resetFlow();
         toast("Your account has been deleted.");
     }
@@ -257,7 +258,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         try {
             await FirebaseMessaging.requestPermissions();
             const token = await FirebaseMessaging.getToken();
-            await makeRequest("syncUserInfo", auth.currentUser!, {
+            await makeRequest("accounts/sync", auth.currentUser!, {
                 offset: DateTime.now().offset,
                 fcmToken: token.token,
                 deviceId: (await Device.getId()).uuid,

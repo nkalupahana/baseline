@@ -34,7 +34,7 @@ const ChangePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
         }
 
         finalize(newPassphrase);
-        makeRequest("changePDPpassphrase", user, { oldPassphrase, newPassphrase }, setSubmitting);
+        makeRequest("pdp/change", user, { oldPassphrase, newPassphrase }, setSubmitting);
     };
 
     return <>

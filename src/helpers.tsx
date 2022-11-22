@@ -68,7 +68,7 @@ export const COLORS_CB: AnyMap = {
     "5": "var(--background-color-inverted)"
 };
 
-export const BASE_URL = "https://us-central1-getbaselineapp.cloudfunctions.net";
+export const BASE_URL = "https://api.getbaseline.app";
 
 export function createPoints(data: Log[], colors: AnyMap) {
     let points = [];
@@ -240,7 +240,8 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
         response = await fetch(`${BASE_URL}/${route}`,{
             method: "POST",
             headers: {
-                Authorization: `Bearer ${await getIdToken(user)}`,
+                "Authorization": `Bearer ${await getIdToken(user)}`,
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
         });

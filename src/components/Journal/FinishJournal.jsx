@@ -12,7 +12,7 @@ import { attach, closeOutline, trashOutline } from "ionicons/icons";
 import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
-import { checkKeys, networkFailure, toast } from "../../helpers";
+import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
 import ldb from "../../db";
 import { RateApp } from "capacitor-rate-app";
 
@@ -20,6 +20,12 @@ const FinishJournal = props => {
     const [user] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+
+    useEffect(() => {
+        // Refresh ID token in the background to speed up submission
+        if (!user) return;
+        getIdToken(user);
+    }, [user]);
 
     useEffect(() => {
         if (submitted) {
@@ -50,10 +56,10 @@ const FinishJournal = props => {
 
         let response = undefined;
         try {
-            response = await fetch("https://us-central1-getbaselineapp.cloudfunctions.net/moodLog", {
+            response = await fetch(`${BASE_URL}/moodLog`, {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${await getIdToken(user)}`,
+                    "Authorization": `Bearer ${await getIdToken(user)}`,
                 },
                 body: data
             });
