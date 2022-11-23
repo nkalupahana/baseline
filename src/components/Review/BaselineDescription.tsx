@@ -5,7 +5,7 @@ const BaselineDescription = () => {
         <>
             <p>
                 Mental health isn't just (or even primarily) about clinical diagnoses. Much more of it is simply about living a happy,
-                healthy life. {BASELINE_EXP} (And if you don't see a trend, don't worry about your baseline just yet.)
+                healthy life. { BASELINE_EXP } (And if you don't see a trend, don't worry about this just yet.)
             </p>
             <p>
                 Notice your baseline falling? You might want to make a conscious effort to bring more things into your life that you
