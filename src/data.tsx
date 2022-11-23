@@ -38,8 +38,8 @@ export const RESILIENCE_EXP = <>
 </>;
 
 export const BASELINE_EXP = <>
-    Your baseline tracks what you believe your "average" mood is, so you can 
-    see how your standards for your average change over time. The numbers 
+    Your baseline tracks what you think your "average" mood is, so you can 
+    see how your standards and overall happiness change over time. The numbers 
     don't mean anything by themselves, so don't compare your baseline to other 
     people. What matters is how <i>your</i> baseline changes as time goes on.
 </>;

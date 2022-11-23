@@ -97,10 +97,9 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         { typeof baselineGraph === "object" && <>
                             <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                             <p>
-                                Remember how every time you mood log, we ask you whether you're feeling below, at, 
-                                or above average? Well, here's what that's used for &mdash; your baseline. { BASELINE_EXP } (And 
-                                if you're just starting out and don't have enough data 
-                                to see a trend, don't worry about your baseline just yet.)
+                                Mental health isn't just (or even primarily) about clinical diagnoses. 
+                                Much more of it is simply about living a happy, healthy life. { BASELINE_EXP } (And 
+                                if you don't see a trend, don't worry about your baseline just yet.)
                             </p>
                             <p>
                                 Notice your baseline falling? You might want to make a conscious effort to bring more things 
