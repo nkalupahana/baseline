@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  frontend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -28,3 +28,19 @@ jobs:
         PORT=8100 npx react-scripts start &
         sleep 60
         npm run test:e2e:noinst
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.x"
+        cache: "npm"
+    - run: npm ci
+    - run: npm run build
