@@ -83,7 +83,7 @@ jobs:
         cache: "npm"
     - run: npm ci
     - run: npm run build
-        
+
   android:
     needs: frontend
     runs-on: ubuntu-latest
