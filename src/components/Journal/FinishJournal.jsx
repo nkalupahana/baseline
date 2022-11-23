@@ -15,6 +15,7 @@ import Negative5 from "./Negative5";
 import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
 import ldb from "../../db";
 import { RateApp } from "capacitor-rate-app";
+import Confetti from "react-confetti";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -82,6 +83,8 @@ const FinishJournal = props => {
                     });
                 }
                 toast("Mood log saved!", "bottom");
+                // Delay for some confetti!
+                if (props.moodWrite === 5) await new Promise(res => setTimeout(res, 700));
                 setSubmitted(true);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
@@ -130,6 +133,7 @@ const FinishJournal = props => {
 
     return (
         <div className="outer-noscroll">
+            { props.moodWrite === 5 && submitting && <Confetti gravity={0.5} /> }
             <div className="container">
                 <div className="inner-scroll">
                     <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
