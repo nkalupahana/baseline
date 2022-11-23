@@ -47,17 +47,6 @@ export const gapFund = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const data = {
-        email: body.email,
-        need: body.need,
-        amount: body.amount,
-        method: body.method
-    };
-
-    await gapFundRef.set({
-        data: AES.encrypt(JSON.stringify(data), encryptionKey).toString()
-    });
-
     // Write to spreadsheet
     const auth = await googleauth.getClient({
         scopes: ["https://www.googleapis.com/auth/spreadsheets"],
@@ -82,6 +71,18 @@ export const gapFund = async (req: UserRequest, res: Response) => {
                 `https://console.firebase.google.com/u/0/project/getbaselineapp/database/getbaselineapp-default-rtdb/data/${req.user!.user_id}~2FgapFund`
             ]]
         }
+    });
+
+    // Write to database, if spreadsheet worked
+    const data = {
+        email: body.email,
+        need: body.need,
+        amount: body.amount,
+        method: body.method
+    };
+
+    await gapFundRef.set({
+        data: AES.encrypt(JSON.stringify(data), encryptionKey).toString()
     });
 
     res.send(200);
