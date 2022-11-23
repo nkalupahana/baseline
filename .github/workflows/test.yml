@@ -4,10 +4,9 @@ on:
   push:
     paths-ignore:
       - 'docs/**'
-      - 'backend/**'
 
 jobs:
-  test:
+  frontend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -67,9 +66,26 @@ jobs:
       with:
         name: coverage
         path: coverage
-        
+  
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.x"
+        cache: "npm"
+    - run: npm ci
+    - run: npm run build
+
   android:
-    needs: test
+    needs: frontend
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -108,7 +124,7 @@ jobs:
       run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}, msg ${COMMIT_MSG}" https://deploygate.com/api/users/nkalupahana/apps
 
   ios:
-    needs: test
+    needs: frontend
     runs-on: macos-latest
     concurrency:
       group: "ios"
