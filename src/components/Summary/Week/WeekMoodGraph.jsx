@@ -161,7 +161,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
         }
 
         // Create empty cards for final week
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             current = current.minus({ days: 1 });
             els.push(createGraphCard(current, colors));
         }

@@ -58,12 +58,20 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         
         const first = getDateFromLog(logs[0]);
         
-        let t;
+        let prevTopDate;
         let today = [];
         const colors = parseSettings()["colorblind"] ? COLORS_CB : COLORS;
+
+        // Count number of first day logs, for bottom spacing for calendar
         for (let log of logs) {
-            // Count number of first day logs, for bottom spacing for calendar
-            if (log.day === first.day && log.month === first.month && log.year === first.year) ++firstLogs;
+            if (log.day === first.day && log.month === first.month && log.year === first.year) {
+                ++firstLogs;
+            } else {
+                break;
+            }
+        }
+
+        for (let log of logs) {
             // If we've moved to the next day, push the day's log and add a locator
             if (!top || top.day !== log.day || top.month !== log.month || top.year !== log.year) {
                 const last = today.shift();
@@ -74,8 +82,8 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
 
                 els.push(...today);
                 if (top) {
-                    t = getDateFromLog(top);
-                    els.push(createLocator(t));
+                    prevTopDate = getDateFromLog(top);
+                    els.push(createLocator(prevTopDate));
                 }
                 today = [];
                 top = log;
@@ -83,8 +91,11 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
     
             // Append a zone to the log if it's not the same as the current zone,
             // and add the log to the list of today's logs
-            if (log.zone !== zone && t) {
-                const addZone = t.setZone(log.zone).zone.offsetName(t.toMillis(), { format: "short" });
+            // Done on previous date to avoid conflicts (e.g. time could be both CST and CDT) 
+            // and efficiency (may not be 100% correct around DST, but it's close enough)
+            if (log.zone !== zone) {
+                if (!prevTopDate) prevTopDate = getDateFromLog(top);
+                const addZone = prevTopDate.setZone(log.zone).zone.offsetName(prevTopDate.toMillis(), { format: "short" });
                 if (!log.time.includes(addZone)) log.time += " " + addZone;
             }
     
@@ -94,8 +105,8 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         // Add final information
         els.push(...today);
         if (top) {
-            t = getDateFromLog(top);
-            els.push(createLocator(t));
+            prevTopDate = getDateFromLog(top);
+            els.push(createLocator(prevTopDate));
         }
         els.push(<div key={filtered ? "top-br-filtered" : "top-br"} style={{"width": "100%", "height": `${LOCATOR_OFFSET}px`}}></div>);
     
