@@ -16,6 +16,7 @@
     "private": true,
     "type": "module",
     "dependencies": {
+        "@googleapis/gmail": "^1.0.0",
         "@googleapis/sheets": "^4.0.0",
         "@sentry/node": "^7.20.0",
         "@sentry/tracing": "^7.20.0",
