@@ -24,7 +24,7 @@ jobs:
       run: |
         echo $GOOGLE_APPLICATION_CREDENTIALS > ~/google-credentials.json
         gcloud auth activate-service-account --key-file ~/google-credentials.json
-        echo $SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP > ~/getbaselineapp-svc-email.json
+        echo $SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP > getbaselineapp-svc-email.json
         npm run deploy
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
