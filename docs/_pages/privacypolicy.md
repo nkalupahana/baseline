@@ -49,7 +49,7 @@ baseline has no interest in selling you anything. You won’t be receiving marke
 
 baseline is a free and completely open-source piece of software, developed and maintained by us because we believe everyone deserves quality, free mental health care, no matter who they are or what their situation is. We believe it is unethical and irresponsible to put this type of support behind a subscription.
 
-baseline is funded through donations, and by income sharing commitments made by our creator. [If you’d like to donate to support us, please do! Everything helps, and every dollar goes directly to baseline.](https://paypal.me/nisalakalupahana)
+baseline is funded through donations, and by income sharing commitments made by our creator. If you’d like to donate to support us, check us out on [PayPal](https://paypal.me/getbaseline) or [Venmo](https://account.venmo.com/u/getbaseline), or shoot us an email! Everything helps, and every dollar goes directly to baseline.
 
 ---
 
