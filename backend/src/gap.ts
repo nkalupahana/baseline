@@ -2,8 +2,16 @@ import { Response } from "express";
 import { getDatabase } from "firebase-admin/database";
 import { DateTime } from "luxon";
 import { UserRequest, validateKeys } from "./helpers.js";
-import { auth as googleauth , sheets } from "@googleapis/sheets";
+import { auth as googleauth, sheets } from "@googleapis/sheets";
 import AES from "crypto-js/aes.js";
+import { gmail } from "@googleapis/gmail";
+
+interface EmailBody {
+    to: string;
+    from: string;
+    subject: string;
+    message: string;
+}
 
 export const gapFund = async (req: UserRequest, res: Response) => {
     const body = req.body;
@@ -86,4 +94,45 @@ export const gapFund = async (req: UserRequest, res: Response) => {
     });
 
     res.send(200);
+}
+
+export const sendEmail = async () => {
+    const auth = await googleauth.getClient({
+        scopes: ["https://www.googleapis.com/auth/gmail.send"],
+        clientOptions: {
+            subject: "nisala@getbaseline.app"
+        },
+        keyFile: "getbaselineapp-svc-email.json"
+    });
+
+    const makeBody = (params: EmailBody) => {
+        params.subject = Buffer.from(params.subject).toString("base64");
+        const str = [
+            'Content-Type: text/plain; charset="UTF-8"\n',
+            "MINE-Version: 1.0\n",
+            "Content-Transfer-Encoding: 7bit\n",
+            `to: ${params.to} \n`,
+            `from: ${params.from} \n`,
+            `subject: =?UTF-8?B?${params.subject}?= \n\n`,
+            params.message
+        ].join("");
+
+        return Buffer.from(str)
+            .toString("base64")
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_");
+    };
+
+    const api = gmail({ version: "v1", auth });
+    await api.users.messages.send({
+        userId: "me",
+        requestBody: {
+            raw: makeBody({
+                to: "nisala@getbaseline.app",
+                from: "gapfund@getbaseline.app",
+                subject: "[URGENT] Gap Fund Request",
+                message: `A new gap fund request has been submitted.`
+            })
+        }
+    });
 }

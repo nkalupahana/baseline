@@ -7,7 +7,7 @@ import { checkQuota, UserRequest, validateAuth } from "./helpers.js";
 import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp.js";
 import { deleteAccount, getOrCreateKeys, sync } from "./accounts.js";
 import { getImage, moodLog, survey } from "./main.js";
-import { gapFund } from "./gap.js";
+import { gapFund, sendEmail } from "./gap.js";
 
 const app = express();
 initializeApp({
@@ -67,4 +67,5 @@ app.use(Sentry.Handlers.errorHandler());
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log("Listening on port", port);
+    sendEmail();
 });
