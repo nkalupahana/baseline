@@ -93,10 +93,12 @@ export const gapFund = async (req: UserRequest, res: Response) => {
         data: AES.encrypt(JSON.stringify(data), encryptionKey).toString()
     });
 
+    await sendNotificationEmail();
+
     res.send(200);
 }
 
-export const sendEmail = async () => {
+const sendNotificationEmail = async () => {
     const auth = await googleauth.getClient({
         scopes: ["https://www.googleapis.com/auth/gmail.send"],
         clientOptions: {
