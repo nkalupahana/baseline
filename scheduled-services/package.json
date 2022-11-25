@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node lib/index.js",
     "build": "tsc",
-    "deploy": "npm run build && gcloud run deploy scheduled-services --source . --project getbaselineapp --region us-central1 --min-instances=0 --memory=1G --max-instances=1 --no-traffic --ingress=internal --service-account=bi-microservices@getbaselineapp.iam.gserviceaccount.com --no-allow-unauthenticated"
+    "deploy": "npm run build && gcloud run deploy scheduled-services --source . --project getbaselineapp --region us-central1 --min-instances=0 --memory=1G --max-instances=5 --ingress=internal --service-account=scheduled-services@getbaselineapp.iam.gserviceaccount.com --no-allow-unauthenticated"
   },
   "author": "Nisala Kalupahana",
   "license": "AGPL-3.0",

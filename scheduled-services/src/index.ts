@@ -9,6 +9,7 @@ app.post("/", (req, res) => {
 });
 
 app.post("/path2", (req, res) => {
+    console.log("path2")
     console.log(req.body);
     res.send(200);
 });
