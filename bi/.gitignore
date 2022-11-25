@@ -1,2 +1,4 @@
 .terraform/
 .terraform.lock.hcl
+node_modules/
+lib/

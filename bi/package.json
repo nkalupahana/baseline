@@ -1,0 +1,23 @@
+{
+  "name": "bi-service",
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": "18"
+  },
+  "exports": "./lib/index.js",
+  "scripts": {
+    "start": "node lib/index.js",
+    "build": "tsc",
+    "deploy": "npm run build && gcloud run deploy bi-service --source . --project getbaselineapp --region us-central1 --min-instances=0 --memory=1G --max-instances=1 --no-traffic --ingress=internal --service-account=bi-microservices@getbaselineapp.iam.gserviceaccount.com --no-allow-unauthenticated"
+  },
+  "author": "Nisala Kalupahana",
+  "license": "AGPL-3.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase-admin": "^11.3.0",
+    "typescript": "^4.9.3"
+  }
+}
