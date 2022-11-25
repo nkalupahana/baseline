@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
-import { BASELINE_EXP, RESILIENCE_EXP } from "../data";
+import { RESILIENCE_EXP } from "../data";
 import { auth } from "../firebase";
 import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory } from "../helpers";
 import history from "../history";
