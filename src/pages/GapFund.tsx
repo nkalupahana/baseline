@@ -142,13 +142,13 @@ const GapFund = () => {
                             <IonLabel className="ion-text-wrap" position="stacked">Confirm Email</IonLabel>
                             <input id="confirmEmail" autoComplete="email" className="invisible-input" value={confirmEmail} type="email" onChange={e => setConfirmEmail(e.target.value)} />
                         </IonItem>
-                        <p>Make sure you get this right -- we'll be sending more information here. If your email is monitored by people
+                        <p>Make sure you get this right — we'll be sending more information here. If your email is monitored by people
                             you don't want seeing this request, make a burner email, or list a safer contact method above.
                         </p>
                         <br />
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">What do you need money for?</IonLabel>
-                            <Textarea id="need" getter={need} setter={setNeed} placeholder="At least two sentences -- the more detail, the better." />
+                            <Textarea id="need" getter={need} setter={setNeed} placeholder="At least two sentences — the more detail, the better." />
                         </IonItem>
                         <br />
                         <IonItem>
