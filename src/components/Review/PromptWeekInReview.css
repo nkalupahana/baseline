@@ -29,12 +29,12 @@
 .finish-button.secondary {
     margin-top: 5px;
     margin-bottom: 3px;
-    background-color: var(--ion-background-color);
+    background-color: transparent;
     color: var(--background-color-inverted);
 }
 
 .finish-button.secondary:active {
-    background-color: var(--ion-background-color);
+    background-color: transparent;
 }
 
 .wir-skip-buttons {

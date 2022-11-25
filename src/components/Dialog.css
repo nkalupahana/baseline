@@ -1,0 +1,28 @@
+.dialog-background {
+    height: 100vh;
+    position: absolute;
+    width: 100vw;
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.8);
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-background > .dialog {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 24px 32px 8px;
+    width: min(100%, 400px);
+    margin: 24px;
+    min-height: 300px;
+    font-size: 17px;
+}
+
+.dialog > .dialog-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+}

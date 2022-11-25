@@ -16,17 +16,58 @@ import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
 import ldb from "../../db";
 import { RateApp } from "capacitor-rate-app";
 import Confetti from "react-confetti";
+import Dialog, { checkPromptAllowed } from "../Dialog";
+import { useLiveQuery } from "dexie-react-hooks";
+import { Dialogs } from "./JournalTypes";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [dialog, setDialog] = useState(undefined);
+    const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(5).toArray());
+    const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
+
+    const dismissDialog = () => {
+        setDialog(undefined);
+    };
 
     useEffect(() => {
         // Refresh ID token in the background to speed up submission
         if (!user) return;
         getIdToken(user);
     }, [user]);
+
+    
+    useEffect(() => {
+        if (!lastLogs || !lastAverageLogs) return;
+
+        // Check if user hasn't written in a while
+        // Based on last five logs:
+        // - If they have less than 5, as long as they have at least two, just go off of that
+        // - If none of the last 2 - 5 or this one have text, show
+        let writtenAnything = props.text.length > 50;
+        for (let i = 0; (i < lastLogs.length && !writtenAnything); ++i) {
+            writtenAnything = lastLogs[i].journal.length > 50;
+        }
+
+        if (!writtenAnything && lastLogs.length > 1 && checkPromptAllowed("noWriting", 5)) {
+            setDialog(Dialogs.NO_WRITING);
+            return;
+        }
+        
+        // Check if user's scale is shifted 
+        // Get last ten logs marked average (if less than ten, ignore)
+        // If their average is above 2.5, show
+        if (lastAverageLogs.length === 10) {
+            const average = lastAverageLogs.reduce((acc, log) => acc + log.mood, 0) / lastAverageLogs.length;
+            if (average > 2.5 && checkPromptAllowed("scaleShifted", 7)) {
+                setDialog(Dialogs.SCALE_SHIFTED);
+                return;
+            }
+        }
+
+    }, [lastLogs, lastAverageLogs, props.text]);
 
     useEffect(() => {
         if (submitted) {
@@ -77,7 +118,7 @@ const FinishJournal = props => {
         if (response) {
             if (response.ok) {
                 if (Capacitor.getPlatform() !== "web") {
-                    LocalNotifications.clearDeliveredNotifications();
+                    LocalNotifications.removeAllDeliveredNotifications();
                     ldb.logs.count().then(count => {
                         if (count > 10 && props.average === "above") RateApp.requestReview();
                     });
@@ -133,6 +174,29 @@ const FinishJournal = props => {
 
     return (
         <div className="outer-noscroll">
+            { dialog === Dialogs.NO_WRITING && <Dialog title="One second!">
+                <p className="margin-top-12 margin-bottom-24 text-center">
+                    We noticed you haven't written much (or at all) in a while. Journaling works 
+                    best when you take some time to really write and reflect about what you're going through.
+                    It'll help you understand yourself better, and it'll definitely make your 
+                    mood ratings more accurate. Try writing some more now!
+                </p>
+                <div className="finish-button" onClick={() => history.replace("/journal")}>Go back and write!</div>
+                <div className="finish-button secondary" onClick={dismissDialog}>Not now.</div>
+            </Dialog> }
+            { dialog === Dialogs.SCALE_SHIFTED && <Dialog title="Before you continue!">
+                <p className="margin-top-12 margin-bottom-24 text-center">
+                    We've noticed that you're rating a lot of your "average" journal entries
+                    with high scores (3+). If you're forgetting to select below/above
+                    average, then this is an easy fix. But otherwise, it might be a sign that
+                    you're not considering your full emotional range. Before rating your mood today,
+                    take a few minutes to think about your life, from the very worst you've felt to the very best. 
+                    Then, try to contextualize how you feel right now in that full range. Your scale is, of course,
+                    you own, but "average" journal entries should generally be clustered around 0.
+                </p>
+                <div className="finish-button" onClick={dismissDialog}>Sounds good!</div>
+                <br />
+            </Dialog>}
             { props.moodWrite === 5 && submitting && <Confetti gravity={0.5} /> }
             <div className="container">
                 <div className="inner-scroll">

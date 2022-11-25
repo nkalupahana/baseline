@@ -3,10 +3,10 @@ import { DateTime } from "luxon"
 
 /* global cy */
 
-// This is a temporary solution -- I'm 
-// not sure what's wrong with the flow selector, but
-// it's having issues, so this is the solution for now :/
-const WAIT_FOR_AUTH = 5000;
+// This is a temporary solution -- some elements
+// and views are inconsistent, so this just ensures
+// everything is okay before continuing
+const WAIT_FOR_CONSISTENCY = 4000;
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -25,7 +25,7 @@ describe("Mobile Flow", () => {
         cy.contains("Logging in").should("exist")
         cy.contains("try again").should("exist").click()
         cy.contains("Anonymous").should("exist")
-        cy.wait(WAIT_FOR_AUTH)
+        cy.wait(WAIT_FOR_CONSISTENCY)
         cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
@@ -62,8 +62,14 @@ describe("Mobile Flow", () => {
         cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
         cy.get("ion-segment").happoScreenshot()
 
+        cy.get("span.bold > div > div:first")
+            .trigger('mousedown', { which: 1 })
+            .trigger('mousemove', { clientX: 200, clientY: 0, pageX: 200, pageY: 0, screenX: 200, screenY: 0 })
+            .trigger('mouseup', { force: true })
+
         cy.contains("Done!").should("exist").click()
         cy.get(".loader").should("exist")
+        cy.get("canvas").should("exist")
         cy.get("body").happoScreenshot()
         cy.url().should("include", "/summary")
         cy.get("textarea").should("not.exist")
@@ -71,17 +77,40 @@ describe("Mobile Flow", () => {
 
     it("Verify Mood Log on Summary", () => {
         cy.contains("Hello world!").should("exist")
+        cy.get("div.toastify").invoke("remove")
+        
+        // This is due to the segment button not resetting.
+        // How does this happen? No idea.
+        cy.wait(WAIT_FOR_CONSISTENCY)
     })
 
-    it("Log a Few More Times", () => {
-        for (let i = 0; i < 5; ++i) {
+    it("Log a Few More Times and test FinishJournal Dialogs", () => {
+        for (let i = 0; i < 12; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
             cy.get("textarea").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
-            cy.contains("Done!").should("exist").click({ force: true })
+
+            if (i === 1) {
+                cy.get(".dialog-background").should("exist").happoScreenshot()
+                cy.contains("Go back and write").click()
+                cy.get("textarea").should("exist").should("have.value", `Test ${i}`)
+                cy.contains("Continue").should("exist").click()
+            } else if (i === 10) {
+                cy.get(".dialog-background").should("exist").happoScreenshot()
+                cy.contains("Before you continue")
+                cy.contains("Sounds good").should("exist").click()
+            }
+
+            cy.get("span.bold > div > div:first")
+                .trigger('mousedown', { which: 1 })
+                .trigger('mousemove', { clientX: 200, clientY: 0, pageX: 200, pageY: 0, screenX: 200, screenY: 0 })
+                .trigger('mouseup', { force: true })
+
+            cy.contains("Done!").should("exist").click()
             cy.url().should("include", "/summary")
             cy.contains(`Test ${i}`).should("exist")
+            cy.get("div.toastify").invoke("remove")
         }
     })
 
