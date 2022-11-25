@@ -21,8 +21,8 @@ module "service-accounts" {
   ]
 }
 
-resource "google_cloud_scheduler_job" "default" {
-  name             = "Every Other Hour"
+resource "google_cloud_scheduler_job" "every_other_hour" {
+  name             = "every_other_hour"
   description      = "Invoke the default scheduled job to sync data every other hour."
   schedule         = "0 0 1 * *"
   time_zone        = "America/Chicago"
