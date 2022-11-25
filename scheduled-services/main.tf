@@ -26,7 +26,7 @@ resource "google_cloud_scheduler_job" "default" {
   description      = "Invoke the default scheduled job to sync data every other hour."
   schedule         = "0 0 1 * *"
   time_zone        = "America/Chicago"
-  attempt_deadline = "30m"
+  attempt_deadline = "1800s"
 
   http_target {
     http_method = "POST"
