@@ -92,12 +92,12 @@ describe("Mobile Flow", () => {
             cy.contains("Continue").should("exist").click()
 
             if (i === 1) {
-                cy.get(".dialog-background").should("exist")
+                cy.get(".dialog-background").should("exist").happoScreenshot()
                 cy.contains("Go back and write").click()
                 cy.get("textarea").should("exist").should("have.value", `Test ${i}`)
                 cy.contains("Continue").should("exist").click()
             } else if (i === 10) {
-                cy.get(".dialog-background").should("exist")
+                cy.get(".dialog-background").should("exist").happoScreenshot()
                 cy.contains("Before you continue")
                 cy.contains("Sounds good").should("exist").click()
             }
