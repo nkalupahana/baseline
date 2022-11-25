@@ -30,7 +30,7 @@ const FinishJournal = props => {
 
     const dismissDialog = () => {
         setDialog(undefined);
-    }
+    };
 
     useEffect(() => {
         // Refresh ID token in the background to speed up submission
