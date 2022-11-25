@@ -12,8 +12,8 @@ module "service-accounts" {
     source          = "terraform-google-modules/service-accounts/google"
     version         = "4.1.1"
     project_id      = var.project
-    display_name    = "bi-microservices"
-    names           = ["bi-microservices"]
-    description     = "Service account for bi microservices (tf managed)"
+    display_name    = "scheduled-services"
+    names           = ["scheduled-services"]
+    description     = "Service account for scheduled services (tf managed)"
     project_roles   = ["${var.project}=>roles/bigquery.admin"]
 }
