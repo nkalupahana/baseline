@@ -336,6 +336,9 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
             if (logs[ptr].average === "average") {
                 todaySum += logs[ptr].mood;
                 ++ctr;
+            } else {
+                todaySum += logs[ptr].mood * 0.4;
+                ++ctr;
             }
             ++ptr;
         }

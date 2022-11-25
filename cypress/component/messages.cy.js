@@ -5,6 +5,7 @@ import HARM from "../../src/screeners/harm"
 import EDE_QS from "../../src/screeners/ede_qs"
 import SPF from "../../src/screeners/spf"
 import WAST from "../../src/screeners/wast"
+import BaselineDescription from "../../src/components/Review/BaselineDescription"
 
 describe("Display health-related components", () => {
     beforeEach(() => {
@@ -149,5 +150,10 @@ describe("Display health-related components", () => {
             <p>Priority: { wast.getPriority() }</p>
         </>)
         cy.get("body").happoScreenshot()
+    })
+
+    it("baseline description", () => {
+        cy.mount(<BaselineDescription />);
+        cy.get("body").happoScreenshot();
     })
 })

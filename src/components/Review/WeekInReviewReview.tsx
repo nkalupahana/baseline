@@ -12,7 +12,7 @@ import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import SurveyGraph from "./SurveyGraph";
-import { BASELINE_EXP } from "../../data";
+import BaselineDescription from "./BaselineDescription";
 
 interface Props {
     primary: Screener,
@@ -96,23 +96,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                     <div className="text-center screener-slide">
                         { typeof baselineGraph === "object" && <>
                             <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
-                            <p>
-                                Remember how every time you mood log, we ask you whether you're feeling below, at, 
-                                or above average? Well, here's what that's used for &mdash; your baseline. { BASELINE_EXP } (And 
-                                if you're just starting out and don't have enough data 
-                                to see a trend, don't worry about your baseline just yet.)
-                            </p>
-                            <p>
-                                Notice your baseline falling? You might want to make a conscious effort to bring more things 
-                                into your life that you typically associate with higher mood scores. If your baseline has 
-                                fallen significantly, or isn't rebounding, you should to take some time to reflect on what 
-                                might've changed in your life that led to that.
-                            </p>
-                            <p>
-                                Mood logging is a great start to that process &mdash; we recommend that you review your mood logs 
-                                to look for any changes. And of course, professional help is the best way to really figure out 
-                                what's going on. Check out our help resources in the main menu for more information.
-                            </p>
+                            <BaselineDescription />
                         </> }
                         { typeof baselineGraph === "number" && <p>
                             Unfortunately, you haven't used baseline for at least three weeks yet &mdash; and that's how
