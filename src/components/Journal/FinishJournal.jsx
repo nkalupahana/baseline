@@ -18,11 +18,13 @@ import { RateApp } from "capacitor-rate-app";
 import Confetti from "react-confetti";
 import Dialog, { checkPromptAllowed } from "../Dialog";
 import { useLiveQuery } from "dexie-react-hooks";
+import { Dialogs } from "./JournalTypes";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [dialog, setDialog] = useState(undefined);
     const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(5).toArray());
     const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
 
@@ -34,39 +36,34 @@ const FinishJournal = props => {
 
     
     useEffect(() => {
+        if (!lastLogs || !lastAverageLogs) return;
+
         // Check if user hasn't written in a while
         // Based on last five logs:
         // - If they have less than 5, as long as they have at least one, just go off of that
         // - If none of the last 1 - 5 or this one have text, show
-        if (!lastLogs || !lastAverageLogs) return;
-        let writtenAnything = props.text !== "";
-
-        for (let i = 0; (i < 5 && i < lastLogs.length && !writtenAnything); ++i) {
-            writtenAnything = lastLogs[i].text !== "";
+        let writtenAnything = props.text?.length > 50;
+        for (let i = 0; (i < lastLogs.length && !writtenAnything); ++i) {
+            writtenAnything = lastLogs[i].text?.length > 50;
         }
 
         if (!writtenAnything && lastLogs.length > 1 && checkPromptAllowed("noWriting", 5)) {
-            // set dialog
+            setDialog(Dialogs.NO_WRITING);
             return;
         }
         
         // Check if user's scale is shifted 
         // Get last ten logs marked average (if less than ten, ignore)
-        // If their average is above three, show
+        // If their average is above 2.5, show
         if (lastAverageLogs.length === 10) {
             const average = lastAverageLogs.reduce((acc, log) => acc + log.mood, 0) / lastAverageLogs.length;
             if (average > 2.5 && checkPromptAllowed("scaleShifted", 7)) {
-                // set dialog
+                setDialog(Dialogs.SCALE_SHIFTED);
                 return;
             }
         }
 
     }, [lastLogs, lastAverageLogs, props.text]);
-
-    
-    /*useEffect(() => {
-
-    }, [lastLogs]);*/
 
     useEffect(() => {
         if (submitted) {
@@ -117,7 +114,7 @@ const FinishJournal = props => {
         if (response) {
             if (response.ok) {
                 if (Capacitor.getPlatform() !== "web") {
-                    LocalNotifications.clearDeliveredNotifications();
+                    LocalNotifications.removeAllDeliveredNotifications();
                     ldb.logs.count().then(count => {
                         if (count > 10 && props.average === "above") RateApp.requestReview();
                     });
@@ -173,8 +170,13 @@ const FinishJournal = props => {
 
     return (
         <div className="outer-noscroll">
-            { true && <Dialog title="One second!">
-                <p className="margin-top-12 margin-bottom-24">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            { dialog === Dialogs.NO_WRITING && <Dialog title="One second!">
+                <p className="margin-top-12 margin-bottom-24">
+                    We noticed you haven't written anything significant in a while. Journaling works 
+                    best when you take some time to really write and reflect about what you're going through.
+                    It'll help you understand yourself better, and it'll definitely make your 
+                    mood ratings more accurate. Try writing some more now!
+                </p>
                 <div className="finish-button">Go back and write!</div>
                 <div className="finish-button secondary">Not now.</div>
             </Dialog> }
