@@ -1,11 +1,14 @@
-import { BASELINE_EXP } from "../../data";
-
 const BaselineDescription = () => {
     return (
         <>
             <p>
-                Mental health isn't just (or even primarily) about clinical diagnoses. Much more of it is simply about living a happy,
-                healthy life. { BASELINE_EXP } (And if you don't see a trend, don't worry about this just yet.)
+                Mental health isn't just (or even primarily) about clinical diagnoses. 
+                Much more of it is simply about living a happy, healthy life. To help people better 
+                understand this, we created the baseline. It tracks your "average" mood, so you can 
+                see how your base level of happiness changes over time. The numbers 
+                don't mean anything by themselves, so don't compare this graph with other 
+                people. What matters is how <i>your</i> baseline changes as time goes on. 
+                (And if you don't see a trend, don't worry about this just yet.)
             </p>
             <p>
                 Notice your baseline falling? You might want to make a conscious effort to bring more things into your life that you

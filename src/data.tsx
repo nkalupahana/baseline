@@ -36,10 +36,3 @@ export const RESILIENCE_EXP = <>
     longer-term consequences. It's an important metric to keep track of &mdash; if 
     you're low on it, stress could have a much bigger impact on you than it would normally.
 </>;
-
-export const BASELINE_EXP = <>
-    Your baseline tracks what you think your "average" mood is, so you can 
-    see how your base level of happiness changes over time. The numbers 
-    don't mean anything by themselves, so don't compare this graph with other 
-    people. What matters is how <i>your</i> baseline changes as time goes on.
-</>;

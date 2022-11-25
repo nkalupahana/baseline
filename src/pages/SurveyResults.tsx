@@ -48,7 +48,10 @@ const SurveyResults = () => {
                 { typeof baselineGraph === "object" && <>
                     <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                     <p className="text-center margin-bottom-0 max-width-600">
-                        { BASELINE_EXP }
+                        Your baseline tracks your "average" mood, so you can 
+                        see how your base level of happiness changes over time. (The numbers 
+                        don't mean anything by themselves, so don't compare this graph with other 
+                        people. What matters is how <i>your</i> baseline changes as time goes on.)
                     </p>
                     <p className="text-center margin-bottom-0 max-width-600">
                         Notice your baseline falling? You might want to make a conscious effort to bring more things 
