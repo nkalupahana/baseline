@@ -30,7 +30,7 @@ resource "google_cloud_scheduler_job" "send_clean_up_messages" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled.getbaseline.app/messaging/cleanup"
+    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/messaging/cleanup"
 
     oidc_token {
       service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
@@ -47,7 +47,7 @@ resource "google_cloud_scheduler_job" "clean_up_quotas" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled.getbaseline.app/cleanup/quotas"
+    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/cleanup/quotas"
 
     oidc_token {
       service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
@@ -64,7 +64,7 @@ resource "google_cloud_scheduler_job" "clean_up_anonymous" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled.getbaseline.app/cleanup/anonymous"
+    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/cleanup/anonymous"
 
     oidc_token {
       service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
@@ -81,7 +81,7 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/"
+    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/bi"
 
     oidc_token {
       service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"

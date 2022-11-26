@@ -5,7 +5,7 @@ import { sendCleanUpMessage } from "./messaging.js";
 const app = express();
 app.use(express.json());
 
-app.post("/", (req, res) => {
+app.post("/", (_, res) => {
     res.send(200);
 });
 

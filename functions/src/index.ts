@@ -121,10 +121,6 @@ const checkQuota = async (req: Request, res: functions.Response<any>) => {
     return true;
 }
 
-export const cleanUpQuotas = functions.pubsub.schedule("0 0 * * *").timeZone("America/Chicago").onRun(async _ => {
-    await admin.database(quotaApp).ref("/").set({});
-});
-
 const preflight = async (req: Request, res: functions.Response<any>): Promise<boolean> => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST");
@@ -428,65 +424,6 @@ export const survey = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).htt
     });
 
     res.send(200);
-});
-
-export const cleanUpAnonymous = functions.runWith({ timeoutSeconds: 540 }).pubsub.schedule("0 0 * * SUN").timeZone("America/Chicago").onRun(async _ => {
-    let promises: Promise<any>[] = [];
-    let usersToDelete: string[]  = [];
-
-    const listAllUsers = async (nextPageToken?: string) => {
-        try {
-            const listUsersResult = await admin.auth()
-                .listUsers(1000, nextPageToken);
-            listUsersResult.users.forEach((userRecord) => {
-                const userData = userRecord.toJSON() as UserRecord;
-                if (userData.providerData.length === 0) {
-                    // Anonymous account -- delete artifacts and get UID for deletion from Auth
-                    promises.push(admin.database().ref(`/${userData.uid}`).remove());
-                    promises.push(admin.storage().bucket().deleteFiles({ prefix: `user/${userData.uid}` }));
-                    usersToDelete.push(userData.uid);
-                }
-            });
-
-            // List next batch of users, if it exists.
-            if (listUsersResult.pageToken) {
-                await listAllUsers(listUsersResult.pageToken);
-            }
-        } catch (error) {
-            console.log("Error listing users:", error);
-        }
-    };
-
-    // Get users, and wait for user data deletion to finish
-    await listAllUsers();
-    await Promise.all(promises);
-
-    // Auth deletion is rate-limited, so delete accounts at 8/second
-    while (usersToDelete.length > 0) {
-        let promises = [];
-        for (let i = 0; i < 8 && usersToDelete.length !== 0; i++) {
-            promises.push(admin.auth().deleteUser(usersToDelete.pop()!));
-        }
-
-        await Promise.all(promises);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-});
-
-export const sendCleanUpMessage = functions.pubsub.schedule("0 */2 * * *").timeZone("America/Chicago").onRun(async _ => {
-    await admin.messaging().send({
-        topic: "all",
-        apns: {
-            payload: {
-                aps: {
-                    contentAvailable: true,
-                }
-            },
-        },
-        data: {
-            cleanUp: "true"
-        }
-    });
 });
 
 export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
