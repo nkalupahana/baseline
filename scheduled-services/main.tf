@@ -21,7 +21,8 @@ module "service-accounts" {
     "${var.project}=>roles/firebasedatabase.admin",
     "${var.project}=>roles/storage.admin",
     "${var.project}=>roles/firebaseauth.admin",
-    "${var.project}=>roles/firebasenotifications.admin"
+    "${var.project}=>roles/firebasenotifications.admin",
+    "${var.project}=>roles/firebasecloudmessaging.admin",
   ]
 }
 

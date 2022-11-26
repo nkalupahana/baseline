@@ -1,6 +1,12 @@
 import express from "express";
+import { initializeApp } from "firebase-admin/app";
 import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
 import { sendCleanUpMessage } from "./messaging.js";
+
+initializeApp({
+    databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
+    storageBucket: "getbaselineapp.appspot.com"
+});
 
 const app = express();
 app.use(express.json());
