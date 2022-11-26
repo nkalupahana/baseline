@@ -80,7 +80,7 @@ resource "google_cloud_scheduler_job" "clean_up_anonymous" {
 resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
   name             = "bi_and_retention_messaging"
   description      = "Send data to BigQuery, and kick off retention messaging based on data"
-  schedule         = "0 0 1 * *"
+  schedule         = "0 */2 * * *"
   time_zone        = "America/Chicago"
   attempt_deadline = "1800s"
 
