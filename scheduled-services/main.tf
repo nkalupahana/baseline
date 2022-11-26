@@ -17,7 +17,11 @@ module "service-accounts" {
   description  = "Service account for scheduled services (tf managed)"
   project_roles = [
     "${var.project}=>roles/bigquery.admin",
-    "${var.project}=>roles/run.invoker"
+    "${var.project}=>roles/run.invoker",
+    "${var.project}=>roles/firebasedatabase.admin",
+    "${var.project}=>roles/storage.admin",
+    "${var.project}=>roles/firebaseauth.admin",
+    "${var.project}=>roles/firebasenotifications.admin"
   ]
 }
 
