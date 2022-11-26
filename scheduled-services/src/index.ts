@@ -1,16 +1,26 @@
 import express from "express";
+import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
+import { sendCleanUpMessage } from "./messaging.js";
 
 const app = express();
 app.use(express.json());
 
 app.post("/", (req, res) => {
-    console.log(req.body);
     res.send(200);
 });
 
-app.post("/path2", (req, res) => {
-    console.log("path2")
-    console.log(req.body);
+app.post("/messaging/cleanup", async (_, res) => {
+    await sendCleanUpMessage();
+    res.send(200);
+})
+
+app.post("/cleanup/anonymous", async (_, res) => {
+    await cleanUpAnonymous();
+    res.send(200);
+});
+
+app.post("/cleanup/quotas", async (_, res) => {
+    await cleanUpQuotas();
     res.send(200);
 });
 

@@ -21,9 +21,60 @@ module "service-accounts" {
   ]
 }
 
-resource "google_cloud_scheduler_job" "every_other_hour" {
-  name             = "every_other_hour"
-  description      = "Invoke the default scheduled job to sync data every other hour."
+resource "google_cloud_scheduler_job" "send_clean_up_messages" {
+  name             = "send_clean_up_messages"
+  description      = "Send clean up messages"
+  schedule         = "0 */2 * * *"
+  time_zone        = "America/Chicago"
+  attempt_deadline = "600s"
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://scheduled.getbaseline.app/messaging/cleanup"
+
+    oidc_token {
+      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_cloud_scheduler_job" "clean_up_quotas" {
+  name             = "clean_up_quotas"
+  description      = "Clean up quota database"
+  schedule         = "0 0 * * *"
+  time_zone        = "America/Chicago"
+  attempt_deadline = "30s"
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://scheduled.getbaseline.app/cleanup/quotas"
+
+    oidc_token {
+      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_cloud_scheduler_job" "clean_up_anonymous" {
+  name             = "clean_up_anonymous"
+  description      = "Clean up anonymous accounts"
+  schedule         = "0 0 * * SUN"
+  time_zone        = "America/Chicago"
+  attempt_deadline = "600s"
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://scheduled.getbaseline.app/cleanup/anonymous"
+
+    oidc_token {
+      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
+  name             = "bi_and_retention_messaging"
+  description      = "Send data to BigQuery, and kick off retention messaging based on data"
   schedule         = "0 0 1 * *"
   time_zone        = "America/Chicago"
   attempt_deadline = "1800s"
