@@ -77,9 +77,10 @@ export const loadBasicBIData = async (db: any) => {
         try {
             const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
             listUsersResult.users.forEach(userRecord => {
-                if (userRecord.providerData.length > 0 && userRecord.providerData[0].email) {
+                if (userRecord.providerData.length > 0) {
+                    const email = userRecord.providerData[0].email ?? userRecord.email ?? "";
                     const dt = DateTime.fromRFC2822(userRecord.metadata.creationTime).toMillis();
-                    accounts.push(`${userRecord.uid},${userRecord.providerData[0].email},${dt}`);
+                    accounts.push(`${userRecord.uid},${email},${dt}`);
                 }
             });
 
