@@ -184,7 +184,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 return;
             } else if (keyResponse?.status === 406) {
                 if (flowVal !== flow) return;
-                toast(`Sorry, but your iCloud storage is full, so we can't secure your data correctly. You'll have you sign in with Google. Sorry for the inconvenience.`, "top", 10000);
+                toast(`Sorry, but your iCloud storage is full, so we can't secure your data correctly. Please sign in with Google to continue.`, "top", 10000);
                 resetFlow();
                 return;
             } else {
