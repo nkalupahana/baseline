@@ -145,8 +145,7 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    const test = await bigquery.dataset("bi").table("gap_fund").load(storage.bucket("baseline-bi").file("gapfund.csv"), gapMetadata);
-    test[0].status
+    await bigquery.dataset("bi").table("gap_fund").load(storage.bucket("baseline-bi").file("gapfund.csv"), gapMetadata);
 
     // Send users CSV to BigQuery
     const usersMetadata = {
