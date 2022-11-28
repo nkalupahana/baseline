@@ -23,7 +23,7 @@ We also collect the region (state in the United States) and country your IP addr
 send Large-Scale Event notifications to users in certain areas when important events happen there. For example, a 
 significant Supreme Court case in the United States may trigger a notification to all US IPs to remind them to 
 journal and reflect on how they're feeling. In order to facilitate these notifications, we also store baseline-specific
-device IDs and Firebase Cloud Messaging tokens for each mobile device you're sign into baseline with. 
+device IDs and Firebase Cloud Messaging tokens for each mobile device you're signed into baseline with. 
 These tokens are all specific to baseline and cannot be used to track you across other apps or websites.
 
 Finally, if you sign up for baseline via a referral link, we can see who the referrer is. For example, if you 
