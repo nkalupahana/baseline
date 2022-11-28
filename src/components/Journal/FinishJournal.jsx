@@ -48,7 +48,7 @@ const FinishJournal = props => {
         // - If none of the last 2 - 5 or this one have text, show
         let writtenAnything = props.text.length > 50;
         for (let i = 0; (i < lastLogs.length && !writtenAnything); ++i) {
-            writtenAnything = lastLogs[i].journal.length > 50;
+            writtenAnything = (lastLogs[i].journal?.length > 50 || lastLogs[i].ejournal?.length > 278);
         }
 
         if (!writtenAnything && lastLogs.length > 1 && checkPromptAllowed("noWriting", 5)) {
