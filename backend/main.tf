@@ -26,5 +26,5 @@ module "service-accounts" {
 resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
   service_account_id = "111514687893826631162" # id for gh actions account
   role               = "roles/iam.serviceAccountAdmin"
-  member             = "serviceAccount:${module.serice-accounts.email}"
+  member             = "serviceAccount:${module.service-accounts.email}"
 }
