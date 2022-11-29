@@ -8,7 +8,7 @@ provider "google" {
   region  = "us-central1"
 }
 
-module "service-accounts" {
+module "service-accounts" "sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
   project_id   = var.project
@@ -92,4 +92,10 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
       service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
     }
   }
+}
+
+resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
+  service_account_id = "111514687893826631162" # id for gh actions account
+  role               = "roles/iam.serviceAccountAdmin"
+  member             = "serviceAccount:${sa.email}"
 }
