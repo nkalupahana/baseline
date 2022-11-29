@@ -53,8 +53,11 @@ export const signOutAndCleanUp = () => {
             });
         }
     });
-    // Remove FCM topic subscription
-    if (Capacitor.getPlatform() !== "web") FirebaseMessaging.unsubscribeFromTopic({ topic: "all" });
+    // Clean up FCM
+    if (Capacitor.getPlatform() !== "web") {
+        FirebaseMessaging.unsubscribeFromTopic({ topic: "all" });
+        FirebaseMessaging.deleteToken();
+    }
     // Remove keys from store
     localStorage.removeItem("keys");
     localStorage.removeItem("ekeys");
