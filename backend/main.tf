@@ -24,7 +24,7 @@ module "service-accounts" {
 }
 
 resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
-  service_account_id = "projects/${var.project}/serviceAccounts/github-action-420733850@getbaselineapp.iam.gserviceaccount.com"
-  role               = "roles/iam.serviceAccountAdmin"
-  member             = "serviceAccount:${module.service-accounts.email}"
+  service_account_id  = module.service-accounts.service_account.id
+  role                = "roles/iam.serviceAccountUser"
+  member              = "serviceAccount:github-action-420733850@getbaselineapp.iam.gserviceaccount.com"
 }
