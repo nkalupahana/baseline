@@ -93,3 +93,9 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
     }
   }
 }
+
+resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
+  service_account_id = "projects/${var.project}/serviceAccounts/github-action-420733850@getbaselineapp.iam.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountAdmin"
+  member             = "serviceAccount:${module.service-accounts.email}"
+}

@@ -25,6 +25,7 @@
     "underscore": "^1.13.6"
   },
   "devDependencies": {
+    "@types/luxon": "^3.1.0",
     "@types/underscore": "^1.11.4"
   }
 }
