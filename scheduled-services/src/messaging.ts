@@ -2,6 +2,8 @@ import { getMessaging } from "firebase-admin/messaging";
 import { BigQuery } from "@google-cloud/bigquery";
 import { DateTime, FixedOffsetZone } from "luxon";
 import { sample } from "underscore";
+import { makeInternalRequest } from "./index.js";
+import { Request, Response } from "express";
 
 export const sendCleanUpMessage = async () => {
     await getMessaging().send({
@@ -61,7 +63,7 @@ const MESSAGES: AnyMap = {
     ]
 };
 
-export const logReminder = async () => {
+export const logReminder = async (req: Request, res: Response) => {
     const bigquery = new BigQuery();
     // These should send in UTC from 6 - 8 PM (18 - 20)
     // Possible time offsets -- -11 to +14
@@ -102,7 +104,7 @@ export const logReminder = async () => {
     console.log(JSON.stringify(rows));
     console.log("--------2");
 
-    let usersToNotify = []
+    let usersToNotify = [];
     for (let user of rows) {
         let lastUpdated = user.lastUpdated ?? user.creationTime;
         const userZone = FixedOffsetZone.instance(user.offset);
@@ -127,19 +129,55 @@ export const logReminder = async () => {
     }
 
     let messages = [];
+    let userMessageAssociation = [];
     console.log(JSON.stringify(usersToNotify));
     for (let messageCtx of usersToNotify) {
-        for (let tokenData of Object.values(messageCtx.user.fcm)) {
+        for (let deviceId in messageCtx.user.fcm) {
             messages.push({
                 notification: sample(MESSAGES[messageCtx.tag]),
-                token: (tokenData as any).token,
+                token: messageCtx.user.fcm[deviceId].token,
+            });
+
+            userMessageAssociation.push({
+                userId: messageCtx.user.userId,
+                deviceId
             });
         }
     }
     
     console.log(JSON.stringify(messages));
+    console.log(JSON.stringify(userMessageAssociation));
     if (messages.length > 0) {
-        const response = await getMessaging().sendAll(messages);
-        console.log(JSON.stringify(response));
+        const messagingResult = await getMessaging().sendAll(messages);
+        console.log(JSON.stringify(messagingResult));
+        makeInternalRequest(req, "messaging/cleanUpTokens", {
+            userMessageAssociation,
+            messagingResult
+        });
     }
+
+    res.send(200);
 }
+
+export const cleanUpTokens = async (req: Request, res: Response) => {
+    const { userMessageAssociation, messagingResult } = req.body;
+    if (userMessageAssociation.length !== messagingResult.length) {
+        throw new Error("user message association and messaging result lengths don't match");
+    }
+
+    //const db = getDatabase();
+    let promises: Promise<void>[] = [];
+    for (let i = 0; i < messagingResult.length; i++) {
+        if (!messagingResult[i].success) {  
+            if (messagingResult[i].error.code === "messaging/registration-token-not-registered") {
+                console.log(`${userMessageAssociation.userId}/info/fcm/${userMessageAssociation.deviceId}`);
+                //promises.push(db.ref(`${userMessageAssociation.userId}/info/fcm/${userMessageAssociation.deviceId}`).remove());
+            } else {
+                console.warn("Unknown error code", messagingResult[i].error.code);
+            }
+        }
+    }
+
+    await Promise.all(promises);
+    res.send(200);
+};

@@ -3,7 +3,7 @@ import { initializeApp } from "firebase-admin/app";
 import { getDatabase } from "firebase-admin/database";
 import { loadBasicBIData } from "./bi.js";
 import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
-import { logReminder, sendCleanUpMessage } from "./messaging.js";
+import { cleanUpTokens, logReminder, sendCleanUpMessage } from "./messaging.js";
 
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
@@ -13,12 +13,17 @@ initializeApp({
 const app = express();
 app.use(express.json());
 
-const makeInternalRequest = (req: express.Request, path: string) => {
+interface AnyMap {
+    [key: string]: any;
+}
+
+export const makeInternalRequest = (req: express.Request, path: string, data?: AnyMap) => {
     fetch(`https://scheduled-services-lg27dbkpuq-uc.a.run.app/${path}`, {
         method: "POST",
         headers: {
             "authorization": req.headers.authorization!,
-        }
+        },
+        body: JSON.stringify(data ?? {})
     })
 };
 
@@ -36,15 +41,14 @@ app.post("/bi", async (req, res) => {
     res.send(200);
 })
 
-app.post("/messaging/logReminder", async (_, res) => {
-    await logReminder();
-    res.send(200);
-})
+app.post("/messaging/logReminder", logReminder);
 
 app.post("/messaging/cleanup", async (_, res) => {
     await sendCleanUpMessage();
     res.send(200);
 })
+
+app.post("/messaging/cleanUpTokens", cleanUpTokens);
 
 app.post("/cleanup/anonymous", async (_, res) => {
     await cleanUpAnonymous();
