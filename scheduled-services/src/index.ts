@@ -39,14 +39,14 @@ app.post("/bi", async (req, res) => {
     // kick off requests based on that
     makeInternalRequest(req, "messaging/logReminder");
     res.send(200);
-})
+});
 
 app.post("/messaging/logReminder", logReminder);
 
 app.post("/messaging/cleanup", async (_, res) => {
     await sendCleanUpMessage();
     res.send(200);
-})
+});
 
 app.post("/messaging/cleanUpTokens", cleanUpTokens);
 

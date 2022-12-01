@@ -160,6 +160,8 @@ export const logReminder = async (req: Request, res: Response) => {
 }
 
 export const cleanUpTokens = async (req: Request, res: Response) => {
+    console.log(req.body);
+    /*
     const { userMessageAssociation, messagingResult } = req.body;
     if (userMessageAssociation.length !== messagingResult.length) {
         throw new Error("user message association and messaging result lengths don't match");
@@ -180,4 +182,5 @@ export const cleanUpTokens = async (req: Request, res: Response) => {
 
     await Promise.all(promises);
     res.send(200);
+    */
 };
