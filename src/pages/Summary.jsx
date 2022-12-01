@@ -17,7 +17,27 @@ import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging"
+import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+
+// Add timestamp to data object, and decrypt as needed
+const processNewData = (newData, keys) => {
+    const pdpSetting = parseSettings()["pdp"];
+    const pwd = sessionStorage.getItem("pwd");
+    for (const key in newData) {
+        if ("data" in newData[key] && keys) {
+            newData[key] = JSON.parse(decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`));
+        }
+        newData[key].timestamp = Number(key);
+        if (pdpSetting) {
+            newData[key].ejournal = encrypt(newData[key].journal, pwd);
+            newData[key].journal = "";
+            if (newData[key].files) {
+                newData[key].efiles = encrypt(JSON.stringify(newData[key].files), pwd);
+                delete newData[key].files;
+            }
+        }
+    }
+}
 
 const Summary = () => {
     const [user] = useAuthState(auth);
@@ -86,36 +106,46 @@ const Summary = () => {
                     return;
                 }
 
-                // Add timestamp to data object, and decrypt as needed
-                const pdpSetting = parseSettings()["pdp"];
-                const pwd = sessionStorage.getItem("pwd");
-                for (const key in newData) {
-                    if ("data" in newData[key] && keys) {
-                        newData[key] = JSON.parse(decrypt(newData[key].data, `${keys.visibleKey}${keys.encryptedKeyVisible}`));
-                    }
-                    newData[key].timestamp = Number(key);
-                    if (pdpSetting) {
-                        newData[key].ejournal = encrypt(newData[key].journal, pwd);
-                        newData[key].journal = "";
-                        if (newData[key].files) {
-                            newData[key].efiles = encrypt(JSON.stringify(newData[key].files), pwd);
-                            delete newData[key].files;
-                        }
-                    }
-                }
-
-                await ldb.logs.bulkAdd(Object.values(newData));
+                processNewData(newData, keys);
+                await ldb.logs.bulkPut(Object.values(newData));
             }
             setGettingData(false);
             window.location.hash = "";
         };
-        const lastUpdatedRef = ref(db, `/${auth.currentUser.uid}/lastUpdated`);
+        const lastUpdatedRef = ref(db, `/${user.uid}/lastUpdated`);
         onValue(lastUpdatedRef, listener);
 
         return () => {
             off(lastUpdatedRef, "value", listener);
         };
     }, [user, setGettingData]);
+
+    // Offline data refresh -- refreshes data that was added offline by someone else
+    useEffect(() => {
+        if (!user) return;
+        const listener = async snap => {
+            let offlineValue = snap.val();
+            if (!offlineValue) return;
+            offlineValue = String(offlineValue);
+            if (offlineValue === localStorage.getItem("offline")) return;
+
+            const keys = checkKeys();
+            if (keys === "discreet") return;
+
+            console.log("Offline sync, invalidating cache.");
+            let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey()))).val();
+            processNewData(newData, keys);
+            await ldb.logs.bulkPut(Object.values(newData));
+            localStorage.setItem("offline", offlineValue);
+        };
+
+        const offlineRef = ref(db, `/${user.uid}/offline`);
+        onValue(offlineRef, listener);
+
+        return () => {
+            off(offlineRef, "value", listener);
+        };
+    }, [user]);
 
     useEffect(() => {
         if (parseSettings()["pdp"] && logsQuery) {
