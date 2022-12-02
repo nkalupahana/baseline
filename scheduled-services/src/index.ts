@@ -22,6 +22,7 @@ export const makeInternalRequest = (req: express.Request, path: string, data?: A
         method: "POST",
         headers: {
             "authorization": req.headers.authorization!,
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(data ?? {})
     })

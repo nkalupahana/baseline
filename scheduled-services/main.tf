@@ -8,7 +8,7 @@ provider "google" {
   region  = "us-central1"
 }
 
-module "service-accounts" {
+module "scheduled-services-sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
   project_id   = var.project
@@ -38,7 +38,7 @@ resource "google_cloud_scheduler_job" "send_clean_up_messages" {
     uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/messaging/cleanup"
 
     oidc_token {
-      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+      service_account_email = module.scheduled-services-sa.email
     }
   }
 }
@@ -55,7 +55,7 @@ resource "google_cloud_scheduler_job" "clean_up_quotas" {
     uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/cleanup/quotas"
 
     oidc_token {
-      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+      service_account_email = module.scheduled-services-sa.email
     }
   }
 }
@@ -72,7 +72,7 @@ resource "google_cloud_scheduler_job" "clean_up_anonymous" {
     uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/cleanup/anonymous"
 
     oidc_token {
-      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+      service_account_email = module.scheduled-services-sa.email
     }
   }
 }
@@ -89,13 +89,29 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
     uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/bi"
 
     oidc_token {
-      service_account_email = "scheduled-services@getbaselineapp.iam.gserviceaccount.com"
+      service_account_email = module.scheduled-services-sa.email
     }
   }
 }
 
 resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
-  service_account_id  = module.service-accounts.service_account.id
+  service_account_id  = module.scheduled-services-sa.service_account.id
   role                = "roles/iam.serviceAccountUser"
   member              = "serviceAccount:github-action-420733850@getbaselineapp.iam.gserviceaccount.com"
+}
+
+# Pub/Sub
+resource "google_pubsub_topic" "pubsub_trigger_cleanup" {
+  name = "pubsub-trigger-cleanup"
+}
+
+resource "google_pubsub_subscription" "pubsub_trigger_cleanup_sub" {
+  name  = "pubsub-trigger-cleanup-sub"
+  topic = google_pubsub_topic.pubsub_trigger_cleanup.name
+  push_config {
+    push_endpoint = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/"
+    oidc_token {
+      service_account_email = module.scheduled-services-sa.email
+    }
+  }
 }

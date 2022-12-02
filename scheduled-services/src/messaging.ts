@@ -118,7 +118,7 @@ export const logReminder = async (req: Request, res: Response) => {
             }
         }
 
-        const barrier =  now.minus({ weeks: 1, days: 3 });
+        const barrier = now.minus({ weeks: 1, days: 3 });
         if (lastUpdated < barrier && barrier.weekday === 7) {
             usersToNotify.push({ user, tag: "reacquire" });
         }
@@ -152,16 +152,15 @@ export const logReminder = async (req: Request, res: Response) => {
         console.log(JSON.stringify(messagingResult));
         makeInternalRequest(req, "messaging/cleanUpTokens", {
             userMessageAssociation,
-            messagingResult
+            messagingResult: messagingResult.responses
         });
     }
 
     res.send(200);
-}
+};
 
 export const cleanUpTokens = async (req: Request, res: Response) => {
-    console.log(req.body);
-    /*
+    console.log(JSON.stringify(req.body));
     const { userMessageAssociation, messagingResult } = req.body;
     if (userMessageAssociation.length !== messagingResult.length) {
         throw new Error("user message association and messaging result lengths don't match");
@@ -182,5 +181,4 @@ export const cleanUpTokens = async (req: Request, res: Response) => {
 
     await Promise.all(promises);
     res.send(200);
-    */
 };
