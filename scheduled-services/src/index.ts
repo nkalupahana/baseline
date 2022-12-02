@@ -51,6 +51,8 @@ app.post("/messaging/cleanup", async (_, res) => {
 
 app.post("/messaging/cleanUpTokens", cleanUpTokens);
 
+app.post("/messaging/cleanUpTokens", cleanUpTokens);
+
 app.post("/cleanup/anonymous", async (_, res) => {
     await cleanUpAnonymous();
     res.send(200);
