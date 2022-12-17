@@ -138,7 +138,7 @@ const preflight = async (req: Request, res: functions.Response<any>): Promise<bo
     return true;
 };
 
-export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"], minInstances: 1 }).https.onRequest(async (req: Request, res) => {
+export const moodLog = functions.runWith({ memory: "2GB", secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     if (!(await preflight(req, res))) return;
 
     let [data, files] = await new Promise((resolve, reject) => {
@@ -511,7 +511,7 @@ export const gapFund = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).ht
     res.send(200);
 });
 
-export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"], minInstances: 1 }).https.onRequest(async (req: Request, res) => {
+export const getOrCreateKeys = functions.runWith({ secrets: ["KEY_ENCRYPTION_KEY"] }).https.onRequest(async (req: Request, res) => {
     if (!(await preflight(req, res))) return;
     
     const body = JSON.parse(req.body);

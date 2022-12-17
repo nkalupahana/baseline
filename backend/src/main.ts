@@ -9,6 +9,7 @@ import formidable from "formidable";
 import sharp from "sharp";
 import fs from "node:fs";
 import { v4 as uuidv4 } from "uuid";
+import { PubSub } from "@google-cloud/pubsub";
 
 export const getImage = async (req: UserRequest, res: Response) => {
     const db = getDatabase();
@@ -296,5 +297,9 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     });
 
     await db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
+
+    const pubsub = new PubSub();
+    await pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
+
     res.sendStatus(200);
 }
