@@ -118,7 +118,7 @@ export const logReminder = async (req: Request, res: Response) => {
             }
         }
 
-        const barrier =  now.minus({ weeks: 1, days: 3 });
+        const barrier = now.minus({ weeks: 1, days: 3 });
         if (lastUpdated < barrier && barrier.weekday === 7) {
             usersToNotify.push({ user, tag: "reacquire" });
         }
@@ -152,14 +152,15 @@ export const logReminder = async (req: Request, res: Response) => {
         console.log(JSON.stringify(messagingResult));
         makeInternalRequest(req, "messaging/cleanUpTokens", {
             userMessageAssociation,
-            messagingResult
+            messagingResult: messagingResult.responses
         });
     }
 
     res.send(200);
-}
+};
 
 export const cleanUpTokens = async (req: Request, res: Response) => {
+    console.log(JSON.stringify(req.body));
     const { userMessageAssociation, messagingResult } = req.body;
     if (userMessageAssociation.length !== messagingResult.length) {
         throw new Error("user message association and messaging result lengths don't match");
@@ -170,8 +171,8 @@ export const cleanUpTokens = async (req: Request, res: Response) => {
     for (let i = 0; i < messagingResult.length; i++) {
         if (!messagingResult[i].success) {  
             if (messagingResult[i].error.code === "messaging/registration-token-not-registered") {
-                console.log(`${userMessageAssociation.userId}/info/fcm/${userMessageAssociation.deviceId}`);
-                //promises.push(db.ref(`${userMessageAssociation.userId}/info/fcm/${userMessageAssociation.deviceId}`).remove());
+                console.log(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`);
+                //promises.push(db.ref(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`).remove());
             } else {
                 console.warn("Unknown error code", messagingResult[i].error.code);
             }
