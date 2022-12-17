@@ -16,6 +16,9 @@
       "lastUpdated": {
         ".read": "auth != null && auth.uid == $uid"
       },
+    	"offline": {
+        ".read": "auth != null && auth.uid == $uid"
+      },
       "lastWeekInReview": {
         ".read": "auth != null && auth.uid == $uid",
         ".write": "auth != null && auth.uid == $uid",

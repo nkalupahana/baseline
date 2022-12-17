@@ -65,6 +65,7 @@ export const signOutAndCleanUp = () => {
     localStorage.removeItem("autosave");
     localStorage.removeItem("eautosave");
     localStorage.removeItem("lastShown");
+    localStorage.removeItem("offline");
     sessionStorage.removeItem("pwd");
     // Sign out of Firebase
     FirebaseAuthentication.signOut();

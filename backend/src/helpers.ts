@@ -69,7 +69,9 @@ export const validateKeys = async (keys_: string, db: Database, user_id: string)
         return false;
     }
 
-    if (!keys || Object.keys(keys).length !== 3) {
+    // > 4 because additionalData attribute will
+    // sometimes be stored in keys on old devices
+    if (!keys || Object.keys(keys).length > 4) {
         return false;
     }
 

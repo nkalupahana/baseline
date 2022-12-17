@@ -194,10 +194,15 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         id
     });
 
+    const offline = (await db.ref(`${req.user!.user_id}/offline`).get()).val()
+
     res.send({
         visibleKey,
         encryptedKey,
-        encryptedKeyVisible
+        encryptedKeyVisible,
+        additionalData: {
+            offline
+        }
     });
 };
 
