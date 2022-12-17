@@ -159,7 +159,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     encryptedKeyVisible
                 });
 
-                localStorage.setItem("offline", additionalData.offline);
+                localStorage.setItem("offline", additionalData?.offline ?? "");
 
                 if (flowVal !== flow) return;
                 if (passphrase) {
