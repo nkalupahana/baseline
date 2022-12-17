@@ -26,7 +26,9 @@ export default function HARM(): HARMScreener {
         ],
         _results: [0, 0, 0],
         nextQuestion: function(answer) {
+            let previousState = undefined;
             if (answer !== undefined) {
+                previousState = JSON.parse(JSON.stringify(this));
                 this._results[this._currentSection!] = answer;
                 ++this._currentQuestion;
             }
@@ -46,6 +48,7 @@ export default function HARM(): HARMScreener {
             }
 
             return {
+                previousState,
                 _currentQuestion: this._currentQuestion,
                 _currentSection: this._currentSection,
                 _results: this._results,

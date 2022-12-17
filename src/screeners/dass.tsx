@@ -120,7 +120,9 @@ export default function DASS(): Screener {
             s: 0
         },
         nextQuestion: function(answer) {
+            let previousState = undefined;
             if (answer !== undefined) {
+                previousState = JSON.parse(JSON.stringify(this));
                 this._results[this._questions[this._currentQuestion].affects] += answer;
                 this._currentQuestion += 1;
             }
@@ -128,6 +130,7 @@ export default function DASS(): Screener {
             if (this._currentQuestion >= this._questions.length) return { _results: this._results, done: true };
 
             return {
+                previousState,
                 _currentQuestion: this._currentQuestion,
                 _results: this._results,
                 progress: `Question ${this._currentQuestion + 1}/${this._questions.length}`,

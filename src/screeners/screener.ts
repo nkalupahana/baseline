@@ -54,5 +54,6 @@ export default interface Screener {
     question?: string;
     answers?: Answer[];
     done?: boolean;
+    previousState?: Screener;
     [additionalProps: string]: unknown;
 }

@@ -10,7 +10,7 @@ export default function EDE_QS(): Screener {
             "On how many of the past 7 days have you been deliberately trying to limit the amount of food you eat to influence your weight or shape (whether or not you have succeeded)?",
             "On how many of the past 7 days have you gone for long periods of time (e.g., 8 or more waking hours) without eating anything at all in order to influence your weight or shape?",
             "On how many of the past 7 days has thinking about food, eating or calories made it very difficult to concentrate on things you are interested in (such as working, following a conversation or reading)?",
-            "On how many of the past 7 days has as thinking about your weight or shape made it very difficult to concentrate on things you are interested in (such as working, following a conversation or reading)?",
+            "On how many of the past 7 days has thinking about your weight or shape made it very difficult to concentrate on things you are interested in (such as working, following a conversation or reading)?",
             "On how many of the past 7 days have you had a definite fear that you might gain weight?",
             "On how many of the past 7 days have you had a strong desire to lose weight?",
             "On how many of the past 7 days have you tried to control your weight or shape by making yourself sick (vomit) or taking laxatives?",
@@ -22,7 +22,9 @@ export default function EDE_QS(): Screener {
         ],
         _results: 0,
         nextQuestion: function(answer) {
+            let previousState = undefined;
             if (answer !== undefined) {
+                previousState = JSON.parse(JSON.stringify(this));
                 this._results += answer;
                 ++this._currentQuestion;
             }
@@ -70,6 +72,7 @@ export default function EDE_QS(): Screener {
             }
 
             return {
+                previousState,
                 _currentQuestion: this._currentQuestion,
                 _results: this._results,
                 progress: `Question ${this._currentQuestion + 1}/${this._questions.length}`,

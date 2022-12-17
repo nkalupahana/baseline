@@ -12,12 +12,18 @@
 }
 
 .screener-container {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     max-width: 800px;
 }
 
 .screener-container div:first-of-type {
     margin-top: auto;
+}
+
+.screener-container div:last-of-type {
+    margin-bottom: 24px;
 }
 
 .screener-slide {
