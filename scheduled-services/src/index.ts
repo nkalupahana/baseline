@@ -3,7 +3,7 @@ import { initializeApp } from "firebase-admin/app";
 import { getDatabase } from "firebase-admin/database";
 import { loadBasicBIData } from "./bi.js";
 import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
-import { cleanUpTokens, logReminder, sendCleanUpMessage } from "./messaging.js";
+import { cleanUpTokens, logReminder, removeUserNotifications, sendCleanUpMessage } from "./messaging.js";
 
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
@@ -48,6 +48,8 @@ app.post("/messaging/cleanup", async (_, res) => {
     await sendCleanUpMessage();
     res.send(200);
 });
+
+app.post("/messaging/removeUserNotifications", removeUserNotifications);
 
 app.post("/messaging/cleanUpTokens", cleanUpTokens);
 
