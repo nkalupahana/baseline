@@ -4,6 +4,7 @@ import { DateTime, FixedOffsetZone } from "luxon";
 import { sample } from "underscore";
 import { makeInternalRequest } from "./index.js";
 import { Request, Response } from "express";
+import { getDatabase } from "firebase-admin/database";
 
 export const sendCleanUpMessage = async () => {
     await getMessaging().send({
@@ -88,7 +89,6 @@ export const logReminder = async (req: Request, res: Response) => {
                         )
                     INNER JOIN \`getbaselineapp.bi.accounts\` USING (userId);`;
 
-    console.log(query);
     const [job] = await bigquery.createQueryJob({
         query,
         location: "US"
@@ -101,8 +101,6 @@ export const logReminder = async (req: Request, res: Response) => {
             fcm: JSON.parse(Buffer.from(x.fcm, "base64").toString("ascii"))
         }
     });
-    console.log(JSON.stringify(rows));
-    console.log("--------2");
 
     let usersToNotify = [];
     for (let user of rows) {
@@ -130,7 +128,6 @@ export const logReminder = async (req: Request, res: Response) => {
 
     let messages = [];
     let userMessageAssociation = [];
-    console.log(JSON.stringify(usersToNotify));
     for (let messageCtx of usersToNotify) {
         for (let deviceId in messageCtx.user.fcm) {
             messages.push({
@@ -145,8 +142,6 @@ export const logReminder = async (req: Request, res: Response) => {
         }
     }
     
-    console.log(JSON.stringify(messages));
-    console.log(JSON.stringify(userMessageAssociation));
     if (messages.length > 0) {
         const messagingResult = await getMessaging().sendAll(messages);
         console.log(JSON.stringify(messagingResult));
@@ -160,19 +155,17 @@ export const logReminder = async (req: Request, res: Response) => {
 };
 
 export const cleanUpTokens = async (req: Request, res: Response) => {
-    console.log(JSON.stringify(req.body));
     const { userMessageAssociation, messagingResult } = req.body;
     if (userMessageAssociation.length !== messagingResult.length) {
         throw new Error("user message association and messaging result lengths don't match");
     }
 
-    //const db = getDatabase();
+    const db = getDatabase();
     let promises: Promise<void>[] = [];
     for (let i = 0; i < messagingResult.length; i++) {
         if (!messagingResult[i].success) {  
             if (messagingResult[i].error.code === "messaging/registration-token-not-registered") {
-                console.log(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`);
-                //promises.push(db.ref(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`).remove());
+                promises.push(db.ref(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`).remove());
             } else {
                 console.warn("Unknown error code", messagingResult[i].error.code);
             }
