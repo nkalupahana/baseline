@@ -57,15 +57,13 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
         }
     }
 
-    console.log(survey.previousState);
-
     return <div className="container screener-container">
         <IonIcon onClick={() => setSurvey({ 
                 ...survey, 
                 ...survey.previousState, 
                 previousState: survey.previousState?.previousState
             })} class="top-corner x" icon={chevronBackOutline} />
-        <span className="center-journal text-center">   
+        <span className="center-journal center-screener text-center">   
             <b>{ stage } Survey | { survey.progress }</b>
             <p className="question margin-top-12">{ survey.question }</p>
         </span>
