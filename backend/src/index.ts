@@ -21,8 +21,7 @@ Sentry.init({
         new Sentry.Integrations.Http({ tracing: true }),
         new Tracing.Integrations.Express({ app }),
     ],
-    // capture this % of traces
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0.1,
 });
 
 app.use(cors());

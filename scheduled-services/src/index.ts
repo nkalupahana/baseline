@@ -4,6 +4,12 @@ import { getDatabase } from "firebase-admin/database";
 import { loadBasicBIData } from "./bi.js";
 import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
 import { cleanUpTokens, logReminder, removeUserNotifications, sendCleanUpMessage } from "./messaging.js";
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
+
+interface AnyMap {
+    [key: string]: any;
+}
 
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
@@ -11,11 +17,20 @@ initializeApp({
 });
 
 const app = express();
-app.use(express.json());
 
-interface AnyMap {
-    [key: string]: any;
-}
+Sentry.init({
+    dsn: "https://6e656f8deb434639a0bc75e5093b6f3c@o4504179120472064.ingest.sentry.io/4504348672196608",
+    integrations: [
+      new Sentry.Integrations.Http({ tracing: true }),
+      new Tracing.Integrations.Express({ app }),
+    ],
+    tracesSampleRate: 1.0,
+});
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+
+app.use(express.json());
 
 export const makeInternalRequest = (req: express.Request, path: string, data?: AnyMap) => {
     fetch(`https://scheduled-services-lg27dbkpuq-uc.a.run.app/${path}`, {
@@ -62,6 +77,8 @@ app.post("/cleanup/quotas", async (_, res) => {
     await cleanUpQuotas();
     res.send(200);
 });
+
+app.use(Sentry.Handlers.errorHandler());
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
