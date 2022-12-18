@@ -146,7 +146,20 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             
             if (flowVal !== flow) return;
             if (keyResponse?.ok) {
-                const data = JSON.stringify(await keyResponse.json());
+                const {
+                    visibleKey,
+                    encryptedKey,
+                    encryptedKeyVisible,
+                    additionalData
+                } = await keyResponse.json()
+
+                const data = JSON.stringify({
+                    visibleKey,
+                    encryptedKey,
+                    encryptedKeyVisible
+                });
+
+                localStorage.setItem("offline", additionalData?.offline ?? "");
 
                 if (flowVal !== flow) return;
                 if (passphrase) {
