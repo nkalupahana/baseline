@@ -107,7 +107,7 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
 resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
   service_account_id  = module.scheduled-services-sa.service_account.id
   role                = "roles/iam.serviceAccountUser"
-  member              = "serviceAccount:${gh-actions-sa}@${var.project}.iam.gserviceaccount.com"
+  member              = "serviceAccount:${var.gh-actions-sa}@${var.project}.iam.gserviceaccount.com"
 }
 
 # Pub/Sub
