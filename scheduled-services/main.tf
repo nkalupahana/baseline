@@ -8,7 +8,7 @@ variable "endpoint" {
   default = "https://scheduled-services-lg27dbkpuq-uc.a.run.app"
 }
 
-variable "github-actions-sa" {
+variable "gh-actions-sa" {
   type    = string
   default = "github-action-420733850"
 }
