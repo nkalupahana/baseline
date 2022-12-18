@@ -26,7 +26,9 @@ export default function SPF(): Screener {
             "Cognitive-Individual": 0
         },
         nextQuestion: function(answer) {
+            let previousState = undefined;
             if (answer !== undefined) {
+                previousState = JSON.parse(JSON.stringify(this));
                 this._results[this._currentQuestion < 6 ? "Social-Interpersonal" : "Cognitive-Individual"] += answer;
                 ++this._currentQuestion;
             }
@@ -34,6 +36,7 @@ export default function SPF(): Screener {
             if (this._currentQuestion >= this._questions.length) return { _results: this._results, done: true };
 
             return {
+                previousState,
                 _currentQuestion: this._currentQuestion,
                 _results: this._results,
                 progress: `Question ${this._currentQuestion + 1}/${this._questions.length}`,

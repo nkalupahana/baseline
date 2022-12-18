@@ -19,6 +19,10 @@
     flex-direction: column;
 }
 
+.center-journal.center-screener {
+    padding-top: calc(max(env(safe-area-inset-top), 12px) - 5px);
+}
+
 .center-notifications {
     display: flex;
     justify-content: center;

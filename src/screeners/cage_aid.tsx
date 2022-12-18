@@ -28,7 +28,9 @@ export default function CAGE_AID(): Screener {
         ],
         _results: 0,
         nextQuestion: function(answer) {
+            let previousState = undefined;
             if (answer !== undefined) {
+                previousState = JSON.parse(JSON.stringify(this));
                 this._results += answer;
                 ++this._currentQuestion;
             }
@@ -36,6 +38,7 @@ export default function CAGE_AID(): Screener {
             if (this._currentQuestion >= this._questions.length) return { _results: this._results, done: true };
 
             return {
+                previousState,
                 _currentQuestion: this._currentQuestion,
                 _results: this._results,
                 progress: `Question ${this._currentQuestion + 1}/${this._questions.length}`,

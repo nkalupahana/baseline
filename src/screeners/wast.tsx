@@ -77,7 +77,9 @@ export default function WAST(): WASTScreener {
             ]
         ],
         nextQuestion: function(answer) {
+            let previousState = undefined;
             if (answer !== undefined) {
+                previousState = JSON.parse(JSON.stringify(this));
                 if (this._currentQuestion === 0) {
                     if (answer === 0) {
                         return { _results: this._results, done: true };
@@ -91,6 +93,7 @@ export default function WAST(): WASTScreener {
             if (this._currentQuestion >= this._questions.length) return { _results: this._results, done: true };
 
             return {
+                previousState,
                 _currentQuestion: this._currentQuestion,
                 _results: this._results,
                 progress: `Question ${this._currentQuestion + 1}/${this._questions.length}`,
