@@ -6,6 +6,10 @@ import { makeInternalRequest } from "./index.js";
 import { Request, Response } from "express";
 import { getDatabase } from "firebase-admin/database";
 
+interface AnyMap {
+    [key: string]: any;
+}
+
 export const sendCleanUpMessage = async () => {
     await getMessaging().send({
         topic: "all",
@@ -22,9 +26,10 @@ export const sendCleanUpMessage = async () => {
     });
 }
 
-interface AnyMap {
-    [key: string]: any;
-}
+export const removeUserNotifications = async (req: Request, res: Response) => {
+    console.log(req.body);
+    res.sendStatus(200);
+};
 
 const MESSAGES: AnyMap = {
     "recent": [

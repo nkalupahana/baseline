@@ -3,6 +3,16 @@ variable "project" {
   default = "getbaselineapp"
 }
 
+variable "endpoint" {
+  type    = string
+  default = "https://scheduled-services-lg27dbkpuq-uc.a.run.app"
+}
+
+variable "gh-actions-sa" {
+  type    = string
+  default = "github-action-420733850"
+}
+
 provider "google" {
   project = var.project
   region  = "us-central1"
@@ -35,7 +45,7 @@ resource "google_cloud_scheduler_job" "send_clean_up_messages" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/messaging/cleanup"
+    uri         = "${var.endpoint}/messaging/cleanup"
 
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
@@ -52,7 +62,7 @@ resource "google_cloud_scheduler_job" "clean_up_quotas" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/cleanup/quotas"
+    uri         = "${var.endpoint}/cleanup/quotas"
 
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
@@ -69,7 +79,7 @@ resource "google_cloud_scheduler_job" "clean_up_anonymous" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/cleanup/anonymous"
+    uri         = "${var.endpoint}/cleanup/anonymous"
 
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
@@ -86,7 +96,7 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/bi"
+    uri         = "${var.endpoint}/bi"
 
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
@@ -97,7 +107,7 @@ resource "google_cloud_scheduler_job" "bi_and_retention_messaging" {
 resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
   service_account_id  = module.scheduled-services-sa.service_account.id
   role                = "roles/iam.serviceAccountUser"
-  member              = "serviceAccount:github-action-420733850@getbaselineapp.iam.gserviceaccount.com"
+  member              = "serviceAccount:${var.gh-actions-sa}@${var.project}.iam.gserviceaccount.com"
 }
 
 # Pub/Sub
@@ -109,9 +119,10 @@ resource "google_pubsub_subscription" "pubsub_trigger_cleanup_sub" {
   name  = "pubsub-trigger-cleanup-sub"
   topic = google_pubsub_topic.pubsub_trigger_cleanup.name
   push_config {
-    push_endpoint = "https://scheduled-services-lg27dbkpuq-uc.a.run.app/"
+    push_endpoint = "${var.endpoint}/messaging/removeUserNotifications"
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
+      audience = var.endpoint
     }
   }
 }

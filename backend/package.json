@@ -16,6 +16,7 @@
     "private": true,
     "type": "module",
     "dependencies": {
+        "@google-cloud/pubsub": "^3.2.1",
         "@googleapis/gmail": "^1.0.0",
         "@googleapis/sheets": "^4.0.0",
         "@sentry/node": "^7.20.0",

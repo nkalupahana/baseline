@@ -19,7 +19,8 @@ module "service-accounts" {
     "${var.project}=>roles/firebaseauth.admin",
     "${var.project}=>roles/firebasedatabase.admin",
     "${var.project}=>roles/storage.objectAdmin",
-    "${var.project}=>roles/secretmanager.secretAccessor"
+    "${var.project}=>roles/secretmanager.secretAccessor",
+    "${var.project}=>roles/pubsub.publisher"
   ]
 }
 
