@@ -13,8 +13,7 @@ import UnlockCmp from "../components/Settings/UnlockCmp";
 import { get, ref } from "firebase/database";
 import hash from "crypto-js/sha512";
 import "./Login.css";
-import MarketingBox from "../components/Login/MarketingBox";
-import { analytics, globeOutline, lockClosedOutline, logoApple, logoGoogle, pencilOutline } from "ionicons/icons";
+import { logoApple, logoGoogle } from "ionicons/icons";
 import Notifications from "./Notifications";
 import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
 import history from "../history";
@@ -282,35 +281,20 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     }
 
     return <div className="container inner-scroll">
-            <div className="column-flex text-center center-summary">
             { loginState === LoginStates.START && <>
-                <div className="title">Welcome to baseline.</div>
-                <div className="marketing">
-                    <MarketingBox 
-                        icon={pencilOutline} 
-                        title={"Understand your brain."}
-                        description={"Journaling on baseline is designed to help you understand yourself better. By mood tracking, you'll start to get a better feel for who you are and what you need to become healthier."} />
-                    <MarketingBox
-                        icon={analytics}
-                        title={"Track your progress."}
-                        description={"Use baseline's visualizations to help you better understand your mood over time. You'll also get a chance to review your progress and overall health 'baseline' at the end of each week."} />
-                    <MarketingBox 
-                        icon={lockClosedOutline} 
-                        title={"Protect your data."}
-                        description={"We encrypt your data so that not even we can see it. You can also set a passphrase in-app to hide your data from people who might have access to your device."} />
-                    <MarketingBox 
-                        icon={globeOutline} 
-                        title={"Access your journals anywhere."}
-                        description={<>All of your mood logs can be accessed at any time on { Capacitor.getPlatform() === "ios" ? <>your device,</> : <>iOS, Android,</> } and <a href="https://web.getbaseline.app" target="_blank" rel="noreferrer">online</a>.</>} />
+                <div className="column-flex text-center center-summary login-start">
+                    <div className="title">Welcome to baseline.</div>
+                    <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
+                    <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
+                    <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                    <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
+                        By logging in, you agree to 
+                        our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms of Use</a>&nbsp;
+                        and <a target="_blank" rel="noreferrer" href="https://getbaseline.app/privacy">Privacy Policy</a></p>
+                    <IonButton style={{"display": "none"}} mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>
                 </div>
-                <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
-                <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
-                <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
-                    By logging in, you agree to 
-                    our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms of Use</a>&nbsp;
-                    and <a target="_blank" rel="noreferrer" href="https://getbaseline.app/privacy">Privacy Policy</a></p>
-                <IonButton style={{"display": "none"}} mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>
             </> }
+            <div className="column-flex text-center center-summary">
             { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
                 <Preloader message="Logging in, please wait." />
                 <br />
