@@ -280,8 +280,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         setLoggingIn(false);
     }
 
+    const spacer = [LoginStates.START, LoginStates.LOGGING_IN, LoginStates.GETTING_CLOUDKIT, LoginStates.GETTING_KEYS].includes(loginState);
+
     return <div className="container inner-scroll">
-        <div className="column-flex text-center center-summary login-start">
+        <div className="column-flex text-center center-summary">
+            { spacer && <div style={{"height": "25vh"}}></div> }
             { loginState === LoginStates.START && <>
                 <div className="title">Welcome to baseline.</div>
                 <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
