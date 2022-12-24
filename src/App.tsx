@@ -98,7 +98,10 @@ const App = () => {
 
     return (
         <>
-            { loading && !keys && !mobileIntervention && <Preloader /> }
+            { loading && !keys && !mobileIntervention && <>
+                <div className="spacer"></div>
+                <Preloader spacing={false} />
+            </> }
             { !loading && !mobileIntervention && (!user || loggingIn) && <Login setLoggingIn={setLoggingIn}></Login> }
             { mobileIntervention && <div className="container center-summary">
                 <div className="title">One second!</div>

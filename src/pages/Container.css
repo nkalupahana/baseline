@@ -131,3 +131,7 @@
 .max-width-600 {
     max-width: 600px;
 }
+
+.spacer {
+    height: 25vh;
+}

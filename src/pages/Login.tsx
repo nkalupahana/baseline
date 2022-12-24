@@ -284,7 +284,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
 
     return <div className="container inner-scroll">
         <div className="column-flex text-center center-summary">
-            { spacer && <div style={{"height": "25vh"}}></div> }
+            { spacer && <div className="spacer"></div> }
             { loginState === LoginStates.START && <>
                 <div className="title">Welcome to baseline.</div>
                 <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
