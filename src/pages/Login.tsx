@@ -281,22 +281,20 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     }
 
     return <div className="container inner-scroll">
+        <div className="column-flex text-center center-summary login-start">
             { loginState === LoginStates.START && <>
-                <div className="column-flex text-center center-summary login-start">
-                    <div className="title">Welcome to baseline.</div>
-                    <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
-                    <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
-                    <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
-                    <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
-                        By logging in, you agree to 
-                        our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms of Use</a>&nbsp;
-                        and <a target="_blank" rel="noreferrer" href="https://getbaseline.app/privacy">Privacy Policy</a></p>
-                    <IonButton style={{"display": "none"}} mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>
-                </div>
+                <div className="title">Welcome to baseline.</div>
+                <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
+                <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
+                <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
+                    By logging in, you agree to 
+                    our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms of Use</a>&nbsp;
+                    and <a target="_blank" rel="noreferrer" href="https://getbaseline.app/privacy">Privacy Policy</a></p>
+                <IonButton style={{"display": "none"}} mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>
             </> }
-            <div className="column-flex text-center center-summary">
             { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
-                <Preloader message="Logging in, please wait." />
+                <Preloader spacing={false} message="Logging in, please wait." />
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
@@ -314,7 +312,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
             </> }
             { loginState === LoginStates.GETTING_KEYS && <>
-                <Preloader message="One moment! We're getting your encryption keys." />
+                <Preloader spacing={false} message="One moment! We're getting your encryption keys." />
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
