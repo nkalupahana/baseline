@@ -6,6 +6,11 @@
     margin-top: 30px;
 }
 
+.login-start {
+    height: 100%;
+    justify-items: center;
+}
+
 .login-button {
     width: 100%;
     max-width: 300px;
