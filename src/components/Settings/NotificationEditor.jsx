@@ -166,7 +166,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
     </> }
 
     { editing && <>
-        <IonDatetime presentation="time" value={time} onIonChange={e => setTime(e.detail.value)} />
+        <IonDatetime className="datetime-round" presentation="time" value={time} onIonChange={e => setTime(e.detail.value)} />
         <div className="weekday-selectors">
             { weekdaySelectors() }
         </div>

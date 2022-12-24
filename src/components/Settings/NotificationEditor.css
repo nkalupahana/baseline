@@ -31,3 +31,8 @@
     font-size: 24px;
     margin: 6px;
 }
+
+.datetime-round {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
