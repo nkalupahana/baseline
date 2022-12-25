@@ -14,11 +14,8 @@ import { get, ref } from "firebase/database";
 import hash from "crypto-js/sha512";
 import "./Login.css";
 import { logoApple, logoGoogle } from "ionicons/icons";
-import Notifications from "./Notifications";
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
 import history from "../history";
 import { DateTime } from "luxon";
-import { Device } from "@capacitor/device";
 
 enum LoginStates {
     START,
@@ -27,7 +24,6 @@ enum LoginStates {
     GETTING_CLOUDKIT,
     UNLOCK,
     GETTING_KEYS,
-    SET_NOTIFICATIONS,
     DELETE_ACCOUNT
 }
 
@@ -54,7 +50,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
     const [passphrase, setPassphrase] = useState("");
     const [deleting, setDeleting] = useState(false);
-    const [fcmLoading, setFcmLoading] = useState(false);
 
     useEffect(() => {
         ldb.logs.clear();
@@ -150,7 +145,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     encryptedKey,
                     encryptedKeyVisible,
                     additionalData
-                } = await keyResponse.json()
+                } = await keyResponse.json();
 
                 const data = JSON.stringify({
                     visibleKey,
@@ -176,15 +171,18 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 }
 
                 sessionStorage.removeItem("deleteAccount");
-                if (Capacitor.getPlatform() === "web") {
-                    await makeRequest("accounts/sync", auth.currentUser!, {
-                        offset: DateTime.now().offset,
-                    });
-                    setLoggingIn(false);
+                await makeRequest("accounts/sync", auth.currentUser!, {
+                    offset: DateTime.now().offset,
+                });
+                if (!additionalData.onboarded) {
+                    history.replace("/onboarding/start");
+                    
                 } else {
-                    setFcmLoading(false);
-                    setLoginState(LoginStates.SET_NOTIFICATIONS);
+                    history.replace("/journal");
                 }
+
+                setLoggingIn(false);
+                return;
             } else if (keyResponse?.status === 401) {
                 if (flowVal !== flow) return;
                 toast(await keyResponse.text());
@@ -263,23 +261,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         toast("Your account has been deleted.");
     }
 
-    const finishSignIn = async () => {
-        setFcmLoading(true);
-        try {
-            await FirebaseMessaging.requestPermissions();
-            const token = await FirebaseMessaging.getToken();
-            await makeRequest("accounts/sync", auth.currentUser!, {
-                offset: DateTime.now().offset,
-                fcmToken: token.token,
-                deviceId: (await Device.getId()).uuid,
-                utm_source: localStorage.getItem("utm_source"),
-                utm_campaign: localStorage.getItem("utm_campaign"),
-            });
-            await FirebaseMessaging.subscribeToTopic({ topic: "all" });
-        } catch {}
-        setLoggingIn(false);
-    }
-
     const spacer = [LoginStates.START, LoginStates.LOGGING_IN, LoginStates.GETTING_CLOUDKIT, LoginStates.GETTING_KEYS].includes(loginState);
 
     return <div className="container inner-scroll">
@@ -319,7 +300,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <br />
                 <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
-            { loginState === LoginStates.SET_NOTIFICATIONS && <Notifications page={false} fcmLoading={fcmLoading} finishSignIn={finishSignIn} /> }
             { loginState === LoginStates.DELETE_ACCOUNT && <div style={{"maxWidth": "500px"}}>
                 <div className="title">Delete Account?</div>
                 <p>
