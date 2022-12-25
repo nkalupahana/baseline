@@ -106,7 +106,6 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
                 visibleKey: respData["visibleKey"]["value"],
                 encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
             };
-            return;
         } else if (body.credential.providerId === "anonymous") {
             // Anonymous users shouldn't be signing in again!
             res.send(400);
