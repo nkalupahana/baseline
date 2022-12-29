@@ -19,7 +19,7 @@ enum Selection {
 const OnboardingMode = ({ user } : { user: User }) => {
     const [selection, setSelection] = useState<Selection>(Selection.STANDARD);
     const notSelected = {"border": "1px solid grey"};
-    const selected = {"border": "2px solid white"};
+    const selected = {"border": "2px solid var(--background-color-inverted)"};
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {

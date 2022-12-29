@@ -8,7 +8,6 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {  db } from "../../firebase";
 import history from "../../history";
-import EndSpacer from "../EndSpacer";
 import SettingsBox from "../Settings/SettingsBox";
 import StaticMoodLogCard, { SimpleLog } from "../Summary/StaticMoodLogCard";
 
@@ -67,70 +66,84 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
     }, [user, submitting]);
 
     return <div style={{"width": "100%"}}>
-        <div className="title">How to Journal</div>
-        <p className="margin-bottom-24">
-            baseline is different from "daily" journals in that it's specifically designed to 
-            capture how you're feeling <b>in the moment</b>, a few times a day. This might be
-            the first time you've tried something like this, but don't worry &mdash; journaling
-            is a skill, just like anything else, and there's no one right way to do it.
-        </p>
-        <p>
-            Now, sometimes, you might just want to write a sentence 
-            and be done. But most of the time, you should try to 
-            describe <b>what you've been doing</b>, <b>how you've been feeling</b>,
-            and <b>why you might be feeling that way.</b>
-        </p>
-        <p className="margin-bottom-0"><span className="line">Here are some examples of what</span> <span className="line">good entries look like:</span></p>
-        <Swiper
-            modules={[Pagination]}
-            navigation={true}
-            pagination={true}
-            style={{"textAlign": "initial", "maxWidth": "450px"}}
-            autoHeight={true}
-            loop={true}
-        >
-            { good.map(log => <SwiperSlide key={log.journal}>
-                <StaticMoodLogCard log={log} />
-                <div style={{"height": "30px"}}></div>
-            </SwiperSlide>) }
-        </Swiper>
-        <p>
-            Every entry covers what the person's been doing, how that made them feel, 
-            and some deeper reflection on it as needed.
-        </p>
-        <p className="margin-bottom-0">And here's what some bad entries look like:</p>
         <Swiper 
             modules={[Pagination]}
             navigation={true}
             pagination={true}
-            style={{"textAlign": "initial", "maxWidth": "450px"}}
-            autoHeight={true}
-            loop={true}
+            className="swiper-container-mod"
         >
-            { bad.map(log => <SwiperSlide key={log.journal}>
-                <StaticMoodLogCard log={log} />
-                <div style={{"height": "30px"}}></div>
-            </SwiperSlide>) }
+            <SwiperSlide>
+                <div className="title">How to Journal</div>
+                <p>Last stop on your onboarding journey &mdash; let's talk about what good journaling looks like.</p>
+            </SwiperSlide>
+            <SwiperSlide>
+                <p className="margin-bottom-24" style={{"fontSize": "1.2em"}}>
+                    baseline is different from "daily" journals in that it's specifically designed to 
+                    capture how you're feeling <b>in the moment</b>, a few times a day.
+                </p>
+                <p style={{"fontSize": "1.2em"}}>This might be
+                    the first time you've tried something like this, but don't worry &mdash; journaling
+                    is a skill, just like anything else, and there's no one right way to do it.</p>
+            </SwiperSlide>
+            <SwiperSlide>
+                <p>
+                    Now, sometimes, you might just want to write a sentence 
+                    and be done. But most of the time, you should try to 
+                    describe <b>what you've been doing</b>, <b>how you've been feeling</b>,
+                    and <b>why you might be feeling that way.</b>
+                </p>
+                <p className="margin-bottom-0"><span className="line">Here are some examples of what</span> <span className="line">good entries look like:</span></p>
+                <Swiper
+                    modules={[Pagination]}
+                    navigation={true}
+                    pagination={true}
+                    style={{"textAlign": "initial", "maxWidth": "450px"}}
+                    autoHeight={true}
+                    loop={true}
+                >
+                    { good.map(log => <SwiperSlide key={log.journal}>
+                        <StaticMoodLogCard log={log} />
+                        <div style={{"height": "30px"}}></div>
+                    </SwiperSlide>) }
+                </Swiper>
+                <p>
+                    Every entry covers what the person's been doing, how that made them feel, 
+                    and some deeper reflection on it as needed.
+                </p>
+                <p className="margin-bottom-0">And here's what some bad entries look like:</p>
+                <Swiper 
+                    modules={[Pagination]}
+                    navigation={true}
+                    pagination={true}
+                    style={{"textAlign": "initial", "maxWidth": "450px"}}
+                    autoHeight={true}
+                    loop={true}
+                >
+                    { bad.map(log => <SwiperSlide key={log.journal}>
+                        <StaticMoodLogCard log={log} />
+                        <div style={{"height": "30px"}}></div>
+                    </SwiperSlide>) }
+                </Swiper>
+                <p>
+                    These entries don't capture what was going on, and have no meaningful reflection. 
+                    Remember, the more reflection you do in the moment, the more you'll discover, and the more 
+                    context you add, the more you'll be able to remember when you look back on your entries!
+                </p>
+                { user && <div style={{"textAlign": "initial"}}>
+                    <SettingsBox
+                        attr="introQuestions"
+                        title="Not comfortable writing about yourself this much yet?"
+                        description="Get started with some practice prompts for the first few weeks."
+                        syncWithFirebase={`${user.uid}/onboarding/questions`}
+                    ></SettingsBox>
+                </div> }
+                <p>You can view this guide at any time in the main menu, and adjust your options in Settings.</p>
+                { user && <div style={{"maxWidth": "500px"}} className="finish-button" onClick={() => setSubmitting(true)}>
+                    { !submitting && <>Get Started</> }
+                    { submitting && <IonSpinner className="loader" name="crescent" /> }
+                </div> }
+            </SwiperSlide>
         </Swiper>
-        <p>
-            These entries don't capture what was going on, and have no meaningful reflection. 
-            Remember, the more reflection you do in the moment, the more you'll discover, and the more 
-            context you add, the more you'll be able to remember when you look back on your entries!
-        </p>
-        { user && <div style={{"textAlign": "initial"}}>
-            <SettingsBox
-                attr="introQuestions"
-                title="Not comfortable writing about yourself this much yet?"
-                description="Get started with some practice prompts for the first few weeks."
-                syncWithFirebase={`${user.uid}/onboarding/questions`}
-            ></SettingsBox>
-        </div> }
-        <p>You can view this guide at any time in the main menu, and adjust your options in Settings.</p>
-        { user && <div style={{"maxWidth": "500px"}} className="finish-button" onClick={() => setSubmitting(true)}>
-            { !submitting && <>Get Started</> }
-            { submitting && <IonSpinner className="loader" name="crescent" /> }
-        </div> }
-        <EndSpacer />
     </div>;
 }
 
