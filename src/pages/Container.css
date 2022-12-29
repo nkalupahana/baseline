@@ -135,3 +135,7 @@
 .spacer {
     height: 25vh;
 }
+
+.line {
+    display: inline-block;
+}

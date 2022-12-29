@@ -66,7 +66,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
         })();
     }, [user, submitting]);
 
-    return <div>
+    return <div style={{"width": "100%"}}>
         <div className="title">How to Journal</div>
         <p className="margin-bottom-24">
             baseline is different from "daily" journals in that it's specifically designed to 
@@ -78,10 +78,10 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
             Now, sometimes, you might just want to write a sentence 
             and be done. But most of the time, you should try to 
             describe <b>what you've been doing</b>, <b>how you've been feeling</b>,
-            and <b>why you might be feeling that way.</b> <br />Here are some examples of 
-            what good entries look like:
+            and <b>why you might be feeling that way.</b>
         </p>
-        <Swiper 
+        <p className="margin-bottom-0"><span className="line">Here are some examples of what</span> <span className="line">good entries look like:</span></p>
+        <Swiper
             modules={[Pagination]}
             navigation={true}
             pagination={true}
@@ -96,9 +96,9 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
         </Swiper>
         <p>
             Every entry covers what the person's been doing, how that made them feel, 
-            and some deeper reflection on it as needed.<br /> And here's what some bad entries look like:
-
+            and some deeper reflection on it as needed.
         </p>
+        <p className="margin-bottom-0">And here's what some bad entries look like:</p>
         <Swiper 
             modules={[Pagination]}
             navigation={true}
