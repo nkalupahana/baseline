@@ -25,7 +25,7 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
         } catch {}
         localStorage.setItem("onboarding", "howto");
-        history.replace("/onboarding/howto");
+        history.push("/onboarding/howto");
     }
 
     return <Notifications page={false} continueFlow={continueFlow} loadingFlow={loadingFlow} />

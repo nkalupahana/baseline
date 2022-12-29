@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import OnboardingHowToJournal from "../components/Onboarding/OnboardingHowToJournal";
 import OnboardingMode from "../components/Onboarding/OnboardingMode";
 import OnboardingNotifications from "../components/Onboarding/OnboardingNotifications";
+import OnboardingStart from "../components/Onboarding/OnboardingStart";
 import { auth } from "../firebase";
 
 const Onboarding = () => {
@@ -10,7 +11,10 @@ const Onboarding = () => {
 
     return <div className="container inner-scroll max-width-600">
         <div className="column-flex text-center center-summary">
-            <Route exact path="/onboarding/start">  
+            <Route exact path="/onboarding/start">
+                <OnboardingStart />
+            </Route>
+            <Route exact path="/onboarding/mode">  
                 <OnboardingMode user={user} />
             </Route>
             <Route exact path="/onboarding/notifications">
