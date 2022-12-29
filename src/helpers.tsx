@@ -218,7 +218,7 @@ export function setEkeys(keys: string, pwd: string) {
     localStorage.removeItem("keys");
 }
 
-export function setSettings(key: string, value: string) {
+export function setSettings(key: string, value: any) {
     let data = parseSettings();
     data[key] = value;
     localStorage.setItem("settings", JSON.stringify(data));

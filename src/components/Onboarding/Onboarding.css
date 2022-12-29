@@ -1,0 +1,7 @@
+.onboarding-box {
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    transition: border 0.2s ease;
+    margin: 0 auto;
+}

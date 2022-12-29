@@ -80,6 +80,11 @@ const App = () => {
         if (!keys) {
             signOutAndCleanUp();
         }
+
+        const onboarding = localStorage.getItem("onboarding");
+        if (onboarding) {
+            history.replace(`/onboarding/${onboarding}`);
+        }
     }, [keys]);
 
     const routes = [

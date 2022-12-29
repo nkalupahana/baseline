@@ -115,7 +115,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         let dataPromises = [
             db.ref(`${req.user!.user_id}/offline`).get(),
             db.ref(`${req.user!.user_id}/lastUpdated`).get(),
-            db.ref(`${req.user!.user_id}/onboarded`).get()
+            db.ref(`${req.user!.user_id}/onboarding/onboarded`).get()
         ];
     
         await Promise.all(dataPromises);
