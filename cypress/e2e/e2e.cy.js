@@ -67,7 +67,7 @@ describe("Mobile Flow", () => {
         cy.get(".finish-button").should("exist").click()
         
         cy.url().should("include", "/journal")
-    });
+    })
 
     it("Check Mobile Summary Page", () => {
         cy.get(".top-corner").should("have.length", 1).click()

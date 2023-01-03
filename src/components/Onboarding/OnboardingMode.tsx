@@ -41,7 +41,6 @@ const OnboardingMode = ({ user } : { user: User }) => {
                 history.push("/onboarding/howto");
             }
         })();
-
     }, [submitting, selection, user]);
 
     return <>

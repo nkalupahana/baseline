@@ -112,7 +112,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
             return;
         }
 
-        let dataPromises = [
+        const dataPromises = [
             db.ref(`${req.user!.user_id}/offline`).get(),
             db.ref(`${req.user!.user_id}/lastUpdated`).get(),
             db.ref(`${req.user!.user_id}/onboarding/onboarded`).get()
@@ -122,16 +122,13 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         let data = [];
         for (let promise of dataPromises) {
             data.push((await promise).val());
-        }
-
-        const offline = data[0];
-        const onboarded = (!!data[1]) || data[2]; 
+        } 
 
         res.send({
             ...keys,
             additionalData: {
-                offline,
-                onboarded
+                offline: data[0],
+                onboarded: ((!!data[1]) || data[2])
             }
         });
         return;
