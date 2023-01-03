@@ -93,7 +93,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     but don't worry &mdash; journaling is a skill, just like anything else, 
                     and there's no one right way to do it.
                 </p>
-                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.STEPS)}>Okay!</div>
+                <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.STEPS)}>Okay!</div>
                 <p>step 3 of 5</p>
             </> }
             { screen === Screens.STEPS && <>
@@ -107,7 +107,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     It might be tempting to just write a sentence and be done. Trust us,
                     writing with these questions in mind isn't much harder, and it's so much more rewarding.
                 </p>
-                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.GOOD)}>Makes sense.</div>
+                <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.GOOD)}>Makes sense.</div>
                 <p>step 3 of 5</p>
             </> }
             { screen === Screens.GOOD && <>
@@ -129,7 +129,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     Every entry covers what the person's been doing, how that made them feel, 
                     and some deeper reflection on it as needed.
                 </p>
-                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.BAD)}>Got it!</div>
+                <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.BAD)}>Got it!</div>
                 <p>step 4 of 5</p>
             </> }
             { screen === Screens.BAD && <>
@@ -154,7 +154,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     Remember, the more reflection you do in the moment, the more you'll discover. And the more 
                     context you add, the more you'll be able to remember when you look back on your entries!
                 </p>
-                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.OUTRO)}>Alright, I think I'm ready.</div>
+                <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.OUTRO)}>Alright, I think I'm ready.</div>
                 <p>step 5 of 5</p>
             </> }
             { screen === Screens.OUTRO && <>
@@ -174,7 +174,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     </div> }
                 </div>
                 
-                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
+                <div className="finish-button onboarding-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
                 <br />
             </> }
         </>;

@@ -18,7 +18,12 @@
 
 .indent-number {
     text-align: left;
-    margin-left: 50px;
-    text-indent: -50px;
+    margin-left: 52px;
+    text-indent: -52px;
     line-height: 5px;
+}
+
+.onboarding-button {
+    max-width: 400px;
+    margin-top: auto;
 }
