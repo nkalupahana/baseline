@@ -5,3 +5,20 @@
     transition: border 0.2s ease;
     margin: 0 auto;
 }
+
+.onboard-text {
+    font-size: 1.2em;
+}
+
+.align-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.indent-number {
+    text-align: left;
+    margin-left: 50px;
+    text-indent: -50px;
+    line-height: 5px;
+}

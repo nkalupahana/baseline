@@ -1,5 +1,4 @@
 import { set, ref } from "@firebase/database";
-import { IonSpinner } from "@ionic/react";
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "swiper";
@@ -53,8 +52,24 @@ const bad: SimpleLog[] = [
     }
 ];
 
+const generateNumber = (num: number) => {
+    return <><svg width="40" height="40" style={{"verticalAlign": "middle"}}>
+        <circle cx="20" cy="20" r="18" stroke="var(--background-color-inverted)" stroke-width="2" fill="transparent" />
+        <text fill="var(--background-color-inverted)" x="50%" y="50%" text-anchor="middle" alignment-baseline="central" font-size="20">{ num }</text>
+    </svg>&nbsp;&nbsp;</>
+}
+
+enum Screens {
+    INTRO,
+    STEPS,
+    GOOD,
+    BAD,
+    OUTRO
+}
+
 const OnboardingHowToJournal = ({ user } : { user: User }) => {
     const [submitting, setSubmitting] = useState(false);
+    const [screen, setScreen] = useState(Screens.INTRO);
 
     useEffect(() => {
         if (!user || !submitting) return;
@@ -65,39 +80,43 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
         })();
     }, [user, submitting]);
 
-    return <div style={{"width": "100%"}}>
-        <Swiper 
-            modules={[Pagination]}
-            navigation={true}
-            pagination={true}
-            className="swiper-container-mod"
-        >
-            <SwiperSlide>
-                <div className="title">How to Journal</div>
-                <p>Last stop on your onboarding journey &mdash; let's talk about what good journaling looks like.</p>
-            </SwiperSlide>
-            <SwiperSlide>
-                <p className="margin-bottom-24" style={{"fontSize": "1.2em"}}>
+    return <>
+            { (![Screens.GOOD, Screens.BAD].includes(screen)) && <div style={{"height": "5vh"}}></div> }
+            { screen === Screens.INTRO && <>
+                <p className="onboard-text margin-bottom-0">Last thing! Let's talk about what good journaling looks like.</p>
+                <p className="onboard-text margin-bottom-0">
                     baseline is different from "daily" journals in that it's specifically designed to 
-                    capture how you're feeling <b>in the moment</b>, a few times a day.
+                    capture how you're feeling <b>in the moment, a few times a day.</b>
                 </p>
-                <p style={{"fontSize": "1.2em"}}>This might be
-                    the first time you've tried something like this, but don't worry &mdash; journaling
-                    is a skill, just like anything else, and there's no one right way to do it.</p>
-            </SwiperSlide>
-            <SwiperSlide>
-                <p>
-                    Now, sometimes, you might just want to write a sentence 
-                    and be done. But most of the time, you should try to 
-                    describe <b>what you've been doing</b>, <b>how you've been feeling</b>,
-                    and <b>why you might be feeling that way.</b>
+                <p className="onboard-text margin-bottom-24">
+                    This might be the first time you've tried something like this, 
+                    but don't worry &mdash; journaling is a skill, just like anything else, 
+                    and there's no one right way to do it.
                 </p>
-                <p className="margin-bottom-0"><span className="line">Here are some examples of what</span> <span className="line">good entries look like:</span></p>
+                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.STEPS)}>Okay!</div>
+                <p>step 3 of 5</p>
+            </> }
+            { screen === Screens.STEPS && <>
+                <div className="align-box">
+                    <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry should aim to capture three things:</p>
+                    <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(1) } What have you been doing?</p>
+                    <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
+                    <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
+                </div>
+                <p className="onboard-text">
+                    It might be tempting to just write a sentence and be done. Trust us,
+                    writing with these questions in mind isn't much harder, and it's so much more rewarding.
+                </p>
+                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.GOOD)}>Makes sense.</div>
+                <p>step 3 of 5</p>
+            </> }
+            { screen === Screens.GOOD && <>
+                <p className="onboard-text">Here are some examples of what good entries look like:</p>
                 <Swiper
                     modules={[Pagination]}
                     navigation={true}
                     pagination={true}
-                    style={{"textAlign": "initial", "maxWidth": "450px"}}
+                    style={{"textAlign": "initial", "maxWidth": "450px", "width": "100%"}}
                     autoHeight={true}
                     loop={true}
                 >
@@ -106,16 +125,20 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                         <div style={{"height": "30px"}}></div>
                     </SwiperSlide>) }
                 </Swiper>
-                <p>
+                <p className="onboard-text">
                     Every entry covers what the person's been doing, how that made them feel, 
                     and some deeper reflection on it as needed.
                 </p>
-                <p className="margin-bottom-0">And here's what some bad entries look like:</p>
-                <Swiper 
+                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.BAD)}>Got it!</div>
+                <p>step 4 of 5</p>
+            </> }
+            { screen === Screens.BAD && <>
+                <p className="onboard-text">And here are some examples of what bad entries look like:</p>
+                <Swiper
                     modules={[Pagination]}
                     navigation={true}
                     pagination={true}
-                    style={{"textAlign": "initial", "maxWidth": "450px"}}
+                    style={{"textAlign": "initial", "maxWidth": "450px", "width": "100%"}}
                     autoHeight={true}
                     loop={true}
                 >
@@ -124,27 +147,37 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                         <div style={{"height": "30px"}}></div>
                     </SwiperSlide>) }
                 </Swiper>
-                <p>
-                    These entries don't capture what was going on, and have no meaningful reflection. 
-                    Remember, the more reflection you do in the moment, the more you'll discover, and the more 
+                <p className="onboard-text margin-bottom-0">
+                    These entries don't capture what was going on, and have no meaningful reflection.
+                </p>
+                <p className="onboard-text">
+                    Remember, the more reflection you do in the moment, the more you'll discover. And the more 
                     context you add, the more you'll be able to remember when you look back on your entries!
                 </p>
-                { user && <div style={{"textAlign": "initial"}}>
-                    <SettingsBox
-                        attr="introQuestions"
-                        title="Not comfortable writing about yourself this much yet?"
-                        description="Get started with some practice prompts for the first few weeks."
-                        syncWithFirebase={`${user.uid}/onboarding/questions`}
-                    ></SettingsBox>
-                </div> }
-                <p>You can view this guide at any time in the main menu, and adjust your options in Settings.</p>
-                { user && <div style={{"maxWidth": "500px"}} className="finish-button" onClick={() => setSubmitting(true)}>
-                    { !submitting && <>Get Started</> }
-                    { submitting && <IonSpinner className="loader" name="crescent" /> }
-                </div> }
-            </SwiperSlide>
-        </Swiper>
-    </div>;
+                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setScreen(Screens.OUTRO)}>Alright, I think I'm ready.</div>
+                <p>step 5 of 5</p>
+            </> }
+            { screen === Screens.OUTRO && <>
+                <div className="align-box">
+                    <p className="onboard-text margin-bottom-0">Don't forget!</p>
+                    <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(1) } What have you been doing?</p>
+                    <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
+                    <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
+                    <p className="onboard-text">Good luck! You're going to do great.</p>
+                    { user && <div style={{"textAlign": "initial"}}>
+                        <SettingsBox
+                            attr="introQuestions"
+                            title="Not comfortable writing about yourself this much yet?"
+                            description="Get started with some practice prompts for the first few weeks."
+                            syncWithFirebase={`${user.uid}/onboarding/questions`}
+                        ></SettingsBox>
+                    </div> }
+                </div>
+                
+                <div style={{"maxWidth": "400px", "marginTop": "auto"}} className="finish-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
+                <br />
+            </> }
+        </>;
 }
 
 export default OnboardingHowToJournal;

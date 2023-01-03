@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { setSettings } from "../../helpers";
 import history from "../../history";
-import EndSpacer from "../EndSpacer";
 import ThreeBox from "../ThreeBox";
 import "./Onboarding.css";
 
@@ -82,7 +81,7 @@ const OnboardingMode = ({ user } : { user: User }) => {
             { !submitting && <>Continue</> }
             { submitting && <IonSpinner className="loader" name="crescent" /> }
         </div> }
-        <EndSpacer />
+        <p style={{"marginTop": "auto"}}>step 1 of 5</p>
     </>;
 };
 

@@ -28,7 +28,10 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
         history.push("/onboarding/howto");
     }
 
-    return <Notifications page={false} continueFlow={continueFlow} loadingFlow={loadingFlow} />
+    return <>
+        <Notifications page={false} continueFlow={continueFlow} loadingFlow={loadingFlow} />
+        <p style={{"marginTop": "auto"}}>step 2 of 5</p>
+    </>;
 }
 
 export default OnboardingNotifications;

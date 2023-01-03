@@ -273,8 +273,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
                 <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
-                    <span className="line">By logging in, you agree to </span>
-                    <span className="line">our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms 
+                    <span className="line">By logging in, you agree 
+                    to</span> <span className="line">our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms 
                     of Use</a> and <a target="_blank" rel="noreferrer" href="https://getbaseline.app/privacy">Privacy Policy</a></span>
                 </p>
                 <IonButton style={{"display": "none"}} mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>

@@ -10,7 +10,7 @@ const Onboarding = () => {
     const [user] = useAuthState(auth);
 
     return <div className="container inner-scroll max-width-600">
-        <div className="column-flex text-center center-summary">
+        <div className="column-flex text-center center-summary" style={{"height": "100%"}}>
             <Route exact path="/onboarding/start">
                 <OnboardingStart />
             </Route>
