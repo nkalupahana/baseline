@@ -85,7 +85,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
             { screen === Screens.INTRO && <>
                 <p className="onboard-text margin-bottom-0">Last thing! Let's talk about what good journaling looks like.</p>
                 <p className="onboard-text margin-bottom-0">
-                    baseline is different from "daily" journals in that it's specifically designed to 
+                    baseline is a bit different from "daily" journals. It's specifically designed to 
                     capture how you're feeling <b>in the moment, a few times a day.</b>
                 </p>
                 <p className="onboard-text margin-bottom-24">
@@ -97,7 +97,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p>step 3 of 5</p>
             </> }
             { screen === Screens.STEPS && <>
-                <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry should aim to capture three things:</p>
+                <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry you write should aim to capture three things:</p>
                 <div className="align-box">
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(1) } What have you been doing?</p>
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
@@ -111,7 +111,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p>step 3 of 5</p>
             </> }
             { screen === Screens.GOOD && <>
-                <p className="onboard-text">Here are some examples of what good entries look like:</p>
+                <p className="onboard-text">Here are some examples of outstanding entries:</p>
                 <Swiper
                     modules={[Pagination]}
                     navigation={true}
@@ -133,7 +133,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p>step 4 of 5</p>
             </> }
             { screen === Screens.BAD && <>
-                <p className="onboard-text">And here are some examples of what bad entries look like:</p>
+                <p className="onboard-text">And here are some entries that could use a little more:</p>
                 <Swiper
                     modules={[Pagination]}
                     navigation={true}
@@ -148,7 +148,8 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     </SwiperSlide>) }
                 </Swiper>
                 <p className="onboard-text margin-bottom-0">
-                    These entries don't capture what was going on, and have no meaningful reflection.
+                    These entries don't answer the three questions. Some don't say what was 
+                    going on, and none of them have any sort of reflection.
                 </p>
                 <p className="onboard-text">
                     Remember, the more reflection you do in the moment, the more you'll discover. And the more 
