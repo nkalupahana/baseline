@@ -56,7 +56,7 @@ const generateNumber = (num: number) => {
     return <><svg width="40" height="40" style={{"verticalAlign": "middle"}}>
         <circle cx="20" cy="20" r="18" stroke="var(--background-color-inverted)" strokeWidth="2" fill="transparent" />
         <text fill="var(--background-color-inverted)" x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="20">{ num }</text>
-    </svg>&nbsp;&nbsp;</>
+    </svg>&nbsp;</>
 }
 
 enum Screens {
@@ -97,8 +97,8 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p>step 3 of 5</p>
             </> }
             { screen === Screens.STEPS && <>
+                <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry should aim to capture three things:</p>
                 <div className="align-box">
-                    <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry should aim to capture three things:</p>
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(1) } What have you been doing?</p>
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
                     <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
@@ -127,7 +127,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 </Swiper>
                 <p className="onboard-text">
                     Every entry covers what the person's been doing, how that made them feel, 
-                    and some deeper reflection on it as needed.
+                    and some deeper reflection as needed.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.BAD)}>Got it!</div>
                 <p>step 4 of 5</p>
