@@ -31,7 +31,7 @@ const SettingsBox = ({ title, description, attr, syncWithFirebase }: Props) => {
             })();
         } else {
             const settings = parseSettings();
-            setChecked(settings[attr]);
+            setChecked(settings[attr] ?? false);
         }
     }, [attr, syncWithFirebase]);
 

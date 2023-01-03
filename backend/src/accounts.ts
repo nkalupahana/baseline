@@ -125,11 +125,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         }
 
         const offline = data[0];
-        
-        let onboarded = false;
-        if (encryptionData) {
-            onboarded = (!!data[1]) || data[2]; 
-        }
+        const onboarded = (!!data[1]) || data[2]; 
 
         res.send({
             ...keys,
