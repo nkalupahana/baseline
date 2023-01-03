@@ -111,7 +111,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p>step 3 of 5</p>
             </> }
             { screen === Screens.GOOD && <>
-                <p className="onboard-text">Here are some examples of outstanding entries:</p>
+                <p className="onboard-text">Here are some examples of good entries:</p>
                 <Swiper
                     modules={[Pagination]}
                     navigation={true}
@@ -133,7 +133,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p>step 4 of 5</p>
             </> }
             { screen === Screens.BAD && <>
-                <p className="onboard-text">And here are some entries that could use a little more:</p>
+                <p className="onboard-text">And here are some entries that could use a little more work:</p>
                 <Swiper
                     modules={[Pagination]}
                     navigation={true}
@@ -152,7 +152,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     going on, and none of them have any sort of reflection.
                 </p>
                 <p className="onboard-text">
-                    Remember, the more reflection you do in the moment, the more you'll discover. And the more 
+                    Remember, the more reflection you do in the moment, the more you'll discover about yourself. And the more 
                     context you add, the more you'll be able to remember when you look back on your entries!
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.OUTRO)}>Alright, I think I'm ready.</div>

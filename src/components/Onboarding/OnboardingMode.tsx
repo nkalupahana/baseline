@@ -27,10 +27,10 @@ const OnboardingMode = ({ user } : { user: User }) => {
             const r = ref(db, `${user.uid}/onboarding/beginner`);
             if (selection === Selection.STANDARD) {
                 await set(r, serverTimestamp());
-                setSettings("beginner", String(Date.now()));
+                setSettings("beginner", Date.now());
             } else {
                 await remove(r);
-                setSettings("beginner", "");
+                setSettings("beginner", false);
             }
 
             if (Capacitor.getPlatform() !== "web") {
@@ -46,8 +46,8 @@ const OnboardingMode = ({ user } : { user: User }) => {
     return <>
         <div className="title">Already know how to journal?</div>
         <p className="margin-bottom-24">
-            baseline is designed to capture your mood <b>in 
-            the moment</b> a few times a day. If you haven't done journaling 
+            baseline is designed to capture your mood in 
+            the moment a few times a day. If you haven't done journaling 
             like this consistently before, we recommend sticking with Standard Mode.
         </p>
         <div style={{"width": "90%"}}>
