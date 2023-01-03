@@ -29,9 +29,45 @@ describe("Mobile Flow", () => {
         cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
-        cy.contains("What's happening").should("exist", { timeout: 16000 })
-        cy.get("body").happoScreenshot()
+        cy.contains("onboarding").should("exist", { timeout: 16000 })
     })
+
+    it("Goes Through Onboarding", () => {
+        cy.get("body").happoScreenshot()
+        cy.get(".finish-button").should("exist").click()
+        
+        cy.contains("Expert").should("exist").click()
+        cy.get("body").happoScreenshot()
+        cy.contains("recommended").should("exist").click()
+        cy.get(".finish-button").should("exist").click()
+
+        cy.contains("in the moment").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get(".finish-button").should("exist").click()
+
+        cy.contains("three things").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get(".finish-button").should("exist").click()
+
+        cy.contains("good").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get(".finish-button").should("exist").click()
+
+        cy.contains("ready").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get(".finish-button").should("exist").click()
+
+        cy.contains("Don't forget").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(0).click()
+        cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(0).click()
+        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
+        cy.get(".finish-button").should("exist").click()
+        
+        cy.url().should("include", "/journal")
+    });
 
     it("Check Mobile Summary Page", () => {
         cy.get(".top-corner").should("have.length", 1).click()
