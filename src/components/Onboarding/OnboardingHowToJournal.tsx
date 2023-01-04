@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {  db } from "../../firebase";
+import { parseSettings } from "../../helpers";
 import history from "../../history";
 import SettingsBox from "../Settings/SettingsBox";
 import StaticMoodLogCard, { SimpleLog } from "../Summary/StaticMoodLogCard";
@@ -68,6 +69,7 @@ enum Screens {
 }
 
 const OnboardingHowToJournal = ({ user } : { user: User }) => {
+    const settings = parseSettings();
     const [submitting, setSubmitting] = useState(false);
     const [screen, setScreen] = useState(Screens.INTRO);
 
@@ -165,7 +167,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
                     <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
                     <p className="onboard-text">Good luck! You're going to do great.</p>
-                    { user && <div style={{"textAlign": "initial"}}>
+                    { user && settings["beginner"] && <div style={{"textAlign": "initial"}}>
                         <SettingsBox
                             attr="introQuestions"
                             title="Not comfortable writing about yourself this much yet?"

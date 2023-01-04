@@ -174,12 +174,14 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 await makeRequest("accounts/sync", auth.currentUser!, {
                     offset: DateTime.now().offset,
                 });
+
                 if (!additionalData.onboarded) {
                     localStorage.setItem("onboarding", "start");
                     history.replace("/onboarding/start");
-                    
-                } else {
+                } else if (Capacitor.getPlatform() === "web") {
                     history.replace("/journal");
+                } else {
+                    history.replace("/onboarding/notifications");
                 }
 
                 setLoggingIn(false);

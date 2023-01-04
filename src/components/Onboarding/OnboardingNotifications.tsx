@@ -24,13 +24,17 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
             });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
         } catch {}
-        localStorage.setItem("onboarding", "howto");
-        history.push("/onboarding/howto");
+        if (localStorage.getItem("onboarding")) {
+            localStorage.setItem("onboarding", "howto");
+            history.push("/onboarding/howto");
+        } else {
+            history.replace("/journal");
+        }
     }
 
     return <>
         <Notifications page={false} continueFlow={continueFlow} loadingFlow={loadingFlow} />
-        <p style={{"marginTop": "auto"}}>step 2 of 5</p>
+        { localStorage.getItem("onboarding") && <p style={{"marginTop": "auto"}}>step 2 of 5</p> }
     </>;
 }
 

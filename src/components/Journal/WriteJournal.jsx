@@ -4,9 +4,10 @@ import history from "../../history";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
-import { decrypt, encrypt } from "../../helpers";
+import { decrypt, encrypt, parseSettings } from "../../helpers";
 
 const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
+    const settings = parseSettings();
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
@@ -43,7 +44,8 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
                 <div className="title">What's happening?</div>
-                <p className="text-center bold" onClick={next}>If you don't want to write right now, tap here to jump to mood logging.</p>
+                { !settings["beginner"] && <p className="text-center bold" onClick={next}>If you don't want to write right now, tap here to jump to mood logging.</p> }
+                { settings["beginner"] && <p className="text-center bold max-width-500">What have you been doing, how have you been feeling, and why do you think you're feeling that way?</p> }
                 <label data-value={props.text} className="input-sizer stacked">
                     <textarea ref={textarea} className="tx" value={props.text} onInput={e => setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
                 </label>
