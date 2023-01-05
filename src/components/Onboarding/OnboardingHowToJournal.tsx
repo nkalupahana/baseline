@@ -107,7 +107,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
                 </div>
                 <p className="onboard-text">
-                    It might be tempting to just write a sentence and be done. Trust us,
+                    It might be tempting to just write a sentence and be done. But trust us,
                     writing with these questions in mind isn't much harder, and it's so much more rewarding.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.GOOD)}>Makes sense.</div>
@@ -172,7 +172,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                         <SettingsBox
                             attr="introQuestions"
                             title="Not comfortable writing about yourself this much yet?"
-                            description="Get started with some practice prompts for the first few weeks. (Still in alpha, coming soon)"
+                            description="Get started with some practice prompts for the first few weeks. (Coming soon)"
                             syncWithFirebase={`${user.uid}/onboarding/questions`}
                         ></SettingsBox>
                     </div> }
