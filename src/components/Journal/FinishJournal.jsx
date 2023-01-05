@@ -215,9 +215,9 @@ const FinishJournal = props => {
             { dialog === Dialogs.NO_WRITING_BEGINNER && <Dialog title="One second!">
                 <p className="margin-top-12 margin-bottom-24 text-center">
                     We noticed you haven't written much in your last few 
-                    journal entries. Make sure you're writing about 
-                    <b>what you've been doing, how you've been feeling, 
-                    and why you might be feeling that way</b>. By doing this and writing more,
+                    journal entries. Make sure you're writing about <b>what 
+                    you've been doing, how you've been feeling, and why you 
+                    might be feeling that way</b>. By doing this and writing more,
                     you'll get more out of journaling, and you'll have more 
                     context when you look back on your entries later!
                     <br /><br />
