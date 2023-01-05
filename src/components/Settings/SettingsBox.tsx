@@ -10,29 +10,23 @@ interface Props {
     description: string;
     attr: string;
     syncWithFirebase?: string;
-    falseValue?: any;
-    trueSettingsValue?: () => any;
-    trueFirebaseValue?: () => any;
 }
 
 const SettingsBox = ({ 
         title, 
         description, 
         attr, 
-        syncWithFirebase, 
-        falseValue=false, 
-        trueSettingsValue=(() => true), 
-        trueFirebaseValue=(() => true) 
+        syncWithFirebase
     }: Props) => {
     const [checked, setChecked] = useState<boolean | undefined>(undefined);
     
     useEffect(() => {
         if (checked === undefined) return;
-        setSettings(attr, checked ? trueSettingsValue() : falseValue);
+        setSettings(attr, checked);
         if (syncWithFirebase) {
-            set(ref(db, syncWithFirebase), checked ? trueFirebaseValue() : falseValue);
+            set(ref(db, syncWithFirebase), checked);
         }
-    }, [checked, attr, syncWithFirebase, falseValue, trueSettingsValue, trueFirebaseValue]);
+    }, [checked, attr, syncWithFirebase]);
 
     useEffect(() => {
         if (syncWithFirebase) {

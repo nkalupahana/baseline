@@ -172,7 +172,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                         <SettingsBox
                             attr="introQuestions"
                             title="Not comfortable writing about yourself this much yet?"
-                            description="Get started with some practice prompts for the first few weeks."
+                            description="Get started with some practice prompts for the first few weeks. (Still in alpha, coming soon)"
                             syncWithFirebase={`${user.uid}/onboarding/questions`}
                         ></SettingsBox>
                     </div> }
