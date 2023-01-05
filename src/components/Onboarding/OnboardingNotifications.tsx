@@ -6,7 +6,6 @@ import { useState } from "react";
 import { makeRequest } from "../../helpers";
 import history from "../../history";
 import Notifications from "../../pages/Notifications";
-import EndSpacer from "../EndSpacer";
 
 const OnboardingNotifications = ({ user } : { user: User }) => {
     const [loadingFlow, setLoadingFlow] = useState(false);
