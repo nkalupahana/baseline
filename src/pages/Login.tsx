@@ -179,6 +179,9 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     localStorage.setItem("onboarding", "start");
                     history.replace("/onboarding/start");
                 } else if (Capacitor.getPlatform() === "web") {
+                    await makeRequest("accounts/sync", auth.currentUser!, {
+                        offset: DateTime.now().offset,
+                    });
                     history.replace("/journal");
                 } else {
                     history.replace("/onboarding/notifications");
