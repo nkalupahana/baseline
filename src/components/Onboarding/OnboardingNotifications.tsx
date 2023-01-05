@@ -6,6 +6,7 @@ import { useState } from "react";
 import { makeRequest } from "../../helpers";
 import history from "../../history";
 import Notifications from "../../pages/Notifications";
+import EndSpacer from "../EndSpacer";
 
 const OnboardingNotifications = ({ user } : { user: User }) => {
     const [loadingFlow, setLoadingFlow] = useState(false);
@@ -34,7 +35,7 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
 
     return <>
         <Notifications page={false} continueFlow={continueFlow} loadingFlow={loadingFlow} />
-        { localStorage.getItem("onboarding") && <p style={{"marginTop": "auto"}}>step 2 of 5</p> }
+        <p style={{"marginTop": "auto", "paddingTop": "12px"}}>{ localStorage.getItem("onboarding") && <>step 2 of 5</> }</p>
     </>;
 }
 

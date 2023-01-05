@@ -12,7 +12,7 @@ import { attach, closeOutline, trashOutline } from "ionicons/icons";
 import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
-import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
+import { BASE_URL, checkKeys, networkFailure, parseSettings, toast } from "../../helpers";
 import ldb from "../../db";
 import { RateApp } from "capacitor-rate-app";
 import Confetti from "react-confetti";
@@ -41,19 +41,34 @@ const FinishJournal = props => {
     
     useEffect(() => {
         if (!lastLogs || !lastAverageLogs) return;
+        
+        const settings = parseSettings();
+        if (settings["beginner"]) {
+            const lastLog = lastLogs.at(-1);
 
-        // Check if user hasn't written in a while
-        // Based on last five logs:
-        // - If they have less than 5, as long as they have at least two, just go off of that
-        // - If none of the last 2 - 5 or this one have text, show
-        let writtenAnything = props.text.length > 50;
-        for (let i = 0; (i < lastLogs.length && !writtenAnything); ++i) {
-            writtenAnything = (lastLogs[i].journal?.length > 50 || lastLogs[i].ejournal?.length > 278);
-        }
+            // Check if user hasn't written in a while -- beginner (standard) mode
+            // Based on last log and this one, if both have < 100 characters, show
+            let writtenAnything = props.text.length >= 100;
+            if (!writtenAnything && lastLog) writtenAnything = (lastLog.journal?.length >= 100 || lastLog.ejournal?.length >= 344);
 
-        if (!writtenAnything && lastLogs.length > 1 && checkPromptAllowed("noWriting", 5)) {
-            setDialog(Dialogs.NO_WRITING);
-            return;
+            if (!writtenAnything && lastLog && checkPromptAllowed("noWritingBeginner", 1)) {
+                setDialog(Dialogs.NO_WRITING_BEGINNER);
+                return;
+            }
+        } else {
+            // Check if user hasn't written in a while
+            // Based on last five logs:
+            // - If they have less than 5, as long as they have at least two, just go off of that
+            // - If none of the last 2 - 5 or this one have text, show
+            let writtenAnything = props.text.length > 50;
+            for (let i = 0; (i < lastLogs.length && !writtenAnything); ++i) {
+                writtenAnything = (lastLogs[i].journal?.length > 50 || lastLogs[i].ejournal?.length > 278);
+            }
+
+            if (!writtenAnything && lastLogs.length > 1 && checkPromptAllowed("noWriting", 5)) {
+                setDialog(Dialogs.NO_WRITING);
+                return;
+            }
         }
         
         // Check if user's scale is shifted 
@@ -196,7 +211,22 @@ const FinishJournal = props => {
                 </p>
                 <div className="finish-button" onClick={dismissDialog}>Sounds good!</div>
                 <br />
-            </Dialog>}
+            </Dialog> }
+            { dialog === Dialogs.NO_WRITING_BEGINNER && <Dialog title="One second!">
+                <p className="margin-top-12 margin-bottom-24 text-center">
+                    We noticed you haven't written much in your last few 
+                    journal entries. Make sure you're writing about 
+                    <b>what you've been doing, how you've been feeling, 
+                    and why you might be feeling that way</b>. By doing this and writing more,
+                    you'll get more out of journaling, and you'll have more 
+                    context when you look back on your entries later!
+                    <br /><br />
+                    For more tips, check out our <span onClick={() => history.push("/onboarding/howto")} className="fake-link">How to 
+                    Journal guide now</span> or later in the main menu.
+                </p>
+                <div className="finish-button" onClick={() => history.replace("/journal")}>Go back and write!</div>
+                <div className="finish-button secondary" onClick={dismissDialog}>Not now.</div>
+            </Dialog> }
             { props.moodWrite === 5 && submitting && <Confetti gravity={0.5} /> }
             <div className="container">
                 <div className="inner-scroll">
