@@ -1,4 +1,5 @@
 import { IonAlert, IonIcon, IonSpinner } from "@ionic/react";
+import { DataSnapshot, off, onValue, ref, serverTimestamp } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -6,7 +7,7 @@ import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
-import { auth, signOutAndCleanUp } from "../firebase";
+import { auth, db, signOutAndCleanUp } from "../firebase";
 import { checkKeys, goBackSafely, toast } from "../helpers";
 import history from "../history";
 
@@ -14,11 +15,29 @@ const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
     const [showKeys, setShowKeys] = useState(false);
     const [deleteAlert, setDeleteAlert] = useState(false);
+    const [beginnerMode, setBeginnerMode] = useState(false);
     const [user] = useAuthState(auth);
     const keys = checkKeys();
     useEffect(() => {
         if (localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd")) history.replace("/unlock");
     }, []);
+
+    useEffect(() => {
+        if (!user) return;
+        
+        const listener = (snap: DataSnapshot) => {
+            console.log(snap.val());
+            setBeginnerMode(snap.val());
+        };
+        const beginnerRef = ref(db, `/${user.uid}/onboarding/beginner`);
+        onValue(beginnerRef, listener, console.log);
+        console.log("registered")
+
+        return () => {
+            console.log("off");
+            off(beginnerRef, "value", listener);
+        };
+    }, [user]);
 
     return <div className="container">
         { !doingAsyncTask && <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
@@ -27,6 +46,21 @@ const Settings = () => {
             <div className="title">Settings</div>
             <br />
             <div style={{"maxWidth": "600px"}}>
+                { user && <SettingsBox 
+                    title="Standard Mode"
+                    attr="beginner"
+                    trueFirebaseValue={() => serverTimestamp()}
+                    trueSettingsValue={() => Date.now()}
+                    syncWithFirebase={`${user.uid}/onboarding/beginner`}
+                    description="Turn this on to get additional journaling support features for a few weeks."
+                /> }
+                { beginnerMode && user && <SettingsBox
+                        attr="introQuestions"
+                        title="Practice Prompts"
+                        description="Not comfortable writing about yourself? Enable practice prompts for a few weeks."
+                        syncWithFirebase={`${user.uid}/onboarding/questions`}
+                    ></SettingsBox> }
+                <div className="horizontal-line"></div>
                 <SettingsBox 
                     title="Reduce Motion"
                     attr="reduceMotion"

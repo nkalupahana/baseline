@@ -44,7 +44,7 @@
         ".read": true,
         "beginner": {
           ".write": true,
-          ".validate": "newData.isNumber() && newData.val() == now"
+          ".validate": "(newData.isNumber() && newData.val() == now) || newData.val() == false"
         },
         "questions": {
           ".write": true,

@@ -147,3 +147,9 @@
 .line {
     display: inline-block;
 }
+
+.horizontal-line {
+    background-color: var(--background-color-inverted);
+    height: 1px;
+    margin: 16px 0;
+}
