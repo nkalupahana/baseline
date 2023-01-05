@@ -45,7 +45,7 @@ const BeginnerModeSettings = ({ user } : { user: User }) => {
         { beginnerMode && <SettingsBox
             attr="introQuestions"
             title="Practice Prompts"
-            description="Not comfortable writing about yourself? Enable practice prompts for a few weeks. (Coming soon)"
+            description="Not comfortable writing about yourself this much yet? Enable practice prompts for a few weeks. (Coming soon)"
             syncWithFirebase={`${user.uid}/onboarding/questions`}
         ></SettingsBox> }
     </>
