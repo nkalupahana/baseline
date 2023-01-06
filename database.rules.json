@@ -6,6 +6,9 @@
       ".read": true,
       ".write": false
     },
+    "beginnerQuestions": {
+      ".read": true
+    },
     "$uid": {
       "logs": {
         ".read": "auth != null && auth.uid == $uid"
@@ -36,6 +39,21 @@
       },
       "gapFund": {
         ".read": "auth != null && auth.uid == $uid"
+      },
+      "onboarding": {
+        ".read": true,
+        "beginner": {
+          ".write": true,
+          ".validate": "(newData.isNumber() && newData.val() == now) || newData.val() == false"
+        },
+        "questions": {
+          ".write": true,
+          ".validate": "newData.isBoolean()"
+        },
+        "onboarded": {
+          ".write": true,
+          ".validate": "newData.isBoolean() && newData.val() == true"
+        }
       }
     }
   }

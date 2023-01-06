@@ -1,0 +1,35 @@
+.onboarding-box {
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    transition: border 0.2s ease;
+    margin: 0 auto;
+}
+
+.onboard-text {
+    font-size: 1.2em;
+}
+
+.align-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.indent-number {
+    text-align: left;
+    margin-left: 52px;
+    text-indent: -52px;
+    line-height: 5px;
+}
+
+.onboarding-button {
+    max-width: 400px;
+    margin-top: auto;
+}
+
+.onboarding-swiper {
+    text-align: initial;
+    max-width: 450px;
+    width: 100%;
+}

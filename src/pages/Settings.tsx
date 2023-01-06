@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
+import BeginnerModeSettings from "../components/Settings/BeginnerModeSettings";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
@@ -27,6 +28,8 @@ const Settings = () => {
             <div className="title">Settings</div>
             <br />
             <div style={{"maxWidth": "600px"}}>
+                <BeginnerModeSettings user={user} />
+                <div className="horizontal-line"></div>
                 <SettingsBox 
                     title="Reduce Motion"
                     attr="reduceMotion"

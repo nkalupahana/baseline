@@ -55,6 +55,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
     }
 
     if (encryptionData) {
+        let keys: any = {};
         if (body.credential.providerId === "google.com") {
             const response = await fetch(`https://www.googleapis.com/drive/v3/files/${encryptionData.id}?fields=properties`, {
                 headers: {
@@ -78,10 +79,8 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
                 return;
             }
 
-            const keys = respData["properties"];
+            keys = respData["properties"];
             keys["encryptedKeyVisible"] = AES.decrypt(keys["encryptedKey"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8);
-            res.send(keys);
-            return;
         } else if (body.credential.providerId === "apple.com") {
             const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
             const response = await fetch(url, {
@@ -102,17 +101,39 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
             }
 
             respData = respData["records"][0]["fields"];
-            res.send({
+            keys = {
                 encryptedKey: respData["encryptedKey"]["value"],
                 visibleKey: respData["visibleKey"]["value"],
                 encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
-            });
-            return;
+            };
         } else if (body.credential.providerId === "anonymous") {
             // Anonymous users shouldn't be signing in again!
             res.send(400);
             return;
         }
+
+        const dataPromises = [
+            db.ref(`${req.user!.user_id}/offline`).get(),
+            db.ref(`${req.user!.user_id}/lastUpdated`).get(),
+            db.ref(`${req.user!.user_id}/onboarding`).get()
+        ];
+    
+        await Promise.all(dataPromises);
+        let data = [];
+        for (let promise of dataPromises) {
+            data.push((await promise).val());
+        }
+
+        res.send({
+            ...keys,
+            additionalData: {
+                offline: data[0],
+                onboarded: ((!!data[1]) || data[2]?.onboarded),
+                beginner: data[2]?.beginner ?? 0,
+                introQuestions: !!(data[2]?.questions)
+            }
+        });
+        return;
     }
 
     const visibleKey = random({length: 32, type: "url-safe"});
@@ -194,14 +215,13 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         id
     });
 
-    const offline = (await db.ref(`${req.user!.user_id}/offline`).get()).val()
-
     res.send({
         visibleKey,
         encryptedKey,
         encryptedKeyVisible,
         additionalData: {
-            offline
+            offline: null,
+            onboarded: false
         }
     });
 };

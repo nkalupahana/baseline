@@ -128,10 +128,29 @@
     font-size: 12px;
 }
 
+.max-width-500 {
+    max-width: 500px;
+}
+
 .max-width-600 {
     max-width: 600px;
 }
 
 .spacer {
     height: 25vh;
+}
+
+.spacer-35 {
+    height: 35vh;
+}
+
+.line {
+    display: inline-block;
+}
+
+.horizontal-line {
+    background-color: var(--background-color-inverted);
+    height: 1px;
+    margin-top: 16px;
+    margin-bottom: 24px;
 }

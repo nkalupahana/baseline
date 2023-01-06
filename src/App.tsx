@@ -47,6 +47,7 @@ import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
 import { App as CapacitorApp } from "@capacitor/app";
 import LastWeekInReview from "./pages/LastWeekInReview";
+import Onboarding from "./pages/Onboarding";
 
 CapacitorApp.addListener("appUrlOpen", data => {
     try {
@@ -78,6 +79,11 @@ const App = () => {
         smoothscroll.polyfill();
         if (!keys) {
             signOutAndCleanUp();
+        } else {
+            const onboarding = localStorage.getItem("onboarding");
+            if (onboarding) {
+                history.replace(`/onboarding/${onboarding}`);
+            }
         }
     }, [keys]);
 
@@ -94,6 +100,7 @@ const App = () => {
         { path: "/gethelp", Component: GetHelp },
         { path: "/rsummary", Component: RSummary },
         { path: "/surveys", Component: SurveyResults },
+        { path: "/onboarding", Component: Onboarding }
     ];
 
     return (

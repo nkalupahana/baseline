@@ -54,7 +54,7 @@ enum NotificationsAllowed {
     ALLOWED
 }
 
-const Notifications = ({ page=true, finishSignIn, fcmLoading } : { page?: boolean, fcmLoading?: boolean, finishSignIn?: () => void }) => {
+const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boolean, loadingFlow?: boolean, continueFlow?: () => void }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(NotificationsAllowed.NEED_TO_ASK);
     const [notificationData, setNotificationData] = useState({});
     const [globalEditing, setGlobalEditing] = useState(false);
@@ -99,7 +99,7 @@ const Notifications = ({ page=true, finishSignIn, fcmLoading } : { page?: boolea
             <div className={`container ${page ? "center-journal" : "center-notifications"}`}>
                 <div className="title">Notifications</div>
                 <p className="text-center margin-bottom-0">Notifications are a great way to ensure you mood log consistently, so you can build up an accurate picture of your mood over time.</p>
-                <p className="text-center">We recommend setting at least two per day, especially if you're just getting started and need reminders.</p>
+                <p className="text-center">We recommend setting <b>two to four per day</b>, especially if you're just getting started and need reminders.</p>
                 { Capacitor.getPlatform() !== "web" && notificationsEnabled !== NotificationsAllowed.DENIED && 
                     <>
                         { notificationList(notificationData, globalEditing, setGlobalEditing) }
@@ -130,9 +130,9 @@ const Notifications = ({ page=true, finishSignIn, fcmLoading } : { page?: boolea
             </div>
             { !page && !globalEditing && <>
                 <br />
-                <div onClick={finishSignIn} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>
-                    { !fcmLoading && <>All done!</> }
-                    { fcmLoading && <IonSpinner className="loader" name="crescent" /> }
+                <div onClick={continueFlow} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>
+                    { !loadingFlow && <>All done!</> }
+                    { loadingFlow && <IonSpinner className="loader" name="crescent" /> }
                 </div>
             </> }
             { page && <EndSpacer /> }
