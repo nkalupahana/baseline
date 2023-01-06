@@ -204,3 +204,10 @@
         font-size: 1.3em;
     }
 }
+
+.meta-mountaineers-token {
+    height: 30px;
+    width: 30px;
+    margin-top: 8px;
+    margin-left: 18px;
+}
