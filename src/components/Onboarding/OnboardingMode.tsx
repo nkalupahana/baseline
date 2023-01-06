@@ -44,7 +44,7 @@ const OnboardingMode = ({ user } : { user: User }) => {
     }, [submitting, selection, user]);
 
     return <>
-        <div className="title">Already know how to journal?</div>
+        <div className="title">New to journaling?</div>
         <p className="margin-bottom-24">
             baseline is designed to capture your mood in 
             the moment a few times a day. If you haven't done journaling 
@@ -59,7 +59,7 @@ const OnboardingMode = ({ user } : { user: User }) => {
                 <ThreeBox 
                     icon={colorWandOutline} 
                     title={"Standard (recommended)"} 
-                    description={"New to journaling in general, or this type of journaling? Get some extra support for your first few weeks."}
+                    description={"New to this type of journaling? Get some extra support for your first few weeks."}
                 />
             </div>
             <br />
