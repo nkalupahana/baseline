@@ -120,14 +120,48 @@ describe("Mobile Flow", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
     })
 
+    it("Test Beginner Mode Dialog", () => {
+        cy.get(".fab-button-close-active").should("exist").click()
+        cy.contains("What's happening").should("exist")
+        cy.contains("feel").should("exist")
+        cy.get("textarea").should("exist").focus().clear().type(`Bad beginner`).should("have.value", `Bad beginner`)
+        cy.contains("Continue").should("exist").click()
+
+        cy.get(".dialog-background").should("exist").happoScreenshot()
+        cy.contains("Go back and write").click()
+        cy.get("textarea").should("exist").should("have.value", `Bad beginner`)
+        cy.contains("Continue").should("exist").click()
+        cy.contains("Done!").should("exist").click()
+        cy.url().should("include", "/summary")
+        cy.contains(`Bad beginner`).should("exist")
+    })
+
+    it("Turn off Beginner Mode", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        cy.contains("Reduce Motion").should("exist")
+        cy.get(".settings-box-grid").eq(0).happoScreenshot()
+        cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(0).click()
+        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(0).happoScreenshot()
+
+        cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
+
+        cy.wait(WAIT_FOR_CONSISTENCY)
+    })
+
     it("Log a Few More Times and test FinishJournal Dialogs", () => {
         for (let i = 0; i < 12; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
+            cy.contains("tap here").should("exist")
             cy.get("textarea").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
 
-            if (i === 1) {
+            if (i === 0) {
                 cy.get(".dialog-background").should("exist").happoScreenshot()
                 cy.contains("Go back and write").click()
                 cy.get("textarea").should("exist").should("have.value", `Test ${i}`)
@@ -266,11 +300,11 @@ describe("Desktop Flow", () => {
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         cy.contains("Skip").should("exist")
-        cy.get(".settings-box-grid").eq(1).happoScreenshot()
-        cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(1).click()
-        cy.get("ion-toggle").eq(1).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+        cy.get(".settings-box-grid").eq(2).happoScreenshot()
+        cy.get("ion-toggle").eq(2).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(2).click()
+        cy.get("ion-toggle").eq(2).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(2).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
@@ -378,11 +412,11 @@ describe("Desktop Flow", () => {
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         cy.contains("Skip").should("exist")
-        cy.get(".settings-box-grid").eq(2).happoScreenshot()
-        cy.get("ion-toggle").eq(2).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(2).click()
-        cy.get("ion-toggle").eq(2).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(2).happoScreenshot()
+        cy.get(".settings-box-grid").eq(3).happoScreenshot()
+        cy.get("ion-toggle").eq(3).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(3).click()
+        cy.get("ion-toggle").eq(3).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(3).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
@@ -471,11 +505,11 @@ describe("Test Settings", () => {
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         cy.contains("Reduce Motion").should("exist")
-        cy.get(".settings-box-grid").eq(0).happoScreenshot()
-        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(0).click()
-        cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(0).happoScreenshot()
+        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+        cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(1).click()
+        cy.get("ion-toggle").eq(1).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(1).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
