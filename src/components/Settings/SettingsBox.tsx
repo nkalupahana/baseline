@@ -32,11 +32,11 @@ const SettingsBox = ({
         if (syncWithFirebase) {
             (async () => {
                 const v = await get(ref(db, syncWithFirebase));
-                setChecked(!!v.val() ?? false);
+                setChecked(!!v.val());
             })();
         } else {
             const settings = parseSettings();
-            setChecked(!!settings[attr] ?? false);
+            setChecked(!!settings[attr]);
         }
     }, [attr, syncWithFirebase]);
 
