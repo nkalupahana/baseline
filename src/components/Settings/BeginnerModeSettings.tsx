@@ -13,7 +13,7 @@ const BeginnerModeSettings = ({ user } : { user: User }) => {
         if (!user) return;
         (async () => {
             const snap = await get(ref(db, `/${user.uid}/onboarding/beginner`));
-            setBeginnerMode(!!snap.val() ?? false);
+            setBeginnerMode(!!snap.val());
             setSettings("beginner", snap.val() ?? 0);
         })();
     }, [user]);
