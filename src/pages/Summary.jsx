@@ -47,6 +47,7 @@ const Summary = () => {
     const logsQuery = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
     const [logs, setLogs] = useState([]);
     const [searchMode, setSearchMode] = useState(false);
+    const [showToken, setShowToken] = useState(false);
 
     useEffect(() => {
         if (Capacitor.getPlatform() !== "web") FirebaseMessaging.subscribeToTopic({ topic: "all" });
@@ -169,6 +170,12 @@ const Summary = () => {
         }
     }, [logsQuery]);
 
+    useEffect(() => {
+        (async () => {
+            setShowToken((await get(ref(db, "/config/tokenEnabled"))).val())
+        })();
+    }, []);
+
     return (
         <div>
             <div id="mainContent">
@@ -243,6 +250,7 @@ const Summary = () => {
                             <IonIcon icon={helpBuoyOutline} slot="start" />
                             <IonLabel>Get Help</IonLabel>
                         </IonItem>
+                        { showToken && <img alt="Meta Mountianeers premint" onClick={() => window.open("https://www.premint.xyz/mountaineers-x-baseline/")} className="meta-mountaineers-token" src={"images/token1_gold_big.PNG"} /> }
                         <IonItem className="move-rest-down" onClick={() => history.push("/settings")} mode="ios">
                             <IonIcon icon={cogOutline} slot="start" />
                             <IonLabel>Settings</IonLabel>
