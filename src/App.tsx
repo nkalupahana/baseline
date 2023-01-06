@@ -79,11 +79,11 @@ const App = () => {
         smoothscroll.polyfill();
         if (!keys) {
             signOutAndCleanUp();
-        }
-
-        const onboarding = localStorage.getItem("onboarding");
-        if (onboarding) {
-            history.replace(`/onboarding/${onboarding}`);
+        } else {
+            const onboarding = localStorage.getItem("onboarding");
+            if (onboarding) {
+                history.replace(`/onboarding/${onboarding}`);
+            }
         }
     }, [keys]);
 

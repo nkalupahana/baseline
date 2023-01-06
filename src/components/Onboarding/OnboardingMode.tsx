@@ -76,7 +76,7 @@ const OnboardingMode = ({ user } : { user: User }) => {
             </div>
             <br />
         </div>
-        { selection !== undefined && user && <div style={{"maxWidth": "500px"}} className="finish-button" onClick={() => setSubmitting(true)}>
+        { selection !== undefined && user && <div className="finish-button max-width-500" onClick={() => setSubmitting(true)}>
             { !submitting && <>Continue</> }
             { submitting && <IonSpinner className="loader" name="crescent" /> }
         </div> }

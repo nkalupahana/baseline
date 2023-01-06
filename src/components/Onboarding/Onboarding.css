@@ -27,3 +27,9 @@
     max-width: 400px;
     margin-top: auto;
 }
+
+.onboarding-swiper {
+    text-align: initial;
+    max-width: 450px;
+    width: 100%;
+}

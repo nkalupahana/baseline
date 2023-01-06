@@ -117,9 +117,9 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p className="onboard-text">Here are some examples of good entries:</p>
                 <Swiper
                     modules={[Pagination]}
+                    className="onboarding-swiper"
                     navigation={true}
                     pagination={true}
-                    style={{"textAlign": "initial", "maxWidth": "450px", "width": "100%"}}
                     autoHeight={true}
                     loop={true}
                 >
@@ -139,9 +139,9 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <p className="onboard-text">And here are some entries that could use a little more work:</p>
                 <Swiper
                     modules={[Pagination]}
+                    className="onboarding-swiper"
                     navigation={true}
                     pagination={true}
-                    style={{"textAlign": "initial", "maxWidth": "450px", "width": "100%"}}
                     autoHeight={true}
                     loop={true}
                 >
