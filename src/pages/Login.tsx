@@ -175,6 +175,9 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     offset: DateTime.now().offset,
                 });
 
+                if (additionalData.beginner) setSettings("beginner", additionalData.beginner);
+                if (additionalData.introQuestions) setSettings("introQuestions", additionalData.introQuestions);
+
                 if (!additionalData.onboarded) {
                     localStorage.setItem("onboarding", "start");
                     history.replace("/onboarding/start");

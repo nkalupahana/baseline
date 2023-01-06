@@ -115,20 +115,22 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         const dataPromises = [
             db.ref(`${req.user!.user_id}/offline`).get(),
             db.ref(`${req.user!.user_id}/lastUpdated`).get(),
-            db.ref(`${req.user!.user_id}/onboarding/onboarded`).get()
+            db.ref(`${req.user!.user_id}/onboarding`).get()
         ];
     
         await Promise.all(dataPromises);
         let data = [];
         for (let promise of dataPromises) {
             data.push((await promise).val());
-        } 
+        }
 
         res.send({
             ...keys,
             additionalData: {
                 offline: data[0],
-                onboarded: ((!!data[1]) || data[2])
+                onboarded: ((!!data[1]) || data[2]?.onboarded),
+                beginner: data[2]?.beginner ?? 0,
+                introQuestions: !!(data[2]?.questions)
             }
         });
         return;
