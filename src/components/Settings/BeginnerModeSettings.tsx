@@ -32,12 +32,15 @@ const BeginnerModeSettings = ({ user } : { user: User }) => {
     
     return <>
         { beginnerMode !== undefined && <div className="settings-box-grid">
-            <p className="bold margin-bottom-0 margin-top-8" style={{"gridArea": "title"}}>Standard Mode</p>
+            <p className="bold margin-bottom-0 margin-top-8" style={{"gridArea": "title"}}>Standard (Onboarding) Mode</p>
             <IonToggle style={{"gridArea": "toggle"}} checked={beginnerMode} onIonChange={e => {
                 updateBeginnerMode(e.detail.checked);
                 setBeginnerMode(e.detail.checked);
             }} />
-            <p style={{"gridAutoColumns": "description"}}>Turn this on to get additional journaling support features for a few weeks.</p>
+            <p style={{"gridAutoColumns": "description"}}>
+                Turn this on to get additional journaling support 
+                features for a few weeks. This will automatically turn off.
+            </p>
         </div> }
         { beginnerMode === undefined && <div className="text-center" style={{"width": "100%"}}>
             <IonSpinner className="loader" name="crescent" />
