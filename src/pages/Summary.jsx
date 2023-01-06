@@ -250,7 +250,7 @@ const Summary = () => {
                             <IonIcon icon={helpBuoyOutline} slot="start" />
                             <IonLabel>Get Help</IonLabel>
                         </IonItem>
-                        { showToken && <img alt="Meta Mountianeers premint" onClick={() => window.open("https://www.premint.xyz/mountaineers-x-baseline/")} className="meta-mountaineers-token" src={"images/token1_gold_big.PNG"} /> }
+                        { showToken && <img alt="Meta Mountianeers premint" onClick={() => window.open("https://www.premint.xyz/mountaineers-x-baseline/", "premint", "noopener")} className="meta-mountaineers-token" src={"images/token1_gold_big.PNG"} /> }
                         <IonItem className="move-rest-down" onClick={() => history.push("/settings")} mode="ios">
                             <IonIcon icon={cogOutline} slot="start" />
                             <IonLabel>Settings</IonLabel>
