@@ -140,7 +140,7 @@ describe("Mobile Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains("Standard Mode").should("exist")
+        cy.contains("Standard (Onboarding) Mode").should("exist")
         cy.get(".settings-box-grid").eq(0).happoScreenshot()
         cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
         cy.get("ion-toggle").eq(0).click()
