@@ -140,7 +140,7 @@ describe("Mobile Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains("Reduce Motion").should("exist")
+        cy.contains("Standard Mode").should("exist")
         cy.get(".settings-box-grid").eq(0).happoScreenshot()
         cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
         cy.get("ion-toggle").eq(0).click()
@@ -149,8 +149,7 @@ describe("Mobile Flow", () => {
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
-
-        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.reload()
     })
 
     it("Log a Few More Times and test FinishJournal Dialogs", () => {
@@ -166,7 +165,7 @@ describe("Mobile Flow", () => {
                 cy.contains("Go back and write").click()
                 cy.get("textarea").should("exist").should("have.value", `Test ${i}`)
                 cy.contains("Continue").should("exist").click()
-            } else if (i === 10) {
+            } else if (i === 9) {
                 cy.get(".dialog-background").should("exist").happoScreenshot()
                 cy.contains("Before you continue")
                 cy.contains("Sounds good").should("exist").click()
