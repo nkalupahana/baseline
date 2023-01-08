@@ -164,6 +164,7 @@ jobs:
         brew install fastlane
         cd ios/App
         echo "$APP_STORE_CONNECT_KEY" > authkey.json
+        sudo xcode-select -s /Applications/Xcode_14.2.app
         fastlane beta
       env:
         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}

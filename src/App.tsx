@@ -47,6 +47,7 @@ import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
+import * as Sentry from "@sentry/react";
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -62,6 +63,13 @@ const App = () => {
         localStorage.setItem("mobileOverride", "true");
         window.location.reload();
     };
+
+    useEffect(() => {
+        if (!user) return;
+        Sentry.setUser({
+            id: user.uid
+        });
+    }, [user]);
 
     useEffect(() => {
         smoothscroll.polyfill();

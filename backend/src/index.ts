@@ -33,6 +33,9 @@ app.use(async (req: UserRequest, res, next) => {
     
     await validateAuth(req, res);
     if (req.user && await checkQuota(req, res)) {
+        Sentry.setUser({
+            id: req.user.uid
+        });
         next();
     }
 });
