@@ -141,11 +141,7 @@ jobs:
       run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}, msg ${COMMIT_MSG}" https://deploygate.com/api/users/nkalupahana/apps
 
   ios:
-    needs: frontend
     runs-on: macos-latest
-    concurrency:
-      group: "ios"
-      cancel-in-progress: true
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js 16
