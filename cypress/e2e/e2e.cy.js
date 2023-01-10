@@ -35,6 +35,7 @@ describe("Mobile Flow", () => {
     })
 
     it("Goes Through Onboarding", () => {
+        cy.contains("Welcome to baseline")
         cy.get("body").happoScreenshot()
         cy.get(".finish-button").should("exist").click()
         
