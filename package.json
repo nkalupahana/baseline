@@ -45,7 +45,7 @@
     "fuse.js": "^6.6.2",
     "ionicons": "^5.4.0",
     "lodash": "^4.17.21",
-    "luxon": "^2.0.2",
+    "luxon": "^2.5.2",
     "react": "^17.0.1",
     "react-confetti": "^6.1.0",
     "react-device-detect": "^2.2.2",
