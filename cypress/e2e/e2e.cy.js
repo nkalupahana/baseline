@@ -8,6 +8,8 @@ import { DateTime } from "luxon"
 // everything is okay before continuing
 const WAIT_FOR_CONSISTENCY = 4000;
 
+const ONBOARDING_SETTINGS = "Standard (Onboarding) Mode";
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -59,11 +61,11 @@ describe("Mobile Flow", () => {
 
         cy.contains("Don't forget").should("exist")
         cy.get("body").happoScreenshot()
-        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(0).click()
-        cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(0).click()
-        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").should("have.length", 1).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").click()
+        cy.get("ion-toggle").should("have.class", "toggle-checked")
+        cy.get("ion-toggle").click()
+        cy.get("ion-toggle").should("not.have.class", "toggle-checked")
         cy.get(".finish-button").should("exist").click()
         
         cy.url().should("include", "/journal")
@@ -140,7 +142,7 @@ describe("Mobile Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains("Standard (Onboarding) Mode").should("exist")
+        cy.contains(ONBOARDING_SETTINGS).should("exist")
         cy.get(".settings-box-grid").eq(0).happoScreenshot()
         cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
         cy.get("ion-toggle").eq(0).click()
@@ -298,6 +300,7 @@ describe("Desktop Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
+        cy.contains(ONBOARDING_SETTINGS).should("exist")
         cy.contains("Skip").should("exist")
         cy.get(".settings-box-grid").eq(2).happoScreenshot()
         cy.get("ion-toggle").eq(2).should("not.have.class", "toggle-checked")
@@ -410,6 +413,7 @@ describe("Desktop Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
+        cy.contains(ONBOARDING_SETTINGS).should("exist")
         cy.contains("Skip").should("exist")
         cy.get(".settings-box-grid").eq(3).happoScreenshot()
         cy.get("ion-toggle").eq(3).should("not.have.class", "toggle-checked")
@@ -503,6 +507,7 @@ describe("Test Settings", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
+        cy.contains(ONBOARDING_SETTINGS).should("exist")
         cy.contains("Reduce Motion").should("exist")
         cy.get(".settings-box-grid").eq(1).happoScreenshot()
         cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
