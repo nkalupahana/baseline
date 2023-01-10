@@ -44,7 +44,7 @@ describe("Mobile Flow", () => {
         cy.contains("recommended").should("exist").click()
         cy.get(".finish-button").should("exist").click()
 
-        cy.contains("in the moment").should("exist")
+        cy.contains("journaling is a skill").should("exist")
         cy.get("body").happoScreenshot()
         cy.get(".finish-button").should("exist").click()
 
@@ -61,8 +61,8 @@ describe("Mobile Flow", () => {
         cy.get(".finish-button").should("exist").click()
 
         cy.contains("Don't forget").should("exist")
-        cy.get("body").happoScreenshot()
         cy.get("ion-toggle").should("have.length", 1).should("not.have.class", "toggle-checked")
+        cy.get("body").happoScreenshot()
         cy.get("ion-toggle").click()
         cy.get("ion-toggle").should("have.class", "toggle-checked")
         cy.get("ion-toggle").click()
