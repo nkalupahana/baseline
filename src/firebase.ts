@@ -55,8 +55,8 @@ export const signOutAndCleanUp = () => {
     });
     // Clean up FCM
     if (Capacitor.getPlatform() !== "web") {
-        FirebaseMessaging.unsubscribeFromTopic({ topic: "all" });
-        FirebaseMessaging.deleteToken();
+        FirebaseMessaging.unsubscribeFromTopic({ topic: "all" }).catch(e => console.warn(e));
+        FirebaseMessaging.deleteToken().catch(e => console.warn(e));
     }
     // Remove keys from store
     localStorage.removeItem("keys");

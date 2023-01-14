@@ -44,7 +44,7 @@ const FinishJournal = props => {
         
         const settings = parseSettings();
         if (settings["beginner"]) {
-            const lastLog = lastLogs.at(-1);
+            const lastLog = lastLogs.length > 0 ? lastLogs[lastLogs.length - 1] : undefined;
 
             // Check if user hasn't written in a while -- beginner (standard) mode
             // Based on last log and this one, if both have < 100 characters, show
