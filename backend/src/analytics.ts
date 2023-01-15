@@ -6,18 +6,19 @@ import { AnyMap } from "./helpers.js";
 
 export const beacon = async (req: Request, res: Response) => {
     const body = req.body;
+    console.log(body);
     if (!body.fingerprint || typeof body.fingerprint !== "number") {
         res.send(400);
         return;
     }
 
-    if (!body.state || typeof body.state !== "string" || ["visited", "install_started", "signed_up"].includes(body.state)) {
-        res.send(400);
+    if (!body.state || typeof body.state !== "string" || !["visited", "install_started", "signed_up"].includes(body.state)) {
+        res.send(401);
         return;
     }
 
-    if (body.state === "signed_up" && (!body.uid && typeof body.uid !== "string")) {
-        res.send(400);
+    if (body.state === "signed_up" && (!body.uid || typeof body.uid !== "string")) {
+        res.send(402);
         return;
     }
 
@@ -25,7 +26,7 @@ export const beacon = async (req: Request, res: Response) => {
     if (!body.utm_campaign) body.utm_campaign = "unknown";
 
     if (typeof body.utm_source !== "string" || typeof body.utm_campaign !== "string") {
-        res.send(400);
+        res.send(403);
         return;
     }
 
