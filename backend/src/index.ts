@@ -8,6 +8,7 @@ import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp.js";
 import { deleteAccount, getOrCreateKeys, sync } from "./accounts.js";
 import { getImage, moodLog, survey } from "./main.js";
 import { gapFund } from "./gap.js";
+import { beacon } from "./analytics.js";
 
 const app = express();
 initializeApp({
@@ -28,6 +29,8 @@ app.use(cors());
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 app.use(async (req: UserRequest, res, next) => {
+    if (req.path.startsWith("/analytics/")) return next();
+    
     await validateAuth(req, res);
     if (req.user && await checkQuota(req, res)) {
         next();
@@ -53,6 +56,9 @@ app.post("/pdp/change", changePDPpassphrase);
 app.post("/accounts/delete", deleteAccount);
 app.post("/accounts/sync", sync);
 app.post("/accounts/getOrCreateKeys", getOrCreateKeys);
+
+// First-Party Anayltics
+app.post("/analytics/beacon", beacon);
 
 // Main Functions
 app.post("/moodLog", moodLog);
