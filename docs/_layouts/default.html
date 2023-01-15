@@ -62,13 +62,27 @@
                 </div>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/gh/faisalman/ua-parser-js@master/dist/ua-parser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/garycourt/murmurhash-js@master/murmurhash3_gc.js"></script>
         <script>
+            function fingerprint() {
+                let fingerprint = "";
+                const ua = new UAParser().getResult();
+                fingerprint += `${ua.os.name}${ua.os.version}${ua.device.vendor}${ua.device.model}${ua.device.type}${ua.device.architecture}`;
+                fingerprint += `${navigator.language}${navigator.platform}${navigator.maxTouchPoints}`;
+                fingerprint += `${screen.width}${screen.height}`;
+                fingerprint += `|${new Date().getTimezoneOffset()}`;
+                const hash = murmurhash3_32_gc(fingerprint, 921743158);
+                return hash;
+            }
+
             function ready() {
                 let utm_source = "web";
                 let utm_campaign = "web";
                 if (location.search.includes("utm_source=") && location.search.includes("utm_campaign=")) {
                     utm_source = location.search.split("utm_source=")[1].split("&")[0];
                     utm_campaign = location.search.split("utm_campaign=")[1].split("&")[0];
+
                 }
 
                 utm_campaign = encodeURIComponent(utm_campaign);
