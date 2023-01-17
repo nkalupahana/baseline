@@ -25,19 +25,18 @@ const addData = async (doc: FirebaseFirestore.DocumentReference<FirebaseFirestor
 
 export const beacon = async (req: Request, res: Response) => {
     const body = req.body;
-    console.log(body);
     if (!body.fingerprint || typeof body.fingerprint !== "number") {
         res.send(400);
         return;
     }
 
     if (!body.state || typeof body.state !== "string" || !["visited", "install_started", "signed_up"].includes(body.state)) {
-        res.send(401);
+        res.send(400);
         return;
     }
 
     if (body.state === "signed_up" && (!body.uid || typeof body.uid !== "string")) {
-        res.send(402);
+        res.send(400);
         return;
     }
 
@@ -92,6 +91,7 @@ export const beacon = async (req: Request, res: Response) => {
             if (data.length > 0) {
                 data.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
                 let last = data[0];
+                // If there is an install_started, use that instead of just last visited
                 const install_started = data.filter(d => d.state === "install_started");
                 if (install_started.length > 0) {
                     last = install_started[0];
@@ -103,7 +103,6 @@ export const beacon = async (req: Request, res: Response) => {
                     [`${last.uuid}.timestamp`]: FieldValue.serverTimestamp(),
                 });
 
-                // set data in firebase realtime database
                 const db = getDatabase();
                 await db.ref(`${body.uid}/info`).update({
                     utm_source: last.utm_source,
