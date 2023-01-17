@@ -113,4 +113,4 @@ export const beacon = async (req: Request, res: Response) => {
     }
 
     res.send(200);
-}
+};
