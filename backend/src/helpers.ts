@@ -16,6 +16,10 @@ export interface UserRequest extends Request {
     user?: DecodedIdToken;
 }
 
+export interface AnyMap {
+    [key: string]: any;
+}
+
 export const validateAuth = async (req: UserRequest, res: Response) => {
     if ((!req.headers.authorization || !req.headers.authorization.startsWith("Bearer ")) && !(req.cookies && req.cookies.__session)) {
         res.status(403).send("Unauthorized");

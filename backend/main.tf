@@ -20,7 +20,8 @@ module "service-accounts" {
     "${var.project}=>roles/firebasedatabase.admin",
     "${var.project}=>roles/storage.objectAdmin",
     "${var.project}=>roles/secretmanager.secretAccessor",
-    "${var.project}=>roles/pubsub.publisher"
+    "${var.project}=>roles/pubsub.publisher",
+    "${var.project}=>roles/datastore.user",
   ]
 }
 
