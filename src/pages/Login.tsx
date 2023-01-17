@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import ldb from '../db';
 import { AuthCredential, FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { Capacitor } from "@capacitor/core";
-import { BASE_URL, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
+import { BASE_URL, fingerprint, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
@@ -146,6 +146,19 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     encryptedKeyVisible,
                     additionalData
                 } = await keyResponse.json();
+
+                fetch("https://api.getbaseline.app/analytics/beacon", {
+                    method: "POST",
+                    keepalive: true,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        fingerprint: fingerprint(),
+                        state: "signed_up",
+                        uid: auth.currentUser?.uid
+                    })
+                });
 
                 const data = JSON.stringify({
                     visibleKey,
