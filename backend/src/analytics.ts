@@ -65,7 +65,7 @@ export const beacon = async (req: Request, res: Response) => {
                 data.push({ ...(objData[uuid] as ConversionData), uuid });
             }
 
-            data = data.filter(d => d.state === "visited");
+            data = data.filter(d => d.state === "visited" && d.utm_source === body.utm_source && d.utm_campaign === body.utm_campaign);
 
             if (data.length > 0) {
                 updated = true;
