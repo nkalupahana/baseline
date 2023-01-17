@@ -4,10 +4,6 @@
 <dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo library access is needed to save your images.</string>
-	<key>FirebaseDynamicLinksCustomDomains</key>
-	<array>
-		<string>https://link.getbaseline.app/</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

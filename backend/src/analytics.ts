@@ -104,10 +104,13 @@ export const beacon = async (req: Request, res: Response) => {
                 });
 
                 const db = getDatabase();
-                await db.ref(`${body.uid}/info`).update({
-                    utm_source: last.utm_source,
-                    utm_campaign: last.utm_campaign,
-                });
+                const info = (await db.ref(`${body.uid}/info`).get()).val();
+                if (!(info?.utm_source && info?.utm_campaign)) {
+                    await db.ref(`${body.uid}/info`).update({
+                        utm_source: last.utm_source,
+                        utm_campaign: last.utm_campaign,
+                    });
+                }
             }
         }
     }
