@@ -62,6 +62,7 @@
     "swiper": "^8.2.2",
     "toastify-js": "github:nkalupahana/toastify-js#master",
     "typescript": "^4.6.4",
+    "ua-parser-js": "^1.0.32",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
@@ -107,6 +108,7 @@
     "@types/luxon": "^2.0.8",
     "@types/react-transition-group": "^4.4.5",
     "@types/smoothscroll-polyfill": "^0.3.1",
+    "@types/ua-parser-js": "^0.7.36",
     "cypress": "^10.2.0",
     "cypress-wait-until": "^1.7.2",
     "eslint-plugin-cypress": "^2.12.1",

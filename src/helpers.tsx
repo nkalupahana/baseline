@@ -10,6 +10,8 @@ import { getIdToken, User } from "firebase/auth";
 import { get, orderByKey, query, ref } from "firebase/database";
 import { GraphConfig } from "./screeners/screener";
 import Fuse from "fuse.js";
+import { murmurhash3_32_gc } from "./murmurhash3_gc";
+import UAParser from "ua-parser-js";
 
 export interface AnyMap {
     [key: string]: any;
@@ -412,4 +414,15 @@ export function filterLogs(
     }
 
     setFilteredLogs(logs);
+}
+
+export function fingerprint() {
+    let fingerprint = "";
+    const ua = new UAParser().getResult();
+    fingerprint += `${ua.os.name}${ua.os.version}${ua.device.vendor}${ua.device.model}${ua.device.type}`;
+    fingerprint += `${navigator.language}${navigator.platform}${navigator.maxTouchPoints}`;
+    fingerprint += `${window.screen.width}${window.screen.height}`;
+    fingerprint += `|${new Date().getTimezoneOffset()}`;
+    const hash = murmurhash3_32_gc(fingerprint, 921743158);
+    return hash;
 }
