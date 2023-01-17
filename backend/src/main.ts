@@ -286,7 +286,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         year: userNow.year,
         month: userNow.month,
         day: userNow.day,
-        time: userNow.toLocaleString(DateTime.TIME_SIMPLE),
+        time: userNow.toFormat("h:mm a"),
         zone: userNow.zone.name,
         mood: data.mood,
         journal: data.journal,
