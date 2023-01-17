@@ -1,8 +1,27 @@
 import { Request, Response } from "express";
 import * as murmur from "murmurhash-js";
+import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore"; 
+import { randomUUID } from "crypto";
 import { getDatabase } from "firebase-admin/database";
-import { getFirestore, FieldValue } from "firebase-admin/firestore"; 
-import { AnyMap } from "./helpers.js";
+
+interface ConversionData {
+    utm_source: string;
+    utm_campaign: string;
+    state: "visited" | "install_started" | "signed_up";
+    timestamp: Timestamp;
+    uuid?: string;
+}
+
+const addData = async (doc: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>, body: ConversionData) => {
+    await doc.set({
+        [randomUUID()]: {
+            utm_source: body.utm_source,
+            utm_campaign: body.utm_campaign,
+            state: body.state,
+            timestamp: FieldValue.serverTimestamp()
+        }
+    }, { merge: true });
+};
 
 export const beacon = async (req: Request, res: Response) => {
     const body = req.body;
@@ -32,65 +51,65 @@ export const beacon = async (req: Request, res: Response) => {
 
     const fingerprint = String(murmur.murmur3(req.get("X-Forwarded-For") + body.fingerprint, 283794322));
     const fsdb = getFirestore();
-    const col = fsdb.collection(fingerprint);
+    const doc = fsdb.collection(`conversions`).doc(fingerprint);
 
     if (body.state === "visited") {
-        // push data to collection
-        await col.add({
-            utm_source: body.utm_source,
-            utm_campaign: body.utm_campaign,
-            state: body.state,
-            timestamp: FieldValue.serverTimestamp()
-        });
+        await addData(doc, body);
     } else if (body.state === "install_started") {
-        const docs = await col
-            .orderBy("timestamp", "desc")
-            .where("state", "==", "visited")
-            .limit(1)
-            .get();
+        const docGet = await doc.get();
+        let updated = false;
 
-        if (docs.docs.length > 0) {
-            await docs.docs[0].ref.update({
-                state: "install_started",
-                timestamp: FieldValue.serverTimestamp(),
-            });
-        } else {
-            await col.add({
-                utm_source: body.utm_source,
-                utm_campaign: body.utm_campaign,
-                state: body.state,
-                timestamp: FieldValue.serverTimestamp(),
-            });
-        }
-    } else if (body.state === "signed_up") {
-        const docs = await col
-            .orderBy("timestamp", "desc")
-            .where("state", "!=", "signed_up")
-            .get();
-
-        if (docs.docs.length > 0) {
-            const data: AnyMap[] = docs.docs.map(doc => {
-                return { ...(doc.data() as AnyMap), ref: doc.ref}
-            });
-            
-            let last = data.at(-1);
-            const install_started = data.filter(d => d.state === "install_started");
-            if (install_started.length > 0) {
-                last = install_started.at(-1)!;
+        if (docGet.exists) {
+            const objData = docGet.data()!;
+            let data: ConversionData[] = [];
+            for (let uuid of Object.keys(objData)) {
+                data.push({ ...(objData[uuid] as ConversionData), uuid });
             }
 
-            await last!.ref.update({
-                state: body.state,
-                uid: body.uid,
-                timestamp: FieldValue.serverTimestamp(),
-            });
+            data = data.filter(d => d.state === "visited");
 
-            // set data in firebase realtime database
-            const db = getDatabase();
-            await db.ref(`${body.uid}/info`).update({
-                utm_source: last!.utm_source,
-                utm_campaign: last!.utm_campaign,
-            });
+            if (data.length > 0) {
+                updated = true;
+                data = data.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+                await doc.update({
+                    [`${data[0].uuid}.state`]: body.state,
+                    [`${data[0].uuid}.timestamp`]: FieldValue.serverTimestamp(),
+                });
+            }
+        }
+
+        if (!updated) await addData(doc, body);
+    } else if (body.state === "signed_up") {
+        const docGet = await doc.get();
+        if (docGet.exists) {
+            const objData = docGet.data()!;
+            let data: ConversionData[] = [];
+            for (let uuid of Object.keys(objData)) {
+                data.push({ ...(objData[uuid] as ConversionData), uuid });
+            }
+
+            data = data.filter(d => d.state !== "signed_up");
+            if (data.length > 0) {
+                data.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+                let last = data[0];
+                const install_started = data.filter(d => d.state === "install_started");
+                if (install_started.length > 0) {
+                    last = install_started[0];
+                }
+
+                await doc.update({
+                    [`${last.uuid}.state`]: body.state,
+                    [`${last.uuid}.uid`]: body.uid,
+                    [`${last.uuid}.timestamp`]: FieldValue.serverTimestamp(),
+                });
+
+                // set data in firebase realtime database
+                const db = getDatabase();
+                await db.ref(`${body.uid}/info`).update({
+                    utm_source: last.utm_source,
+                    utm_campaign: last.utm_campaign,
+                });
+            }
         }
     }
 
