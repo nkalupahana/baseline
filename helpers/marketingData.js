@@ -133,7 +133,7 @@ while (time < now) {
             year: time.year,
             month: time.month,
             day: time.day,
-            time: fullTime.toLocaleString(DateTime.TIME_SIMPLE),
+            time: fullTime.toFormat("h:mm a"),
             zone: "America/Los_Angeles",
         };
 
