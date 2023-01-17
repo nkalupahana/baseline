@@ -45,7 +45,6 @@ import GetHelp from "./pages/GetHelp";
 import WeekInReview from "./pages/WeekInReview";
 import SurveyResults from "./pages/SurveyResults";
 import { CSSTransition } from "react-transition-group";
-import { App as CapacitorApp } from "@capacitor/app";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
 
