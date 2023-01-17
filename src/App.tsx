@@ -49,17 +49,6 @@ import { App as CapacitorApp } from "@capacitor/app";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
 
-CapacitorApp.addListener("appUrlOpen", data => {
-    try {
-        if (data.url && data.url.includes("utm_campaign=") && data.url.includes("utm_source=")) {
-            localStorage.setItem("utm_campaign", decodeURIComponent(data.url.split("utm_campaign=")[1].split("&")[0]));
-            localStorage.setItem("utm_source", decodeURIComponent(data.url.split("utm_source=")[1].split("&")[0]));
-        }
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
 });

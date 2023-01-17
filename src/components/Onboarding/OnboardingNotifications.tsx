@@ -19,8 +19,6 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
                 offset: DateTime.now().offset,
                 fcmToken: token.token,
                 deviceId: (await Device.getId()).uuid,
-                utm_source: localStorage.getItem("utm_source"),
-                utm_campaign: localStorage.getItem("utm_campaign"),
             });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
         } catch {}

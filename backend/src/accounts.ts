@@ -269,18 +269,6 @@ export const sync = async (req: UserRequest, res: Response) => {
         }
     };
     checkToken();
-    
-    // Referrer for app install
-    const checkRefer = () => {
-        if ("utm_source" in body && "utm_campaign" in body) {
-            if (typeof body.utm_source !== "string" || !body.utm_source || body.utm_source.length > 100) return;
-            if (typeof body.utm_campaign !== "string" || !body.utm_campaign || body.utm_campaign.length > 100) return;
-    
-            update["utm_source"] = body["utm_source"];
-            update["utm_campaign"] = body["utm_campaign"];
-        }
-    }
-    checkRefer();
 
     // Broad geolocation
     const geo = await (await fetch(`http://ip-api.com/json/${req.get("X-Forwarded-For")}`)).json();
