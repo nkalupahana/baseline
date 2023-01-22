@@ -1,9 +1,15 @@
+import { Capacitor } from "@capacitor/core";
 import history from "../../history";
 
 const OnboardingStart = () => {
     const next = () => {
-        localStorage.setItem("onboarding", "mode");
-        history.replace("/onboarding/mode");
+        if (Capacitor.getPlatform() === "web") {
+            localStorage.setItem("onboarding", "howto");
+            history.replace("/onboarding/howto");
+        } else {
+            localStorage.setItem("onboarding", "notifications");
+            history.replace("/onboarding/notifications");
+        }
     };
 
     return <>
