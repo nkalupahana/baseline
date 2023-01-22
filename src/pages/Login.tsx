@@ -147,7 +147,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     additionalData
                 } = await keyResponse.json();
 
-                fetch("https://api.getbaseline.app/analytics/beacon", {
+                fetch(`${BASE_URL}/analytics/beacon`, {
                     method: "POST",
                     keepalive: true,
                     headers: {
@@ -191,13 +191,16 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 if (additionalData.beginner) setSettings("beginner", additionalData.beginner);
                 if (additionalData.introQuestions) setSettings("introQuestions", additionalData.introQuestions);
 
+                if (Capacitor.getPlatform() === "web") {
+                    await makeRequest("accounts/sync", auth.currentUser!, {
+                        offset: DateTime.now().offset,
+                    });
+                }
+
                 if (!additionalData.onboarded) {
                     localStorage.setItem("onboarding", "start");
                     history.replace("/onboarding/start");
                 } else if (Capacitor.getPlatform() === "web") {
-                    await makeRequest("accounts/sync", auth.currentUser!, {
-                        offset: DateTime.now().offset,
-                    });
                     history.replace("/journal");
                 } else {
                     history.replace("/onboarding/notifications");
