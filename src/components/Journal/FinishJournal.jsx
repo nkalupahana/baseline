@@ -12,7 +12,7 @@ import { attach, closeOutline, trashOutline } from "ionicons/icons";
 import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
-import { BASE_URL, checkKeys, networkFailure, parseSettings, toast } from "../../helpers";
+import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
 import ldb from "../../db";
 import { RateApp } from "capacitor-rate-app";
 import Confetti from "react-confetti";
@@ -25,7 +25,7 @@ const FinishJournal = props => {
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [dialog, setDialog] = useState(undefined);
-    const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(5).toArray());
+    const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(1).toArray());
     const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
 
     const dismissDialog = () => {
@@ -41,34 +41,16 @@ const FinishJournal = props => {
     
     useEffect(() => {
         if (!lastLogs || !lastAverageLogs) return;
-        
-        const settings = parseSettings();
-        if (settings["beginner"]) {
-            const lastLog = lastLogs.length > 0 ? lastLogs[lastLogs.length - 1] : undefined;
+        const lastLog = lastLogs[0];
+       
+        // Check if user isn't writing enough
+        // Based on last log and this one, if both have < 100 characters, show
+        let writtenAnything = props.text.length >= 100;
+        if (!writtenAnything && lastLog) writtenAnything = (lastLog.journal?.length >= 100 || lastLog.ejournal?.length >= 344);
 
-            // Check if user hasn't written in a while -- beginner (standard) mode
-            // Based on last log and this one, if both have < 100 characters, show
-            let writtenAnything = props.text.length >= 100;
-            if (!writtenAnything && lastLog) writtenAnything = (lastLog.journal?.length >= 100 || lastLog.ejournal?.length >= 344);
-
-            if (!writtenAnything && lastLog && checkPromptAllowed("noWritingBeginner", 1)) {
-                setDialog(Dialogs.NO_WRITING_BEGINNER);
-                return;
-            }
-        } else {
-            // Check if user hasn't written in a while
-            // Based on last five logs:
-            // - If they have less than 5, as long as they have at least two, just go off of that
-            // - If none of the last 2 - 5 or this one have text, show
-            let writtenAnything = props.text.length > 50;
-            for (let i = 0; (i < lastLogs.length && !writtenAnything); ++i) {
-                writtenAnything = (lastLogs[i].journal?.length > 50 || lastLogs[i].ejournal?.length > 278);
-            }
-
-            if (!writtenAnything && lastLogs.length > 1 && checkPromptAllowed("noWriting", 5)) {
-                setDialog(Dialogs.NO_WRITING);
-                return;
-            }
+        if (!writtenAnything && lastLog && checkPromptAllowed("noWriting", 2)) {
+            setDialog(Dialogs.NO_WRITING);
+            return;
         }
         
         // Check if user's scale is shifted 
@@ -189,16 +171,6 @@ const FinishJournal = props => {
 
     return (
         <div className="outer-noscroll">
-            { dialog === Dialogs.NO_WRITING && <Dialog title="One second!">
-                <p className="margin-top-12 margin-bottom-24 text-center">
-                    We noticed you haven't written much (or at all) in a while. Journaling works 
-                    best when you take some time to really write and reflect about what you're going through.
-                    It'll help you understand yourself better, and it'll definitely make your 
-                    mood ratings more accurate. Try writing some more now!
-                </p>
-                <div className="finish-button" onClick={() => history.replace("/journal")}>Go back and write!</div>
-                <div className="finish-button secondary" onClick={dismissDialog}>Not now.</div>
-            </Dialog> }
             { dialog === Dialogs.SCALE_SHIFTED && <Dialog title="Before you continue!">
                 <p className="margin-top-12 margin-bottom-24 text-center">
                     We've noticed that you're rating a lot of your "average" journal entries
@@ -212,7 +184,7 @@ const FinishJournal = props => {
                 <div className="finish-button" onClick={dismissDialog}>Sounds good!</div>
                 <br />
             </Dialog> }
-            { dialog === Dialogs.NO_WRITING_BEGINNER && <Dialog title="One second!">
+            { dialog === Dialogs.NO_WRITING && <Dialog title="One second!">
                 <p className="margin-top-12 margin-bottom-24 text-center">
                     We noticed you haven't written much in your last few 
                     journal entries. Make sure you're writing about <b>what 

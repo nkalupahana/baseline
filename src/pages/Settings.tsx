@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
-import BeginnerModeSettings from "../components/Settings/BeginnerModeSettings";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
@@ -28,19 +27,23 @@ const Settings = () => {
             <div className="title">Settings</div>
             <br />
             <div style={{"maxWidth": "600px"}}>
-                <BeginnerModeSettings user={user} />
-                <div className="horizontal-line"></div>
-                <SettingsBox 
+                { user && <SettingsBox
+                    attr="introQuestions"
+                    title="Practice Prompts"
+                    description="Not comfortable writing about yourself this much yet? Enable practice prompts for a few weeks. (Coming soon)"
+                    syncWithFirebase={`${user.uid}/onboarding/questions`}
+                /> }
+                <SettingsBox
                     title="Reduce Motion"
                     attr="reduceMotion"
                     description="Turn this on to disable some animations. This typically won't increase performance by any noticable amount."
                 />
-                <SettingsBox 
+                <SettingsBox
                     title="Use Colorblind-Friendly Colors"
                     attr="colorblind"
                     description="Turn this on to use colorblind-friendly colors on the summary page graphs."
                 />
-                <SettingsBox 
+                <SettingsBox
                     title="Skip Week In Review"
                     attr="skipWIR"
                     description="Turn this on to get the option to skip Week In Review each week. (We don't recommend turning this on — Week In Review is quite useful, and only takes a few minutes each week.)"
