@@ -7,8 +7,13 @@ import { DateTime } from "luxon"
 // and views are inconsistent, so this just ensures
 // everything is okay before continuing
 const WAIT_FOR_CONSISTENCY = 4000;
+const NUM_TOGGLES = 4;
 
-const ONBOARDING_SETTINGS = "Standard (Onboarding) Mode";
+// Toggle indices
+const PRACTICE_PROMPTS = 0;
+const REDUCE_MOTION = 1;
+const COLORBLIND_COLORS = 2;
+const SKIP_WIR = 3;
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -37,11 +42,6 @@ describe("Mobile Flow", () => {
     it("Goes Through Onboarding", () => {
         cy.contains("Welcome to baseline")
         cy.get("body").happoScreenshot()
-        cy.get(".finish-button").should("exist").click()
-        
-        cy.contains("Expert").should("exist").click()
-        cy.get("body").happoScreenshot()
-        cy.contains("recommended").should("exist").click()
         cy.get(".finish-button").should("exist").click()
 
         cy.contains("journaling is a skill").should("exist")
@@ -139,16 +139,17 @@ describe("Mobile Flow", () => {
         cy.contains(`Bad beginner`).should("exist")
     })
 
-    it("Turn off Beginner Mode", () => {
+    it("Ensure Practice Prompts Exist", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains(ONBOARDING_SETTINGS).should("exist")
-        cy.get(".settings-box-grid").eq(0).happoScreenshot()
-        cy.get("ion-toggle").eq(0).should("have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(0).click()
-        cy.get("ion-toggle").eq(0).should("not.have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(0).happoScreenshot()
+        cy.get("ion-toggle").should("have.length", NUM_TOGGLES)
+        cy.get(".settings-box-grid").eq(PRACTICE_PROMPTS).happoScreenshot()
+        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).click()
+        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).click()
+        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("not.have.class", "toggle-checked")
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
@@ -159,16 +160,10 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 12; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.contains("tap here").should("exist")
             cy.get("textarea").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
 
-            if (i === 0) {
-                cy.get(".dialog-background").should("exist").happoScreenshot()
-                cy.contains("Go back and write").click()
-                cy.get("textarea").should("exist").should("have.value", `Test ${i}`)
-                cy.contains("Continue").should("exist").click()
-            } else if (i === 9) {
+            if (i === 9) {
                 cy.get(".dialog-background").should("exist").happoScreenshot()
                 cy.contains("Before you continue")
                 cy.contains("Sounds good").should("exist").click()
@@ -300,13 +295,13 @@ describe("Desktop Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains(ONBOARDING_SETTINGS).should("exist")
+        cy.get("ion-toggle").should("have.length", NUM_TOGGLES)
         cy.contains("Skip").should("exist")
-        cy.get(".settings-box-grid").eq(2).happoScreenshot()
-        cy.get("ion-toggle").eq(2).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(2).click()
-        cy.get("ion-toggle").eq(2).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(2).happoScreenshot()
+        cy.get(".settings-box-grid").eq(COLORBLIND_COLORS).happoScreenshot()
+        cy.get("ion-toggle").eq(COLORBLIND_COLORS).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(COLORBLIND_COLORS).click()
+        cy.get("ion-toggle").eq(COLORBLIND_COLORS).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(COLORBLIND_COLORS).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
@@ -412,13 +407,14 @@ describe("Desktop Flow", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains(ONBOARDING_SETTINGS).should("exist")
+        cy.get("ion-toggle").should("have.length", NUM_TOGGLES)
+
         cy.contains("Skip").should("exist")
-        cy.get(".settings-box-grid").eq(3).happoScreenshot()
-        cy.get("ion-toggle").eq(3).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(3).click()
-        cy.get("ion-toggle").eq(3).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(3).happoScreenshot()
+        cy.get(".settings-box-grid").eq(SKIP_WIR).happoScreenshot()
+        cy.get("ion-toggle").eq(SKIP_WIR).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(SKIP_WIR).click()
+        cy.get("ion-toggle").eq(SKIP_WIR).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(SKIP_WIR).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
@@ -506,13 +502,14 @@ describe("Test Settings", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
-        cy.contains(ONBOARDING_SETTINGS).should("exist")
+        cy.get("ion-toggle").should("have.length", NUM_TOGGLES)
+
         cy.contains("Reduce Motion").should("exist")
-        cy.get(".settings-box-grid").eq(1).happoScreenshot()
-        cy.get("ion-toggle").eq(1).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(1).click()
-        cy.get("ion-toggle").eq(1).should("have.class", "toggle-checked")
-        cy.get(".settings-box-grid").eq(1).happoScreenshot()
+        cy.get(".settings-box-grid").eq(REDUCE_MOTION).happoScreenshot()
+        cy.get("ion-toggle").eq(REDUCE_MOTION).should("not.have.class", "toggle-checked")
+        cy.get("ion-toggle").eq(REDUCE_MOTION).click()
+        cy.get("ion-toggle").eq(REDUCE_MOTION).should("have.class", "toggle-checked")
+        cy.get(".settings-box-grid").eq(REDUCE_MOTION).happoScreenshot()
 
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
