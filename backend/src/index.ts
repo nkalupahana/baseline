@@ -26,16 +26,15 @@ Sentry.init({
 });
 
 app.use(cors());
-app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.requestHandler({
+    user: ["uid"]
+}));
 app.use(Sentry.Handlers.tracingHandler());
 app.use(async (req: UserRequest, res, next) => {
     if (req.path.startsWith("/analytics/")) return next();
     
     await validateAuth(req, res);
     if (req.user && await checkQuota(req, res)) {
-        Sentry.setUser({
-            id: req.user.uid
-        });
         next();
     }
 });
