@@ -707,3 +707,15 @@ footer {
 .hidden {
 	display: none;
 }
+
+.pointer {
+	cursor: pointer;
+}
+
+.fake-link {
+	color: #93b8ff;
+}
+
+.fake-link:hover {
+	color: #78a6fd;
+}
