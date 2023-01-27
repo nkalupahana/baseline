@@ -45,6 +45,13 @@
         "dynamicLinks": true
       }
     ]
+  }, {
+    "target": "baseline-landing",
+    "public": "docs/_site",
+    "ignore": [
+      "Gemfile",
+      "Gemfile.lock"
+    ]
   }],
   "storage": {
     "rules": "storage.rules"
