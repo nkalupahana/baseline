@@ -48,9 +48,17 @@
   }, {
     "target": "baseline-landing",
     "public": "docs/_site",
+    "cleanUrls": true,
     "ignore": [
       "Gemfile",
       "Gemfile.lock"
+    ],
+    "redirects": [
+      {
+        "source": "/mmd",
+        "destination": "/?utm_source=mm&utm_campaign=mm_discord",
+        "type": 302
+      }
     ]
   }],
   "storage": {
