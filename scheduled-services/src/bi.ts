@@ -16,9 +16,9 @@ export const loadBasicBIData = async (db: any) => {
     }
 
     let logLengths: string[] = [];
-    const addLength = (userId: string, logLength: number) => {
+    const addLength = (userId: string, timestamp: string, logLength: number) => {
         const bucket = Math.floor(logLength / 600);
-        logLengths.push([userId, Math.round(logLength), `${bucket}: ${bucket * 600} - ${(bucket * 600) + 599}`].join(","));
+        logLengths.push([Number(timestamp), userId, Math.round(logLength), `${bucket}: ${bucket * 600} - ${(bucket * 600) + 599}`].join(","));
     };
 
     let users: string[] = [];
@@ -56,10 +56,10 @@ export const loadBasicBIData = async (db: any) => {
                 // Regress approximate log length from encrypted content
                 let logLength = (0.748879 * log["data"].length) - 158.323;
                 if (logLength < 0) logLength = 0;
-                addLength(userId, logLength);
+                addLength(userId, timestamp, logLength);
             } else if ("journal" in log) {
                 // For the rare unencrypted journals from the pre-encryption days
-                addLength(userId, log["journal"].length);
+                addLength(userId, timestamp, log["journal"].length);
             }
         }
 
@@ -142,6 +142,7 @@ export const loadBasicBIData = async (db: any) => {
         sourceFormat: "CSV",
         schema: {
           fields: [
+            { name: "timestamp", type: "INTEGER" },
             { name: "userId", type: "STRING" },
             { name: "len", type: "INTEGER" },
             { name: "bucket", type: "STRING" }
