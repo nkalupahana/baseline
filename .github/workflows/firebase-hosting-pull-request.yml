@@ -17,7 +17,7 @@ jobs:
         run: |
           cd docs
           sudo gem install bundler
-          sudo bundle install 
+          sudo bundle install
           bundle exec jekyll build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
