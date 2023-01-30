@@ -2,6 +2,7 @@ import { getAuth } from "firebase-admin/auth";
 import { DateTime } from "luxon";
 import { BigQuery } from "@google-cloud/bigquery";
 import { Storage } from "@google-cloud/storage";
+import { getFirestore } from "firebase-admin/firestore";
 
 export const loadBasicBIData = async (db: any) => {
     const bigquery = new BigQuery();
@@ -95,13 +96,30 @@ export const loadBasicBIData = async (db: any) => {
 
     await getAllUsers();
 
-    // Send CSVs/data to storage
-    await storage.bucket("baseline-bi").file("actions.csv").save(actions.join("\n"));
-    await storage.bucket("baseline-bi").file("lengths.csv").save(logLengths.join("\n"));
-    await storage.bucket("baseline-bi").file("gapfund.csv").save(gapFund.join("\n"));
-    await storage.bucket("baseline-bi").file("users.csv").save(users.join("\n"));
-    await storage.bucket("baseline-bi").file("accounts.csv").save(accounts.join("\n"));
+    // Get Firestore conversion data
+    const firestore = getFirestore();
+    const convSnapshot = await firestore.collection("conversions").get();
+    const conversions = convSnapshot.docs.map(doc => doc.data());
+    let convData = [];
+    for (const convs of conversions) {
+        for (const conv of Object.values(convs)) {
+            convData.push([conv.timestamp.toMillis(), conv.state, conv.utm_source, conv.utm_campaign, conv.uid].join(","));
+        }
+    }
 
+    // Send CSVs/data to storage
+    let promises = [];
+    promises.push(storage.bucket("baseline-bi").file("actions.csv").save(actions.join("\n")));
+    promises.push(storage.bucket("baseline-bi").file("lengths.csv").save(logLengths.join("\n")));
+    promises.push(storage.bucket("baseline-bi").file("gapfund.csv").save(gapFund.join("\n")));
+    promises.push(storage.bucket("baseline-bi").file("users.csv").save(users.join("\n")));
+    promises.push(storage.bucket("baseline-bi").file("accounts.csv").save(accounts.join("\n")));
+    promises.push(storage.bucket("baseline-bi").file("conversions.csv").save(convData.join("\n")));
+
+    await Promise.all(promises);
+
+
+    promises = [];
     // Send actions CSV to BigQuery
     const actionsMetadata = {
         sourceFormat: "CSV",
@@ -117,7 +135,7 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    await bigquery.dataset("bi").table("actions").load(storage.bucket("baseline-bi").file("actions.csv"), actionsMetadata);
+    promises.push(bigquery.dataset("bi").table("actions").load(storage.bucket("baseline-bi").file("actions.csv"), actionsMetadata));
 
     // Send lengths CSV to BigQuery
     const lengthsMetadata = {
@@ -132,7 +150,7 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    await bigquery.dataset("bi").table("log_length").load(storage.bucket("baseline-bi").file("lengths.csv"), lengthsMetadata);
+    promises.push(bigquery.dataset("bi").table("log_length").load(storage.bucket("baseline-bi").file("lengths.csv"), lengthsMetadata));
 
     // Send gap fund CSV to BigQuery
     const gapMetadata = {
@@ -145,7 +163,7 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    await bigquery.dataset("bi").table("gap_fund").load(storage.bucket("baseline-bi").file("gapfund.csv"), gapMetadata);
+    promises.push(bigquery.dataset("bi").table("gap_fund").load(storage.bucket("baseline-bi").file("gapfund.csv"), gapMetadata));
 
     // Send users CSV to BigQuery
     const usersMetadata = {
@@ -163,7 +181,7 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    await bigquery.dataset("bi").table("users").load(storage.bucket("baseline-bi").file("users.csv"), usersMetadata);
+    promises.push(bigquery.dataset("bi").table("users").load(storage.bucket("baseline-bi").file("users.csv"), usersMetadata));
 
     // Send accounts CSV to BigQuery
     const accountsMetadata = {
@@ -178,5 +196,24 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    await bigquery.dataset("bi").table("accounts").load(storage.bucket("baseline-bi").file("accounts.csv"), accountsMetadata);
+    promises.push(bigquery.dataset("bi").table("accounts").load(storage.bucket("baseline-bi").file("accounts.csv"), accountsMetadata));
+
+    // Send conversions CSV to BigQuery
+    const convMetadata = {
+        sourceFormat: "CSV",
+        schema: {
+          fields: [
+            { name: "timestamp", type: "INTEGER" },
+            { name: "state", type: "STRING" },
+            { name: "utm_source", type: "STRING" },
+            { name: "utm_campaign", type: "STRING" },
+            { name: "userId", type: "STRING" }
+          ]
+        },
+        location: "US",
+        writeDisposition: "WRITE_TRUNCATE"
+    };
+    promises.push(bigquery.dataset("bi").table("conversions").load(storage.bucket("baseline-bi").file("conversions.csv"), convMetadata));
+
+    await Promise.all(promises);
 }
