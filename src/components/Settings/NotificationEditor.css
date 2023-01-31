@@ -1,7 +1,7 @@
 .notification-editor {
     width: 90%;
     background-color: var(--card-background);
-    border-radius: 10px;
+    clip-path: inset(0% 0% 0% 0% round 10px);
     margin-bottom: 12px;
     text-align: center;
     max-width: 300px;
