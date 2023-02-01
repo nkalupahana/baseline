@@ -5,9 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import ldb from './db';
 import { getStorage } from '@firebase/storage';
 import { getDatabase } from 'firebase/database';
-import { LocalNotifications } from '@getbaseline/capacitor-local-notifications';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
-import { FirebaseMessaging } from '@getbaseline/capacitor-firebase-messaging';
 
 /*
 FIREBASE DB DEBUG
@@ -40,24 +38,6 @@ export const signOutAndCleanUp = () => {
     console.log("SIGN OUT");
     // Clear DB
     ldb.logs.clear();
-    // Remove local notifications
-    LocalNotifications.getPending().then(({ notifications }) => {
-        let toCancel = [];
-        for (let notification of notifications) {
-            toCancel.push({ id: notification.id });
-        }
-
-        if (toCancel.length > 0) {
-            LocalNotifications.cancel({
-                notifications: toCancel
-            });
-        }
-    });
-    // Clean up FCM
-    if (Capacitor.getPlatform() !== "web") {
-        FirebaseMessaging.unsubscribeFromTopic({ topic: "all" }).catch(e => console.warn(e));
-        FirebaseMessaging.deleteToken().catch(e => console.warn(e));
-    }
     // Remove keys from store
     localStorage.removeItem("keys");
     localStorage.removeItem("ekeys");
