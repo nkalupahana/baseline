@@ -66,7 +66,7 @@
         <script src="assets/js/murmurhash3_gc.js"></script>
         <script>
             var utm_source = "web";
-            var utm_campaign = "web";
+            var utm_campaign = document.referrer || "web";
 
             function fingerprint() {
                 let fingerprint = "";
@@ -101,13 +101,12 @@
             }
 
             function ready() {
-                if (location.search.includes("utm_source=") && location.search.includes("utm_campaign=")) {
-                    utm_source = location.search.split("utm_source=")[1].split("&")[0];
-                    utm_campaign = location.search.split("utm_campaign=")[1].split("&")[0];
+                const params = new URLSearchParams(location.search);
+                if (params.get("utm_source") && params.get("utm_campaign")) {
+                    utm_source = params.get("utm_source");
+                    utm_campaign = params.get("utm_campaign");
                 }
 
-                utm_campaign = encodeURIComponent(utm_campaign);
-                utm_source = encodeURIComponent(utm_source);
                 document.getElementById("appStoreLink").onclick = () => {
                     sendInstallRequest();
                     window.location.href = `https://apps.apple.com/us/app/baseline-mood-journaling/id1621132298`;
