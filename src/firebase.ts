@@ -5,9 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import ldb from './db';
 import { getStorage } from '@firebase/storage';
 import { getDatabase } from 'firebase/database';
-import { LocalNotifications } from '@getbaseline/capacitor-local-notifications';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
-import { FirebaseMessaging } from '@getbaseline/capacitor-firebase-messaging';
 
 /*
 FIREBASE DB DEBUG
