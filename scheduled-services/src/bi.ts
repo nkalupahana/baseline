@@ -27,7 +27,7 @@ export const loadBasicBIData = async (db: any) => {
             userId, 
             lastUpdated,
             country, 
-            region, 
+            region.replace(/,/g, " "),
             offset, 
             (fcm === "{}" ? "" : Buffer.from(fcm).toString("base64"))
         ].join(","));
