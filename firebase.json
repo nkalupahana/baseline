@@ -58,6 +58,11 @@
         "source": "/mmd",
         "destination": "/?utm_source=mm&utm_campaign=mm_discord",
         "type": 302
+      },
+      {
+        "source": "/op",
+        "destination": "/?utm_source=op&utm_campaign=op1",
+        "type": 302
       }
     ]
   }],
