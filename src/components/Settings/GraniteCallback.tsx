@@ -26,9 +26,7 @@ const GraniteCallback = () => {
                 redirect_uri
             });
 
-            if (success) {
-                toast("Account linked!");
-            }
+            if (success) toast("Account linked!", "bottom");
             history.replace("/settings");
         })();
     }, [user]);
@@ -39,9 +37,11 @@ const GraniteCallback = () => {
     };
 
     return <>
-        <Preloader message="One minute, we're linking your account." />
-        <br />
-        <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+        <div className="container text-center">
+            <Preloader message="One minute, we're linking your account." />
+            <br />
+            <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+        </div>
     </>;
 };
 
