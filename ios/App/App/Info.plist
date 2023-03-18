@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo library access is needed to save your images.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -52,6 +50,16 @@
 				<string>app.getbaseline.baseline</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Granite Callback</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app.getbaseline.granite</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -65,6 +73,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is needed to take pictures for mood logs.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library access is needed to save your images.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>app.getbaseline.baseline.using-app</string>
