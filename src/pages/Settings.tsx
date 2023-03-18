@@ -1,9 +1,10 @@
-import { IonAlert, IonIcon, IonSpinner } from "@ionic/react";
+import { IonAlert, IonButton, IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
+import GraniteLink from "../components/Settings/GraniteLink";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
@@ -49,7 +50,10 @@ const Settings = () => {
                     description="Turn this on to get the option to skip Week In Review each week. (We don't recommend turning this on — Week In Review is quite useful, and only takes a few minutes each week.)"
                 />
                 <PDP taskBlock={setDoingAsyncTask} />
+                <p className="bold margin-bottom-0">Partner Connections</p>
                 <br />
+                <GraniteLink />
+                <br /><br />
                 <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                 <p>
                     baseline is an open source, volunteer-driven project. If there's a feature you'd like to see or 
