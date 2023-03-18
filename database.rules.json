@@ -40,6 +40,9 @@
       "gapFund": {
         ".read": "auth != null && auth.uid == $uid"
       },
+      "partners": {
+        ".read": "auth != null && auth.uid == $uid"
+      },
       "onboarding": {
         ".read": true,
         "beginner": {
