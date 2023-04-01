@@ -11,6 +11,15 @@
     "target": "getbaselineapp",
     "headers": [
       {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Frame-Options",
+            "value": "deny"
+          }
+        ]
+      },
+      {
         "source": "/.well-known/apple-app-site-association",
         "headers": [
           {
@@ -52,6 +61,17 @@
     "ignore": [
       "Gemfile",
       "Gemfile.lock"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Frame-Options",
+            "value": "deny"
+          }
+        ]
+      }
     ],
     "redirects": [
       {
