@@ -50,16 +50,6 @@
 				<string>app.getbaseline.baseline</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>Granite Callback</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>app.getbaseline.granite</string>
-			</array>
-		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
