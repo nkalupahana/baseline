@@ -83,6 +83,11 @@
         "source": "/op",
         "destination": "/?utm_source=op&utm_campaign=op1",
         "type": 302
+      },
+      {
+        "source": "/nick",
+        "destination": "/?utm_source=1on1&utm_campaign=nickgebo",
+        "type": 302
       }
     ]
   }],
