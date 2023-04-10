@@ -14,7 +14,7 @@ export const graniteLink = async (req: UserRequest, res: Response) => {
         form.set("code", body.code);
         form.set("redirect_uri", body.redirect_uri);
         form.set("grant_type", "authorization_code");
-        form.set("client_id", "baseline");
+        form.set("client_id", "J2TW2CuBnWMoiBSp");
         form.set("code_verifier", body.code_verifier);
 
         const access = await (await fetch("https://granite-platform.herokuapp.com/oidc/token", {
