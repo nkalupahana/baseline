@@ -80,11 +80,11 @@ const GraniteLink = () => {
     };
 
     return <>
-        { linkData === false && <div className="margin-top-8">
+        { linkData === false && <div className="margin-top-12">
             { !submitting && <img src={ga} onClick={graniteAccess} alt="Connect with GraniteAccess" style={{"maxWidth": "200px"}} /> }
             { submitting && <><IonSpinner className="loader" name="crescent" /> <span className="fake-link" onClick={() => setSubmitting(false)}>Connecting with GraniteAccess, tap to cancel.</span></> }
         </div> }
-        { linkData === true && <p className="margin-top-8 margin-bottom-0">Linked with Granite!</p> }
+        { linkData === true && <p className="margin-top-12 margin-bottom-0">Linked with Granite!</p> }
         { linkData === undefined && <Preloader message="" /> }
     </>;
 };
