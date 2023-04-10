@@ -461,34 +461,38 @@ describe("Desktop Flow", () => {
         cy.contains("Gap Fund").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         cy.url().should("include", "gap")
-        cy.contains("Make sure you get this right").should("exist")
-
-        cy.contains("Submit").click()
-        cy.contains("complete all fields").should("exist")
-
-        cy.get("#email").should("be.enabled").type("hello@email.com",  { force: true })
-        cy.contains("Submit").click()
-        cy.get(".toastify").should("have.length", 2)
-
-        cy.get("#need").should("be.enabled").type("need",  { force: true })
-        cy.contains("Submit").click()
-        cy.get(".toastify").should("have.length", 3)
-
-        cy.get("#amount").should("be.enabled").type("amount",  { force: true })
-        cy.contains("Submit").click()
-        cy.get(".toastify").should("have.length", 4)
-
-        cy.get("#method").should("be.enabled").type("  ",  { force: true })
-        cy.contains("Submit").click()
-        cy.get(".toastify").should("have.length", 5)
-
-        cy.get("#method").should("be.enabled").clear({ force: true }).type("method",  { force: true })
-        cy.contains("Submit").click()
-        cy.contains("match").should("exist")
-
-        cy.get("#confirmEmail").should("be.enabled").type("hello@email.com",  { force: true })
-        cy.contains("Submit").click()
-        cy.contains("went wrong").should("exist")
+        cy.wait(WAIT_FOR_CONSISTENCY).then(() => {
+            if (Cypress.$("#gapFundClosed").length === 0) {
+                cy.contains("Make sure you get this right").should("exist")
+    
+                cy.contains("Submit").click()
+                cy.contains("complete all fields").should("exist")
+    
+                cy.get("#email").should("be.enabled").type("hello@email.com",  { force: true })
+                cy.contains("Submit").click()
+                cy.get(".toastify").should("have.length", 2)
+    
+                cy.get("#need").should("be.enabled").type("need",  { force: true })
+                cy.contains("Submit").click()
+                cy.get(".toastify").should("have.length", 3)
+    
+                cy.get("#amount").should("be.enabled").type("amount",  { force: true })
+                cy.contains("Submit").click()
+                cy.get(".toastify").should("have.length", 4)
+    
+                cy.get("#method").should("be.enabled").type("  ",  { force: true })
+                cy.contains("Submit").click()
+                cy.get(".toastify").should("have.length", 5)
+    
+                cy.get("#method").should("be.enabled").clear({ force: true }).type("method",  { force: true })
+                cy.contains("Submit").click()
+                cy.contains("match").should("exist")
+    
+                cy.get("#confirmEmail").should("be.enabled").type("hello@email.com",  { force: true })
+                cy.contains("Submit").click()
+                cy.contains("went wrong").should("exist")
+            }
+        })
     })
 })
 

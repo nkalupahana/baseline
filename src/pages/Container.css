@@ -154,3 +154,19 @@
     margin-top: 16px;
     margin-bottom: 24px;
 }
+
+.margin-top-0 {
+    margin-top: 0px;
+}
+
+.margin-top-8 {
+    margin-top: 8px;
+}
+
+.margin-top-12 {
+    margin-top: 12px;
+}
+
+.margin-bottom-24 {
+    margin-bottom: 24px;
+}

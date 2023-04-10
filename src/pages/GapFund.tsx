@@ -172,7 +172,7 @@ const GapFund = () => {
                     </div>
                 </> }
                 { (gapFundData === SubmissionState.NO_SUBMISSION && !gapFundAvailable) && 
-                    <p>Unfortunately, due to financial limitations from the number of requests we've received,
+                    <p id="gapFundClosed">Unfortunately, due to financial limitations from the number of requests we've received,
                         we can't accept any more requests at this time. Please check back later. If you have
                         some extra money and can donate to help us fund more people, please do!
                     </p> }

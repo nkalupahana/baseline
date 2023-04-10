@@ -3,6 +3,7 @@
   "version": "1.1.5",
   "private": true,
   "dependencies": {
+    "@byteowls/capacitor-oauth2": "^4.0.0",
     "@capacitor-firebase/authentication": "^0.5.1-dev.01021f0.1659726888",
     "@capacitor/android": "github:nkalupahana/capacitor-android",
     "@capacitor/app": "^4.0.0",
