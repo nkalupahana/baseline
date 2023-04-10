@@ -51,7 +51,6 @@ const Settings = () => {
                 />
                 <PDP taskBlock={setDoingAsyncTask} />
                 <p className="bold margin-bottom-0">Partner Connections</p>
-                <br />
                 <GraniteLink />
                 <br /><br />
                 <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>

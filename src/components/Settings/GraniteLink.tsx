@@ -9,6 +9,7 @@ import { makeRequest, toast } from "../../helpers";
 import hash from "crypto-js/sha256";
 import base64 from "crypto-js/enc-base64url"
 import { Capacitor } from "@capacitor/core";
+import ga from "./GraniteAccess.png";
 
 const GraniteLink = () => {
     const [user] = useAuthState(auth);
@@ -40,7 +41,7 @@ const GraniteLink = () => {
         try {
             const code_verifier = crypto.randomUUID() + crypto.randomUUID();
             const res = await OAuth2Client.authenticate({
-                appId: "baseline",
+                appId: "J2TW2CuBnWMoiBSp",
                 authorizationBaseUrl: "https://granite-platform.herokuapp.com/oidc/auth",
                 accessTokenEndpoint: "https://granite-platform.herokuapp.com/oidc/token",
                 responseType: "code",
@@ -70,7 +71,6 @@ const GraniteLink = () => {
                     access_token: res.access_token_response.access_token,
                     id_token: res.access_token_response.id_token
                 }, setSubmitting);
-
             }
         } catch (e: any) {
             toast(`Connection error, please try again. (${e.message})`);
@@ -80,11 +80,11 @@ const GraniteLink = () => {
     };
 
     return <>
-        { linkData === false && <div onClick={graniteAccess} className="finish-button">
-            { !submitting && <>Connect with GraniteAccess</> }
-            { submitting && <IonSpinner className="loader" name="crescent" /> }
+        { linkData === true && <div className="margin-top-8">
+            { !submitting && <img src={ga} onClick={graniteAccess} alt="Connect with GraniteAccess" style={{"maxWidth": "200px"}} /> }
+            { submitting && <><IonSpinner className="loader" name="crescent" /> <span className="fake-link" onClick={() => setSubmitting(false)}>Connecting with GraniteAccess, tap to cancel.</span></> }
         </div> }
-        { linkData === true && <p className="margin-top-0 margin-bottom-0">Linked with Granite!</p> }
+        { linkData === false && <p className="margin-top-8 margin-bottom-0">Linked with GraniteAccess!</p> }
         { linkData === undefined && <Preloader message="" /> }
     </>;
 };
