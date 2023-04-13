@@ -42,8 +42,8 @@ const GraniteLink = () => {
             const code_verifier = crypto.randomUUID() + crypto.randomUUID();
             const res = await OAuth2Client.authenticate({
                 appId: "J2TW2CuBnWMoiBSp",
-                authorizationBaseUrl: "https://granite-platform.herokuapp.com/oidc/auth",
-                accessTokenEndpoint: "https://granite-platform.herokuapp.com/oidc/token",
+                authorizationBaseUrl: "https://api.graniteaccess.io/oidc/auth",
+                accessTokenEndpoint: "https://api.graniteaccess.io/oidc/token",
                 responseType: "code",
                 scope: "openid",
                 pkceEnabled: true,

@@ -17,7 +17,7 @@ export const graniteLink = async (req: UserRequest, res: Response) => {
         form.set("client_id", "J2TW2CuBnWMoiBSp");
         form.set("code_verifier", body.code_verifier);
 
-        const access = await (await fetch("https://granite-platform.herokuapp.com/oidc/token", {
+        const access = await (await fetch("https://api.graniteaccess.io/oidc/token", {
             method: "POST",
             body: form,
             headers: {
@@ -45,7 +45,7 @@ export const graniteLink = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const mountaineer = await (await fetch("https://granite-platform.herokuapp.com/client/has?address=0x8c01F90d54aF84394AF14e673b13802a714D72e8", {
+    const mountaineer = await (await fetch("https://api.graniteaccess.io/client/has?address=0x8c01F90d54aF84394AF14e673b13802a714D72e8", {
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${body.access_token}`
@@ -57,7 +57,7 @@ export const graniteLink = async (req: UserRequest, res: Response) => {
     await getDatabase().ref(`${req.user!.user_id}/partners/granite`).set({
         id_token: body.id_token,
         access_token: body.access_token,
-        hasMountaineer: mountaineer.has ?? false
+        hasMountaineer: mountaineer.holdsToken ?? false
     });
 
     res.send(200);
