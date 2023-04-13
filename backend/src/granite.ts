@@ -57,7 +57,7 @@ export const graniteLink = async (req: UserRequest, res: Response) => {
     await getDatabase().ref(`${req.user!.user_id}/partners/granite`).set({
         id_token: body.id_token,
         access_token: body.access_token,
-        hasMountaineer: mountaineer.has ?? false
+        hasMountaineer: mountaineer.holdsToken ?? false
     });
 
     res.send(200);
