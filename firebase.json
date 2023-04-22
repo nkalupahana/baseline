@@ -86,7 +86,12 @@
       },
       {
         "source": "/nick",
-        "destination": "/?utm_source=1on1&utm_campaign=nickgebo",
+        "destination": "/?utm_source=hub&utm_campaign=hub1",
+        "type": 302
+      },
+      {
+        "source": "/hub",
+        "destination": "/?utm_source=hub&utm_campaign=hub2",
         "type": 302
       }
     ]
