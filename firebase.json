@@ -96,7 +96,7 @@
       },
       {
         "source": "/join",
-        "destination": "/?utm_source=hub&utm_campaign=hub2",
+        "destination": "/?utm_source=hub&utm_campaign=hub3",
         "type": 302
       }
     ]
