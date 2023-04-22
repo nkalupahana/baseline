@@ -93,6 +93,11 @@
         "source": "/hub",
         "destination": "/?utm_source=hub&utm_campaign=hub2",
         "type": 302
+      },
+      {
+        "source": "/join",
+        "destination": "/?utm_source=hub&utm_campaign=hub2",
+        "type": 302
       }
     ]
   }],
