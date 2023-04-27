@@ -4,7 +4,6 @@ import { BigQuery } from "@google-cloud/bigquery";
 import { Storage } from "@google-cloud/storage";
 import { getFirestore } from "firebase-admin/firestore";
 
-
 export const loadBasicBIData = async (db: any) => {
     const bigquery = new BigQuery();
     const storage = new Storage();
