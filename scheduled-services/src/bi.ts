@@ -249,7 +249,7 @@ export const loadBasicBIData = async (db: any) => {
         location: "US",
         writeDisposition: "WRITE_TRUNCATE"
     };
-    promises.push(bigquery.dataset("bi").table("granite").load(storage.bucket("baseline-bi").file("granite.csv"), graniteMetadata));
+    promises.push(bigquery.dataset("bi_granite").table("granite_main").load(storage.bucket("baseline-bi").file("granite.csv"), graniteMetadata));
 
     await Promise.all(promises);
 }
