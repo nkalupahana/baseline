@@ -4,6 +4,7 @@ import { BigQuery } from "@google-cloud/bigquery";
 import { Storage } from "@google-cloud/storage";
 import { getFirestore } from "firebase-admin/firestore";
 
+
 export const loadBasicBIData = async (db: any) => {
     const bigquery = new BigQuery();
     const storage = new Storage();
@@ -31,6 +32,11 @@ export const loadBasicBIData = async (db: any) => {
             offset, 
             (fcm === "{}" ? "" : Buffer.from(fcm).toString("base64"))
         ].join(","));
+    }
+
+    let granite: string[] = [];
+    const addGranite = (userId: string, graniteUserId: string, timestamps: string) => {
+        granite.push([userId, graniteUserId, timestamps].join(","));
     }
 
     let gapFund: string[] = [];
@@ -69,6 +75,18 @@ export const loadBasicBIData = async (db: any) => {
 
         if ("gapFund" in db[userId]) {
             gapFund.push(userId);
+        }
+
+        if ("partners" in db[userId]) {
+            if ("granite" in db[userId]["partners"]) {
+                let [_, payload, __] = db[userId]["partners"]["granite"]["id_token"].split(".")
+                payload = JSON.parse(Buffer.from(payload, "base64").toString("utf-8"));
+                addGranite(
+                    userId,
+                    payload.sub,
+                    Object.keys(db[userId]["logs"] ?? {}).join(";")
+                );
+            }
         }
     }
 
@@ -115,6 +133,7 @@ export const loadBasicBIData = async (db: any) => {
     promises.push(storage.bucket("baseline-bi").file("users.csv").save(users.join("\n")));
     promises.push(storage.bucket("baseline-bi").file("accounts.csv").save(accounts.join("\n")));
     promises.push(storage.bucket("baseline-bi").file("conversions.csv").save(convData.join("\n")));
+    promises.push(storage.bucket("baseline-bi").file("granite.csv").save(granite.join("\n")));
 
     await Promise.all(promises);
 
@@ -215,6 +234,23 @@ export const loadBasicBIData = async (db: any) => {
         writeDisposition: "WRITE_TRUNCATE"
     };
     promises.push(bigquery.dataset("bi").table("conversions").load(storage.bucket("baseline-bi").file("conversions.csv"), convMetadata));
+
+    await Promise.all(promises);
+
+    // Send granite CSV to BigQuery
+    const graniteMetadata = {
+        sourceFormat: "CSV",
+        schema: {
+          fields: [
+            { name: "baselineUserId", type: "STRING" },
+            { name: "graniteUserId", type: "STRING" },
+            { name: "timestamps", type: "STRING" }
+          ]
+        },
+        location: "US",
+        writeDisposition: "WRITE_TRUNCATE"
+    };
+    promises.push(bigquery.dataset("bi").table("granite").load(storage.bucket("baseline-bi").file("granite.csv"), graniteMetadata));
 
     await Promise.all(promises);
 }
