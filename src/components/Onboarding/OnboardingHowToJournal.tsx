@@ -19,7 +19,7 @@ const good: SimpleLog[] = [
         mood: 0
     },
     {
-        journal: "having a good day! things are going well at work, fixed the underreporting issue on our sales app that ive been working on for the last week. and i finally got to catch up with carrie! things are going well.",
+        journal: "having a good day! things are going well at work, fixed the underreporting issue on our sales app that ive been working on for the last week. and i finally got to catch up with lucia! things are going well.",
         time: "12:01 PM",
         average: "average",
         mood: 2
