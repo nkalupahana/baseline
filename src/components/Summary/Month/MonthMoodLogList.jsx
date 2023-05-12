@@ -104,7 +104,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                     setNumberFilter={setNumberFilter} 
                     imageFilter={imageFilter}
                     setImageFilter={setImageFilter}
-                    numLogs={filteredLogs?.length ?? 0}
+                    numLogs={filteredLogs.length}
                 />
             </div>
             <MoodLogList 

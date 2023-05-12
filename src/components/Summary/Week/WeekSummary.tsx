@@ -76,7 +76,7 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
                         imageFilter={imageFilter}
                         setImageFilter={setImageFilter}
                         inputClass={"week"}
-                        numLogs={(search.get ? filteredLogs : logs)?.length ?? 0}
+                        numLogs={filteredLogs?.length ?? 0}
                     />
                 </div> }
                 <WeekMoodLogList 
