@@ -52,7 +52,7 @@ const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, average
             <span style={{"width": "10px", "height": "100%"}}></span>
             <IonIcon onClick={() => setImageFilter(!imageFilter)} style={imageFilter ? {"color": "lightblue"} : {}} className="image-btn" icon={imagesOutline} />
         </span>
-        <p className="margin-top-12 text-center margin-bottom-0" style={{"fontSize": "16px"}}>{ numLogs } entries</p>
+        <p id="search-num-results" className="margin-top-12 text-center margin-bottom-0" style={{"fontSize": "16px"}}>{ numLogs } { numLogs === 1 ? "entry" : "entries" }</p>
     </>
 };
 

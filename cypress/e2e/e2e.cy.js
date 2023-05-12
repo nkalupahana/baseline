@@ -197,12 +197,15 @@ describe("Mobile Flow", () => {
         cy.contains("Search").click()
         cy.get(".searchbar").type("Hello world")
         cy.get(".mood-card").should("have.length", 1)
+        cy.get("#search-num-results").should("have.text", "1 entry")
 
         cy.get(".searchbar").clear().type("Nonsense")
         cy.contains("No Results").should("exist")
-
+        cy.get("#search-num-results").should("have.text", "0 entries")
+        
         cy.get(".searchbar").clear()
         cy.get("No Results").should("not.exist")
+        cy.get("#search-num-results").should("have.text", "14 entries")
         cy.get(".image-btn").click()
         cy.contains("No Results").should("exist")
 
@@ -308,8 +311,10 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
+        cy.get("#search-num-results").should("have.text", "16 entries")
         cy.get(".image-btn").click()
         cy.contains("No Results").should("exist")
+        cy.get("#search-num-results").should("have.text", "0 entries")
         
         cy.get(".image-btn").click()
         cy.contains("No Results").should("not.exist")
