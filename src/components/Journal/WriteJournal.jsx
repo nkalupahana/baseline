@@ -5,6 +5,7 @@ import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
 import { decrypt, encrypt } from "../../helpers";
+import Autolinker from 'autolinker';
 
 const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     const textarea = useRef();
@@ -38,6 +39,23 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
         }
     }, [props.text]);
 
+    const autolink = text => {
+        const el = textarea.current;
+        const selection = window.getSelection();
+        const srange = selection.getRangeAt(0);
+        const start = srange.startOffset;
+        console.log(start);
+
+        el.innerHTML = Autolinker.link(text, { stripPrefix: false, stripTrailingSlash: false, sanitizeHtml: false });
+
+        const range = document.createRange();//Create a range (a range is a like the selection but invisible)
+        console.log(el.childNodes[0])
+        range.setStart(el.childNodes[0], start);
+        range.collapse(true);
+        selection.removeAllRanges();//remove any selections already made
+        selection.addRange(range);//make the range you have just created the visible selection
+    };
+
     return (
         <div className="container">
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
@@ -45,7 +63,8 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
                 <div className="title">What's happening?</div>
                 <p className="text-center bold max-width-600 margin-top-8">What have you been doing, how have you been feeling, and why might you be feeling that way?</p>
                 <label data-value={props.text} className="input-sizer stacked">
-                    <textarea ref={textarea} className="tx" value={props.text} onInput={e => setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
+                    <div contentEditable={true} ref={textarea} className="tx" onInput={e => autolink(e.target.innerHTML)} placeholder="Start typing here!">
+                    </div>
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
                 <KeyboardSpacer />

@@ -34,6 +34,7 @@
     "@types/toastify-js": "^1.11.0",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
+    "autolinker": "^4.0.0",
     "capacitor-cloudkit": "^1.0.0",
     "capacitor-rate-app": "^3.0.0",
     "crypto-js": "^4.1.1",
