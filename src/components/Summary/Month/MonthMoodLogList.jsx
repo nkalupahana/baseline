@@ -5,7 +5,7 @@ import MoodLogList from "../MoodLogList";
 import SearchAndFilter from "../SearchAndFilter";
 
 const TRUST_BOUND = 15;
-const LOCATOR_OFFSET = 95;
+const LOCATOR_OFFSET = 120;
 
 const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, setRequestedDate }) => {
     const [searchText, setSearchText] = useState("");
@@ -104,6 +104,7 @@ const MonthMoodLogList = ({ logs, inFullscreen, setInFullscreen, requestedDate, 
                     setNumberFilter={setNumberFilter} 
                     imageFilter={imageFilter}
                     setImageFilter={setImageFilter}
+                    numLogs={filteredLogs.length}
                 />
             </div>
             <MoodLogList 

@@ -69,11 +69,11 @@
 }
 
 .log-list-expand.filter-area {
-    height: 84px;
+    height: 116px;
 }
 
 .grid-heading.filter-area {
-    height: 140px;
+    height: calc(128px + max(env(safe-area-inset-top), 16px))
 }
 
 .filter-selects {

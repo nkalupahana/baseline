@@ -12,6 +12,7 @@ interface Props {
     imageFilter: boolean;
     setImageFilter: (image: boolean) => void;
     inputClass?: string;
+    numLogs: number;
 }
 
 interface Selected {
@@ -19,7 +20,7 @@ interface Selected {
     value: string;
 }
 
-const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, averageFilter, setAverageFilter, imageFilter, setImageFilter, inputClass } : Props) => {
+const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, averageFilter, setAverageFilter, imageFilter, setImageFilter, inputClass, numLogs } : Props) => {
     const debounceSetSearchText = debounce(setSearchText, 500);
 
     const expand = (x: any) => {
@@ -51,6 +52,7 @@ const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, average
             <span style={{"width": "10px", "height": "100%"}}></span>
             <IonIcon onClick={() => setImageFilter(!imageFilter)} style={imageFilter ? {"color": "lightblue"} : {}} className="image-btn" icon={imagesOutline} />
         </span>
+        <p id="search-num-results" className="margin-top-12 text-center margin-bottom-0" style={{"fontSize": "16px"}}>{ numLogs } { numLogs === 1 ? "entry" : "entries" }</p>
     </>
 };
 
