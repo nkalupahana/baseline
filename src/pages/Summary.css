@@ -73,7 +73,7 @@
 }
 
 .grid-heading.filter-area {
-    height: 144px;
+    height: calc(128px + max(env(safe-area-inset-top), 16px))
 }
 
 .filter-selects {
