@@ -1,5 +1,5 @@
 import "./JournalComponents.css";
-import { FormEvent, useEffect, useRef } from "react";
+import { ClipboardEvent, FormEvent, useEffect, useRef } from "react";
 import history from "../../history";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
@@ -48,18 +48,36 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }: Props) => {
     }, [props.text]);
 
     const autolink = (e: FormEvent<HTMLDivElement>) => {
-        if ((e.nativeEvent as InputEvent).inputType === "insertText") {
-            const sel = (rangy as any).saveSelection();
-            let html = textarea.current!.innerHTML;
-            html = html.replaceAll("<i>", "");
-            html = html.replaceAll("</i>", "");
-            const linkFinder = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-;a-zA-Z0-9@:%_+.~#?&//=]*)/g
-            html = html.replaceAll(linkFinder, "<i>$&</i>");
-            textarea.current!.innerHTML = html;
-            (rangy as any).restoreSelection(sel);
-            (rangy as any).removeMarkers(sel);
-        }
-    }
+        const range = window.getSelection()!.getRangeAt(0);
+        const boundaryRange = range.cloneRange();
+        boundaryRange.collapse(false);
+        const markerText = document.createTextNode("\ufeff");
+        boundaryRange.insertNode(markerText);
+        
+        let html = textarea.current!.innerHTML;
+        html = html.replaceAll("<i>", "");
+        html = html.replaceAll("</i>", "");
+        const linkFinder = /(h\ufeff?t\ufeff?t\ufeff?p\ufeff?(s\ufeff?)?:\ufeff?\/\ufeff?\/\ufeff?)?(w\ufeff?w\ufeff?w\ufeff?\.\ufeff?)?[-a-zA-Z0-9@:%._+~#=\ufeff]{1,256}\.[\ufeffa-z]{2,24}\b([-\ufeffa-zA-Z0-9@:%_+.~;#?&//=]*)/g
+        html = html.replaceAll(linkFinder, "<i>$&</i>");
+        html = html.replaceAll("\ufeff", "<span id='marker'></span>");
+        textarea.current!.innerHTML = html;
+
+        const marker = document.getElementById("marker")!;
+        const markerRange = document.createRange();
+        markerRange.setStartAfter(marker);
+        markerRange.setEndAfter(marker);
+        const sel = window.getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(markerRange);
+        marker.remove();
+    };
+
+    const handlePaste = (e: ClipboardEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData("text/plain");
+        document.execCommand("insertHTML", false, text);
+        autolink(e);
+    };
 
     return (
         <div className="container">
@@ -68,7 +86,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }: Props) => {
                 <div className="title">What's happening?</div>
                 <p className="text-center bold max-width-600 margin-top-8">What have you been doing, how have you been feeling, and why might you be feeling that way?</p>
                 <label data-value={props.text} className="input-sizer stacked">
-                    <div contentEditable={true} ref={textarea} className="tx" onInput={e => autolink(e)} placeholder="Start typing here!">
+                    <div contentEditable={true} ref={textarea} className="tx" onInput={e => autolink(e)} onPaste={e => handlePaste(e)} placeholder="Start typing here!">
                     </div>
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
