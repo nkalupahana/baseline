@@ -5,8 +5,6 @@ import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
 import { decrypt, encrypt } from "../../helpers";
-import rangy from "rangy";
-import "rangy/lib/rangy-selectionsaverestore";
 
 interface Props {
     setMoodRead: (mood: number) => void;
