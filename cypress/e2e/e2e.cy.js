@@ -83,14 +83,14 @@ describe("Mobile Flow", () => {
     it("Write Mood Log", () => {
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
-        cy.get("textarea").type("Hello world!")
+        cy.get(".tx").type("Hello world!")
         cy.get('body').happoScreenshot()
         cy.contains("Continue").should("exist").click()
     })
 
     it("Finish Mood Log", () => {
         cy.get("svg").should("exist")
-        cy.get("textarea").should("have.value", "Hello world!")
+        cy.get(".tx").should("have.value", "Hello world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
         cy.get("body").happoScreenshot()
 
@@ -111,7 +111,7 @@ describe("Mobile Flow", () => {
         cy.get("canvas").should("exist")
         cy.get("body").happoScreenshot()
         cy.url().should("include", "/summary")
-        cy.get("textarea").should("not.exist")
+        cy.get(".tx").should("not.exist")
     })
 
     it("Verify Mood Log on Summary", () => {
@@ -127,12 +127,12 @@ describe("Mobile Flow", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
         cy.contains("feel").should("exist")
-        cy.get("textarea").should("exist").focus().clear().type(`Bad beginner`).should("have.value", `Bad beginner`)
+        cy.get(".tx").should("exist").focus().clear().type(`Bad beginner`).should("have.value", `Bad beginner`)
         cy.contains("Continue").should("exist").click()
 
         cy.get(".dialog-background").should("exist").happoScreenshot()
         cy.contains("Go back and write").click()
-        cy.get("textarea").should("exist").should("have.value", `Bad beginner`)
+        cy.get(".tx").should("exist").should("have.value", `Bad beginner`)
         cy.contains("Continue").should("exist").click()
         cy.contains("Done!").should("exist").click()
         cy.url().should("include", "/summary")
@@ -160,7 +160,7 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 12; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.get("textarea").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
+            cy.get(".tx").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
 
             if (i === 9) {
@@ -216,7 +216,7 @@ describe("Mobile Flow", () => {
     it("Test -5 Warning Behavior", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
-        cy.get("textarea").should("exist").focus().type(`-5`).should("have.value", `-5`)
+        cy.get(".tx").should("exist").focus().type(`-5`).should("have.value", `-5`)
         cy.contains("Continue").should("exist").click()
         cy.get("span.bold > div > div:first")
             .trigger('mousedown', { which: 1 })
@@ -254,14 +254,14 @@ describe("Desktop Flow", () => {
     it("Write Mood Log", () => {
         cy.visit("/")
         cy.contains("What's happening").should("exist")
-        cy.get("textarea").type("Hello desktop world!")
+        cy.get(".tx").type("Hello desktop world!")
         cy.get("body").happoScreenshot()
         cy.contains("Continue").should("exist").click()
     })
 
     it("Finish Mood Log", () => {
         cy.get("svg").should("exist")
-        cy.get("textarea").should("have.value", "Hello desktop world!")
+        cy.get(".tx").should("have.value", "Hello desktop world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
         cy.get("body").happoScreenshot()
 
