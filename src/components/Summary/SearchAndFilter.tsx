@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { imagesOutline } from "ionicons/icons";
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 import { MultiSelect } from "react-multi-select-component";
 
 interface Props {
@@ -20,14 +20,14 @@ interface Selected {
 }
 
 const SearchAndFilter = ({ setSearchText, numberFilter, setNumberFilter, averageFilter, setAverageFilter, imageFilter, setImageFilter, inputClass } : Props) => {
-    const debounceSetSearchText = debounce(setSearchText, 500);
+    const throttledSetSearchText = throttle(setSearchText, 300);
 
     const expand = (x: any) => {
         return {value: String(x), label: String(x)};
     };
     
     return <>
-        <input placeholder="Search" type="text" className={`invisible-input searchbar ${inputClass}`} onChange={e => debounceSetSearchText(e.target.value)}/>
+        <input placeholder="Search" type="text" className={`invisible-input searchbar ${inputClass}`} onChange={e => throttledSetSearchText(e.target.value)}/>
         <span className="filter-selects">
             <MultiSelect 
                 labelledBy="" 
