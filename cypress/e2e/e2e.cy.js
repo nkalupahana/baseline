@@ -127,7 +127,7 @@ describe("Mobile Flow", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
         cy.contains("feel").should("exist")
-        cy.get(".tx").should("exist").focus().clear().type(`Bad beginner`).should("have.value", `Bad beginner`)
+        cy.get(".tx").should("exist").focus().clear().type(`Bad beginner`).should("have.text", `Bad beginner`)
         cy.contains("Continue").should("exist").click()
 
         cy.get(".dialog-background").should("exist").happoScreenshot()
