@@ -31,14 +31,14 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }: Props) => {
             if (pwd) {
                 const text = decrypt(localStorage.getItem("eautosave")!, pwd);
                 setText(text);
-                textarea.current!.innerHTML = text;
+                textarea.current!.innerText = text;
                 autolink();
             }
         } else {
             const autosave = localStorage.getItem("autosave");
             if (autosave) {
                 setText(autosave);
-                textarea.current.innerHTML = autosave;
+                textarea.current.innerText = autosave;
                 autolink();
             }
         }
@@ -75,9 +75,11 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }: Props) => {
         let html = textarea.current!.innerHTML;
         html = html.replaceAll("<span>", "");
         html = html.replaceAll("</span>", "");
-        const linkFinder = /(h\ufeff?t\ufeff?t\ufeff?p\ufeff?(s\ufeff?)?:\ufeff?\/\ufeff?\/\ufeff?)?(w\ufeff?w\ufeff?w\ufeff?\.\ufeff?)?[-a-zA-Z0-9@:%._+~#=\ufeff]{1,256}\.[\ufeffa-z]{2,24}\b([-\ufeffa-zA-Z0-9@:%_+.~#?&//=]*)(?=&nbsp;)/g
+        html = html.replaceAll("&nbsp;", "\u001f")
+        const linkFinder = /(h\ufeff?t\ufeff?t\ufeff?p\ufeff?(s\ufeff?)?:\ufeff?\/\ufeff?\/\ufeff?)?(w\ufeff?w\ufeff?w\ufeff?\.\ufeff?)?[-a-zA-Z0-9@:%._+~#=\ufeff]{1,256}\.[\ufeffa-z]{2,24}\b([-\ufeffa-zA-Z0-9@:%_+.~#?&//=]*)/g
         html = html.replaceAll(linkFinder, "<span>$&</span>");
         html = html.replaceAll("\ufeff", "<i id='marker'></i>");
+        html = html.replaceAll("\u001f", "&nbsp;");
         // Just put cursor on end if no prior selection
         if (!hasSelection) html += "<i id='marker'></i>";
         textarea.current.innerHTML = html;
@@ -98,7 +100,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }: Props) => {
     const handlePaste = (e: ClipboardEvent<HTMLDivElement>) => {
         e.preventDefault();
         const text = e.clipboardData.getData("text/plain");
-        document.execCommand("insertHTML", false, text);
+        document.execCommand("insertText", false, text);
         autolink();
     };
 
