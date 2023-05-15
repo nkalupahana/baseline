@@ -6,7 +6,7 @@ import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
 import { decrypt, encrypt } from "../../helpers";
 import { throttle } from "lodash";
-
+import DOMPurify from "dompurify";
 interface Props {
     setMoodRead: (mood: number) => void;
     moodWrite: number;
@@ -72,9 +72,8 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }: Props) => {
         }
         
         // Construct links
-        let html = textarea.current!.innerHTML;
-        html = html.replaceAll("<span>", "");
-        html = html.replaceAll("</span>", "");
+        let html = textarea.current.innerHTML;
+        html = DOMPurify.sanitize(html, { ALLOWED_TAGS: ["div", "br"], ALLOWED_ATTR: [] });
         html = html.replaceAll("&nbsp;", "\u001f")
         const linkFinder = /(h\ufeff?t\ufeff?t\ufeff?p\ufeff?(s\ufeff?)?:\ufeff?\/\ufeff?\/\ufeff?)?(w\ufeff?w\ufeff?w\ufeff?\.\ufeff?)?[-a-zA-Z0-9@:%._+~#=\ufeff]{1,256}\.[\ufeffa-z]{2,24}\b([-\ufeffa-zA-Z0-9@:%_+.~#?&//=]*)/g
         html = html.replaceAll(linkFinder, "<span>$&</span>");
