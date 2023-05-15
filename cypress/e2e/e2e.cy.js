@@ -132,7 +132,7 @@ describe("Mobile Flow", () => {
 
         cy.get(".dialog-background").should("exist").happoScreenshot()
         cy.contains("Go back and write").click()
-        cy.get(".tx").should("exist").should("have.value", `Bad beginner`)
+        cy.get(".tx").should("exist").should("have.text", `Bad beginner`)
         cy.contains("Continue").should("exist").click()
         cy.contains("Done!").should("exist").click()
         cy.url().should("include", "/summary")
@@ -160,7 +160,7 @@ describe("Mobile Flow", () => {
         for (let i = 0; i < 12; ++i) {
             cy.get(".fab-button-close-active").should("exist").click()
             cy.contains("What's happening").should("exist")
-            cy.get(".tx").should("exist").focus().clear().type(`Test ${i}`).should("have.value", `Test ${i}`)
+            cy.get(".tx").should("exist").focus().clear().type(`Test ${i}`).should("have.text", `Test ${i}`)
             cy.contains("Continue").should("exist").click()
 
             if (i === 9) {
@@ -216,7 +216,7 @@ describe("Mobile Flow", () => {
     it("Test -5 Warning Behavior", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
-        cy.get(".tx").should("exist").focus().type(`-5`).should("have.value", `-5`)
+        cy.get(".tx").should("exist").focus().type(`-5`).should("have.text", `-5`)
         cy.contains("Continue").should("exist").click()
         cy.get("span.bold > div > div:first")
             .trigger('mousedown', { which: 1 })
