@@ -10,6 +10,7 @@ import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
 import { checkKeys, goBackSafely, toast } from "../helpers";
 import history from "../history";
+import ExportData from "../components/Settings/ExportData";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
@@ -62,9 +63,9 @@ const Settings = () => {
                     spare, <span className="fake-link" onClick={() => history.push("/donate")}>please donate!</span> 100% of 
                     your donation goes right back to users through the gap fund, or to help get baseline to more people.
                 </p>
+                <ExportData />
                 <p>
-                    Want a copy of the data you've submitted to us? We're working on automating
-                    this, but for now, email us at <a href="mailto:privacy@getbaseline.app">privacy@getbaseline.app.</a>
+                    For a full copy of your data, email us at <a href="mailto:privacy@getbaseline.app">privacy@getbaseline.app.</a>
                 </p>
                 <p>
                     If you'd like to delete your account, <span className="fake-link" onClick={() => setDeleteAlert(true)}>click here.</span> You'll be prompted to sign in again to confirm.
