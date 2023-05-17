@@ -2,6 +2,9 @@ import { IonButton } from "@ionic/react";
 import ldb from "../../db";
 import { decrypt, parseSettings } from "../../helpers";
 import { useRef } from "react";
+import { Share } from "@capacitor/share";
+import { Capacitor } from "@capacitor/core";
+import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
 
 const ExportData = () => {
     const downloadLink = useRef<HTMLAnchorElement>(null);
@@ -25,11 +28,7 @@ const ExportData = () => {
 
     const exportDataAsJSON = async () => {
         const data = await getData();
-        const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
-        const el = downloadLink.current!;
-        el.href = URL.createObjectURL(blob);
-        el.download = "journal-data.json";
-        el.click();
+        save(JSON.stringify(data), "journal-data.json", "application/json");
     };
 
     const exportDataAsCSV = async () => {
@@ -40,11 +39,28 @@ const ExportData = () => {
             entry.files = entry.files ?? [];
             csv += `${entry.timestamp},"${entry.journal}",${entry.mood},${entry.average},${entry.zone},"${entry.files.join(",")}"\n`;
         }
-        const blob = new Blob([csv], {type: "text/csv"});
-        const el = downloadLink.current!;
-        el.href = URL.createObjectURL(blob);
-        el.download = "journal-data.csv";
-        el.click();
+        save(csv, "journal-data.csv", "text/csv");
+    }
+
+    const save = async (data: string, filename: string, filetype: string) => {
+        if (Capacitor.getPlatform() === "web") {
+            const el = downloadLink.current!;
+            el.href = URL.createObjectURL(new Blob([data], {type: filetype}));
+            el.download = "journal-data.json";
+            el.click();
+        } else {
+            const { uri } = await Filesystem.writeFile({
+                "path": filename,
+                "data": data,
+                "directory": Directory.Cache,
+                "encoding": Encoding.UTF8
+            });
+
+            Share.share({
+                "title": "Journal Data",
+                "files": [uri]
+            });
+        }
     }
 
     return <>
