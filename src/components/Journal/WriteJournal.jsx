@@ -10,6 +10,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
+        throw new Error("fake error for testing");
     };
 
     useEffect(() => {
