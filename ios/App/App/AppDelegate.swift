@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           if #available(macOS 13.3, iOS 16.4, tvOS 16.4, *) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                       if let vc = self.window?.rootViewController as? CAPBridgeViewController {
-                          vc.bridge?.webView?.isInspectable = true;
+                          vc.bridge?.webView?.isInspectable = true
                       }
                 }
           }

@@ -692,10 +692,18 @@ describe("Test Settings", () => {
         cy.url().should("include", "/summary")
     })
 
-    it("Start Deletion", () => {
+    it("Test Data Export", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.get("ion-menu").should("not.exist")
+        cy.contains("Settings").should("exist")
+
+        cy.contains("Export Journal Data as JSON").should("exist").click()
+        cy.contains("Export Journal Data as CSV").should("exist").click()
+    })
+
+    it("Start Deletion", () => {
+        cy.contains("Settings").should("exist")
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(0).click()
