@@ -103,7 +103,7 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "^4.0.0",
+    "@capacitor/cli": "^4.8.0",
     "@cypress/code-coverage": "^3.10.0",
     "@cypress/instrument-cra": "^1.4.0",
     "@types/crypto-js": "^4.1.1",
