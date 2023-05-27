@@ -2,5 +2,5 @@
 if [ -z "$CI" ]; then echo "Not CI environment, exiting." && exit; fi
 if [ -z "$GITHUB_SHA" ]; then echo "GITHUB_SHA not set, exiting." && exit; fi
 sentry-cli sourcemaps inject build/static/js
-sentry-cli sourcemaps upload --release=$GITHUB_SHA --url-prefix=https://web.getbaseline.app/static/js --validate build/static/js
-sentry-cli sourcemaps upload --release=$GITHUB_SHA --url-prefix=capacitor://localhost/static/js --validate build/static/js
+sentry-cli sourcemaps upload --org=getbaseline --project=baseline --release=$GITHUB_SHA --url-prefix=https://web.getbaseline.app/static/js --validate build/static/js
+sentry-cli sourcemaps upload --org=getbaseline --project=baseline --release=$GITHUB_SHA --url-prefix=capacitor://localhost/static/js --validate build/static/js

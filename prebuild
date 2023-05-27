@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ -z "$CI" ]; then echo "Not CI environment, exiting." && exit; fi
 if [ -z "$GITHUB_SHA" ]; then echo "GITHUB_SHA not set, exiting." && exit; fi
-sed 's/environment: "development"/environment: "production"/' src/index.tsx > src/index.tmp1
-sed 's/release: "development"/release: "$GITHUB_SHA"/' src/index.tmp1 > src/index.tmp2
+sed "s/environment: \"development\"/environment: \"production\"/" src/index.tsx > src/index.tmp1
+sed "s/release: \"development\"/release: \"$GITHUB_SHA\"/" src/index.tmp1 > src/index.tmp2
 rm src/index.tsx
 rm src/index.tmp1
 mv src/index.tmp2 src/index.tsx
