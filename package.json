@@ -68,6 +68,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "prebuild": "./prebuild",
+    "postbuild": "./postbuild",
     "build": "react-scripts build",
     "test:e2e": "npx happo-e2e -- cypress run --e2e",
     "test:e2e:noinst": "npx cypress run --e2e",
