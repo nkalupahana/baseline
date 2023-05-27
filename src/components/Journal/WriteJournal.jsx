@@ -5,12 +5,13 @@ import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
 import { decrypt, encrypt } from "../../helpers";
+import { Capacitor } from "@capacitor/core";
 
 const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
-        throw new Error("fake error for testing");
+        if (Capacitor.getPlatform() !== "web") throw new Error("fake error for testing");
     };
 
     useEffect(() => {
