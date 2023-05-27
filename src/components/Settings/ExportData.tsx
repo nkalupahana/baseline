@@ -46,7 +46,7 @@ const ExportData = () => {
         if (Capacitor.getPlatform() === "web") {
             const el = downloadLink.current!;
             el.href = URL.createObjectURL(new Blob([data], {type: filetype}));
-            el.download = "journal-data.json";
+            el.download = filename;
             el.click();
         } else {
             const { uri } = await Filesystem.writeFile({

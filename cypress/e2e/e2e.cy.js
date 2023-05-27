@@ -699,7 +699,9 @@ describe("Test Settings", () => {
         cy.contains("Settings").should("exist")
 
         cy.contains("Export Journal Data as JSON").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.json")
         cy.contains("Export Journal Data as CSV").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.csv")
     })
 
     it("Start Deletion", () => {
