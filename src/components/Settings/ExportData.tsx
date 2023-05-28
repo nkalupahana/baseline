@@ -64,9 +64,9 @@ const ExportData = () => {
     }
 
     return <>
-        <IonButton onClick={exportDataAsJSON}>Export Journal Data as JSON</IonButton>
+        <IonButton mode="ios" onClick={exportDataAsJSON}>Export Journal Data as JSON</IonButton>
         <br />
-        <IonButton onClick={exportDataAsCSV}>Export Journal Data as CSV</IonButton>
+        <IonButton mode="ios" onClick={exportDataAsCSV}>Export Journal Data as CSV</IonButton>
         { /* eslint-disable-next-line */ }
         <a style={{"display": "none"}} ref={downloadLink} />
     </>;
