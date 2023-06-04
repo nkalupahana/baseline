@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { BigQuery } from "@google-cloud/bigquery";
 import { Storage } from "@google-cloud/storage";
 import { getFirestore } from "firebase-admin/firestore";
+import { DateTimeMap, NumberMap } from "./helpers.js";
 
 export const loadBasicBIData = async (db: any) => {
     const bigquery = new BigQuery();
@@ -22,7 +23,9 @@ export const loadBasicBIData = async (db: any) => {
     };
 
     let users: string[] = [];
+    let userToLastUpdated: NumberMap = {};
     const addUser = (userId: string, lastUpdated: number, country: string, region: string, offset: number, fcm: string) => {
+        userToLastUpdated[userId] = lastUpdated;
         users.push([
             userId, 
             lastUpdated,
@@ -91,14 +94,16 @@ export const loadBasicBIData = async (db: any) => {
 
     // A list of account data
     let accounts: string[] = [];
+    let usersToCreationTime: DateTimeMap = {};
     const getAllUsers = async (nextPageToken?: string) => {
         try {
             const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
             listUsersResult.users.forEach(userRecord => {
                 if (userRecord.providerData.length > 0) {
                     const email = userRecord.providerData[0].email ?? userRecord.email ?? "";
-                    const dt = DateTime.fromRFC2822(userRecord.metadata.creationTime).toMillis();
-                    accounts.push(`${userRecord.uid},${email},${dt}`);
+                    const dt = DateTime.fromRFC2822(userRecord.metadata.creationTime);
+                    usersToCreationTime[userRecord.uid] = dt;
+                    accounts.push(`${userRecord.uid},${email},${dt.toMillis()}`);
                 }
             });
 
@@ -120,7 +125,17 @@ export const loadBasicBIData = async (db: any) => {
     let convData = [];
     for (const convs of conversions) {
         for (const conv of Object.values(convs)) {
-            convData.push([conv.timestamp.toMillis(), conv.state, conv.utm_source, conv.utm_campaign, conv.uid].join(","));
+            let additionalData: (number | undefined)[] = [undefined, undefined, undefined];
+            if (conv.uid) {
+                // Add creation time and last updated time
+                additionalData[0] = usersToCreationTime[conv.uid]?.toMillis();
+                additionalData[1] = userToLastUpdated[conv.uid];
+                additionalData[2] = 0;
+                if (userToLastUpdated[conv.uid] && usersToCreationTime[conv.uid]) {
+                    additionalData[2] = Math.round(DateTime.fromMillis(userToLastUpdated[conv.uid]).diff(usersToCreationTime[conv.uid], "days").days);
+                }
+            }
+            convData.push([conv.timestamp.toMillis(), conv.state, conv.utm_source, conv.utm_campaign, conv.uid, ...additionalData].join(","));
         }
     }
 
@@ -226,7 +241,10 @@ export const loadBasicBIData = async (db: any) => {
             { name: "state", type: "STRING" },
             { name: "utm_source", type: "STRING" },
             { name: "utm_campaign", type: "STRING" },
-            { name: "userId", type: "STRING" }
+            { name: "userId", type: "STRING" },
+            { name: "creationTime", type: "INTEGER" },
+            { name: "lastUpdated", type: "INTEGER" },
+            { name: "daysUsed", type: "INTEGER" }
           ]
         },
         location: "US",

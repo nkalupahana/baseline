@@ -4,12 +4,9 @@ import { getDatabase } from "firebase-admin/database";
 import { loadBasicBIData } from "./bi.js";
 import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
 import { cleanUpTokens, logReminder, removeUserNotifications, sendCleanUpMessage } from "./messaging.js";
+import { AnyMap } from "./helpers.js";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
-
-interface AnyMap {
-    [key: string]: any;
-}
 
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
