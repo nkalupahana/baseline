@@ -23,6 +23,8 @@ jobs:
         npm install -g ionic
         npm run build
         ionic cap sync
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     - name: Integration Tests
       run: |
         PORT=8100 npx react-scripts start &
