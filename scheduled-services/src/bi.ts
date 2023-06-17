@@ -255,7 +255,6 @@ export const loadBasicBIData = async (db: any) => {
                 { name: "utm_source", type: "STRING" },
                 { name: "utm_campaign", type: "STRING" },
                 { name: "userId", type: "STRING" },
-                { name: "creationTime", type: "INTEGER" },
                 { name: "lastUpdated", type: "INTEGER" },
                 { name: "daysUsed", type: "INTEGER" }
             ]
