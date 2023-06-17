@@ -44,14 +44,13 @@ export const loadBasicBIData = async (db: any) => {
     let gapFund: string[] = [];
 
     let convData: string[] = [];
-    const addConversion = (timestamp: number, state: string, utm_source: string, utm_campaign: string, userId: string, creationTime: number | undefined, lastUpdated: number | undefined, daysUsed: number | undefined) => {
+    const addConversion = (timestamp: number, state: string, utm_source: string, utm_campaign: string, userId: string, lastUpdated: number | undefined, daysUsed: number | undefined) => {
         convData.push([
             timestamp,
             state,
             utm_source,
             utm_campaign,
             userId,
-            creationTime,
             lastUpdated,
             daysUsed
         ].join(","));
@@ -102,7 +101,7 @@ export const loadBasicBIData = async (db: any) => {
             if (creationTime && lastUpdated) {
                 daysUsed = Math.round(DateTime.fromMillis(lastUpdated).diff(creationTime, "days").days);
             }
-            addConversion(creationTime.toMillis(), "signed_up", db[userId]["info"]["utm_source"], db[userId]["info"]["utm_campaign"], userId, creationTime.toMillis(), lastUpdated, daysUsed);
+            addConversion(creationTime.toMillis(), "signed_up", db[userId]["info"]["utm_source"], db[userId]["info"]["utm_campaign"], userId, lastUpdated, daysUsed);
         }
 
         for (let timestamp in db[userId]["logs"] ?? {}) {
@@ -149,7 +148,7 @@ export const loadBasicBIData = async (db: any) => {
     for (const convs of conversions) {
         for (const conv of Object.values(convs)) {
             if (conv.uid) continue; // Added in user step from RTDB data
-            addConversion(conv.timestamp.toMillis(), conv.state, conv.utm_source, conv.utm_campaign, conv.uid, undefined, undefined, undefined);
+            addConversion(conv.timestamp.toMillis(), conv.state, conv.utm_source, conv.utm_campaign, conv.uid, undefined, undefined);
         }
     }
 
