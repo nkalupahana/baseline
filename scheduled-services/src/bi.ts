@@ -102,7 +102,7 @@ export const loadBasicBIData = async (db: any) => {
             if (creationTime && lastUpdated) {
                 daysUsed = Math.round(DateTime.fromMillis(lastUpdated).diff(creationTime, "days").days);
             }
-            addConversion(0, "signed_up", db[userId]["info"]["utm_source"], db[userId]["info"]["utm_campaign"], userId, creationTime.toMillis(), lastUpdated, daysUsed);
+            addConversion(creationTime.toMillis(), "signed_up", db[userId]["info"]["utm_source"], db[userId]["info"]["utm_campaign"], userId, creationTime.toMillis(), lastUpdated, daysUsed);
         }
 
         for (let timestamp in db[userId]["logs"] ?? {}) {
