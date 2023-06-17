@@ -94,16 +94,16 @@ export const loadBasicBIData = async (db: any) => {
             JSON.stringify(db[userId].info?.fcm ?? {})
         );
 
+        const creationTime = usersToCreationTime[userId];
+        const lastUpdated = userToLastUpdated[userId];
+        let daysUsed = undefined;
         if (db[userId].info?.utm_source && db[userId].info?.utm_campaign) {
-            const creationTime = usersToCreationTime[userId];
-            const lastUpdated = userToLastUpdated[userId];
-            let daysUsed = undefined;
             if (creationTime && lastUpdated) {
                 daysUsed = Math.round(DateTime.fromMillis(lastUpdated).diff(creationTime, "days").days);
             }
-            addConversion(creationTime.toMillis(), "signed_up", db[userId]["info"]["utm_source"], db[userId]["info"]["utm_campaign"], userId, lastUpdated, daysUsed);
         }
-
+        addConversion(creationTime?.toMillis() ?? 0, "signed_up", db[userId].info?.utm_source, db[userId].info?.utm_campaign, userId, lastUpdated, daysUsed);
+        
         for (let timestamp in db[userId]["logs"] ?? {}) {
             addAction(userId, timestamp, "moodLog");
 
