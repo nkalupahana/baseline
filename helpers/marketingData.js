@@ -1,7 +1,7 @@
 const { DateTime } = require("luxon");
 const faker = require("faker");
 const admin = require("firebase-admin");
-const { sampleSize } = require("lodash")
+const { sampleSize, max } = require("lodash")
 
 let time = DateTime.local().minus({ weeks: 30 }).startOf("day");
 const now = DateTime.local().endOf("day").minus({ days: 1 });
@@ -181,7 +181,7 @@ const db = admin.database();
 
 (async () => {
     await db.ref(`${uid}/logs`).set(logs);
-    const lastUpdated = Number(Object.keys(logs).sort().pop());
+    const lastUpdated = max(Object.keys(logs).map(Number));
     await db.ref(`${uid}/lastUpdated`).set(lastUpdated);
     await db.ref(`${uid}/lastWeekInReview`).set(lastUpdated);
     process.exit();
