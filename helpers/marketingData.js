@@ -1,8 +1,9 @@
 const { DateTime } = require("luxon");
 const faker = require("faker");
 const admin = require("firebase-admin");
+const { sampleSize } = require("lodash")
 
-let time = DateTime.local().minus({ weeks: 3 }).startOf("day");
+let time = DateTime.local().minus({ weeks: 30 }).startOf("day");
 const now = DateTime.local().endOf("day").minus({ days: 1 });
 let logs = {}
 const hours = [9, 13, 16, 19];
@@ -122,6 +123,11 @@ const writtenLogs = [
     }
 ]
 
+let sentences = [];
+for (let log of writtenLogs) {
+    sentences.push(...log.journal.match( /[^\.!\?]+[\.!\?]+/g ).map(s => s.trim()));
+}
+
 let i = 0;
 while (time < now) {
     for (let hour of hours) {
@@ -142,7 +148,8 @@ while (time < now) {
             data = {
                 ...data,
                 mood: currentMood,
-                journal: faker.lorem.paragraph(),
+                journal: sampleSize(sentences, 5).join(" "),
+                //journal: faker.lorem.paragraph(),
                 average: faker.random.arrayElement(["average", "below", "above"])
             };
             console.log(currentMood);
