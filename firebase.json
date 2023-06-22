@@ -110,6 +110,11 @@
         "type": 302
       },
       {
+        "source": "/tt2",
+        "destination": "/?utm_source=tt&utm_campaign=tt_ad2",
+        "type": 302
+      },
+      {
         "source": "/ig",
         "destination": "/?utm_source=ig&utm_campaign=ig_profile",
         "type": 302
