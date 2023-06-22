@@ -97,10 +97,8 @@ export const loadBasicBIData = async (db: any) => {
         const creationTime = usersToCreationTime[userId];
         const lastUpdated = userToLastUpdated[userId];
         let daysUsed = undefined;
-        if (db[userId].info?.utm_source && db[userId].info?.utm_campaign) {
-            if (creationTime && lastUpdated) {
-                daysUsed = Math.round(DateTime.fromMillis(lastUpdated).diff(creationTime, "days").days);
-            }
+        if (creationTime && lastUpdated) {
+            daysUsed = Math.round(DateTime.fromMillis(lastUpdated).diff(creationTime, "days").days);
         }
         addConversion(creationTime?.toMillis() ?? 0, "signed_up", db[userId].info?.utm_source, db[userId].info?.utm_campaign, userId, lastUpdated, daysUsed);
         
