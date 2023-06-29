@@ -4,6 +4,8 @@ import Capacitor
 import Firebase
 import FirebaseAuth
 
+import Adjust
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -28,6 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
           }
         #endif
+        
+        let adjustConfig = ADJConfig(
+            appToken: "puajgh4ny41s",
+            environment: ADJEnvironmentProduction
+        )
+        adjustConfig?.allowIdfaReading = false
+            
+        Adjust.appDidLaunch(adjustConfig)
         
         return true
     }

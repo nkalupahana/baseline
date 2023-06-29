@@ -28,7 +28,7 @@ These tokens are all specific to baseline and cannot be used to track you across
 
 Finally, if you sign up for baseline via a referral link, we can see who the referrer is. For example, if you 
 install baseline via a Twitter ad, we can see the ad campaign you came from. We only store this information to make 
-our advertising more effective.
+our advertising more effective. On iOS, this collection is done using third-party processor [Adjust Inc.](https://www.adjust.com/terms/privacy-policy/) using the privacy-preserving [SKAdNetwork framework](https://developer.apple.com/documentation/storekit/skadnetwork/). We make calls to Adjust on the native layer, which isolates it from all journaling-related information.
 
 Other than the use of your email address detailed above, though, our internal data use policies forbid us to view any of this data in any deanonymized fashion without express permission from the user. We have no interest, financial or otherwise, in figuring out who you are and matching any of this data to you or any personal identifiers, and we never will.
 
@@ -89,7 +89,7 @@ All of our cookie and other local storage use is for required website functional
 baseline services contain links to other websites. Our privacy policy applies only to our website, so if you click on a link to another website, you should read their privacy policy.
 
 ## Changes to our privacy policy
-baseline keeps its privacy policy under regular review and places any updates on this web page. This privacy policy was last updated on October 7th, 2022.
+baseline keeps its privacy policy under regular review and places any updates on this web page. This privacy policy was last updated on June 28th, 2023.
 
 ## Contact Us 
 
