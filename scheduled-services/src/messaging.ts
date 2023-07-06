@@ -138,6 +138,14 @@ export const logReminder = async (req: Request, res: Response) => {
             messages.push({
                 notification: sample(MESSAGES[messageCtx.tag]),
                 token: messageCtx.user.fcm[deviceId].token,
+                android: {
+                    collapseKey: "standarduserretention"
+                },
+                apns: {
+                    headers: {
+                        "apns-collapse-id": "standarduserretention"
+                    }
+                }
             });
 
             userMessageAssociation.push({
