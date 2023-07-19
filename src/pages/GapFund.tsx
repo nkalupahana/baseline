@@ -138,8 +138,7 @@ const GapFund = () => {
                 <div style={{width: "100%", height: "25px", borderTop: "1px #d2d1d1 solid"}}></div>
                 { gapFundData === SubmissionState.NO_DATA_YET && <Preloader /> }
                 { gapFundData === SubmissionState.NOT_ELIGIBLE && <p>
-                    You haven't used baseline regularly enough to be eligible to request funding! 
-                    Come back after you've consistently used baseline for the last two weeks.
+                    To be eligible for funding, you need to have consistently used baseline for the past two weeks.
                     If you need help, contact us at <a href="mailto:gapfund@getbaseline.app">gapfund@getbaseline.app</a>.
                 </p> }
                 { gapFundData === SubmissionState.NO_SUBMISSION && gapFundAvailable && <>
