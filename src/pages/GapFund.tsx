@@ -47,7 +47,6 @@ const GapFund = () => {
 
         const listener = async (snap: DataSnapshot) => {
             setGapFundAvailable(await (await get(ref(db, "/config/gapFundAvailable"))).val());
-            setGapFundAvailable(true);
             let data = await snap.val();
             if (data === null) {
                 const dayWindow = DateTime.now().endOf("day").minus({ days: 18 });
