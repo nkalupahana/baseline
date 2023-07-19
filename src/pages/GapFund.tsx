@@ -176,7 +176,7 @@ const GapFund = () => {
                         <p>If you need us to use a different method to get you money, explain it above and we'll reach out to you.</p>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Postal Code, Country</IonLabel>
-                            <input id="email" placeholder="97008, USA" className="invisible-input" value={location} type="text" onChange={e => setLocation(e.target.value)} />
+                            <input id="location" placeholder="97008, USA" className="invisible-input" value={location} type="text" onChange={e => setLocation(e.target.value)} />
                         </IonItem>
                         <p>
                             This information is used to match you with any other 

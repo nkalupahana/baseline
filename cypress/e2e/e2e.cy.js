@@ -379,23 +379,26 @@ describe("Desktop Flow", () => {
     })
 
     it("Makes User Eligible (Week In Review, Gap Fund)", () => {
-        const ldb = new Dexie('ldb');
+        const ldb = new Dexie('ldb')
         ldb.version(1).stores({
             logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
-        });
-
-        const date =  DateTime.now().minus({ week: 1 });
-        ldb.logs.add({
-            timestamp: date.toMillis(),
-            month: date.month,
-            day: date.day,
-            year: date.year,
-            time: "1:00 CST",
-            zone: "America/Chicago",
-            average: "average",
-            mood: 0,
-            journal: "fake"
-        });
+        })
+        
+        let date =  DateTime.now()
+        for (let i = 0; i < 14; i++) {
+            date = date.minus({ days: 1 })
+            ldb.logs.add({
+                timestamp: date.toMillis(),
+                month: date.month,
+                day: date.day,
+                year: date.year,
+                time: "1:00 CST",
+                zone: "America/Chicago",
+                average: "average",
+                mood: 0,
+                journal: "fake"
+            });
+        }
 
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
@@ -485,11 +488,15 @@ describe("Desktop Flow", () => {
                 cy.contains("Submit").click()
                 cy.get(".toastify").should("have.length", 4)
     
-                cy.get("#method").should("be.enabled").type("  ",  { force: true })
+                cy.get("#method").should("be.enabled").type("method",  { force: true })
                 cy.contains("Submit").click()
                 cy.get(".toastify").should("have.length", 5)
+
+                cy.get("#location").should("be.enabled").type("  ",  { force: true })
+                cy.contains("Submit").click()
+                cy.get(".toastify").should("have.length", 6)
     
-                cy.get("#method").should("be.enabled").clear({ force: true }).type("method",  { force: true })
+                cy.get("#location").should("be.enabled").clear({ force: true }).type("location",  { force: true })
                 cy.contains("Submit").click()
                 cy.contains("match").should("exist")
     
