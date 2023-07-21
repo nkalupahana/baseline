@@ -27,6 +27,7 @@ const FinishJournal = props => {
     const [dialog, setDialog] = useState(undefined);
     const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(1).toArray());
     const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
+    const [animateKnob, setAnimateKnob] = useState(false);
 
     const dismissDialog = () => {
         setDialog(undefined);
@@ -38,6 +39,10 @@ const FinishJournal = props => {
         getIdToken(user);
     }, [user]);
 
+    useEffect(() => {
+        if (!lastLogs) return;
+        if (lastLogs.length === 0) setAnimateKnob(true);
+    }, [lastLogs]);
     
     useEffect(() => {
         if (!lastLogs || !lastAverageLogs) return;
@@ -219,6 +224,8 @@ const FinishJournal = props => {
                                     valueFontSize="4rem"
                                     labelColor="var(--circular-slider-label)"
                                     knobColor="var(--circular-slider-knob)"
+                                    knobHighlightColor="var(--circular-slider-knob-highlight)"
+                                    knobSize={40}
                                     progressColorFrom="#1c88e3"
                                     progressColorTo="#1975e6"
                                     progressSize={20}
@@ -228,7 +235,7 @@ const FinishJournal = props => {
                                     max={5}
                                     direction={-1}
                                     dataIndex={props.moodRead + 5}
-                                    animateKnob={false}
+                                    animateKnob={animateKnob}
                                     knobDraggable={!submitting}
                                     verticalOffset="0.2em"
                                     onChange={ v => props.setMoodWrite(v) }
