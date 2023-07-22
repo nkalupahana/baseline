@@ -88,11 +88,51 @@ describe("Mobile Flow", () => {
         cy.contains("Continue").should("exist").click()
     })
 
+    cy.get("svg").should("exist")
+        cy.get("textarea").should("have.value", "Hello desktop world!")
+        cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
+        cy.get(".react-joyride__tooltip").should("exit").should("contain.text", "rate")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Next]").should("exist").click()
+
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "average")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Back]").should("exist").click()
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "rate")
+        cy.get("button[aria-label=Next]").should("exist").click()
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "average")
+
+        cy.contains("Above Average").should("exist").parents("ion-segment-button").click()
+        cy.get(".segment-button-checked").should("exist").should("have.text", "Above Average")
+        cy.get("ion-segment").happoScreenshot();
+        cy.contains("Below Average").should("exist").parents("ion-segment-button").click()
+        cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
+        cy.get("ion-segment").happoScreenshot();
+        cy.get("button[aria-label=Next]").should("exist").click()
+
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "done")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Close]").should("exist").click()
+
+        cy.contains("Done!").should("exist").click()
+        cy.get(".loader").should("exist")
+        cy.get("body").happoScreenshot()
+        cy.url().should("include", "/summary")
+
     it("Finish Mood Log", () => {
         cy.get("svg").should("exist")
         cy.get("textarea").should("have.value", "Hello world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
+        cy.get(".react-joyride__tooltip").should("exit").should("contain.text", "rate")
         cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Next]").should("exist").click()
+
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "average")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Back]").should("exist").click()
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "rate")
+        cy.get("button[aria-label=Next]").should("exist").click()
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "average")
 
         cy.contains("Above Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Above Average")
@@ -100,6 +140,11 @@ describe("Mobile Flow", () => {
         cy.contains("Below Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
         cy.get("ion-segment").happoScreenshot()
+        cy.get("button[aria-label=Next]").should("exist").click()
+
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "done")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Close]").should("exist").click()
 
         cy.get("span.bold > div > div:first")
             .trigger('mousedown', { which: 1 })

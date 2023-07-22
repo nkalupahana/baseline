@@ -211,6 +211,7 @@ const FinishJournal = props => {
                 disableOverlay={true} 
                 steps={steps} 
                 continuous={true}
+                hideCloseButton={true}
                 styles={{
                     options: {
                         primaryColor: "var(--ion-color-primary)",
