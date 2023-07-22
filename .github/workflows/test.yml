@@ -8,6 +8,7 @@ on:
 
 jobs:
   frontend:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.repository != 'nkalupahana/baseline')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -73,6 +74,7 @@ jobs:
         path: coverage
   
   backend:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.repository != 'nkalupahana/baseline')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -90,6 +92,7 @@ jobs:
     - run: npm run build
 
   internal:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.repository != 'nkalupahana/baseline')
     runs-on: ubuntu-latest
     defaults:
       run:
