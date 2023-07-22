@@ -35,6 +35,8 @@ http://ionicframework.com/docs/theming/ */
     --circular-slider-track: #eeeeee;
 
     --notification-green: #81c784;
+
+    --floater-shadow: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 }
 
 .rmsc.multi {
@@ -80,6 +82,8 @@ http://ionicframework.com/docs/theming/ */
 
         --notification-green: #4b934f;
         --swiper-pagination-bullet-inactive-color: white;
+
+        --floater-shadow: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2))
     }
 
     .ios body {

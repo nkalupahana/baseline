@@ -12,7 +12,7 @@ A better, universal, journaling and mood tracking platform.
 ```
 npm install
 npm install -g @ionic/cli
-ionic serve # Web development server
+npm start  # Web development server
 ionic cap sync # Sync changes for iOS/Android
 ionic cap open [ios|android] # Open iOS/Android project for development
 ```
