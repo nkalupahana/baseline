@@ -92,7 +92,7 @@ describe("Mobile Flow", () => {
         cy.get("svg").should("exist")
         cy.get("textarea").should("have.value", "Hello world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
-        cy.get(".react-joyride__tooltip").should("exit").should("contain.text", "rate")
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "rate")
         cy.get("body").happoScreenshot()
         cy.get("button[aria-label=Next]").should("exist").click()
 
