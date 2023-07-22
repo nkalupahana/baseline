@@ -8,16 +8,13 @@ import GraniteLink from "../components/Settings/GraniteLink";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
-import { checkKeys, goBackSafely, toast } from "../helpers";
+import { goBackSafely, toast } from "../helpers";
 import history from "../history";
-import ExportData from "../components/Data/ExportData";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
-    const [showKeys, setShowKeys] = useState(false);
     const [deleteAlert, setDeleteAlert] = useState(false);
     const [user] = useAuthState(auth);
-    const keys = checkKeys();
     useEffect(() => {
         if (localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd")) history.replace("/unlock");
     }, []);
