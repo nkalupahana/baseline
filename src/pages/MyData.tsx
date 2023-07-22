@@ -7,7 +7,7 @@ import { auth } from "../firebase";
 import { useEffect, useState } from "react";
 import history from "../history";
 
-const Data = () => {
+const MyData = () => {
     const [user] = useAuthState(auth);
     const [showKeys, setShowKeys] = useState(false);
     const keys = checkKeys();
@@ -43,4 +43,4 @@ const Data = () => {
     )
 }
 
-export default Data;
+export default MyData;
