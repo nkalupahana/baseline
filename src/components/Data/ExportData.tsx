@@ -86,12 +86,12 @@ const ExportData = () => {
 
     return <>
         <IonList className="checkbox-container" lines="none">
-            {dataOptionsObjArr.map((option) => (
+            { dataOptionsObjArr.map((option) => (
                 <IonItem key={option.value}>
                     <IonCheckbox onIonChange={() => onCheck(option)}></IonCheckbox>
-                    <IonLabel>{option.description}</IonLabel>
+                    <IonLabel>{ option.description }</IonLabel>
                 </IonItem>
-            ))}
+            )) }
         </IonList>
         <IonButton mode="ios" onClick={exportDataAsJSON}>Export Journal Data as JSON</IonButton>
         <br />
