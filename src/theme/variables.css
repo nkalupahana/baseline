@@ -31,9 +31,12 @@ http://ionicframework.com/docs/theming/ */
 
     --circular-slider-label: #020856;
     --circular-slider-knob: #020856;
+    --circular-slider-knob-highlight: #020856;
     --circular-slider-track: #eeeeee;
 
     --notification-green: #81c784;
+
+    --floater-shadow: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 }
 
 .rmsc.multi {
@@ -74,10 +77,13 @@ http://ionicframework.com/docs/theming/ */
 
         --circular-slider-label: #e0e0e0;
         --circular-slider-knob: #212121;
+        --circular-slider-knob-highlight: #e0e0e0;
         --circular-slider-track: #111111;
 
         --notification-green: #4b934f;
         --swiper-pagination-bullet-inactive-color: white;
+
+        --floater-shadow: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3))
     }
 
     .ios body {
@@ -138,4 +144,8 @@ textarea {
 
 .svg-text-color {
     fill: var(--graph-label);
+}
+
+.__floater__open {
+    transition: opacity 0.4s !important;
 }
