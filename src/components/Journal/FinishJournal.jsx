@@ -53,10 +53,11 @@ const FinishJournal = props => {
             disableBeacon: true,
             offset: 5,
         }, {
-            target: "#average-segment",
-            content: `${Capacitor.getPlatform() === "web" ? 'Click' : 'Tap'} above to mark your average.`,
+            target: "#average-segment-desc",
+            content: `${Capacitor.getPlatform() === "web" ? 'Click' : 'Tap'} below to mark your average.`,
             disableBeacon: true,
-            offset: 0
+            offset: 0,
+            placement: "top"
         }, {
             target: "#review-textarea",
             content: `Journals can't be edited, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
@@ -227,7 +228,7 @@ const FinishJournal = props => {
                 floaterProps={{
                     styles: {
                         floater: {
-                            filter: "var(--floater-shadow)"
+                            filter: "var(--floater-shadow)",
                         }
                     }
                 }}
@@ -300,9 +301,9 @@ const FinishJournal = props => {
 
                             <br /><br />
 
-                            <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
+                            <p id="average-segment-desc" style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
                             <div className="container">
-                                <IonSegment id="average-segment" mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
+                                <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
                                     <IonSegmentButton value="below">
                                         <IonLabel>Below Average</IonLabel>
                                     </IonSegmentButton>
