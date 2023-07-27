@@ -44,6 +44,7 @@ import RSummary from "./pages/RSummary";
 import GetHelp from "./pages/GetHelp";
 import WeekInReview from "./pages/WeekInReview";
 import SurveyResults from "./pages/SurveyResults";
+import MyData from "./pages/MyData";
 import { CSSTransition } from "react-transition-group";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
@@ -98,7 +99,8 @@ const App = () => {
         { path: "/rsummary", Component: RSummary },
         { path: "/surveys", Component: SurveyResults },
         { path: "/onboarding", Component: Onboarding },
-        { path: "/granite/callback", Component: GraniteCallback }
+        { path: "/granite/callback", Component: GraniteCallback },
+        { path: "/mydata", Component: MyData }
     ];
 
     return (

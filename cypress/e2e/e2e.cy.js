@@ -522,6 +522,43 @@ describe("Desktop Flow", () => {
     })
 })
 
+describe("Test My Data", () => {
+    beforeEach(() => {
+        cy.viewport("iphone-x")
+    })
+
+    it("Test Data Export", () => {
+        cy.visit("/summary")
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("My Data").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        cy.contains("My Data").should("exist")
+
+        cy.contains("Export Journal Data as JSON").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.json").then(json => {
+            expect(json).to.have.length(30)
+            expect(json[0]).to.have.property("timestamp")
+        })
+        cy.contains("Export Journal Data as CSV").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
+            expect(csv.split("\n")).to.have.length(32)
+            expect(csv).to.contain("Timestamp")
+        })
+
+        cy.get("#timestamp").should("exist").click()
+        cy.contains("Export Journal Data as JSON").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.json").then(json => {
+            expect(json).to.have.length(30)
+            expect(json[0]).to.not.have.property("timestamp")
+        })
+        cy.contains("Export Journal Data as CSV").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
+            expect(csv.split("\n")).to.have.length(32)
+            expect(csv).to.not.contain("Timestamp")
+        })
+    })
+})
+
 describe("Test Settings", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -713,19 +750,9 @@ describe("Test Settings", () => {
         cy.url().should("include", "/summary")
     })
 
-    it("Test Data Export", () => {
+    it("Start Deletion", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
-        cy.get("ion-menu").should("not.exist")
-        cy.contains("Settings").should("exist")
-
-        cy.contains("Export Journal Data as JSON").should("exist").click()
-        cy.readFile("cypress/downloads/journal-data.json")
-        cy.contains("Export Journal Data as CSV").should("exist").click()
-        cy.readFile("cypress/downloads/journal-data.csv")
-    })
-
-    it("Start Deletion", () => {
         cy.contains("Settings").should("exist")
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
