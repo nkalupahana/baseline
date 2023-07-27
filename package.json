@@ -1,6 +1,6 @@
 {
   "name": "baseline",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "private": true,
   "dependencies": {
     "@byteowls/capacitor-oauth2": "^4.0.0",
@@ -124,7 +124,8 @@
     "happo-e2e": "^1.0.3",
     "happo.io": "^8.3.1",
     "nyc": "^15.1.0",
-    "nyc-config-tsx": "^0.1.0"
+    "nyc-config-tsx": "^0.1.0",
+    "csv-parse": "^5.4.0"
   },
   "description": "A better, universal, journaling and mood tracking platform",
   "license": "AGPL-3.0"
