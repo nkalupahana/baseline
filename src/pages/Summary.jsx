@@ -247,11 +247,11 @@ const Summary = () => {
                             <IonIcon icon={helpBuoyOutline} slot="start" />
                             <IonLabel>Get Help</IonLabel>
                         </IonItem>
-                        <IonItem onClick={() => history.push("/mydata")} mode="ios">
+                        <IonItem className="move-rest-down" onClick={() => history.push("/mydata")} mode="ios">
                             <IonIcon icon={fileTrayFull} slot="start" />
                             <IonLabel>My Data</IonLabel>
                         </IonItem>
-                        <IonItem className="move-rest-down" onClick={() => history.push("/settings")} mode="ios">
+                        <IonItem onClick={() => history.push("/settings")} mode="ios">
                             <IonIcon icon={cogOutline} slot="start" />
                             <IonLabel>Settings</IonLabel>
                         </IonItem>

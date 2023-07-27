@@ -18,7 +18,7 @@ const ExportData = () => {
         else {
             setDataOptionsArray([...dataOptionsArray, option]);
         }
-    }
+    };
 
     const downloadLink = useRef<HTMLAnchorElement>(null);
 
@@ -31,7 +31,7 @@ const ExportData = () => {
             for (const entry of entries) {
                 entry.journal = decrypt(entry.ejournal!, pwd);
                 if (entry.efiles) {
-                    entry.files = JSON.parse(decrypt(entry.efiles!, pwd));
+                    entry.files = JSON.parse(decrypt(entry.efiles, pwd));
                 }
             }
         }
@@ -58,7 +58,7 @@ const ExportData = () => {
         for (const entry of (data ?? [])) {
             entry.journal = entry.journal?.replace(/"/g, '""');
             entry.files = entry.files ?? [];
-            csv += dataOptionsArray.map((option) => option.getEntryAttribute(entry)).join(",") + "\n";
+            csv += '"' + dataOptionsArray.map((option) => option.getEntryAttribute(entry)).join("\",\"") + "\"\n";
         }
         save(csv, "journal-data.csv", "text/csv");
     }
@@ -85,14 +85,14 @@ const ExportData = () => {
     }
 
     return <>
-        <IonList className="checkbox-container" lines="none">
-            {dataOptionsObjArr.map((option) => (
-                <IonItem key={option.value}>
-                    {/* checkbox is checked by default */}
-                    <IonCheckbox onIonChange={() => onCheck(option)} checked={dataOptionsArray.includes(option)} id={option.value}></IonCheckbox>
-                    <IonLabel>{option.description}</IonLabel>
+        <IonList className="checkbox-container" lines="none" mode="ios">
+            { dataOptionsObjArr.map(option => (
+                <IonItem mode="ios" key={option.value}>
+                    { /* checkbox is checked by default */ }
+                    <IonCheckbox mode="ios" onIonChange={() => onCheck(option)} checked={dataOptionsArray.includes(option)} id={option.value}></IonCheckbox>
+                    <IonLabel mode="ios">{ option.description }</IonLabel>
                 </IonItem>
-            ))}
+            )) }
         </IonList>
         <IonButton mode="ios" onClick={exportDataAsJSON} disabled={dataOptionsArray.length === 0}>
             Export Journal Data as JSON

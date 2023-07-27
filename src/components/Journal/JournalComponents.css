@@ -198,7 +198,7 @@
     font-weight: normal;
 }
 
-#files {
+input[type=file]#files {
     display: none;
 }
 
