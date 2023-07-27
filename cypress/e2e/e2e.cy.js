@@ -547,7 +547,6 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            console.log(data)
             expect(data).to.have.length(30)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(6)
