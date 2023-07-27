@@ -9,7 +9,7 @@ import "./ExportData.css";
 import { DataOption, dataOptionsObjArr } from "./constants";
 
 const ExportData = () => {
-    const [dataOptionsArray, setDataOptionsArray] = useState<DataOption[]>([]);
+    const [dataOptionsArray, setDataOptionsArray] = useState<DataOption[]>(dataOptionsObjArr);
 
     const onCheck = (option: DataOption) => {
         if (dataOptionsArray.includes(option)) {
@@ -88,14 +88,19 @@ const ExportData = () => {
         <IonList className="checkbox-container" lines="none">
             {dataOptionsObjArr.map((option) => (
                 <IonItem key={option.value}>
-                    <IonCheckbox onIonChange={() => onCheck(option)}></IonCheckbox>
+                    {/* checkbox is checked by default */}
+                    <IonCheckbox onIonChange={() => onCheck(option)} checked={dataOptionsArray.includes(option)}></IonCheckbox>
                     <IonLabel>{option.description}</IonLabel>
                 </IonItem>
             ))}
         </IonList>
-        <IonButton mode="ios" onClick={exportDataAsJSON}>Export Journal Data as JSON</IonButton>
+        <IonButton mode="ios" onClick={exportDataAsJSON} disabled={dataOptionsArray.length === 0}>
+            Export Journal Data as JSON
+        </IonButton>
         <br />
-        <IonButton mode="ios" onClick={exportDataAsCSV}>Export Journal Data as CSV</IonButton>
+        <IonButton mode="ios" onClick={exportDataAsCSV} disabled={dataOptionsArray.length === 0}>
+            Export Journal Data as CSV
+        </IonButton>
         { /* eslint-disable-next-line */ }
         <a style={{"display": "none"}} ref={downloadLink} />
     </>;
