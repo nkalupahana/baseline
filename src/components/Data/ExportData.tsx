@@ -1,12 +1,25 @@
-import { IonButton } from "@ionic/react";
+import { IonButton, IonCheckbox, IonItem, IonLabel, IonList } from "@ionic/react";
 import ldb from "../../db";
-import { decrypt, parseSettings } from "../../helpers";
-import { useRef } from "react";
+import { AnyMap, decrypt, parseSettings } from "../../helpers";
+import { useRef, useState } from "react";
 import { Share } from "@capacitor/share";
 import { Capacitor } from "@capacitor/core";
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import "./ExportData.css";
+import { DataOption, dataOptionsObjArr } from "./constants";
 
 const ExportData = () => {
+    const [dataOptionsArray, setDataOptionsArray] = useState<DataOption[]>(dataOptionsObjArr);
+
+    const onCheck = (option: DataOption) => {
+        if (dataOptionsArray.includes(option)) {
+            setDataOptionsArray(dataOptionsArray.filter((opt) => opt !== option));
+        }
+        else {
+            setDataOptionsArray([...dataOptionsArray, option]);
+        }
+    }
+
     const downloadLink = useRef<HTMLAnchorElement>(null);
 
     const getData = async () => {
@@ -28,16 +41,24 @@ const ExportData = () => {
 
     const exportDataAsJSON = async () => {
         const data = await getData();
-        save(JSON.stringify(data), "journal-data.json", "application/json");
+        let newData = [];
+        for (const entry of (data ?? [])) {
+            let newEntry: AnyMap = {};
+            for (const option of dataOptionsArray) {
+                newEntry[option.value] = option.getEntryAttribute(entry);
+            }
+            newData.push(newEntry);
+        }
+        save(JSON.stringify(newData), "journal-data.json", "application/json");
     };
 
     const exportDataAsCSV = async () => {
         const data = await getData();
-        let csv = "timestamp,journal,mood,average,zone,files\n";
+        let csv = dataOptionsArray.map((option) => option.description).join(",") + "\n";
         for (const entry of (data ?? [])) {
             entry.journal = entry.journal?.replace(/"/g, '""');
             entry.files = entry.files ?? [];
-            csv += `${entry.timestamp},"${entry.journal}",${entry.mood},${entry.average},${entry.zone},"${entry.files.join(",")}"\n`;
+            csv += dataOptionsArray.map((option) => option.getEntryAttribute(entry)).join(",") + "\n";
         }
         save(csv, "journal-data.csv", "text/csv");
     }
@@ -64,9 +85,22 @@ const ExportData = () => {
     }
 
     return <>
-        <IonButton mode="ios" onClick={exportDataAsJSON}>Export Journal Data as JSON</IonButton>
+        <IonList className="checkbox-container" lines="none">
+            {dataOptionsObjArr.map((option) => (
+                <IonItem key={option.value}>
+                    {/* checkbox is checked by default */}
+                    <IonCheckbox onIonChange={() => onCheck(option)} checked={dataOptionsArray.includes(option)} id={option.value}></IonCheckbox>
+                    <IonLabel>{option.description}</IonLabel>
+                </IonItem>
+            ))}
+        </IonList>
+        <IonButton mode="ios" onClick={exportDataAsJSON} disabled={dataOptionsArray.length === 0}>
+            Export Journal Data as JSON
+        </IonButton>
         <br />
-        <IonButton mode="ios" onClick={exportDataAsCSV}>Export Journal Data as CSV</IonButton>
+        <IonButton mode="ios" onClick={exportDataAsCSV} disabled={dataOptionsArray.length === 0}>
+            Export Journal Data as CSV
+        </IonButton>
         { /* eslint-disable-next-line */ }
         <a style={{"display": "none"}} ref={downloadLink} />
     </>;

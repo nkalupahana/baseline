@@ -1,0 +1,7 @@
+.checkbox-container {
+  margin-bottom: 1rem;
+}
+
+ion-checkbox::part(container) {
+    border-radius: 6px;
+}
