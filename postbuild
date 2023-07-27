@@ -1,6 +1,7 @@
 #!/bin/bash
 if [ -z "$CI" ]; then echo "Not CI environment, exiting." && exit; fi
 if [ -z "$GITHUB_SHA" ]; then echo "GITHUB_SHA not set, exiting." && exit; fi
+if [ -z "$SENTRY_AUTH_TOKEN" ]; then echo "Not trusted environment, exiting." && exit; fi
 if ! [ -x "$(command -v sentry-cli)" ]; then
   echo "sentry-cli is not installed; installing."
   curl -sL https://sentry.io/get-cli/ | bash
