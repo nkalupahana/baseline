@@ -737,6 +737,8 @@ describe("Test Settings", () => {
     })
 
     it("Start Deletion", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Settings").should("exist").click()
         cy.contains("Settings").should("exist")
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
