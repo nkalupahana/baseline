@@ -4,14 +4,18 @@ on:
   push:
     paths-ignore:
       - 'docs/**'
+  pull_request_target:
 
 jobs:
   frontend:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != 'nkalupahana/baseline')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+        ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
     - name: Use Node.js 16
       uses: actions/setup-node@v3
       with:
@@ -70,6 +74,7 @@ jobs:
         path: coverage
   
   backend:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != 'nkalupahana/baseline')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -87,6 +92,7 @@ jobs:
     - run: npm run build
 
   internal:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != 'nkalupahana/baseline')
     runs-on: ubuntu-latest
     defaults:
       run:
