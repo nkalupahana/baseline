@@ -736,7 +736,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             expect(csv.split("\n")).to.have.length(32)
-            expect(csv).to.contain("timestamp")
+            expect(csv).to.contain("Timestamp")
         })
 
         cy.contains("Timestamp").should("exist").click()
@@ -748,7 +748,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             expect(csv.split("\n")).to.have.length(32)
-            expect(csv).to.not.contain("timestamp")
+            expect(csv).to.not.contain("Timestamp")
         })
     })
 })
