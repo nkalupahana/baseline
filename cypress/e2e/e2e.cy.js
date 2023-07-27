@@ -514,6 +514,7 @@ describe("Test My Data", () => {
     })
 
     it("Test Data Export", () => {
+        cy.visit("/summary")
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("My Data").should("exist").click()
         cy.get("ion-menu").should("not.exist")
@@ -530,7 +531,7 @@ describe("Test My Data", () => {
             expect(csv).to.contain("Timestamp")
         })
 
-        cy.contains("Timestamp").should("exist").click()
+        cy.get("#timestamp").should("exist").click()
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
             expect(json).to.have.length(30)

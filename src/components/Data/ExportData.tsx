@@ -89,7 +89,7 @@ const ExportData = () => {
             {dataOptionsObjArr.map((option) => (
                 <IonItem key={option.value}>
                     {/* checkbox is checked by default */}
-                    <IonCheckbox onIonChange={() => onCheck(option)} checked={dataOptionsArray.includes(option)}></IonCheckbox>
+                    <IonCheckbox onIonChange={() => onCheck(option)} checked={dataOptionsArray.includes(option)} id={option.value}></IonCheckbox>
                     <IonLabel>{option.description}</IonLabel>
                 </IonItem>
             ))}
