@@ -19,6 +19,7 @@ import Confetti from "react-confetti";
 import Dialog, { checkPromptAllowed } from "../Dialog";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
+import Joyride from "react-joyride";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -27,6 +28,7 @@ const FinishJournal = props => {
     const [dialog, setDialog] = useState(undefined);
     const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(1).toArray());
     const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
+    const [firstTimer, setFirstTimer] = useState(false);
 
     const dismissDialog = () => {
         setDialog(undefined);
@@ -38,6 +40,40 @@ const FinishJournal = props => {
         getIdToken(user);
     }, [user]);
 
+    // First-time user tour
+    useEffect(() => {
+        if (!lastLogs) return;
+        if (lastLogs.length === 0) setFirstTimer(true);
+    }, [lastLogs]);
+
+    const steps = [
+        {
+            target: "#react-circular-slider",
+            content: "Move the knob to rate your mood from -5 to 5.",
+            disableBeacon: true,
+            offset: 5,
+        }, {
+            target: "#average-segment-desc",
+            content: `${Capacitor.getPlatform() === "web" ? 'Click' : 'Tap'} below to mark your average.`,
+            disableBeacon: true,
+            offset: 0,
+            placement: "top"
+        }, {
+            target: "#review-textarea",
+            content: `Journals can't be edited, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
+            disableBeacon: true,
+            placement: "top-start",
+            styles: {
+                options: {
+                    width: 300,
+                    offset: -50
+                }
+            },
+            floaterProps: {
+                hideArrow: true
+            }
+        }
+    ]
     
     useEffect(() => {
         if (!lastLogs || !lastAverageLogs) return;
@@ -171,6 +207,32 @@ const FinishJournal = props => {
 
     return (
         <div className="outer-noscroll">
+            { firstTimer && <Joyride 
+                locale={{last: "Close"}} 
+                disableOverlay={true} 
+                steps={steps} 
+                continuous={true}
+                hideCloseButton={true}
+                styles={{
+                    options: {
+                        primaryColor: "var(--ion-color-primary)",
+                        backgroundColor: "var(--ion-item-background)",
+                        arrowColor: "var(--ion-item-background)",
+                        textColor: "inherit",
+                        width: 200,
+                    },
+                    tooltipContent: {
+                        padding: "10px 10px 0 10px"
+                    }
+                }}
+                floaterProps={{
+                    styles: {
+                        floater: {
+                            filter: "var(--floater-shadow)",
+                        }
+                    }
+                }}
+            /> }
             { dialog === Dialogs.SCALE_SHIFTED && <Dialog title="Before you continue!">
                 <p className="margin-top-12 margin-bottom-24 text-center">
                     We've noticed that you're rating a lot of your "average" journal entries
@@ -211,7 +273,7 @@ const FinishJournal = props => {
                             <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
                             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
                             <br />
-                            <span className="bold">
+                            <span className="bold" id="react-circular-slider">
                                 <CircularSlider
                                     width={190}
                                     label="nice find!"
@@ -219,6 +281,8 @@ const FinishJournal = props => {
                                     valueFontSize="4rem"
                                     labelColor="var(--circular-slider-label)"
                                     knobColor="var(--circular-slider-knob)"
+                                    knobHighlightColor="var(--circular-slider-knob-highlight)"
+                                    knobSize={40}
                                     progressColorFrom="#1c88e3"
                                     progressColorTo="#1975e6"
                                     progressSize={20}
@@ -228,7 +292,7 @@ const FinishJournal = props => {
                                     max={5}
                                     direction={-1}
                                     dataIndex={props.moodRead + 5}
-                                    animateKnob={false}
+                                    animateKnob={firstTimer}
                                     knobDraggable={!submitting}
                                     verticalOffset="0.2em"
                                     onChange={ v => props.setMoodWrite(v) }
@@ -237,7 +301,7 @@ const FinishJournal = props => {
 
                             <br /><br />
 
-                            <p style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
+                            <p id="average-segment-desc" style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
                             <div className="container">
                                 <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
                                     <IonSegmentButton value="below">
@@ -263,7 +327,7 @@ const FinishJournal = props => {
                             }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
-                                <IonTextarea readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log -- tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
+                                <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
                                 <div onClick={submit} className="finish-button">
                                     { !submitting && "Done!" }
                                     { submitting && <IonSpinner className="loader" name="crescent" /> }

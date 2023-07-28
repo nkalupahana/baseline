@@ -1,5 +1,6 @@
 import Dexie from "dexie"
 import { DateTime } from "luxon"
+import { parse } from "csv-parse/lib/sync"
 
 /* global cy */
 
@@ -92,7 +93,16 @@ describe("Mobile Flow", () => {
         cy.get("svg").should("exist")
         cy.get("textarea").should("have.value", "Hello world!")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "rate")
         cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Next]").should("exist").click()
+
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "average")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Back]").should("exist").click()
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "rate")
+        cy.get("button[aria-label=Next]").should("exist").click()
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "average")
 
         cy.contains("Above Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Above Average")
@@ -100,6 +110,11 @@ describe("Mobile Flow", () => {
         cy.contains("Below Average").should("exist").parents("ion-segment-button").click()
         cy.get(".segment-button-checked").should("exist").should("have.text", "Below Average")
         cy.get("ion-segment").happoScreenshot()
+        cy.get("button[aria-label=Next]").should("exist").click()
+
+        cy.get(".react-joyride__tooltip").should("exist").should("contain.text", "done")
+        cy.get("body").happoScreenshot()
+        cy.get("button[aria-label=Close]").should("exist").click()
 
         cy.get("span.bold > div > div:first")
             .trigger('mousedown', { which: 1 })
@@ -257,14 +272,14 @@ describe("Desktop Flow", () => {
     it("Write Mood Log", () => {
         cy.visit("/")
         cy.contains("What's happening").should("exist")
-        cy.get("textarea").type("Hello desktop world!")
+        cy.get("textarea").type("Hello desktop world!{enter}Multi-line journal{enter}Valid,ation")
         cy.get("body").happoScreenshot()
         cy.contains("Continue").should("exist").click()
     })
 
     it("Finish Mood Log", () => {
         cy.get("svg").should("exist")
-        cy.get("textarea").should("have.value", "Hello desktop world!")
+        cy.get("textarea").should("have.value", "Hello desktop world!\nMulti-line journal\nValid,ation")
         cy.get(".segment-button-checked").should("exist").should("have.text", "Average")
         cy.get("body").happoScreenshot()
 
@@ -396,7 +411,8 @@ describe("Desktop Flow", () => {
                 zone: "America/Chicago",
                 average: "average",
                 mood: 0,
-                journal: "fake"
+                journal: "fake",
+                files: []
             });
         }
 
@@ -505,6 +521,73 @@ describe("Desktop Flow", () => {
                 cy.contains("went wrong").should("exist")
             }
         })
+    })
+})
+
+describe("Test My Data", () => {
+    beforeEach(() => {
+        cy.viewport("iphone-x")
+    })
+
+    it("Test Data Export", () => {
+        cy.visit("/summary")
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("My Data").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+        cy.contains("My Data").should("exist")
+        cy.get("body").happoScreenshot()
+
+        cy.get("#timestamp").should("have.class", "checkbox-checked")
+        cy.contains("Export Journal Data as JSON").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.json").then(json => {
+            expect(json).to.have.length(30)
+            for (let record of json) {
+                expect(Object.keys(record)).to.have.length(6)
+            }
+        })
+        cy.contains("Export Journal Data as CSV").should("exist").click()
+        cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
+            const data = parse(csv, {columns: true});
+            expect(data).to.have.length(30)
+            for (let record of data) {
+                expect(Object.keys(record)).to.have.length(6)
+            }
+        })
+
+        cy.get("#timestamp").should("exist").click()
+        cy.get("#timestamp").should("not.have.class", "checkbox-checked")
+        cy.contains("Export Journal Data as JSON").should("exist").click()
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.readFile("cypress/downloads/journal-data.json").then(json => {
+            expect(json).to.have.length(30)
+            for (let record of json) {
+                expect(Object.keys(record)).to.have.length(5)
+                expect(record).to.not.have.property("timestamp")
+            }
+        })
+        cy.contains("Export Journal Data as CSV").should("exist").click()
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
+            const data = parse(csv, {columns: true});
+            expect(data).to.have.length(30)
+            for (let record of data) {
+                expect(Object.keys(record)).to.have.length(5)
+                expect(record).to.not.have.property("timestamp")
+            }
+        })
+    })
+
+    it("Check Encryption Keys", () => {
+        cy.contains("Visible Key").should("not.exist")
+        cy.contains("Encrypted Key (Visible)").should("not.exist")
+        cy.contains("Show Encryption Keys").should("exist").click()
+
+        cy.contains("Visible Key").should("exist")
+        cy.contains("Encrypted Key (Visible)").should("exist")
+        cy.contains("Hide").should("exist").click()
+
+        cy.contains("Visible Key").should("not.exist")
+        cy.contains("Encrypted Key (Visible)").should("not.exist")
     })
 })
 
@@ -699,19 +782,9 @@ describe("Test Settings", () => {
         cy.url().should("include", "/summary")
     })
 
-    it("Test Data Export", () => {
+    it("Start Deletion", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
-        cy.get("ion-menu").should("not.exist")
-        cy.contains("Settings").should("exist")
-
-        cy.contains("Export Journal Data as JSON").should("exist").click()
-        cy.readFile("cypress/downloads/journal-data.json")
-        cy.contains("Export Journal Data as CSV").should("exist").click()
-        cy.readFile("cypress/downloads/journal-data.csv")
-    })
-
-    it("Start Deletion", () => {
         cy.contains("Settings").should("exist")
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")

@@ -8,16 +8,13 @@ import GraniteLink from "../components/Settings/GraniteLink";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
-import { checkKeys, goBackSafely, toast } from "../helpers";
+import { goBackSafely, toast } from "../helpers";
 import history from "../history";
-import ExportData from "../components/Settings/ExportData";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
-    const [showKeys, setShowKeys] = useState(false);
     const [deleteAlert, setDeleteAlert] = useState(false);
     const [user] = useAuthState(auth);
-    const keys = checkKeys();
     useEffect(() => {
         if (localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd")) history.replace("/unlock");
     }, []);
@@ -63,22 +60,9 @@ const Settings = () => {
                     spare, <span className="fake-link" onClick={() => history.push("/donate")}>please donate!</span> 100% of 
                     your donation goes right back to users through the gap fund, or to help get baseline to more people.
                 </p>
-                <ExportData />
-                <p>
-                    For a full copy of your data, email us at <a href="mailto:privacy@getbaseline.app">privacy@getbaseline.app.</a>
-                </p>
                 <p>
                     If you'd like to delete your account, <span className="fake-link" onClick={() => setDeleteAlert(true)}>click here.</span> You'll be prompted to sign in again to confirm.
                 </p>
-                <p className="bold">Technical Details</p>
-                { user && <p className="small-text margin-bottom-0 margin-top-8">UID: { user.uid }</p> }
-                { typeof keys === "object" && <p className="fake-link small-text" onClick={() => setShowKeys(!showKeys)}>{ showKeys ? "Hide" : "Show"} Encryption Keys</p>}
-                { showKeys && <>
-                    <p className="small-text margin-bottom-0 margin-top-8">These are the keys to all of your private information.
-                    Not even we have them. Never give these to anyone, no matter how nicely they ask. Ever.</p>
-                    <p className="small-text margin-bottom-0 margin-top-8">Visible Key: { keys.visibleKey }</p> 
-                    <p style={{"overflowWrap": "anywhere"}} className="small-text margin-top-8">Encrypted Key (Visible): { keys.encryptedKeyVisible }</p>
-                </> }
             </div>
         </div>
         <IonAlert 
