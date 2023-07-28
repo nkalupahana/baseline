@@ -56,11 +56,13 @@ const PromptWeekInReview = () => {
     useEffect(() => {
         if (!user || !show) return;
         (async () => {
+            const platform = Capacitor.getPlatform();
             let data: AnyMap = {
-                offset: DateTime.now().offset
+                offset: DateTime.now().offset,
+                platform
             };
 
-            if (Capacitor.getPlatform() !== "web") {
+            if (platform !== "web") {
                 const token = await FirebaseMessaging.getToken();
                 data["fcmToken"] = token.token;
                 data["deviceId"] = (await Device.getId()).uuid;

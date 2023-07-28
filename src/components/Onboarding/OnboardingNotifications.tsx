@@ -6,6 +6,7 @@ import { useState } from "react";
 import { makeRequest } from "../../helpers";
 import history from "../../history";
 import Notifications from "../../pages/Notifications";
+import { Capacitor } from "@capacitor/core";
 
 const OnboardingNotifications = ({ user } : { user: User }) => {
     const [loadingFlow, setLoadingFlow] = useState(false);
@@ -13,12 +14,14 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
     const continueFlow = async () => {
         setLoadingFlow(true);
         try {
+            const platform = Capacitor.getPlatform();
             await FirebaseMessaging.requestPermissions();
             const token = await FirebaseMessaging.getToken();
             await makeRequest("accounts/sync", user, {
                 offset: DateTime.now().offset,
                 fcmToken: token.token,
                 deviceId: (await Device.getId()).uuid,
+                platform
             });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
         } catch {}

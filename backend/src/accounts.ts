@@ -256,6 +256,14 @@ export const sync = async (req: UserRequest, res: Response) => {
     }
     checkOffset();
 
+    const checkPlatform = () => {
+        if ("platform" in body) {
+            if (typeof body.platform !== "string" || !["ios", "android", "web"].includes(body.platform)) return;
+            update[body.platform] = true;
+        }
+    }
+    checkPlatform();
+
     // FCM data
     const checkToken = () => {
         if ("deviceId" in body && "fcmToken" in body) {
