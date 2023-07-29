@@ -70,7 +70,7 @@ export const COLORS_CB: AnyMap = {
     "5": "var(--background-color-inverted)"
 };
 
-export const BASE_URL = "https://api.getbaseline.app";
+export const BASE_URL = process.env.REACT_APP_BASE_URL || "https://api.getbaseline.app";
 
 export function createPoints(data: Log[], colors: AnyMap) {
     let points = [];
@@ -121,6 +121,7 @@ export function networkFailure(message: string) {
 export function checkKeys() {
     const keys = localStorage.getItem("keys");
 
+    console.log(BASE_URL)
     if (!keys) {
         const pdpSetting = parseSettings()["pdp"];
         if (pdpSetting) {

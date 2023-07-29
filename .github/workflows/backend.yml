@@ -34,3 +34,86 @@ jobs:
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
         SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP: ${{ secrets.SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP }}
+  test:
+    runs-on: ubuntu-latest
+    needs: deploy
+    defaults:
+      run:
+        working-directory: .
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Build Tests
+      run: |
+        npm install -g ionic
+        npm run build
+        ionic cap sync
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    - name: Integration Tests
+      run: |
+        PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
+        sleep 60
+        npm run test:e2e
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+        HAPPO_NONCE: ${{ github.run_id }}
+    - name: Upload Test Video
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-video
+        path: cypress/videos
+    - name: Upload Test Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-screenshots
+        path: cypress/screenshots
+    - name: Component Tests
+      run: npm run test:component
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
+        HAPPO_NONCE: ${{ github.run_id }}
+    - name: Upload to Happo
+      run: npx happo-e2e finalize
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
+        HAPPO_NONCE: ${{ github.run_id }}
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@v1.9
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+    - name: Upload Test Data
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: coverage
+  
+  # deploy to main:
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   if: github.ref == 'refs/heads/main'
+  #   defaults:
+  #     run:
+  #       working-directory: .
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       fetch-depth: 0
+  #   - name: Use Node.js 18
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: "18.x"
+  #       cache: "npm"
