@@ -3,7 +3,7 @@ name: Deploy Backend
 on:
   push:
     branches:
-      - main
+      - burgess/pipeline
     paths:
       - "backend/**"
   workflow_dispatch:
