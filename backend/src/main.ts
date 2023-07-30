@@ -11,6 +11,8 @@ import fs from "node:fs";
 import { v4 as uuidv4 } from "uuid";
 import { PubSub } from "@google-cloud/pubsub";
 
+// testing
+
 const pubsub = new PubSub();
 
 export const getImage = async (req: UserRequest, res: Response) => {
