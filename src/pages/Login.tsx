@@ -183,9 +183,11 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     return;
                 }
 
+                const platform = Capacitor.getPlatform();
                 sessionStorage.removeItem("deleteAccount");
                 await makeRequest("accounts/sync", auth.currentUser!, {
                     offset: DateTime.now().offset,
+                    platform
                 });
 
                 if (additionalData.introQuestions) setSettings("introQuestions", additionalData.introQuestions);
@@ -193,6 +195,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 if (Capacitor.getPlatform() === "web") {
                     await makeRequest("accounts/sync", auth.currentUser!, {
                         offset: DateTime.now().offset,
+                        platform
                     });
                 }
 
