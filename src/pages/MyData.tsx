@@ -29,13 +29,13 @@ const MyData = () => {
                         For a full copy of your data, or to exercise any of your data privacy rights, email us at <a href="mailto:privacy@getbaseline.app">privacy@getbaseline.app.</a>
                     </p>
                     <p className="bold">Technical Details</p>
-                    { user && <p className="small-text margin-bottom-0 margin-top-8">UID: { user.uid }</p> }
+                    { user && <p data-happo-hide className="small-text margin-bottom-0 margin-top-8">UID: { user.uid }</p> }
                     { typeof keys === "object" && <p className="fake-link small-text" onClick={() => setShowKeys(!showKeys)}>{ showKeys ? "Hide" : "Show"} Encryption Keys</p>}
                     { showKeys && <>
                         <p className="small-text margin-bottom-0 margin-top-8">These are the keys to all of your private information.
                         Not even we have them. Never give these to anyone, no matter how nicely they ask. Ever.</p>
-                        <p className="small-text margin-bottom-0 margin-top-8">Visible Key: { keys.visibleKey }</p> 
-                        <p style={{"overflowWrap": "anywhere"}} className="small-text margin-top-8">Encrypted Key (Visible): { keys.encryptedKeyVisible }</p>
+                        <p data-happo-hide className="small-text margin-bottom-0 margin-top-8">Visible Key: { keys.visibleKey }</p> 
+                        <p data-happo-hide style={{"overflowWrap": "anywhere"}} className="small-text margin-top-8">Encrypted Key (Visible): { keys.encryptedKeyVisible }</p>
                     </> }
                 </div>
                 <EndSpacer />
