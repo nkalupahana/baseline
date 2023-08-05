@@ -57,6 +57,7 @@ jobs:
         ionic cap sync
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
     - name: Integration Tests
       run: |
         PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
@@ -66,6 +67,7 @@ jobs:
         HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
         HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
         HAPPO_NONCE: ${{ github.run_id }}
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
     - name: Upload Test Video
       if: failure()
       uses: actions/upload-artifact@v3
@@ -84,6 +86,7 @@ jobs:
         HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
         HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
         HAPPO_NONCE: ${{ github.run_id }}
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
     - name: Upload to Happo
       run: npx happo-e2e finalize
       env:
