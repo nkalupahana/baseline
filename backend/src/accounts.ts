@@ -22,8 +22,7 @@ const CLOUDKIT: any = {
 };
 
 export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
-    console.log("GET OR CREATE KEYS")
-    const body = req.body;
+    // const body = req.body;
     if (typeof body.credential !== "object" || typeof body.credential.providerId !== "string" || typeof body.credential.accessToken !== "string") {
         res.send(400);
         return;
