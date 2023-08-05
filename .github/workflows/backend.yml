@@ -57,7 +57,7 @@ jobs:
         ionic cap sync
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        REACT_APP_BASE_URL: "https://latest---baseline-backend-lg27dbkpuq-uc.a.run.app/"
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
     - name: Integration Tests
       run: |
         PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
