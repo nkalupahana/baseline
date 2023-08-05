@@ -298,6 +298,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
     console.log(pubsub)
     console.log(logData)
+    console.log("heeyyyy")
 
     // const p1 = db.ref(`/${req.user!.user_id}/logs/${globalNow.toMillis()}`).set({
     //     data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
