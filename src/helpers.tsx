@@ -72,7 +72,6 @@ export const COLORS_CB: AnyMap = {
 export const BASE_URL = process.env.REACT_APP_BASE_URL || "https://api.getbaseline.app";
 
 export function createPoints(data: Log[], colors: AnyMap) {
-    console.log("Creating points")
     let points = [];
     for (let point of data) {
         let [h, rest] = point.time.split(":");

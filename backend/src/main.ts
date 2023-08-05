@@ -296,12 +296,12 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         files: filePaths,
     };
 
-    const p1 = db.ref(`/${req.user!.user_id}/logs/${globalNow.toMillis()}`).set({
-        data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
-    });
+    // const p1 = db.ref(`/${req.user!.user_id}/logs/${globalNow.toMillis()}`).set({
+    //     data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
+    // });
 
-    const p2 = db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
-    const p3 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
+    // const p2 = db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
+    // const p3 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
 
     await Promise.all([p1, p2, p3]);
     res.sendStatus(200);
