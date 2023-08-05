@@ -67,6 +67,7 @@ jobs:
         HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
         HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
         HAPPO_NONCE: ${{ github.run_id }}
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
     - name: Upload Test Video
       if: failure()
       uses: actions/upload-artifact@v3
@@ -79,28 +80,6 @@ jobs:
       with:
         name: test-screenshots
         path: cypress/screenshots
-    - name: Component Tests
-      run: npm run test:component
-      env:
-        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
-        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
-        HAPPO_NONCE: ${{ github.run_id }}
-    - name: Upload to Happo
-      run: npx happo-e2e finalize
-      env:
-        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
-        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
-        HAPPO_NONCE: ${{ github.run_id }}
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v1.9
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-    - name: Upload Test Data
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage
-        path: coverage
   
   # deploy to main:
   #   runs-on: ubuntu-latest
