@@ -14,7 +14,6 @@ import { PubSub } from "@google-cloud/pubsub";
 const pubsub = new PubSub();
 
 export const getImage = async (req: UserRequest, res: Response) => {
-    console.log("getImage");
     const db = getDatabase();
 
     const body = req.body;
