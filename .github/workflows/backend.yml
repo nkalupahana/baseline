@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - burgess/pipeline
-    paths:
-      - "backend/**"
+    # paths:
+    #   - "backend/**"
   workflow_dispatch:
 
 jobs:
