@@ -94,7 +94,8 @@ jobs:
       run: |
         echo $GOOGLE_APPLICATION_CREDENTIALS > ~/google-credentials.json
         gcloud auth activate-service-account --key-file ~/google-credentials.json
-        gcloud run services update baseline-backend --region us-central1 --platform managed --traffic-split=latest=100 --ingress=internal-and-cloud-load-balancing
+        gcloud run services update-traffic baseline-backend --region us-central1 --platform managed --to-latest
+        gcloud run services update baseline-backend --platform managed --ingress internal-and-cloud-load-balancing
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
         SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP: ${{ secrets.SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP }}
