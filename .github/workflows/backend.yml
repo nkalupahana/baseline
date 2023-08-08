@@ -91,7 +91,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Increase Traffic
-      run:
+      run: |
         echo $GOOGLE_APPLICATION_CREDENTIALS > ~/google-credentials.json
         gcloud auth activate-service-account --key-file ~/google-credentials.json
         gcloud run services update baseline-backend --region us-central1 --platform managed --traffic-split=latest=100 --ingress=internal-and-cloud-load-balancing
