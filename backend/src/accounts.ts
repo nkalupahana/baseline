@@ -244,7 +244,8 @@ export const deleteAccount = async (req: UserRequest, res: Response) => {
 export const sync = async (req: UserRequest, res: Response) => {
     const body = req.body;
     let update: any = {
-        fcm: {}
+        fcm: {},
+        platforms: {}
     };
 
     // Time zone offset
@@ -259,7 +260,7 @@ export const sync = async (req: UserRequest, res: Response) => {
     const checkPlatform = () => {
         if ("platform" in body) {
             if (typeof body.platform !== "string" || !["ios", "android", "web"].includes(body.platform)) return;
-            update[`platforms/${body.platform}`] = true;
+            update["platforms"][body.platform] = true;
         }
     }
     checkPlatform();
