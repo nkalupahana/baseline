@@ -4,8 +4,16 @@
 		"classpath": "com.byteowls.capacitor.oauth2.OAuth2ClientPlugin"
 	},
 	{
+		"pkg": "@capacitor-community/media",
+		"classpath": "com.getcapacitor.community.media.MediaPlugin"
+	},
+	{
 		"pkg": "@capacitor-firebase/authentication",
 		"classpath": "io.capawesome.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin"
+	},
+	{
+		"pkg": "@capacitor-firebase/messaging",
+		"classpath": "io.capawesome.capacitorjs.plugins.firebase.messaging.FirebaseMessagingPlugin"
 	},
 	{
 		"pkg": "@capacitor/app",
@@ -28,6 +36,10 @@
 		"classpath": "com.capacitorjs.plugins.keyboard.KeyboardPlugin"
 	},
 	{
+		"pkg": "@capacitor/local-notifications",
+		"classpath": "com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin"
+	},
+	{
 		"pkg": "@capacitor/share",
 		"classpath": "com.capacitorjs.plugins.share.SharePlugin"
 	},
@@ -36,23 +48,11 @@
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
-		"pkg": "@getbaseline/capacitor-community-media",
-		"classpath": "com.getcapacitor.community.media.MediaPlugin"
-	},
-	{
-		"pkg": "@getbaseline/capacitor-firebase-messaging",
-		"classpath": "io.capawesome.capacitorjs.plugins.firebase.messaging.FirebaseMessagingPlugin"
-	},
-	{
-		"pkg": "@getbaseline/capacitor-local-notifications",
-		"classpath": "com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin"
-	},
-	{
 		"pkg": "capacitor-cloudkit",
 		"classpath": "cloudkit.baseline.getbaseline.app.CloudKitPlugin"
 	},
 	{
 		"pkg": "capacitor-rate-app",
-		"classpath": "com.capacitor.rateapp.CapacitorRateAppPlugin"
+		"classpath": "com.capacitor.rateApp.CapacitorRateAppPlugin"
 	}
 ]

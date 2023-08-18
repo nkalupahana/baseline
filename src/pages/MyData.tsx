@@ -18,7 +18,7 @@ const MyData = () => {
 
     return (
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
+            <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
             <div className="center-journal container">
                 <div className="title">My Data</div>
                 <div style={{"maxWidth": "600px"}}>

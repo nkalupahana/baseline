@@ -37,7 +37,7 @@ const SurveyResults = () => {
 
     return (
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
+            <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
                 <div className="title">Survey Results</div>
                 <br />

@@ -20,8 +20,8 @@ const Settings = () => {
     }, []);
 
     return <div className="container">
-        { !doingAsyncTask && <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
-        { doingAsyncTask && <IonSpinner class="top-corner x" className="loader" name="crescent" /> }
+        { !doingAsyncTask && <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
+        { doingAsyncTask && <IonSpinner className="top-corner x loader" name="crescent" /> }
         <div className="center-journal container">
             <div className="title">Settings</div>
             <br />

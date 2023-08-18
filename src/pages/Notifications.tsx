@@ -2,7 +2,7 @@ import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
-import { LocalNotifications, Schedule } from "@getbaseline/capacitor-local-notifications";
+import { LocalNotifications, Schedule } from "@capacitor/local-notifications";
 import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
 import EndSpacer from "../components/EndSpacer";
@@ -95,7 +95,7 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
     return (
     <>
         <div className="container">
-            { page && <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon> }
+            { page && <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon> }
             <div className={`container ${page ? "center-journal" : "center-notifications"}`}>
                 <div className="title">Notifications</div>
                 <p className="text-center margin-bottom-0">Notifications are a great way to ensure you mood log consistently, so you can build up an accurate picture of your mood over time.</p>

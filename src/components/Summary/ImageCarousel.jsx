@@ -11,7 +11,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { BASE_URL, checkKeys, toast } from "../../helpers";
 import { getIdToken } from "firebase/auth";
 import { Capacitor } from "@capacitor/core";
-import { Media } from "@getbaseline/capacitor-community-media";
+import { Media } from "@capacitor-community/media";
 
 const ImageCarousel = ({ files, setInFullscreen }) => {
     const [accessURLs, setAccessURLs] = useState([]);

@@ -1,4 +1,4 @@
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import { get, ref, serverTimestamp, set } from "firebase/database";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -65,7 +65,7 @@ const PromptWeekInReview = () => {
             if (platform !== "web") {
                 const token = await FirebaseMessaging.getToken();
                 data["fcmToken"] = token.token;
-                data["deviceId"] = (await Device.getId()).uuid;
+                data["deviceId"] = (await Device.getId()).identifier;
             }
             await makeRequest("accounts/sync", auth.currentUser!, data);
         })();

@@ -119,7 +119,7 @@ const GapFund = () => {
 
     return (
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
+            <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
             <div className="center-journal container">
                 <div className="title">baseline Gap Fund</div>
                 <p className="text-center">

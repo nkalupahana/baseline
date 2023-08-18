@@ -40,7 +40,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
 
     return (
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
+            <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
                 <div className="title">What's happening?</div>
                 <p className="text-center bold max-width-600 margin-top-8">What have you been doing, how have you been feeling, and why might you be feeling that way?</p>

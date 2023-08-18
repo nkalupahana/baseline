@@ -66,7 +66,7 @@ const WeekSummary = ({ inFullscreen, setInFullscreen, logs, search } : Props) =>
             { logs && logs.length > 0 && <>
                 { !search.get && <WeekMoodGraph requestedDate={requestedDate} setRequestedDate={setRequestedDate} logs={logs}></WeekMoodGraph> }
                 { search.get && <div className="grid-heading filter-area">
-                    <IonIcon style={{"position": "absolute"}} class="top-corner x" icon={closeOutline} onClick={() => search.set(false)}></IonIcon>
+                    <IonIcon style={{"position": "absolute"}} className="top-corner x" icon={closeOutline} onClick={() => search.set(false)}></IonIcon>
                     <SearchAndFilter 
                         setSearchText={setSearchText} 
                         averageFilter={averageFilter}
