@@ -63,7 +63,7 @@ const Surveyer = ({ survey, setSurvey, incrementStage, stage } : Props) => {
                 ...survey.previousState, 
                 previousState: survey.previousState?.previousState
             })} 
-            class="top-corner x" 
+            className="top-corner x" 
             style={survey.previousState ? {} : {"visibility": "hidden"}} 
             icon={chevronBackOutline} 
         />

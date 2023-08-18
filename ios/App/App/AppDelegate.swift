@@ -1,7 +1,7 @@
 import UIKit
 import Capacitor
 
-import Firebase
+import FirebaseCore
 import FirebaseAuth
 
 import Adjust

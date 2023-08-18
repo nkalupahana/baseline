@@ -1,5 +1,5 @@
 import { Device } from "@capacitor/device";
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import { User } from "firebase/auth";
 import { DateTime } from "luxon";
 import { useState } from "react";
@@ -20,7 +20,7 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
             await makeRequest("accounts/sync", user, {
                 offset: DateTime.now().offset,
                 fcmToken: token.token,
-                deviceId: (await Device.getId()).uuid,
+                deviceId: (await Device.getId()).identifier,
                 platform
             });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });

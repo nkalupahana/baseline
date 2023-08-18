@@ -9,7 +9,7 @@ import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
 import { attach, closeOutline, trashOutline } from "ionicons/icons";
-import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
 import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
@@ -264,7 +264,7 @@ const FinishJournal = props => {
             { props.moodWrite === 5 && submitting && <Confetti gravity={0.5} /> }
             <div className="container">
                 <div className="inner-scroll">
-                    <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
+                    <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
                     <div className="center-journal">
                         <Route exact path="/journal/finish">
                             <div className="title">

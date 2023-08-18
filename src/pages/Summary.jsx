@@ -12,12 +12,12 @@ import history from "../history";
 import "./Container.css";
 import "./Summary.css";
 import PromptWeekInReview from "../components/Review/PromptWeekInReview";
-import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 
 // Add timestamp to data object, and decrypt as needed
 const processNewData = (newData, keys) => {
