@@ -21,10 +21,6 @@ const config: CapacitorConfig = {
       smallIcon: "notification_icon",
       iconColor: "#03A9F4"
     }
-  },
-  backgroundColor: {
-    light: "#FFFFFF",
-    dark: "#080808"
   }
 };
 
