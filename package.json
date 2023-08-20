@@ -77,7 +77,8 @@
     "test:e2e:noinst": "npx cypress run --e2e",
     "test:component": "npx happo-e2e -- cypress run --component",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "postinstall": "patch-package"
   },
   "eslintConfig": {
     "plugins": [
@@ -125,6 +126,7 @@
     "happo-e2e": "^1.0.3",
     "happo.io": "^8.3.1",
     "nyc": "^15.1.0",
+    "patch-package": "^8.0.0",
     "nyc-config-tsx": "^0.1.0"
   },
   "description": "A better, universal, journaling and mood tracking platform",
