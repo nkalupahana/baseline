@@ -213,3 +213,7 @@ input[type=file]#files {
         transform: scale(1);
     }
 }
+
+ion-segment-button > ion-label {
+    text-overflow: unset !important;
+}
