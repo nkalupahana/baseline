@@ -1,6 +1,6 @@
 import Dexie from "dexie"
 import { DateTime } from "luxon"
-import { parse } from "csv-parse"
+import { parse } from "csv-parse/sync"
 
 /* global cy */
 
@@ -789,12 +789,12 @@ describe("Test Settings", () => {
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(0).click()
-        cy.get("ion-alert").should("not.exist")
+        cy.get("ion-alert").should("not.be.visible")
 
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(1).click()
-        cy.get("ion-alert").should("not.exist")
+        cy.get("ion-alert").should("not.be.visible")
         
         cy.contains("Google").should("exist")
         cy.contains("delete").should("exist")
