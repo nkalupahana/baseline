@@ -190,9 +190,9 @@ describe("Mobile Flow", () => {
                 .trigger('mouseup', { force: true })
 
             cy.contains("Done!").should("exist").click()
+            cy.get("div.toastify").invoke("remove")
             cy.url().should("include", "/summary")
             cy.contains(`Test ${i}`).should("exist")
-            cy.get("div.toastify").invoke("remove")
         }
     })
 
