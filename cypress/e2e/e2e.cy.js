@@ -790,11 +790,12 @@ describe("Test Settings", () => {
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(0).click()
         cy.get("ion-alert").should("not.be.visible")
+        cy.wait(WAIT_FOR_CONSISTENCY)
 
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(1).click()
-        cy.get("ion-alert").should("not.be.visible")
+        cy.get("ion-alert").should("not.exist")
         
         cy.contains("Google").should("exist")
         cy.contains("delete").should("exist")
