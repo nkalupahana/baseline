@@ -117,7 +117,7 @@
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/ua-parser-js": "^0.7.36",
     "csv-parse": "^5.4.0",
-    "cypress": "^10.2.0",
+    "cypress": "^11.0.0",
     "cypress-wait-until": "^1.7.2",
     "eslint-plugin-cypress": "^2.12.1",
     "faker": "5.5.3",
