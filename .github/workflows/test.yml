@@ -22,7 +22,7 @@ jobs:
     - run: npm ci
     - name: Build Tests
       run: |
-        npm install -g ionic
+        npm install -g @ionic/cli
         npm run build
         ionic cap sync
       env:
@@ -120,7 +120,7 @@ jobs:
     - run: npm ci
     - name: Build (Ionic)
       run: |
-        npm install -g ionic
+        npm install -g @ionic/cli
         npm run build
         ionic cap sync
       env:
@@ -164,7 +164,7 @@ jobs:
     - run: npm ci
     - name: Build (Ionic)
       run: |
-        npm install -g ionic
+        npm install -g @ionic/cli
         npm run build
         ionic cap sync
       env:
