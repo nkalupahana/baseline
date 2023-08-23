@@ -1,6 +1,6 @@
 import Dexie from "dexie"
 import { DateTime } from "luxon"
-import { parse } from "csv-parse/lib/sync"
+import { parse } from "csv-parse"
 
 /* global cy */
 
