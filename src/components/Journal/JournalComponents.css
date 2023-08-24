@@ -216,4 +216,5 @@ input[type=file]#files {
 
 ion-segment-button > ion-label {
     text-overflow: unset !important;
+    max-width: unset !important;
 }
