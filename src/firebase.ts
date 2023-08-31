@@ -19,7 +19,8 @@ export const firebase = initializeApp({
     projectId: "getbaselineapp",
     storageBucket: "getbaselineapp.appspot.com",
     messagingSenderId: "841063163864",
-    appId: "1:841063163864:web:0cb24972a209fd9b5334ad"
+    appId: "1:841063163864:web:0cb24972a209fd9b5334ad",
+    measurementId: "G-G0C72KF0Y1"
 });
 
 export let auth: Auth;

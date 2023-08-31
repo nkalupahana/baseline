@@ -5,6 +5,7 @@
   "dependencies": {
     "@byteowls/capacitor-oauth2": "^4.0.0",
     "@capacitor-community/media": "^5.2.1",
+    "@capacitor-firebase/analytics": "^5.1.0",
     "@capacitor-firebase/authentication": "^5.0.0",
     "@capacitor-firebase/messaging": "^5.0.0",
     "@capacitor/android": "^5.0.0",

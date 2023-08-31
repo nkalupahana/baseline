@@ -8,6 +8,10 @@
 		"classpath": "com.getcapacitor.community.media.MediaPlugin"
 	},
 	{
+		"pkg": "@capacitor-firebase/analytics",
+		"classpath": "io.capawesome.capacitorjs.plugins.firebase.analytics.FirebaseAnalyticsPlugin"
+	},
+	{
 		"pkg": "@capacitor-firebase/authentication",
 		"classpath": "io.capawesome.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin"
 	},
