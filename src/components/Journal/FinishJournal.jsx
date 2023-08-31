@@ -20,6 +20,7 @@ import Dialog, { checkPromptAllowed } from "../Dialog";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
+import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -156,6 +157,7 @@ const FinishJournal = props => {
                         if (count > 10 && props.average === "above") RateApp.requestReview();
                     });
                 }
+                if (Capacitor.getPlatform() === "android") await FirebaseAnalytics.logEvent({ name: "journaled" });
                 toast("Mood log saved!", "bottom");
                 // Delay for some confetti!
                 if (props.moodWrite === 5) await new Promise(res => setTimeout(res, 700));

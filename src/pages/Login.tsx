@@ -16,6 +16,7 @@ import "./Login.css";
 import { logoApple, logoGoogle } from "ionicons/icons";
 import history from "../history";
 import { DateTime } from "luxon";
+import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 
 enum LoginStates {
     START,
@@ -191,18 +192,12 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 });
 
                 if (additionalData.introQuestions) setSettings("introQuestions", additionalData.introQuestions);
-
-                if (Capacitor.getPlatform() === "web") {
-                    await makeRequest("accounts/sync", auth.currentUser!, {
-                        offset: DateTime.now().offset,
-                        platform
-                    });
-                }
+                if (platform === "android") await FirebaseAnalytics.logEvent({ name: "sign_in"});
 
                 if (!additionalData.onboarded) {
                     localStorage.setItem("onboarding", "start");
                     history.replace("/onboarding/start");
-                } else if (Capacitor.getPlatform() === "web") {
+                } else if (platform === "web") {
                     history.replace("/journal");
                 } else {
                     history.replace("/onboarding/notifications");

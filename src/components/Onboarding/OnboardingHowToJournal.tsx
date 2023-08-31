@@ -10,6 +10,7 @@ import { db } from "../../firebase";
 import history from "../../history";
 import SettingsBox from "../Settings/SettingsBox";
 import StaticMoodLogCard, { SimpleLog } from "../Summary/StaticMoodLogCard";
+import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 
 const good: SimpleLog[] = [
     {
@@ -77,6 +78,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
         if (!user || !submitting) return;
         (async () => {
             await set(ref(db, `${user.uid}/onboarding/onboarded`), true);
+            if (Capacitor.getPlatform() === "android") await FirebaseAnalytics.logEvent({ name: "onboard_complete" });
             localStorage.removeItem("onboarding");
             history.replace("/journal");
         })();
