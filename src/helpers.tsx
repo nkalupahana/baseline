@@ -313,8 +313,11 @@ export async function parseSurveyHistory(user: User, setSurveyHistory: (_: (AnyM
 }
 
 const BASELINE_DAYS = 14;
-export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDataStates) => void) {
-    const logs = await ldb.logs.where("timestamp").above(DateTime.now().minus({ years: 1 }).toMillis()).toArray();
+export async function calculateBaseline(
+        setBaselineGraph: (_: AnyMap[] | PullDataStates) => void, 
+        timeframe: {years?: number, months?: number} = {years: 1}
+    ) {
+    const logs = await ldb.logs.where("timestamp").above(DateTime.now().minus(timeframe).toMillis()).toArray();
     if (!logs.length) {
         setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
         return;

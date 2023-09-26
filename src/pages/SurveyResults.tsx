@@ -1,6 +1,6 @@
-import { IonIcon, IonSpinner } from "@ionic/react";
+import { IonIcon, IonSpinner, IonSelect, IonSelectOption } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
@@ -10,12 +10,14 @@ import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parse
 import history from "../history";
 import DASS from "../screeners/dass";
 import SPF from "../screeners/spf";
+import { time } from "console";
 
 const SurveyResults = () => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [showLastWeek, setShowLastWeek] = useState(false);
+    const [timeframe, setTimeframe] = useState<string>("0100");
     const dass = DASS();
     const spf = SPF();
 
@@ -35,6 +37,21 @@ const SurveyResults = () => {
         setShowLastWeek(true);
     }, [surveyHistory]);
 
+    // Converts a timeframe string (e.g. "0100") to an object with years and months
+    // Value of ionselect cannot be an object, so we need to store it as a string and convert it 
+    // before passing it to calculateBaseline
+    const toTimeframe = (input: string) => {
+        return {
+            years: Number(input.substring(0, 2)),
+            months: Number(input.substring(2, 4))
+        }
+    }
+
+    useMemo(() => {
+        calculateBaseline(setBaselineGraph, toTimeframe(timeframe));
+    }, [timeframe]);
+
+
     return (
         <div className="container">
             <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
@@ -46,6 +63,12 @@ const SurveyResults = () => {
                 </div> }
                 <p className="bold head2 text-center">Your baseline</p>
                 { typeof baselineGraph === "object" && <>
+                    <IonSelect onIonChange={e => setTimeframe(e.detail.value)} value={timeframe} >
+                        <IonSelectOption value="2000">All Time</IonSelectOption>
+                        <IonSelectOption value="0100">Last Year</IonSelectOption>
+                        <IonSelectOption value="0006">Last 6 Months</IonSelectOption>
+                        <IonSelectOption value="0001">Last Month</IonSelectOption>
+                    </IonSelect>
                     <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                     <p className="text-center margin-bottom-0 max-width-600">
                         Your baseline tracks your "average" mood, so you can 
@@ -73,7 +96,7 @@ const SurveyResults = () => {
                     </p>
                     <br />
                     <p className="bold head2 text-center">Resilience</p>
-                    <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> 
+                    <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} />
                     <p className="text-center margin-bottom-0 max-width-600">{ RESILIENCE_EXP }</p>
                 </> }
                 <EndSpacer />
