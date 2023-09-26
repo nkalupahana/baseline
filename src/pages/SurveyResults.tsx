@@ -1,4 +1,4 @@
-import { IonIcon, IonSpinner, IonSelect, IonSelectOption } from "@ionic/react";
+import { IonIcon, IonSpinner, IonSelect, IonSelectOption, IonSegment, IonSegmentButton, IonLabel } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -63,12 +63,20 @@ const SurveyResults = () => {
                 </div> }
                 <p className="bold head2 text-center">Your baseline</p>
                 { typeof baselineGraph === "object" && <>
-                    <IonSelect onIonChange={e => setTimeframe(e.detail.value)} value={timeframe} >
-                        <IonSelectOption value="2000">All Time</IonSelectOption>
-                        <IonSelectOption value="0100">Last Year</IonSelectOption>
-                        <IonSelectOption value="0006">Last 6 Months</IonSelectOption>
-                        <IonSelectOption value="0001">Last Month</IonSelectOption>
-                    </IonSelect>
+                    <IonSegment onIonChange={e => setTimeframe(e.detail.value || "0100")} value={timeframe}>
+                        <IonSegmentButton value="2000">
+                            <IonLabel>All time</IonLabel>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="0100">
+                            <IonLabel>Last year</IonLabel>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="0006">
+                            <IonLabel>Last 6 Months</IonLabel>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="0001">
+                            <IonLabel>Last month</IonLabel>
+                        </IonSegmentButton>
+                    </IonSegment>
                     <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
                     <p className="text-center margin-bottom-0 max-width-600">
                         Your baseline tracks your "average" mood, so you can 
