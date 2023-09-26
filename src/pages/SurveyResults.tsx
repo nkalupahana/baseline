@@ -47,7 +47,7 @@ const SurveyResults = () => {
         }
     }
 
-    useMemo(() => {
+    useEffect(() => {
         calculateBaseline(setBaselineGraph, toTimeframe(timeframe));
     }, [timeframe]);
 
@@ -63,7 +63,7 @@ const SurveyResults = () => {
                 </div> }
                 <p className="bold head2 text-center">Your baseline</p>
                 { typeof baselineGraph === "object" && <>
-                    <IonSegment onIonChange={e => setTimeframe(e.detail.value || "0100")} value={timeframe}>
+                    <IonSegment onIonChange={e => setTimeframe(e.detail.value || "0100")} value={timeframe} mode="md">
                         <IonSegmentButton value="2000">
                             <IonLabel>All time</IonLabel>
                         </IonSegmentButton>
