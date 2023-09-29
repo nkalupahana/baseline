@@ -12,9 +12,31 @@ export default function DASS(): Screener {
         return ret;
     };
 
-    const dRange = generateScreenerRanges([5, 2, 4, 3, 8]);
-    const aRange = generateScreenerRanges([4, 2, 2, 2, 12]);
-    const sRange = generateScreenerRanges([8, 2, 3, 4, 5]);
+    const dBuckets = [5, 2, 4, 3, 8];
+    const aBuckets = [4, 2, 2, 2, 12];
+    const sBuckets = [8, 2, 3, 4, 5];
+
+    const dRange = generateScreenerRanges(dBuckets);
+    const aRange = generateScreenerRanges(aBuckets);
+    const sRange = generateScreenerRanges(sBuckets);
+
+    function normalizeDass(value: number, type: string): number {
+        let data;
+        if (type === "d") {
+            data = dBuckets;
+        } else if (type === "a") {
+            data = aBuckets;
+        } else {
+            data = sBuckets;
+        }
+        let i = 0;
+        value -= data[i];
+        while (value > 0) {
+            i++;
+            value -= data[i];
+        }
+        return i + 1 + value / data[i];
+    }
 
     const getProblemFlag = function(results: any) {
         let d = dRange[results.d];
@@ -187,11 +209,12 @@ export default function DASS(): Screener {
             let d = [];
             for (let key in data) {
                 if (data[key]["key"] !== this._key) continue;
+            
                 d.push({
                     date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
-                    Depression: data[key]["results"]["d"],
-                    Anxiety: data[key]["results"]["a"],
-                    Stress: data[key]["results"]["s"]
+                    Depression: normalizeDass(data[key]["results"]["d"], "d"),
+                    Anxiety: normalizeDass(data[key]["results"]["a"], "a"),
+                    Stress: normalizeDass(data[key]["results"]["s"], "s")
                 });
             }
 
@@ -208,7 +231,19 @@ export default function DASS(): Screener {
             }, {
                 key: "Stress",
                 color: "#ffa600"
-            }]
+            }],
+            formatYAxis: (v: number) => {
+                switch (v) {
+                    case 0: return "Normal";
+                    case 1: return "Mild";
+                    case 2: return "Moderate";
+                    case 3: return "Severe";
+                    case 4: return "Extremely Severe";
+                    default: return "";
+                }
+            },
+            yAxisWidth: 100,
+            topMargin: 15,
         }
     }
 }

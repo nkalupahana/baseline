@@ -35,6 +35,8 @@ export interface GraphConfig {
     yAxisLabel: string;
     yDomain?: [(min: number) => number, (max: number) => number];
     yAxisWidth?: number;
+    formatYAxis?: (value: number) => string;
+    topMargin?: number;
     lines: Line[]
 }
 

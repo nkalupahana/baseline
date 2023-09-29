@@ -25,6 +25,8 @@ interface Props {
 }
 
 const SurveyGraph = ({ data, graphConfig }: Props) => {
+  const defaultYTicker = (v: number) => String(v).substring(0, 4);
+
   return (
     <>
       <ResponsiveContainer width="100%" height={370}>
@@ -33,7 +35,7 @@ const SurveyGraph = ({ data, graphConfig }: Props) => {
           height={400}
           data={data}
           margin={{
-            top: 5,
+            top: graphConfig.topMargin ?? 5,
             right: 5,
             left: 5,
             bottom: 5,
@@ -42,9 +44,7 @@ const SurveyGraph = ({ data, graphConfig }: Props) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis
-            tickFormatter={(v, i) => {
-              return String(v).substring(0, 4);
-            }}
+            tickFormatter={graphConfig.formatYAxis ?? defaultYTicker}
             width={graphConfig.yAxisWidth ?? 45}
             domain={graphConfig.yDomain}
           >
