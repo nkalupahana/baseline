@@ -7,7 +7,7 @@ export default function CAGE_AID(): Screener {
         _currentQuestion: 0,
         _clinicalName: "CAGE-AID (with sensitivity and question modifications)",
         // Unmodified questions (for yes/no answers)
-        __questions: [
+        _oldquestions: [
             "Have you ever felt you ought to cut down on your drinking or drug use?",
             "Have people annoyed you by criticizing your drinking or drug use?",
             "Have you felt bad or guilty about your drinking or drug use?",
@@ -64,16 +64,17 @@ export default function CAGE_AID(): Screener {
             } else {
                 return <>
                     <p>
-                        Your answers have indicated that you have issues with substance abuse, 
-                        and likely have a substance use disorder. Even if you don't think your substance use 
+                        Based on your answers, it looks like you might be struggling with 
+                        substance use. Even if you don't think your substance use 
                         is an issue, we highly recommend reaching out to a professional to talk about 
-                        your specific circumstances. Substance use can easily spiral into a bigger issue, is 
-                        often also indicative of other mental health struggles, and can impact many other 
-                        facets of your life. It's really important that you get help.
+                        your specific circumstances. Substance use can easily spiral into a bigger issue,
+                        and can end up impacting many other facets of your life. It's really important to get help sooner
+                        rather than later.
                     </p>
                     <p>
-                        Alcoholics Anonymous, Narcotics Anonymous, and similar organizations are a big help for lots of people
-                        who are struggling with substance use. You can look online for a chapter near you. 
+                        Alcoholics Anonymous, Narcotics Anonymous, and similar organizations have 
+                        historically helped lots of people who are struggling with substance use. 
+                        You can look online for a chapter near you. 
                         Additionally, if you're in the US, we recommend going 
                         to <a href="https://www.findtreatment.gov/" target="_blank" rel="noreferrer">findtreatment.gov</a> to 
                         get professional support for specific types of substance use, 
@@ -81,10 +82,10 @@ export default function CAGE_AID(): Screener {
                         both substance use and general mental health support. { FIND_HELP }
                     </p>
                     <p>
-                        Beyond professional support, though, talking to others (and yourself!) about what you're going through is 
+                        Beyond professional support, though, talking to others about what you're going through is 
                         super important. { TALK_TO_SOMEONE }
                     </p>
-                    <p>If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND } { GAP_FUND_REFER }</p>
+                    <p>If you need financial assistance for any of this, the baseline Gap Fund can help. { GAP_FUND } { GAP_FUND_REFER }</p>
                 </>;
             }
         },
@@ -92,7 +93,7 @@ export default function CAGE_AID(): Screener {
             return `CAGE-AID, with increased sensitivity (instead of no/yes, not true/somewhat true/certainly true; doi: 10.1080/10826080802484264) and two extra questions regarding solo use around others and using to cope (not experimentally validated). Raw score: ${this._results}. Raw scores from 0 - 2 for each question. Cutoff = 2 (same paper).`;
         },
         getPriority: function() {
-            return this._results < 2 ? Priority.LOW : Priority.HIGH;
+            return this._results < 2 ? Priority.DO_NOT_SHOW : Priority.HIGH;
         }
     }
 }
