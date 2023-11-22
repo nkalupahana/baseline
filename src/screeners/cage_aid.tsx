@@ -57,10 +57,7 @@ export default function CAGE_AID(): Screener {
         },
         getRecommendation: function() {
             if (this._results < 2) {
-                return <p>
-                    Based on your answers, we do not believe you have a substance use disorder. If you're worried about 
-                    someone you know and their relationship with substances, check out the help resources in the main menu.
-                </p>;
+                return <p>This should never appear.</p>;
             } else {
                 return <>
                     <p>

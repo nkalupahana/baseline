@@ -82,8 +82,7 @@ export default function EDE_QS(): Screener {
         },
         getRecommendation: function() {
             if (this._results < 15) {
-                return <p>Based on your answers to this screener, we do not believe you have an eating disorder. If you're worried about 
-                someone you know and their relationship with eating or their body, check out the help resources on the main menu.</p>
+                return <p>This should never appear.</p>
             } else {
                 return <>
                     <p>
