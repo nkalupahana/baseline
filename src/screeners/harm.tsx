@@ -89,8 +89,8 @@ export default function HARM(): HARMScreener {
             if (this._results[1] === 1 && this._results[2] === 0) {
                 return <>
                     <p>
-                        About your last survey: it sounds like you've been struggling with a lot lately, including 
-                        suicidal ideation. No matter what you've been going through, we're here for you.
+                        About your last survey: it sounds like you've been struggling with a lot lately. 
+                        No matter what you've been going through, we're here for you.
                     </p>
                     <p>
                         First of all, it's important that you try to talk to someone about what you're going through. { TALK_TO_SOMEONE }
@@ -102,7 +102,7 @@ export default function HARM(): HARMScreener {
                     { HOTLINES }
                     <p>
                         As for the long term, we urge you to seek professional help from a 
-                        therapist. <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">Search for treatment providers here!</a> { FIND_HELP }
+                        therapist. <a href="https://findtreatment.samhsa.gov/" target="_blank" rel="noreferrer">Search for treatment providers here.</a> { FIND_HELP }
                     </p>
                     { GAP_FUND_ALL }
                 </>
