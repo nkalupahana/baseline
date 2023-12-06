@@ -1,6 +1,6 @@
 {
   "name": "baseline",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": true,
   "dependencies": {
     "@byteowls/capacitor-oauth2": "^4.0.0",
@@ -67,6 +67,7 @@
     "toastify-js": "github:nkalupahana/toastify-js#master",
     "typescript": "^4.6.4",
     "ua-parser-js": "^1.0.32",
+    "victory": "^36.7.0",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
