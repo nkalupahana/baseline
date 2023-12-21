@@ -12,19 +12,21 @@ import DASS from "../screeners/dass";
 import SPF from "../screeners/spf";
 import DASSGraph from "../components/graphs/DASSGraph";
 import { DateTime } from "luxon";
+import { ONE_DAY } from "../components/graphs/graph-helpers";
 
 const SurveyResults = () => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [showLastWeek, setShowLastWeek] = useState(false);
-    const [xZoomDomain, setXZoomDomain] = useState<undefined | [number, number]>(undefined);
-    const dass = DASS();
-    const spf = SPF();
-
     const now = useMemo(() => {
         return DateTime.now().toMillis();
     }, []);
+    const [xZoomDomain, setXZoomDomain] = useState<undefined | [number, number]>([now - ONE_DAY * 180, now]);
+    const dass = DASS();
+    const spf = SPF();
+
+    
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
