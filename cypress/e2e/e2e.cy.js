@@ -765,7 +765,8 @@ describe("Test Settings", () => {
         cy.get("ion-menu").should("not.exist")
 
         cy.contains("have enough data").should("exist")
-        cy.get(".recharts-responsive-container").should("have.length", 2)
+        cy.get(".recharts-responsive-container").should("have.length", 1)
+        cy.get(".VictoryContainer").should("have.length", 1)
 
         cy.contains("Last Week").should("exist").click()
         cy.url().should("include", "/lastreview")

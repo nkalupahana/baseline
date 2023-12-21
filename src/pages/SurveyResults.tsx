@@ -24,9 +24,7 @@ const SurveyResults = () => {
     }, []);
     const [xZoomDomain, setXZoomDomain] = useState<undefined | [number, number]>([now - ONE_DAY * 180, now]);
     const dass = DASS();
-    const spf = SPF();
-
-    
+    const spf = SPF();    
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
