@@ -1,9 +1,29 @@
-import { VictoryLegend, VictoryLine, VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer, VictoryTheme } from "victory";
+import { VictoryLine, VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer } from "victory";
 import { BlockerRectangle, CustomLineSegment, CustomVictoryLabel, MultiCurve, ONE_DAY, GraphProps } from "./graph-helpers";
+import theme from "./graph-theme";
 import { DateTime } from "luxon";
 import { AnyMap } from "../../helpers";
+import { useEffect, useRef, useState } from "react";
 
 const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
+    const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
+    const graphRef = useRef<null | HTMLDivElement>(null);
+    useEffect(() => {
+        if (!graphRef.current) return;
+
+        const listener = () => {
+            if (!graphRef.current) return;
+            setBoundingRect(graphRef.current.getBoundingClientRect());
+        };
+
+        window.addEventListener("resize", listener);
+        listener();
+
+        return () => {
+            window.removeEventListener("resize", listener);
+        };
+    }, []);
+
     const labels = ["Normal", "Mild", "Moderate", "Severe", "Extremely\nSevere", ""];
     const lines = [
         {
@@ -31,21 +51,73 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
         a: 0,
         s: -0.03,
     };
+    
+    const zoomTo = (key: "3M" | "6M" | "1Y" | "All") => {
+        const lateTime = xZoomDomain ? xZoomDomain[1] : now;
+        if (key === "3M") {
+            setXZoomDomain([lateTime - ONE_DAY * 90, lateTime]);
+        } else if (key === "6M") {
+            setXZoomDomain([lateTime - ONE_DAY * 180, lateTime]);
+        } else if (key === "1Y") {
+            setXZoomDomain([lateTime - ONE_DAY * 365, lateTime]);
+        } else if (key === "All") {
+            setXZoomDomain(undefined);
+        }
+    }
 
     return (
-        <>
+        <div style={{ height: "375px", width: "100%" }} ref={graphRef}>
+            <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+            }}>
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                }}>
+                    {lines.map((line) => <>
+                        <div style={{
+                            height: "12px",
+                            width: "12px",
+                            backgroundColor: line.color,
+                            borderRadius: "2px",
+                            marginRight: "8px",
+                        }}></div>
+                        <div style={{
+                            marginRight: "12px",
+                        }}>{keyMap[line.y]}</div>
+                    </>)}
+                </div>
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                }}>
+                    <p>Zoom:</p>
+                    <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>
+                    <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>
+                    <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>
+                    <div onClick={() => zoomTo("All")} className="outline-button">All</div>
+                </div>
+            </div>
+            
             <VictoryChart
-                theme={VictoryTheme.material}
+                theme={theme}
                 domainPadding={{ x: [25, 0], y: [0, 0] }}
                 containerComponent={
                     <VictoryZoomContainer
                         zoomDimension="x"
                         onZoomDomainChange={(domain) => setXZoomDomain(domain.x as [number, number])}
-                        minimumZoom={{ x: ONE_DAY * 40 }}
+                        minimumZoom={{ x: ONE_DAY * 60 }}
                         zoomDomain={{ x: xZoomDomain }}
                     />
                 }
-                maxDomain={{ x: now }}
+                maxDomain={{ x: now + ONE_DAY * 3 }}
+                height={375}
+                width={boundingRect.width}
+                padding={{top: 20, bottom: 50, left: 50, right: 50}}
             >
                 {/* Lines */}
                 {lines.map((line) => (
@@ -93,14 +165,13 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
                 <VictoryAxis
                     crossAxis
                     tickFormat={(t) => DateTime.fromMillis(t).toFormat("LLL d")}
-                    fixLabelOverlap
                     style={{
                         grid: { stroke: "none" },
-                        tickLabels: { padding: 16, angle: -45 },
+                        tickLabels: { padding: 20, angle: -45},
                     }}
                     axisComponent={<CustomLineSegment dx1={20} />}
-                    tickComponent={<CustomLineSegment xcutoff={70} />}
-                    tickLabelComponent={<CustomVictoryLabel xcutoff={70} dx1={-12} />}
+                    tickComponent={<CustomLineSegment xcutoff={80} />}
+                    tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={-16} />}
                 />
 
                 {/* Category axis (y) */}
@@ -111,26 +182,14 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
                     tickFormat={(t) => labels[t]}
                     style={{
                         grid: { stroke: "grey" },
-                        tickLabels: { fontSize: "12px", padding: 4 },
+                        tickLabels: { padding: 4 },
                     }}
-                    offsetX={70}
-                    gridComponent={<CustomLineSegment dx1={20} />}
-                    tickLabelComponent={<CustomVictoryLabel dy1={-23} />}
+                    offsetX={80}
+                    gridComponent={<CustomLineSegment dx1={30} />}
+                    tickLabelComponent={<CustomVictoryLabel dy1={-28} />}
                 />
             </VictoryChart>
-            <VictoryLegend
-                orientation="horizontal"
-                x={80}
-                gutter={25}
-                height={50}
-                data={lines.map((line) => {
-                    return {
-                        name: keyMap[line.y],
-                        symbol: { fill: line.color },
-                    };
-                })}
-            />
-        </>
+        </div>
     );
 };
 

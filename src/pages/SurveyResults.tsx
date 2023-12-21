@@ -1,6 +1,6 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
@@ -10,14 +10,21 @@ import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parse
 import history from "../history";
 import DASS from "../screeners/dass";
 import SPF from "../screeners/spf";
+import DASSGraph from "../components/graphs/DASSGraph";
+import { DateTime } from "luxon";
 
 const SurveyResults = () => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [showLastWeek, setShowLastWeek] = useState(false);
+    const [xZoomDomain, setXZoomDomain] = useState<undefined | [number, number]>(undefined);
     const dass = DASS();
     const spf = SPF();
+
+    const now = useMemo(() => {
+        return DateTime.now().toMillis();
+    }, []);
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
@@ -65,12 +72,7 @@ const SurveyResults = () => {
                 { surveyHistory === PullDataStates.NOT_ENOUGH_DATA && <p className="text-center">As you complete surveys each week, more data will show up here.</p>}
                 { typeof surveyHistory === "object" && <>
                     <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
-                    <SurveyGraph data={dass.processDataForGraph!(surveyHistory)} graphConfig={dass.graphConfig!} />
-                    <p className="text-center margin-bottom-0 max-width-600">
-                        All three metrics on the graph are on separate scales, so we don't 
-                        recommend comparing them to each other. Just compare them to what they 
-                        were in the past.
-                    </p>
+                    <DASSGraph xZoomDomain={xZoomDomain} setXZoomDomain={setXZoomDomain} data={dass.processDataForGraph!(surveyHistory)} now={now} />
                     <br />
                     <p className="bold head2 text-center">Resilience</p>
                     <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> 

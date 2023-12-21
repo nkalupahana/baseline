@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { Curve, VictoryLabel, LineSegment } from "victory";
 
 export interface GraphProps {
-    xZoomDomain: [number, number];
-    setXZoomDomain: (domain: [number, number]) => void;
+    xZoomDomain: undefined | [number, number];
+    setXZoomDomain: (domain: undefined | [number, number]) => void;
     data: any[];
     now: number;
 }
@@ -49,5 +49,5 @@ export const CustomVictoryLabel = (props: any) => {
 };
 
 export const BlockerRectangle = (props: any) => {
-    return <rect x="0" y="0" width="70" height="350" style={{ fill: "white" }} />;
+    return <rect x="0" y="0" width="80" height="350" style={{ fill: "var(--ion-background-color)" }} />;
 };
