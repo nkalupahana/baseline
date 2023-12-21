@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {
@@ -12,9 +11,25 @@ export default function DASS(): Screener {
         return ret;
     };
 
-    const dRange = generateScreenerRanges([5, 2, 4, 3, 8]);
-    const aRange = generateScreenerRanges([4, 2, 2, 2, 12]);
-    const sRange = generateScreenerRanges([8, 2, 3, 4, 5]);
+    const ranges = {
+        d: [5, 2, 4, 3, 8],
+        a: [4, 2, 2, 2, 12],
+        s: [8, 2, 3, 4, 5]
+    };
+
+    const dRange = generateScreenerRanges(ranges["d"]);
+    const aRange = generateScreenerRanges(ranges["a"]);
+    const sRange = generateScreenerRanges(ranges["s"]);
+
+    const normalizeRange = (value: number, range: number[]) => {
+        let i = 0;
+        value -= range[i];
+        while (value > 0) {
+            i++;
+            value -= range[i];
+        }
+        return i + 1 + value / range[i];
+    }
 
     const getProblemFlag = function(results: any) {
         let d = dRange[results.d];
@@ -188,12 +203,14 @@ export default function DASS(): Screener {
             for (let key in data) {
                 if (data[key]["key"] !== this._key) continue;
                 d.push({
-                    date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
-                    Depression: data[key]["results"]["d"],
-                    Anxiety: data[key]["results"]["a"],
-                    Stress: data[key]["results"]["s"]
+                    timestamp: Number(key),
+                    d: normalizeRange(data[key]["results"]["d"], ranges["d"]),
+                    a: normalizeRange(data[key]["results"]["a"], ranges["a"]),
+                    s: normalizeRange(data[key]["results"]["s"], ranges["s"])
                 });
             }
+
+            console.log(d);
 
             return d;
         },
