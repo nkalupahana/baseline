@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { Curve, VictoryLabel, LineSegment } from "victory";
 
@@ -6,6 +7,18 @@ export interface GraphProps {
     setXZoomDomain: (domain: undefined | [number, number]) => void;
     data: any[];
     now: number;
+    pageWidth: number
+    tickCount: number
+    tickFormatter: (timestamp: number) => string
+}
+
+export const formatDateTick = (timestamp: number, thisYear: number) => {
+    const dt = DateTime.fromMillis(timestamp)
+    if (dt.year === thisYear) {
+        return dt.toFormat("LLL d");
+    } else {
+        return dt.toFormat("LLL d yy");
+    }
 }
 
 export const ONE_DAY = 86400 * 1000;

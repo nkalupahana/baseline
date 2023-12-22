@@ -1,6 +1,6 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import SurveyGraph from "../components/Review/SurveyGraph";
@@ -12,7 +12,8 @@ import DASS from "../screeners/dass";
 import SPF from "../screeners/spf";
 import DASSGraph from "../components/graphs/DASSGraph";
 import { DateTime } from "luxon";
-import { ONE_DAY } from "../components/graphs/graph-helpers";
+import { ONE_DAY, formatDateTick } from "../components/graphs/graph-helpers";
+import { memoize } from "lodash";
 
 const SurveyResults = () => {
     const [user] = useAuthState(auth);
@@ -23,7 +24,40 @@ const SurveyResults = () => {
         return DateTime.now().toMillis();
     }, []);
     const [xZoomDomain, setXZoomDomain] = useState<undefined | [number, number]>([now - ONE_DAY * 180, now]);
-    const dass = DASS();
+    const pageWidthRef = useRef<null | HTMLDivElement>(null);
+    const [pageWidth, setPageWidth] = useState(0);
+    useEffect(() => {
+        if (!pageWidthRef.current) return;
+
+        const listener = () => {
+            if (!pageWidthRef.current) return;
+            setPageWidth(pageWidthRef.current.getBoundingClientRect().width);
+        };
+
+        window.addEventListener("resize", listener);
+        listener();
+
+        return () => {
+            window.removeEventListener("resize", listener);
+        };
+    }, []);
+
+    const tickCount = useMemo(() => {
+        let ticks = pageWidth * 0.0170811;
+        if (ticks < 6) ticks = 6;
+        console.log(Math.round(ticks));
+        return Math.round(ticks);
+    }, [pageWidth]);
+
+    const memoTickFormatter = useMemo(() => {
+        const thisYear = DateTime.now().year;
+        const formatter = (timestamp: number) => {
+            return formatDateTick(timestamp, thisYear);
+        }
+
+        return memoize(formatter);
+    }, []);
+
     const spf = SPF();    
 
     useEffect(() => {
@@ -42,10 +76,16 @@ const SurveyResults = () => {
         setShowLastWeek(true);
     }, [surveyHistory]);
 
+    const dassData = useMemo(() => {
+        if (typeof surveyHistory !== "object") return [];
+        const dass = DASS();
+        return dass.processDataForGraph!(surveyHistory);
+    }, [surveyHistory]);
+
     return (
         <div className="container">
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
-            <div className="center-journal">
+            <div className="center-journal" ref={pageWidthRef}>
                 <div className="title">Survey Results</div>
                 <br />
                 { showLastWeek && <div className="finish-button" onClick={() => history.push("/lastreview")} style={{"width": "80%", "maxWidth": "500px"}}>
@@ -72,9 +112,11 @@ const SurveyResults = () => {
                 { surveyHistory === PullDataStates.NOT_ENOUGH_DATA && <p className="text-center">As you complete surveys each week, more data will show up here.</p>}
                 { typeof surveyHistory === "object" && <>
                     <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
-                    <DASSGraph xZoomDomain={xZoomDomain} setXZoomDomain={setXZoomDomain} data={dass.processDataForGraph!(surveyHistory)} now={now} />
+                    <DASSGraph xZoomDomain={xZoomDomain} setXZoomDomain={setXZoomDomain} data={dassData} now={now} pageWidth={pageWidth} tickCount={tickCount} tickFormatter={memoTickFormatter} />
                     <br />
-                    <p className="bold head2 text-center">Resilience</p>
+                    <p className="bold head2 text-center" style={{
+                        marginTop: "64px",
+                    }}>Resilience</p>
                     <SurveyGraph data={spf.processDataForGraph!(surveyHistory)} graphConfig={spf.graphConfig!} /> 
                     <p className="text-center margin-bottom-0 max-width-600">{ RESILIENCE_EXP }</p>
                 </> }

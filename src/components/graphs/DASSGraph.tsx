@@ -1,29 +1,9 @@
 import { VictoryLine, VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer } from "victory";
 import { BlockerRectangle, CustomLineSegment, CustomVictoryLabel, MultiCurve, ONE_DAY, GraphProps } from "./graph-helpers";
 import theme from "./graph-theme";
-import { DateTime } from "luxon";
 import { AnyMap } from "../../helpers";
-import { useEffect, useRef, useState } from "react";
 
-const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
-    const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
-    const graphRef = useRef<null | HTMLDivElement>(null);
-    useEffect(() => {
-        if (!graphRef.current) return;
-
-        const listener = () => {
-            if (!graphRef.current) return;
-            setBoundingRect(graphRef.current.getBoundingClientRect());
-        };
-
-        window.addEventListener("resize", listener);
-        listener();
-
-        return () => {
-            window.removeEventListener("resize", listener);
-        };
-    }, []);
-
+const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter }: GraphProps) => {
     const labels = ["Normal", "Mild", "Moderate", "Severe", "Extremely\nSevere", ""];
     const lines = [
         {
@@ -66,7 +46,7 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
     }
 
     return (
-        <div style={{ height: "375px", width: "100%" }} ref={graphRef}>
+        <div style={{ height: "400px", width: "100%" }}>
             <div style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -95,7 +75,7 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
                     alignItems: "center",
                     flexWrap: "wrap",
                 }}>
-                    <p>Zoom:</p>
+                    <p>Zoom</p>
                     <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>
                     <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>
                     <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>
@@ -115,9 +95,9 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
                     />
                 }
                 maxDomain={{ x: now + ONE_DAY * 3 }}
-                height={375}
-                width={boundingRect.width}
-                padding={{top: 20, bottom: 50, left: 50, right: 50}}
+                height={400}
+                width={pageWidth}
+                padding={{top: 20, bottom: 75, left: 50, right: 25}}
             >
                 {/* Lines */}
                 {lines.map((line) => (
@@ -164,7 +144,7 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
                 {/* Date axis (x) */}
                 <VictoryAxis
                     crossAxis
-                    tickFormat={(t) => DateTime.fromMillis(t).toFormat("LLL d")}
+                    tickFormat={tickFormatter}
                     style={{
                         grid: { stroke: "none" },
                         tickLabels: { padding: 20, angle: -45},
@@ -172,6 +152,7 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now }: GraphProps) => {
                     axisComponent={<CustomLineSegment dx1={20} />}
                     tickComponent={<CustomLineSegment xcutoff={80} />}
                     tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={-16} />}
+                    tickCount={tickCount}
                 />
 
                 {/* Category axis (y) */}
