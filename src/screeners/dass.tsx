@@ -210,8 +210,6 @@ export default function DASS(): Screener {
                 });
             }
 
-            console.log(d);
-
             return d;
         },
         graphConfig: {
