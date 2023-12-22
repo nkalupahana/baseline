@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { Curve, VictoryLabel, LineSegment } from "victory";
+import { AnyMap } from "../../helpers";
 
 export interface GraphProps {
     xZoomDomain: undefined | [number, number];
@@ -64,3 +65,47 @@ export const CustomVictoryLabel = (props: any) => {
 export const BlockerRectangle = (props: any) => {
     return <rect x="0" y="0" width="80" height="350" style={{ fill: "var(--ion-background-color)" }} />;
 };
+
+interface GraphHeaderProps {
+    lines: AnyMap[]
+    keyMap: AnyMap
+    zoomTo: (key: "3M" | "6M" | "1Y" | "All") => void;
+}
+
+export const GraphHeader = ({ lines, keyMap, zoomTo } : GraphHeaderProps) => {
+    return <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+    }}>
+        <div style={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+        }}>
+            {lines.map((line) => <>
+                <div style={{
+                    height: "12px",
+                    width: "12px",
+                    backgroundColor: line.color,
+                    borderRadius: "2px",
+                    marginRight: "8px",
+                }}></div>
+                <div style={{
+                    marginRight: "12px",
+                }}>{keyMap[line.y]}</div>
+            </>)}
+        </div>
+        <div style={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+        }}>
+            <p>Zoom</p>
+            <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>
+            <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>
+            <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>
+            <div onClick={() => zoomTo("All")} className="outline-button">All</div>
+        </div>
+    </div>
+}

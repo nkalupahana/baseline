@@ -22,7 +22,7 @@ const fontSize = 16;
 const padding = 8;
 const baseProps = {
     width: 350,
-    height: 350,
+    height: 400,
     padding: 50,
 };
 // *
@@ -84,7 +84,12 @@ const theme: VictoryThemeDefinition = {
         },
         baseProps
     ),
-    chart: baseProps,
+    chart: assign(
+        baseProps,
+        {
+            padding: {top: 20, bottom: 75, left: 50, right: 25}
+        }
+    ),
     group: assign(
         {
             colorScale: colors,
@@ -129,6 +134,7 @@ const theme: VictoryThemeDefinition = {
                 },
                 labels: baseLabelStyles,
             },
+            size: 3
         },
         baseProps
     )
