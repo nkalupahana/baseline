@@ -1,11 +1,11 @@
 import { VictoryLine, VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer } from "victory";
-import { BlockerRectangle, CustomLineSegment, CustomVictoryLabel, MultiCurve, ONE_DAY, GraphProps } from "./graph-helpers";
+import { BlockerRectangle, CustomLineSegment, CustomVictoryLabel, MultiCurve, ONE_DAY, GraphProps, GraphHeader } from "./graph-helpers";
 import theme from "./graph-theme";
 import { AnyMap } from "../../helpers";
 
 const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter }: GraphProps) => {
     const labels = ["Normal", "Mild", "Moderate", "Severe", "Extremely\nSevere", ""];
-    const lines = [
+    const lines: AnyMap[] = [
         {
             y: "d",
             color: "teal",
@@ -47,41 +47,7 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCoun
 
     return (
         <div style={{ height: "400px", width: "100%" }}>
-            <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-            }}>
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                }}>
-                    {lines.map((line) => <>
-                        <div style={{
-                            height: "12px",
-                            width: "12px",
-                            backgroundColor: line.color,
-                            borderRadius: "2px",
-                            marginRight: "8px",
-                        }}></div>
-                        <div style={{
-                            marginRight: "12px",
-                        }}>{keyMap[line.y]}</div>
-                    </>)}
-                </div>
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                }}>
-                    <p>Zoom</p>
-                    <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>
-                    <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>
-                    <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>
-                    <div onClick={() => zoomTo("All")} className="outline-button">All</div>
-                </div>
-            </div>
+            <GraphHeader lines={lines} keyMap={keyMap} zoomTo={zoomTo} />
             
             <VictoryChart
                 theme={theme}
@@ -95,9 +61,7 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCoun
                     />
                 }
                 maxDomain={{ x: now + ONE_DAY * 3 }}
-                height={400}
                 width={pageWidth}
-                padding={{top: 20, bottom: 75, left: 50, right: 25}}
             >
                 {/* Lines */}
                 {lines.map((line) => (
@@ -120,7 +84,6 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCoun
                     <VictoryScatter
                         key={line.y}
                         data={data}
-                        size={2.5}
                         x="timestamp"
                         y={(d) => {
                             let jitter = 0;
