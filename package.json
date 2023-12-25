@@ -61,7 +61,6 @@
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "^5.0.0",
-    "recharts": "^2.1.10",
     "smoothscroll-polyfill": "^0.4.4",
     "swiper": "^8.2.2",
     "toastify-js": "github:nkalupahana/toastify-js#master",
