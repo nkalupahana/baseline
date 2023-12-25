@@ -8,7 +8,6 @@ import aesutf8 from "crypto-js/enc-utf8";
 import hash from "crypto-js/sha512";
 import { getIdToken, User } from "firebase/auth";
 import { get, orderByKey, query, ref } from "firebase/database";
-import { GraphConfig } from "./screeners/screener";
 import Fuse from "fuse.js";
 import { murmurhash3_32_gc } from "./murmurhash3_gc";
 import UAParser from "ua-parser-js";
@@ -29,15 +28,6 @@ export function getTime() {
 export function getDateFromLog(log: Log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
 }
-
-export const BASELINE_GRAPH_CONFIG: GraphConfig = {
-    yAxisLabel: "baseline (-5 to 5 scale)",
-    lines: [{
-        key: "Mood",
-        color: "#955196"
-    }],
-    yAxisWidth: 60
-};
 
 const SECONDS_IN_DAY = 86400;
 // https://materializecss.com/color
@@ -314,7 +304,7 @@ export async function parseSurveyHistory(user: User, setSurveyHistory: (_: (AnyM
 
 const BASELINE_DAYS = 14;
 export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDataStates) => void) {
-    const logs = await ldb.logs.where("timestamp").above(DateTime.now().minus({ years: 1 }).toMillis()).toArray();
+    const logs = await ldb.logs.toArray();
     if (!logs.length) {
         setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
         return;
@@ -345,7 +335,7 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
             ++ptr;
         }
         perDayAverages.push(ctr === 0 ? 0 : todaySum / ctr);
-        perDayDates.push(currentDate.toFormat("LLL d"))
+        perDayDates.push(currentDate.toMillis())
         currentDate = currentDate.plus({"days": 1});
     }
 
@@ -366,8 +356,8 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     // Start average with base 14 days
     let baseline = [];
     baseline.push({
-        date: perDayDates[i - 1],
-        Mood: sum / BASELINE_DAYS
+        timestamp: perDayDates[i - 1],
+        value: sum / BASELINE_DAYS
     });
 
     // Calculate rolling average to end of list
@@ -375,12 +365,13 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         sum -= perDayAverages[i - BASELINE_DAYS];
         sum += perDayAverages[i];
         baseline.push({
-            date: perDayDates[i],
-            Mood: sum / BASELINE_DAYS
+            timestamp: perDayDates[i],
+            value: sum / BASELINE_DAYS
         });
         ++i;
     }
 
+    console.log(baseline);
     setBaselineGraph(baseline);
 }
 

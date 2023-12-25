@@ -1,4 +1,5 @@
 import { AnyMap } from "../helpers";
+import { GraphProps } from "../components/graphs/graph-helpers";
 
 export interface Modifier {
     _currentQuestion: number;
@@ -26,18 +27,6 @@ export enum Priority {
     CRITICAL
 }
 
-interface Line {
-    key: string;
-    color: string;
-}
-
-export interface GraphConfig {
-    yAxisLabel: string;
-    yDomain?: [(min: number) => number, (max: number) => number];
-    yAxisWidth?: number;
-    lines: Line[]
-}
-
 export default interface Screener {
     _key: string;
     _currentQuestion: number;
@@ -45,7 +34,7 @@ export default interface Screener {
     _questions: any[];
     _results: any;
     progress?: string;
-    graphConfig?: GraphConfig;
+    graph?: (props: GraphProps) => JSX.Element;
     processDataForGraph?: (data?: AnyMap) => AnyMap[];
     nextQuestion: (answer?: number) => Modifier | Done;
     getRecommendation: () => JSX.Element;

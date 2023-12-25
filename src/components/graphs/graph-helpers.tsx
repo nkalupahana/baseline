@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
-import { useMemo } from "react";
-import { Curve, VictoryLabel, LineSegment } from "victory";
+import { Fragment, useMemo } from "react";
+import { Curve, VictoryLabel, LineSegment, VictoryAxis, VictoryLine } from "victory";
 import { AnyMap } from "../../helpers";
 
 export interface GraphProps {
@@ -11,6 +11,7 @@ export interface GraphProps {
     pageWidth: number
     tickCount: number
     tickFormatter: (timestamp: number) => string
+    zoomTo: (key: "3M" | "6M" | "1Y" | "All") => void;
 }
 
 export const formatDateTick = (timestamp: number, thisYear: number) => {
@@ -27,7 +28,7 @@ export const ONE_DAY = 86400 * 1000;
 export const MultiCurve = (props: any) => {
     // Precondition: assumes dates are in descending order
     const datas = useMemo(() => {
-        const FOURTEEN_DAYS = ONE_DAY * 14;
+        const FOURTEEN_DAYS = ONE_DAY * (props.days ?? 14);
         let ret: any[][] = [[]];
         for (let data of props.data) {
             let lastArray = ret[ret.length - 1];
@@ -41,7 +42,7 @@ export const MultiCurve = (props: any) => {
         }
 
         return ret;
-    }, [props.data]);
+    }, [props.data, props.days]);
 
     return (
         <>
@@ -83,7 +84,7 @@ export const GraphHeader = ({ lines, keyMap, zoomTo } : GraphHeaderProps) => {
             alignItems: "center",
             flexWrap: "wrap",
         }}>
-            {lines.map((line) => <>
+            {lines.map((line) => <Fragment key={line.y}>
                 <div style={{
                     height: "12px",
                     width: "12px",
@@ -94,7 +95,7 @@ export const GraphHeader = ({ lines, keyMap, zoomTo } : GraphHeaderProps) => {
                 <div style={{
                     marginRight: "12px",
                 }}>{keyMap[line.y]}</div>
-            </>)}
+            </Fragment>)}
         </div>
         <div style={{
             display: "flex",
@@ -108,4 +109,36 @@ export const GraphHeader = ({ lines, keyMap, zoomTo } : GraphHeaderProps) => {
             <div onClick={() => zoomTo("All")} className="outline-button">All</div>
         </div>
     </div>
+}
+
+export const VictoryDateAxis = (props: any) => {
+    return <VictoryAxis
+        {...props}
+        crossAxis
+        tickFormat={props.tickFormatter}
+        style={{
+            grid: { stroke: "none" },
+            tickLabels: { padding: 20, angle: -45},
+        }}
+        axisComponent={<CustomLineSegment dx1={20} />}
+        tickComponent={<CustomLineSegment xcutoff={80} />}
+        tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={-16} />}
+        tickCount={props.tickCount}
+    />;
+}
+
+export const DefaultLine = (props: any) => {
+    return <VictoryLine
+        {...props}
+        key={props.line.y}
+        data={props.data}
+        scale={{ x: "time", y: "linear" }}
+        x="timestamp"
+        y={props.line.y}
+        style={{
+            data: { stroke: props.line.color },
+        }}
+        interpolation="monotoneX"
+        dataComponent={<MultiCurve days={props.days} />}
+    />
 }

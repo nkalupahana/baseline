@@ -1,35 +1,19 @@
+import DASSGraph from "../components/graphs/DASSGraph";
+import { generateScreenerRanges, normalizeRange } from "./helpers";
 import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {
-    const generateScreenerRanges = (config: number[]): string[] => {
-        let ret: string[] = [];
-        let labels = ["normal", "mild", "moderate", "severe", "extremely severe"];
-        for (let i = 0; i < config.length; ++i) {
-            ret = ret.concat(Array(config[i]).fill(labels[i]));
-        }
     
-        return ret;
-    };
-
+    let labels = ["normal", "mild", "moderate", "severe", "extremely severe"];
     const ranges = {
         d: [5, 2, 4, 3, 8],
         a: [4, 2, 2, 2, 12],
         s: [8, 2, 3, 4, 5]
     };
 
-    const dRange = generateScreenerRanges(ranges["d"]);
-    const aRange = generateScreenerRanges(ranges["a"]);
-    const sRange = generateScreenerRanges(ranges["s"]);
-
-    const normalizeRange = (value: number, range: number[]) => {
-        let i = 0;
-        value -= range[i];
-        while (value > 0) {
-            i++;
-            value -= range[i];
-        }
-        return i + 1 + value / range[i];
-    }
+    const dRange = generateScreenerRanges(ranges["d"], labels);
+    const aRange = generateScreenerRanges(ranges["a"], labels);
+    const sRange = generateScreenerRanges(ranges["s"], labels);
 
     const getProblemFlag = function(results: any) {
         let d = dRange[results.d];
@@ -212,18 +196,6 @@ export default function DASS(): Screener {
 
             return d;
         },
-        graphConfig: {
-            yAxisLabel: "Score (lower is better)",
-            lines: [{
-                key: "Depression",
-                color: "#003f5c"
-            }, {
-                key: "Anxiety",
-                color: "#bc5090"
-            }, {
-                key: "Stress",
-                color: "#ffa600"
-            }]
-        }
+        graph: DASSGraph
     }
 }
