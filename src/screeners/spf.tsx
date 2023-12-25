@@ -1,8 +1,11 @@
-import { DateTime } from "luxon";
 import { FIND_HELP, GAP_FUND, GAP_FUND_REFER, RESILIENCE_EXP } from "../data";
 import Screener, { Priority } from "./screener";
+import { normalizeRange } from "./helpers";
+import ResilienceGraph from "../components/graphs/ResilienceGraph";
 
 export default function SPF(): Screener {
+    const range = [18, 10, 20];
+
     return {
         _key: "spfv1",
         _currentQuestion: 0,
@@ -103,20 +106,15 @@ export default function SPF(): Screener {
             for (let key in data) {
                 if (data[key]["key"] !== this._key) continue;
                 // Invert score so higher is better (makes more sense)
+                let score = 60 - (data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"]);
                 d.push({
-                    date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
-                    Score: 60 - (data[key]["results"]["Social-Interpersonal"] + data[key]["results"]["Cognitive-Individual"]),
+                    timestamp: Number(key),
+                    value: normalizeRange(score, range)
                 });
             }
 
             return d;
         },
-        graphConfig: {
-            yAxisLabel: "Score (higher is better)",
-            lines: [{
-                key: "Score",
-                color: "#ff6361"
-            }]
-        }
+        graph: ResilienceGraph
     }
 }

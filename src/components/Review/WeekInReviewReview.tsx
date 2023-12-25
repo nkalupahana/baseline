@@ -2,7 +2,7 @@ import { IonIcon, IonSpinner } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
-import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
+import { AnyMap, PullDataStates, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
 import history from "../../history";
 import Screener, { Priority } from "../../screeners/screener";
 import SwiperType, { Pagination } from "swiper";
@@ -11,8 +11,9 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
-import SurveyGraph from "./SurveyGraph";
 import BaselineDescription from "./BaselineDescription";
+import BaselineGraph from "../graphs/BaselineGraph";
+import useGraphConfig from "../graphs/useGraphConfig";
 
 interface Props {
     primary: Screener,
@@ -26,6 +27,9 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
+    const [swiperProgress, setSwiperProgress] = useState(0);
+
+    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
 
     useEffect(() => {
         if (!user) return;
@@ -68,6 +72,9 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                 pagination={true}
                 onSwiper={swiper => setSwiper(swiper)}
                 className="swiper-container-mod"
+                onSlideChange={s => {
+                    setSwiperProgress(s.progress);
+                }}
             >
                 <SwiperSlide style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}>
                     <div>
@@ -79,9 +86,20 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                     return <SwiperSlide key={screener._key}>
                         <div className="title">Results</div>
                         <div className="text-center screener-slide">
-                            { screener.graphConfig && typeof surveyHistory === "object" && 
+                            { screener.graph && typeof surveyHistory === "object" && 
                                 screener.processDataForGraph && 
-                                <SurveyGraph data={screener.processDataForGraph(surveyHistory)} graphConfig={screener.graphConfig} /> }
+                                <div className="swiper-no-swiping">
+                                    <screener.graph 
+                                        data={screener.processDataForGraph(surveyHistory)}
+                                        xZoomDomain={xZoomDomain}
+                                        setXZoomDomain={setXZoomDomain}
+                                        now={now}
+                                        pageWidth={pageWidth}
+                                        tickCount={tickCount}
+                                        tickFormatter={memoTickFormatter}
+                                        zoomTo={zoomTo}
+                                    />
+                                </div>}
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>
                                 If you want to discuss these results with a 
@@ -93,9 +111,20 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                 }) }
                 <SwiperSlide>
                     <div className="title">Your baseline</div>
-                    <div className="text-center screener-slide">
+                    <div className="text-center screener-slide" ref={pageWidthRef}>
                         { typeof baselineGraph === "object" && <>
-                            <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
+                            <div className="swiper-no-swiping">
+                                <BaselineGraph
+                                    xZoomDomain={xZoomDomain}
+                                    setXZoomDomain={setXZoomDomain}
+                                    data={baselineGraph}
+                                    now={now}
+                                    pageWidth={pageWidth}
+                                    tickCount={tickCount}
+                                    tickFormatter={memoTickFormatter}
+                                    zoomTo={zoomTo}
+                                />
+                            </div>
                             <BaselineDescription />
                         </> }
                         { typeof baselineGraph === "number" && <p>
@@ -111,8 +140,8 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                 </SwiperSlide>
             </Swiper>
             <div className="swiper-pagniation-controls">
-                <IonIcon onClick={() => swiper?.slidePrev()} icon={chevronBackOutline} />
-                <IonIcon onClick={() => swiper?.slideNext()} icon={chevronForwardOutline} />
+                <IonIcon onClick={() => swiper?.slidePrev()} icon={chevronBackOutline} style={swiperProgress === 0 ? {color: "grey"} : {}} />
+                <IonIcon onClick={() => swiper?.slideNext()} icon={chevronForwardOutline} style={swiperProgress === 1 ? {color: "grey"} : {}}/>
             </div>
         </div>;
 }
