@@ -25,7 +25,7 @@ const DASSGraphContainer = ({ data }) => {
 
 function mulberry32(a) {
     return function() {
-      var t = a += 0x6D2B79F5;
+      let t = a += 0x6D2B79F5;
       t = Math.imul(t ^ t >>> 15, t | 1);
       t ^= t + Math.imul(t ^ t >>> 7, t | 61);
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
@@ -55,4 +55,64 @@ describe("DASS", () => {
             cy.mount(<DASSGraphContainer data={dataSlice} />);
         }
     });
+
+    it("Further Out (4)", () => {
+        const dataSlice = [{
+            timestamp: now - (10 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }, {
+            timestamp: now - (9 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }, {
+            timestamp: now - (8 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }, {
+            timestamp: now - (7 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }]
+        cy.mount(<DASSGraphContainer data={dataSlice} />);
+    })
+
+    it("Further Out (1)", () => {
+        const dataSlice = [{
+            timestamp: now - (10 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }]
+        cy.mount(<DASSGraphContainer data={dataSlice} />);
+    })
+
+    it("Gap", () => {
+        const dataSlice = [{
+            timestamp: now - (10 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }, {
+            timestamp: now - (9 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }, {
+            timestamp: now - (5 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }, {
+            timestamp: now - (4 * week),
+            d: 1,
+            a: 0.5,
+            s: 0.5
+        }]
+        cy.mount(<DASSGraphContainer data={dataSlice} />);
+    })
 });
