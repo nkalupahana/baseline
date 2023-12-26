@@ -10,7 +10,7 @@ const useZoomRange = (now: number, data: AnyMap[], setXZoomDomain: (domain: [num
     const minimumZoom = useMemo(() => {
         if (data.length === 1) return 0;
         return Math.min(ONE_DAY * 60, dataRange);
-    }, [data, dataRange, data]);
+    }, [data, dataRange]);
 
     useEffect(() => {
         if (data.length === 1) {
