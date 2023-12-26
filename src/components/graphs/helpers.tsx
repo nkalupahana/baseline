@@ -26,7 +26,7 @@ export const formatDateTick = (timestamp: number, thisYear: number) => {
 export const ONE_DAY = 86400 * 1000;
 
 export const MultiCurve = (props: any) => {
-    // Precondition: assumes dates are in descending order
+    // Precondition: assumes dates are in ascending order
     const datas = useMemo(() => {
         const FOURTEEN_DAYS = ONE_DAY * (props.days ?? 14);
         let ret: any[][] = [[]];
@@ -71,9 +71,10 @@ interface GraphHeaderProps {
     lines: AnyMap[]
     keyMap: AnyMap
     zoomTo: (key: "3M" | "6M" | "1Y" | "All") => void;
+    dataRange: number
 }
 
-export const GraphHeader = ({ lines, keyMap, zoomTo } : GraphHeaderProps) => {
+export const GraphHeader = ({ lines, keyMap, zoomTo, dataRange } : GraphHeaderProps) => {
     return <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -103,15 +104,19 @@ export const GraphHeader = ({ lines, keyMap, zoomTo } : GraphHeaderProps) => {
             flexWrap: "wrap",
         }}>
             <p>Zoom</p>
-            <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>
-            <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>
-            <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>
+            {(dataRange > (ONE_DAY * 90)) && <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>}
+            {(dataRange > (ONE_DAY * 180)) && <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>}
+            {(dataRange > (ONE_DAY * 365)) && <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>}
             <div onClick={() => zoomTo("All")} className="outline-button">All</div>
         </div>
     </div>
 }
 
 export const VictoryDateAxis = (props: any) => {
+    const tickCount = useMemo(() => {
+        return Math.min(props.tickCount, props.data.length);
+    }, [props.data, props.tickCount]);
+
     return <VictoryAxis
         {...props}
         crossAxis
@@ -123,7 +128,7 @@ export const VictoryDateAxis = (props: any) => {
         axisComponent={<CustomLineSegment dx1={20} />}
         tickComponent={<CustomLineSegment xcutoff={80} />}
         tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={-16} />}
-        tickCount={props.tickCount}
+        tickCount={tickCount}
     />;
 }
 

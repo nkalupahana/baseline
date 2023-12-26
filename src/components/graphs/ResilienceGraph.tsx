@@ -1,10 +1,12 @@
 import { VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer } from "victory";
-import { BlockerRectangle, CustomLineSegment, ONE_DAY, GraphProps, GraphHeader, VictoryDateAxis, DefaultLine, CustomVictoryLabel } from "./graph-helpers";
+import { BlockerRectangle, CustomLineSegment, ONE_DAY, GraphProps, GraphHeader, VictoryDateAxis, DefaultLine, CustomVictoryLabel } from "./helpers";
 import theme from "./graph-theme";
 import { AnyMap, COLORS } from "../../helpers";
 import { useMemo } from "react";
+import useZoomRange from "./useZoomRange";
 
 const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter, zoomTo }: GraphProps) => {
+    const [dataRange, minimumZoom] = useZoomRange(now, data, setXZoomDomain);
     const lines: AnyMap[] = [
         {
             y: "value",
@@ -22,15 +24,14 @@ const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, ti
 
     return (
         <div>
-            <GraphHeader lines={lines} keyMap={keyMap} zoomTo={zoomTo} />
+            <GraphHeader lines={lines} keyMap={keyMap} zoomTo={zoomTo} dataRange={dataRange} />
             
             <VictoryChart
                 theme={theme}
-                domainPadding={{ x: [25, 0], y: [0, 0] }}
                 containerComponent={<VictoryZoomContainer
                     zoomDimension="x"
                     onZoomDomainChange={(domain) => setXZoomDomain(domain.x as [number, number])}
-                    minimumZoom={{ x: ONE_DAY * 60 }}
+                    minimumZoom={{ x: minimumZoom }}
                     zoomDomain={{ x: xZoomDomain }}
                 />}
                 maxDomain={{ x: now + ONE_DAY * 3 }}
@@ -53,7 +54,7 @@ const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, ti
                 ))}
 
                 <BlockerRectangle />
-                <VictoryDateAxis tickFormatter={tickFormatter} tickCount={tickCount} />
+                <VictoryDateAxis data={data} tickFormatter={tickFormatter} tickCount={tickCount} />
 
                 {/* Category axis (y) */}
                 <VictoryAxis
