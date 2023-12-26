@@ -5,7 +5,7 @@ import { AnyMap } from "../../helpers";
 import useZoomRange from "./useZoomRange";
 
 const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter, zoomTo }: GraphProps) => {
-    const [dataRange, minimumZoom] = useZoomRange(now, data, setXZoomDomain);
+    const [dataRange, minimumZoom, maxDomain] = useZoomRange(now, data, setXZoomDomain);
     
     const labels = ["Normal", "Mild", "Moderate", "Severe", "Extremely\nSevere", ""];
     const lines: AnyMap[] = [
@@ -46,7 +46,8 @@ const DASSGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCoun
                     onZoomDomainChange={(domain) => setXZoomDomain(domain.x as [number, number])}
                     minimumZoom={{ x: minimumZoom }}
                     zoomDomain={{ x: xZoomDomain }}
-                />}
+                    />}
+                maxDomain={{ x: maxDomain }}
                 width={pageWidth}
             >
                 {/* Lines */}

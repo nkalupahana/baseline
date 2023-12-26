@@ -71,7 +71,7 @@ interface GraphHeaderProps {
     lines: AnyMap[]
     keyMap: AnyMap
     zoomTo: (key: "3M" | "6M" | "1Y" | "All") => void;
-    dataRange: number
+    dataRange: number | undefined
 }
 
 export const GraphHeader = ({ lines, keyMap, zoomTo, dataRange } : GraphHeaderProps) => {
@@ -104,9 +104,9 @@ export const GraphHeader = ({ lines, keyMap, zoomTo, dataRange } : GraphHeaderPr
             flexWrap: "wrap",
         }}>
             <p>Zoom</p>
-            {(dataRange > (ONE_DAY * 90)) && <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>}
-            {(dataRange > (ONE_DAY * 180)) && <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>}
-            {(dataRange > (ONE_DAY * 365)) && <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>}
+            {((dataRange ?? 0) > (ONE_DAY * 90)) && <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>}
+            {((dataRange ?? 0) > (ONE_DAY * 180)) && <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>}
+            {((dataRange ?? 0) > (ONE_DAY * 365)) && <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>}
             <div onClick={() => zoomTo("All")} className="outline-button">All</div>
         </div>
     </div>
