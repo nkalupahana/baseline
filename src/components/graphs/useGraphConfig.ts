@@ -1,7 +1,7 @@
 import { memoize } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ONE_DAY, formatDateTick } from "./graph-helpers";
+import { ONE_DAY, formatDateTick } from "./helpers";
 
 const useGraphConfig = () => {
     // now value
@@ -47,7 +47,6 @@ const useGraphConfig = () => {
     const tickCount = useMemo(() => {
         let ticks = pageWidth * 0.0170811;
         if (ticks < 6) ticks = 6;
-        console.log(Math.round(ticks));
         return Math.round(ticks);
     }, [pageWidth]);
 

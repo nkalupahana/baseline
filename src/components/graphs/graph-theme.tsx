@@ -87,7 +87,8 @@ const theme: VictoryThemeDefinition = {
     chart: assign(
         baseProps,
         {
-            padding: {top: 20, bottom: 75, left: 50, right: 25}
+            padding: {top: 20, bottom: 75, left: 50, right: 25},
+            domainPadding: { x: 25, y: 0 }
         }
     ),
     group: assign(

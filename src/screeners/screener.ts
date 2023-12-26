@@ -1,5 +1,5 @@
 import { AnyMap } from "../helpers";
-import { GraphProps } from "../components/graphs/graph-helpers";
+import { GraphProps } from "../components/graphs/helpers";
 
 export interface Modifier {
     _currentQuestion: number;
