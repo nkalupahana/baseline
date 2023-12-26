@@ -1,5 +1,5 @@
 import { VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer } from "victory";
-import { BlockerRectangle, CustomLineSegment, CustomVictoryLabel, ONE_DAY, GraphProps, GraphHeader, VictoryDateAxis, DefaultLine } from "./helpers";
+import { BlockerRectangle, CustomLineSegment, CustomVictoryLabel, GraphProps, GraphHeader, VictoryDateAxis, DefaultLine } from "./helpers";
 import theme from "./graph-theme";
 import { AnyMap } from "../../helpers";
 import useZoomRange from "./useZoomRange";
