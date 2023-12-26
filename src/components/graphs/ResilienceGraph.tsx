@@ -1,12 +1,12 @@
 import { VictoryScatter, VictoryChart, VictoryAxis, VictoryZoomContainer } from "victory";
-import { BlockerRectangle, CustomLineSegment, ONE_DAY, GraphProps, GraphHeader, VictoryDateAxis, DefaultLine, CustomVictoryLabel } from "./helpers";
+import { BlockerRectangle, CustomLineSegment, GraphProps, GraphHeader, VictoryDateAxis, DefaultLine, CustomVictoryLabel } from "./helpers";
 import theme from "./graph-theme";
 import { AnyMap, COLORS } from "../../helpers";
 import { useMemo } from "react";
 import useZoomRange from "./useZoomRange";
 
 const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter, zoomTo }: GraphProps) => {
-    const [dataRange, minimumZoom] = useZoomRange(now, data, setXZoomDomain);
+    const [dataRange, minimumZoom, maxDomain] = useZoomRange(now, data, setXZoomDomain);
     const lines: AnyMap[] = [
         {
             y: "value",
@@ -34,7 +34,7 @@ const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, ti
                     minimumZoom={{ x: minimumZoom }}
                     zoomDomain={{ x: xZoomDomain }}
                 />}
-                maxDomain={{ x: now + ONE_DAY * 3 }}
+                maxDomain={{ x: maxDomain }}
                 width={pageWidth}
             >
                 {/* Lines */}
