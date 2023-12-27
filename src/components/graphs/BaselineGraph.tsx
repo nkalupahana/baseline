@@ -20,18 +20,25 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
     };
 
     const yZoomDomain: [number, number] = useMemo(() => {
-        const minValue = min(data.map(d => d.value));
+        let minValue = min(data.map(d => d.value));
         let maxValue = max(data.map(d => d.value));
         
-        // maxValue handling for negative values only
-        // leads to flipped axis, so we don't want to unflip
+        // Keep axes clean if they're contained within one quadrant
         if (maxValue >= 0) {
             maxValue += 0.5;
         } else {
-            maxValue = Math.max(maxValue + 0.5, -0.01);
+            maxValue = Math.min(maxValue + 0.5, -0.01);
         }
 
-        return [minValue - 0.5, maxValue];
+        if (minValue <= 0) {
+            minValue -= 0.5;
+        } else {
+            minValue = Math.max(minValue - 0.5, 0.01);
+        }
+
+        console.log([minValue, maxValue])
+
+        return [minValue, maxValue];
     }, [data]);
 
     const flippedAxis = useMemo(() => {

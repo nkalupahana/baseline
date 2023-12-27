@@ -337,7 +337,7 @@ describe("baseline", () => {
         }
 
         for (let i = 0; i < 30; i++) {
-            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: (i / 6) - 1.1, average: "average" });
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: (i / 6) - 1, average: "average" });
             date = date.minus({ days: 1 });
         }
         
