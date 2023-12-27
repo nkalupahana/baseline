@@ -38,7 +38,7 @@ const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, ti
                 width={pageWidth}
             >
                 {/* Lines */}
-                {lines.map(line => <DefaultLine data={data} line={line} key={line.y} days={60} />)}
+                {lines.map(line => <DefaultLine data={data} line={line} key={line.y} days={40} />)}
 
                 {/* Points on line */}
                 {lines.map((line) => (
@@ -60,7 +60,7 @@ const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, ti
                 <VictoryAxis
                     crossAxis
                     dependentAxis
-                    tickValues={[0, 1, 2]}
+                    tickValues={[0, 1, 2, 3]}
                     tickFormat={(t) => labels[t]}
                     style={{
                         grid: { stroke: "grey" },

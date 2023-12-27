@@ -1,4 +1,5 @@
 import DASSGraph from "../../src/components/graphs/DASSGraph";
+import ResilienceGraph from "../../src/components/graphs/ResilienceGraph";
 import useGraphConfig from "../../src/components/graphs/useGraphConfig";
 import "../../src/theme/variables.css";
 import "../../src/components/Journal/JournalComponents.css";
@@ -23,6 +24,28 @@ const DASSGraphContainer = ({ data }) => {
     );
 };
 
+const SPFGraphContainer = ({ data }) => {
+    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
+
+    return (
+        <div ref={pageWidthRef} style={{ backgroundColor: "var(--ion-background-color)" }}>
+            <ResilienceGraph
+                xZoomDomain={xZoomDomain}
+                setXZoomDomain={setXZoomDomain}
+                data={data}
+                now={now}
+                pageWidth={pageWidth}
+                tickCount={tickCount}
+                tickFormatter={memoTickFormatter}
+                zoomTo={zoomTo}
+            />
+        </div>
+    );
+};
+
+const DASS_PAUSE = false;
+const SPF_PAUSE = false;
+
 function mulberry32(a) {
     return function() {
       let t = a += 0x6D2B79F5;
@@ -34,13 +57,13 @@ function mulberry32(a) {
 
 const now = DateTime.now().toMillis();
 const week = now - DateTime.now().minus({ days: 7 }).toMillis();
-const NUM_POINTS = 29;
+const DASS_POINTS = 29;
 let dassData = [];
 describe("DASS", () => {
     before(() => {
         const rand = mulberry32(293432490);
         dassData = [{ timestamp: now, d: 1, a: 0.5, s: 0.5 }];
-        for (let j = 0; j < NUM_POINTS; j++) {
+        for (let j = 0; j < DASS_POINTS; j++) {
             dassData.unshift({ timestamp: now - ((j + 1) * week), d: rand() * 4, a: rand() * 4, s: rand() * 4 });
         }
     });
@@ -50,9 +73,10 @@ describe("DASS", () => {
     });
 
     it("One to 30 Points", () => {
-        for (let i = NUM_POINTS; i >= 0; i--) {
+        for (let i = DASS_POINTS; i >= 0; i--) {
             const dataSlice = dassData.slice(i);
             cy.mount(<DASSGraphContainer data={dataSlice} />);
+            if (DASS_PAUSE) cy.pause();
         }
     });
 
@@ -79,6 +103,7 @@ describe("DASS", () => {
             s: 0.5
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
+        if (DASS_PAUSE) cy.pause();
     })
 
     it("Further Out (1)", () => {
@@ -89,6 +114,7 @@ describe("DASS", () => {
             s: 0.5
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
+        if (DASS_PAUSE) cy.pause();
     })
 
     it("Gap", () => {
@@ -114,5 +140,61 @@ describe("DASS", () => {
             s: 0.5
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
+        if (DASS_PAUSE) cy.pause();
+    })
+});
+
+const SPF_POINTS = 12;
+let spfData = [];
+describe("SPF (Resilience)", () => {
+    before(() => {
+        const rand = mulberry32(293432490);
+        spfData = [{ timestamp: now, value: 1 }];
+        for (let j = 0; j < SPF_POINTS * 4; j += 4) {
+            spfData.unshift({ timestamp: now - ((j + 1) * week), value: rand() * 3 });
+        }
+    });
+
+    beforeEach(() => {
+        cy.viewport("macbook-13");
+    });
+
+    it("One to 30 Points", () => {
+        for (let i = SPF_POINTS; i >= 0; i--) {
+            const dataSlice = spfData.slice(i);
+            cy.mount(<SPFGraphContainer data={dataSlice} />);
+            if (SPF_PAUSE) cy.pause();
+        }
+    });
+
+    it("Further Out (4)", () => {
+        const dataSlice = [
+            { timestamp: now - (24 * week), value: 1 },
+            { timestamp: now - (20 * week), value: 0.8 },
+            { timestamp: now - (16 * week), value: 3 },
+            { timestamp: now - (12 * week), value: 1.2 }
+        ]
+        cy.mount(<SPFGraphContainer data={dataSlice} />);
+        if (SPF_PAUSE) cy.pause();
+    })
+
+    it("Further Out (1)", () => {
+        const dataSlice = [
+            { timestamp: now - (24 * week), value: 1 },
+        ]
+        cy.mount(<SPFGraphContainer data={dataSlice} />);
+        if (SPF_PAUSE) cy.pause();
+    })
+
+    it("Gap", () => {
+        const dataSlice = [
+            { timestamp: now - (24 * week), value: 1 },
+            { timestamp: now - (20 * week), value: 0.8 },
+            { timestamp: now - (12 * week), value: 1.2 },
+            { timestamp: now - (8 * week), value: 1.2 }
+        ]
+
+        cy.mount(<SPFGraphContainer data={dataSlice} />);
+        if (SPF_PAUSE) cy.pause();
     })
 });
