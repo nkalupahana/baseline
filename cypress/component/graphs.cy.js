@@ -251,6 +251,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -263,6 +264,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -286,6 +288,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -301,6 +304,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -319,6 +323,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -332,6 +337,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -346,6 +352,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
