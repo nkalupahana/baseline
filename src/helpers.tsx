@@ -314,6 +314,7 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     let ptr = 0;
     let perDayDates = [];
     let perDayAverages = [];
+    let perDayCount = [];
     const now = DateTime.local();
     // Aggregate average mood data per day
     while (currentDate < now) {
@@ -327,15 +328,15 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         ) {
             if (logs[ptr].average === "average") {
                 todaySum += logs[ptr].mood;
-                ++ctr;
             } else {
                 todaySum += logs[ptr].mood * 0.4;
-                ++ctr;
             }
+            ++ctr;
             ++ptr;
         }
-        perDayAverages.push(ctr === 0 ? 0 : todaySum / ctr);
         perDayDates.push(currentDate.toMillis())
+        perDayAverages.push(ctr === 0 ? 0 : todaySum / ctr);
+        perDayCount.push(ctr);
         currentDate = currentDate.plus({"days": 1});
     }
 
@@ -346,9 +347,11 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         return;
     }
 
+    let countSum = 0;
     let sum = 0;
     let i = 0;
     while (i < BASELINE_DAYS) {
+        countSum += perDayCount[i];
         sum += perDayAverages[i];
         ++i;
     }
@@ -364,14 +367,21 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     while (i < perDayAverages.length) {
         sum -= perDayAverages[i - BASELINE_DAYS];
         sum += perDayAverages[i];
-        baseline.push({
-            timestamp: perDayDates[i],
-            value: sum / BASELINE_DAYS
-        });
+
+        countSum -= perDayCount[i - BASELINE_DAYS];
+        countSum += perDayCount[i];
+
+        // If user hasn't logged in a while,
+        // don't calculate baseline for those days
+        if (countSum !== 0) {
+            baseline.push({
+                timestamp: perDayDates[i],
+                value: sum / BASELINE_DAYS
+            });
+        }
         ++i;
     }
 
-    console.log(baseline);
     setBaselineGraph(baseline);
 }
 
