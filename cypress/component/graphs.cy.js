@@ -328,6 +328,25 @@ describe("baseline", () => {
         cy.get("body").happoScreenshot();
     })
 
+    it("Up to 5", () => {
+        ldb.logs.clear();
+        let date = DateTime.now();
+        for (let i = 0; i < 15; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: 5, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+
+        for (let i = 0; i < 30; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: (i / 6) - 1.1, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+        
+        cy.mount(<BaselineGraphContainer />);
+        cy.get('.VictoryContainer').should("exist");
+        if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
+    })
+
     it("Random", () => {
         const rand = mulberry32(SEED);
         ldb.logs.clear();
