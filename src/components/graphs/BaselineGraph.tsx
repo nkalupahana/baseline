@@ -4,7 +4,7 @@ import theme from "./graph-theme";
 import { AnyMap, COLORS } from "../../helpers";
 import useZoomRange from "./useZoomRange";
 import { useMemo } from "react";
-import _ from "lodash";
+import { min, max } from "lodash";
 
 const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter, zoomTo }: GraphProps) => {
     const [dataRange, minimumZoom, maxDomain] = useZoomRange(now, data, setXZoomDomain);
@@ -20,10 +20,23 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
     };
 
     const yZoomDomain: [number, number] = useMemo(() => {
-        const min = _.min(data.map(d => d.value));
-        const max = _.max(data.map(d => d.value));
-        return [Math.max(min - 0.5, -5), Math.min(max + 0.5, 5)];
+        const minValue = min(data.map(d => d.value));
+        let maxValue = max(data.map(d => d.value));
+        
+        // maxValue handling for negative values only
+        // leads to flipped axis, so we don't want to unflip
+        if (maxValue >= 0) {
+            maxValue += 0.5;
+        } else {
+            maxValue = Math.max(maxValue + 0.5, -0.01);
+        }
+
+        return [minValue - 0.5, maxValue];
     }, [data]);
+
+    const flippedAxis = useMemo(() => {
+        return yZoomDomain[1] < 0;
+    }, [yZoomDomain]);
 
     return (
         <div>
@@ -38,6 +51,7 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
                 />}
                 maxDomain={{ x: maxDomain }}
                 width={pageWidth}
+                padding={{top: flippedAxis ? 75 : 25, bottom: yZoomDomain[1] >= 0 ? 25 : 75, left: 50, right: 25}}
             >
                 {/* Lines */}
                 {lines.map(line => <DefaultLine data={data} line={line} key={line.y} />)}
@@ -56,7 +70,7 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
                 ))}
 
                 <BlockerRectangle />
-                <VictoryDateAxis data={data} tickFormatter={tickFormatter} tickCount={tickCount} />
+                <VictoryDateAxis data={data} tickFormatter={tickFormatter} tickCount={tickCount} flippedAxis={flippedAxis} />
 
                 {/* Category axis (y) */}
                 <VictoryAxis

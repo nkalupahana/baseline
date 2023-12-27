@@ -267,6 +267,62 @@ describe("baseline", () => {
         cy.get("body").happoScreenshot();
     })
 
+    it("-5 to 5", () => {
+        ldb.logs.clear();
+        let date = DateTime.now();
+        for (let i = 0; i < 15; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: -5, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+
+        for (let i = 0; i < 60; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: (i / 6) - 5, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+
+        for (let i = 0; i < 15; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: 5, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+        
+        cy.mount(<BaselineGraphContainer />);
+        if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
+    })
+
+    it("Bottom Axis Only", () => {
+        ldb.logs.clear();
+        let date = DateTime.now();
+        const rand = mulberry32(SEED);
+
+        for (let i = 0; i < 365; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: -Math.round(rand() * 5), average: "average" });
+            date = date.minus({ days: 1 });
+        }
+        
+        cy.mount(<BaselineGraphContainer />);
+        if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
+    })
+
+    it("Down to -5", () => {
+        ldb.logs.clear();
+        let date = DateTime.now();
+        for (let i = 0; i < 15; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: -5, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+
+        for (let i = 0; i < 30; i++) {
+            ldb.logs.add({ timestamp: date.toMillis(), year: date.year, month: date.month, day: date.day, mood: (i / 6) - 3.8, average: "average" });
+            date = date.minus({ days: 1 });
+        }
+        
+        cy.mount(<BaselineGraphContainer />);
+        if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
+    })
+
     it("Random", () => {
         const rand = mulberry32(SEED);
         ldb.logs.clear();
