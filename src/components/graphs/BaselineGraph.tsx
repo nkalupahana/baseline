@@ -3,6 +3,8 @@ import { BlockerRectangle, CustomLineSegment, GraphProps, GraphHeader, VictoryDa
 import theme from "./graph-theme";
 import { AnyMap, COLORS } from "../../helpers";
 import useZoomRange from "./useZoomRange";
+import { useMemo } from "react";
+import _ from "lodash";
 
 const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tickCount, tickFormatter, zoomTo }: GraphProps) => {
     const [dataRange, minimumZoom, maxDomain] = useZoomRange(now, data, setXZoomDomain);
@@ -17,6 +19,12 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
         value: "baseline score"
     };
 
+    const yZoomDomain: [number, number] = useMemo(() => {
+        const min = _.min(data.map(d => d.value));
+        const max = _.max(data.map(d => d.value));
+        return [Math.max(min - 0.5, -5), Math.min(max + 0.5, 5)];
+    }, [data]);
+
     return (
         <div>
             <GraphHeader lines={lines} keyMap={keyMap} zoomTo={zoomTo} dataRange={dataRange} />
@@ -26,7 +34,7 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
                     zoomDimension="x"
                     onZoomDomainChange={(domain) => setXZoomDomain(domain.x as [number, number])}
                     minimumZoom={{ x: minimumZoom }}
-                    zoomDomain={{ x: xZoomDomain }}
+                    zoomDomain={{ x: xZoomDomain, y: yZoomDomain }}
                 />}
                 maxDomain={{ x: maxDomain }}
                 width={pageWidth}
