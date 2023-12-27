@@ -127,7 +127,7 @@ export const VictoryDateAxis = (props: any) => {
         }}
         axisComponent={<CustomLineSegment dx1={20} />}
         tickComponent={<CustomLineSegment xcutoff={80} />}
-        tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={-16} />}
+        tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={props.flippedAxis ? 16 : -16} />}
         tickCount={tickCount}
     />;
 }
