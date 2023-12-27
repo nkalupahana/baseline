@@ -108,6 +108,7 @@ describe("DASS", () => {
             const dataSlice = dassData.slice(i);
             cy.mount(<DASSGraphContainer data={dataSlice} />);
             if (DASS_PAUSE) cy.pause();
+            cy.get("body").happoScreenshot();
         }
     });
 
@@ -135,6 +136,7 @@ describe("DASS", () => {
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
         if (DASS_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 
     it("Further Out (1)", () => {
@@ -146,6 +148,7 @@ describe("DASS", () => {
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
         if (DASS_PAUSE) cy.pause();
+cy.get("body").happoScreenshot();
     })
 
     it("Gap", () => {
@@ -172,6 +175,7 @@ describe("DASS", () => {
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
         if (DASS_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 });
 
@@ -195,6 +199,7 @@ describe("SPF (Resilience)", () => {
             const dataSlice = spfData.slice(i);
             cy.mount(<SPFGraphContainer data={dataSlice} />);
             if (SPF_PAUSE) cy.pause();
+            cy.get("body").happoScreenshot();
         }
     });
 
@@ -207,6 +212,7 @@ describe("SPF (Resilience)", () => {
         ]
         cy.mount(<SPFGraphContainer data={dataSlice} />);
         if (SPF_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 
     it("Further Out (1)", () => {
@@ -215,6 +221,7 @@ describe("SPF (Resilience)", () => {
         ]
         cy.mount(<SPFGraphContainer data={dataSlice} />);
         if (SPF_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 
     it("Gap", () => {
@@ -227,6 +234,7 @@ describe("SPF (Resilience)", () => {
 
         cy.mount(<SPFGraphContainer data={dataSlice} />);
         if (SPF_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 });
 
@@ -244,6 +252,7 @@ describe("baseline", () => {
         
         cy.mount(<BaselineGraphContainer />);
         if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 
     it("Decline", () => {
@@ -255,6 +264,7 @@ describe("baseline", () => {
         
         cy.mount(<BaselineGraphContainer />);
         if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 
     it("Random", () => {
@@ -267,6 +277,7 @@ describe("baseline", () => {
         
         cy.mount(<BaselineGraphContainer />);
         if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 
     it("Gap", () => {
@@ -280,5 +291,6 @@ describe("baseline", () => {
         
         cy.mount(<BaselineGraphContainer />);
         if (BASELINE_PAUSE) cy.pause();
+        cy.get("body").happoScreenshot();
     })
 })
