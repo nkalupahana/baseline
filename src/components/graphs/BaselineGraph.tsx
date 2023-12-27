@@ -51,7 +51,7 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
                 />}
                 maxDomain={{ x: maxDomain }}
                 width={pageWidth}
-                padding={{top: flippedAxis ? 75 : 25, bottom: yZoomDomain[1] >= 0 ? 25 : 75, left: 50, right: 25}}
+                padding={{top: flippedAxis ? 75 : 25, bottom: flippedAxis ? 25 : 75, left: 50, right: 25}}
             >
                 {/* Lines */}
                 {lines.map(line => <DefaultLine data={data} line={line} key={line.y} />)}
