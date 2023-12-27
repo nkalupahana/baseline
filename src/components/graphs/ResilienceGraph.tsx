@@ -38,7 +38,7 @@ const ResilienceGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, ti
                 width={pageWidth}
             >
                 {/* Lines */}
-                {lines.map(line => <DefaultLine data={data} line={line} key={line.y} days={40} />)}
+                {lines.map(line => <DefaultLine data={data} line={line} key={line.y} days={60} />)}
 
                 {/* Points on line */}
                 {lines.map((line) => (

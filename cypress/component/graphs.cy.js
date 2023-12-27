@@ -190,8 +190,8 @@ describe("SPF (Resilience)", () => {
         const dataSlice = [
             { timestamp: now - (24 * week), value: 1 },
             { timestamp: now - (20 * week), value: 0.8 },
-            { timestamp: now - (12 * week), value: 1.2 },
-            { timestamp: now - (8 * week), value: 1.2 }
+            { timestamp: now - (5 * week), value: 1.2 },
+            { timestamp: now - (1 * week), value: 1.2 }
         ]
 
         cy.mount(<SPFGraphContainer data={dataSlice} />);
