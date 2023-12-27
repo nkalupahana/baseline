@@ -304,7 +304,7 @@ export async function parseSurveyHistory(user: User, setSurveyHistory: (_: (AnyM
 
 const BASELINE_DAYS = 14;
 export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDataStates) => void) {
-    const logs = await ldb.logs.toArray();
+    const logs = await ldb.logs.orderBy("timestamp").toArray();
     if (!logs.length) {
         setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
         return;
@@ -372,7 +372,7 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         countSum += perDayCount[i];
 
         // If user hasn't logged in a while,
-        // don't calculate baseline for those days
+        // don't put out baseline for those days
         if (countSum !== 0) {
             baseline.push({
                 timestamp: perDayDates[i],
