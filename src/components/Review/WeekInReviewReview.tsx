@@ -14,7 +14,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import BaselineDescription from "./BaselineDescription";
 import BaselineGraph from "../graphs/BaselineGraph";
 import useGraphConfig from "../graphs/useGraphConfig";
-import { zip } from "lodash";
 
 interface Props {
     primary: Screener,

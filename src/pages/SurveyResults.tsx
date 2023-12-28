@@ -96,7 +96,7 @@ const SurveyResults = () => {
                 )}
                 { dassData && dassData.length > 0 && <>
                     <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
-                    { dassData && dassData.length > 0 && <DASSGraph
+                    <DASSGraph
                         xZoomDomain={xZoomDomain}
                         setXZoomDomain={setXZoomDomain}
                         data={dassData}
@@ -105,7 +105,7 @@ const SurveyResults = () => {
                         tickCount={tickCount}
                         tickFormatter={memoTickFormatter}
                         zoomTo={zoomTo}
-                    /> }
+                    />
                     <br />
                 </> }
                 { spfData && spfData.length > 0 && <>

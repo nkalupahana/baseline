@@ -46,7 +46,7 @@ export const MultiCurve = (props: any) => {
 
     return (
         <>
-            {datas?.map((data, i) => (
+            {datas.map((data, i) => (
                 <Curve key={data.map((d) => d.timestamp).join(",")} {...props} data={data} />
             ))}
         </>
