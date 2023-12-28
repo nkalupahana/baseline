@@ -50,7 +50,6 @@ const SurveyResults = () => {
         return spf.processDataForGraph!(surveyHistory);
     }, [surveyHistory]);
 
-
     return (
         <div className="container">
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
@@ -95,36 +94,36 @@ const SurveyResults = () => {
                 {surveyHistory === PullDataStates.NOT_ENOUGH_DATA && (
                     <p className="text-center">As you complete surveys each week, more data will show up here.</p>
                 )}
-                {typeof surveyHistory === "object" && (
-                    <>
-                        <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
-                        <DASSGraph
-                            xZoomDomain={xZoomDomain}
-                            setXZoomDomain={setXZoomDomain}
-                            data={dassData}
-                            now={now}
-                            pageWidth={pageWidth}
-                            tickCount={tickCount}
-                            tickFormatter={memoTickFormatter}
-                            zoomTo={zoomTo}
-                        />
-                        <br />
-                        <p className="bold head2 text-center">
-                            Resilience
-                        </p>
-                        <ResilienceGraph
-                            xZoomDomain={xZoomDomain}
-                            setXZoomDomain={setXZoomDomain}
-                            data={spfData}
-                            now={now}
-                            pageWidth={pageWidth}
-                            tickCount={tickCount}
-                            tickFormatter={memoTickFormatter}
-                            zoomTo={zoomTo}
-                        />
-                        <p className="text-center margin-bottom-0 max-width-600">{RESILIENCE_EXP}</p>
-                    </>
-                )}
+                { dassData && dassData.length > 0 && <>
+                    <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
+                    { dassData && dassData.length > 0 && <DASSGraph
+                        xZoomDomain={xZoomDomain}
+                        setXZoomDomain={setXZoomDomain}
+                        data={dassData}
+                        now={now}
+                        pageWidth={pageWidth}
+                        tickCount={tickCount}
+                        tickFormatter={memoTickFormatter}
+                        zoomTo={zoomTo}
+                    /> }
+                    <br />
+                </> }
+                { spfData && spfData.length > 0 && <>
+                    <p className="bold head2 text-center">
+                        Resilience
+                    </p>
+                    <ResilienceGraph
+                        xZoomDomain={xZoomDomain}
+                        setXZoomDomain={setXZoomDomain}
+                        data={spfData}
+                        now={now}
+                        pageWidth={pageWidth}
+                        tickCount={tickCount}
+                        tickFormatter={memoTickFormatter}
+                        zoomTo={zoomTo}
+                    />
+                    <p className="text-center margin-bottom-0 max-width-600">{RESILIENCE_EXP}</p>
+                </> }
                 <EndSpacer />
             </div>
         </div>
