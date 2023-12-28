@@ -540,7 +540,7 @@ describe("Test My Data", () => {
         cy.get("#timestamp").should("have.class", "checkbox-checked")
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(30)
+            expect(json).to.have.length(37)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(6)
             }
@@ -548,7 +548,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(30)
+            expect(data).to.have.length(37)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(6)
             }
@@ -559,7 +559,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(30)
+            expect(json).to.have.length(37)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(5)
                 expect(record).to.not.have.property("timestamp")
@@ -569,7 +569,7 @@ describe("Test My Data", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(30)
+            expect(data).to.have.length(37)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(5)
                 expect(record).to.not.have.property("timestamp")
