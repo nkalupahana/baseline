@@ -400,7 +400,7 @@ describe("Desktop Flow", () => {
         })
         
         let date =  DateTime.now()
-        for (let i = 0; i < 14; i++) {
+        for (let i = 0; i < 21; i++) {
             date = date.minus({ days: 1 })
             ldb.logs.add({
                 timestamp: date.toMillis(),
@@ -765,7 +765,9 @@ describe("Test Settings", () => {
         cy.get("ion-menu").should("not.exist")
 
         cy.contains("have enough data").should("exist")
-        cy.get(".VictoryContainer").should("have.length", 2)
+        cy.get(".VictoryContainer").should("have.length.at.least", 2)
+        cy.contains("baseline score").should("exist")
+        cy.contains("Extremely").should("exist") // From DASS graph -- Extremely Severe
 
         cy.contains("Last Week").should("exist").click()
         cy.url().should("include", "/lastreview")
