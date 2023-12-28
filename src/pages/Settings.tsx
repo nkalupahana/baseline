@@ -1,6 +1,6 @@
-import { IonAlert, IonIcon, IonSpinner } from "@ionic/react";
+import { IonAlert, IonButton, IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
@@ -10,6 +10,8 @@ import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
 import { goBackSafely, toast } from "../helpers";
 import history from "../history";
+import { DateTime } from "luxon";
+import ldb from "../db";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
@@ -17,6 +19,28 @@ const Settings = () => {
     const [user] = useAuthState(auth);
     useEffect(() => {
         if (localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd")) history.replace("/unlock");
+    }, []);
+
+    const addFakeData = useCallback(() => {
+        let date = DateTime.now();
+        for (let i = 0; i < 30; i++) {
+            ldb.logs.add({
+                timestamp: date.toMillis(),
+                month: date.month,
+                day: date.day,
+                year: date.year,
+                time: "1:00",
+                zone: date.zoneName,
+                average: "average",
+                mood: Math.round((Math.random() * 10) - 5),
+                journal: "fake",
+                files: []
+            })
+            
+            date = date.minus({ days: 1 });
+        }
+
+        toast("Added fake data!");
     }, []);
 
     return <div className="container">
@@ -64,6 +88,7 @@ const Settings = () => {
                     If you'd like to delete your account, <span className="fake-link" onClick={() => setDeleteAlert(true)}>click here.</span> You'll be prompted to sign in again to confirm.
                 </p>
             </div>
+            <IonButton style={{"display": "none"}} mode="ios" onClick={addFakeData}>Add Local Fake Data For WIR</IonButton>
         </div>
         <IonAlert 
             isOpen={deleteAlert}

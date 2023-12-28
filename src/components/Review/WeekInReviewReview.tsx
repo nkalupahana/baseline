@@ -1,6 +1,6 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
 import { AnyMap, PullDataStates, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
 import history from "../../history";
@@ -14,6 +14,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import BaselineDescription from "./BaselineDescription";
 import BaselineGraph from "../graphs/BaselineGraph";
 import useGraphConfig from "../graphs/useGraphConfig";
+import { zip } from "lodash";
 
 interface Props {
     primary: Screener,
@@ -50,11 +51,26 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
         }
     };
 
-    const screeners = [primary, secondary]
-        .filter(screener => screener.getPriority() !== Priority.DO_NOT_SHOW)
-        .sort((a, b) => {
-            return b.getPriority() - a.getPriority();
+    const screenerData = useMemo(() => {
+        let selected = [primary, secondary]
+            .filter(screener => screener.getPriority() !== Priority.DO_NOT_SHOW)
+            .sort((a, b) => {
+                return b.getPriority() - a.getPriority();
+            });
+
+        let processedData = selected.map(screener => {
+            if (!screener.processDataForGraph) return null;
+            if (typeof surveyHistory !== "object") return null;
+            return screener.processDataForGraph(surveyHistory);
         });
+
+        let ret = [];
+        for (let i = 0; i < selected.length; i++) {
+            ret.push({ screener: selected[i], data: processedData[i] });
+        }
+
+        return ret;
+    }, [primary, secondary, surveyHistory]);
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
@@ -82,15 +98,14 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         <p className="text-center">Let's go over your results.</p>
                     </div>
                 </SwiperSlide>
-                { screeners.map(screener => {
+                { screenerData.map(({ screener, data }) => {
                     return <SwiperSlide key={screener._key}>
                         <div className="title">Results</div>
                         <div className="text-center screener-slide">
-                            { screener.graph && typeof surveyHistory === "object" && 
-                                screener.processDataForGraph && 
+                            { data && screener.graph && 
                                 <div className="swiper-no-swiping">
                                     <screener.graph 
-                                        data={screener.processDataForGraph(surveyHistory)}
+                                        data={data}
                                         xZoomDomain={xZoomDomain}
                                         setXZoomDomain={setXZoomDomain}
                                         now={now}
@@ -99,7 +114,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                                         tickFormatter={memoTickFormatter}
                                         zoomTo={zoomTo}
                                     />
-                                </div>}
+                                </div> }
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>
                                 If you want to discuss these results with a 
