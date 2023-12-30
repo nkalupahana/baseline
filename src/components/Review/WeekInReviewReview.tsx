@@ -14,6 +14,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import BaselineDescription from "./BaselineDescription";
 import BaselineGraph from "../graphs/BaselineGraph";
 import useGraphConfig from "../graphs/useGraphConfig";
+import IsolatedGraph from "../graphs/IsolatedGraph";
 
 interface Props {
     primary: Screener,
@@ -103,16 +104,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         <div className="text-center screener-slide">
                             { data && screener.graph && 
                                 <div className="swiper-no-swiping">
-                                    <screener.graph 
-                                        data={data}
-                                        xZoomDomain={xZoomDomain}
-                                        setXZoomDomain={setXZoomDomain}
-                                        now={now}
-                                        pageWidth={pageWidth}
-                                        tickCount={tickCount}
-                                        tickFormatter={memoTickFormatter}
-                                        zoomTo={zoomTo}
-                                    />
+                                    <IsolatedGraph graph={screener.graph} data={data} />
                                 </div> }
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>

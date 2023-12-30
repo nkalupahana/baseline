@@ -36,8 +36,6 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
             minValue = Math.max(minValue - 0.5, 0.01);
         }
 
-        console.log([minValue, maxValue])
-
         return [minValue, maxValue];
     }, [data]);
 
@@ -60,8 +58,6 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
                 width={pageWidth}
                 padding={{top: flippedAxis ? 75 : 25, bottom: flippedAxis ? 25 : 75, left: 50, right: 25}}
             >
-                {/* Lines */}
-                {lines.map(line => <DefaultLine data={data} line={line} key={line.y} />)}
 
                 {/* Points on line */}
                 {lines.map((line) => (
@@ -75,6 +71,9 @@ const BaselineGraph = ({ xZoomDomain, setXZoomDomain, data, now, pageWidth, tick
                         }}
                     />
                 ))}
+
+                {/* Lines */}
+                {lines.map(line => <DefaultLine data={data} line={line} key={line.y} />)}
 
                 <BlockerRectangle />
                 <VictoryDateAxis data={data} tickFormatter={tickFormatter} tickCount={tickCount} flippedAxis={flippedAxis} />
