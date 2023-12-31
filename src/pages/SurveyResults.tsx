@@ -20,7 +20,7 @@ const SurveyResults = () => {
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [showLastWeek, setShowLastWeek] = useState(false);
 
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
+    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount } = useGraphConfig();
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
@@ -65,14 +65,9 @@ const SurveyResults = () => {
                 {typeof baselineGraph === "object" && (
                     <>
                         <BaselineGraph
-                            xZoomDomain={xZoomDomain}
-                            setXZoomDomain={setXZoomDomain}
                             data={baselineGraph}
                             now={now}
-                            pageWidth={pageWidth}
-                            tickCount={tickCount}
-                            tickFormatter={memoTickFormatter}
-                            zoomTo={zoomTo}
+                            sync={true}
                         />
                         <p className="text-center margin-bottom-0 max-width-600">
                             Your baseline tracks your "average" mood, so you can see how your base level of happiness changes over time.
@@ -97,14 +92,9 @@ const SurveyResults = () => {
                 { dassData && dassData.length > 0 && <>
                     <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
                     <DASSGraph
-                        xZoomDomain={xZoomDomain}
-                        setXZoomDomain={setXZoomDomain}
                         data={dassData}
                         now={now}
-                        pageWidth={pageWidth}
-                        tickCount={tickCount}
-                        tickFormatter={memoTickFormatter}
-                        zoomTo={zoomTo}
+                        sync={true}
                     />
                     <br />
                 </> }
@@ -113,14 +103,9 @@ const SurveyResults = () => {
                         Resilience
                     </p>
                     <ResilienceGraph
-                        xZoomDomain={xZoomDomain}
-                        setXZoomDomain={setXZoomDomain}
                         data={spfData}
                         now={now}
-                        pageWidth={pageWidth}
-                        tickCount={tickCount}
-                        tickFormatter={memoTickFormatter}
-                        zoomTo={zoomTo}
+                        sync={true}
                     />
                     <p className="text-center margin-bottom-0 max-width-600">{RESILIENCE_EXP}</p>
                 </> }

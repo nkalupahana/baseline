@@ -1,149 +1,200 @@
 import { DateTime } from "luxon";
-import { Fragment, useMemo } from "react";
-import { Curve, VictoryLabel, LineSegment, VictoryAxis, VictoryLine } from "victory";
+import { Fragment } from "react";
 import { AnyMap } from "../../helpers";
+import { Chart } from "chart.js";
 
 export interface GraphProps {
-    xZoomDomain: undefined | [number, number];
-    setXZoomDomain: (domain: undefined | [number, number]) => void;
     data: any[];
     now: number;
-    pageWidth: number
-    tickCount: number
-    tickFormatter: (timestamp: number) => string
-    zoomTo: (key: "3M" | "6M" | "1Y" | "All") => void;
+    sync: boolean;
 }
 
-export const formatDateTick = (timestamp: number, thisYear: number) => {
-    const dt = DateTime.fromMillis(timestamp)
-    if (dt.year === thisYear) {
-        return dt.toFormat("LLL d");
-    } else {
-        return dt.toFormat("LLL d yy");
-    }
+export interface LineData {
+    name: string;
+    color: string;
 }
 
 export const ONE_DAY = 86400 * 1000;
 
-export const MultiCurve = (props: any) => {
-    // Precondition: assumes dates are in ascending order
-    const datas = useMemo(() => {
-        const FOURTEEN_DAYS = ONE_DAY * (props.days ?? 14);
-        let ret: any[][] = [[]];
-        for (let data of props.data) {
-            let lastArray = ret[ret.length - 1];
-            if (lastArray.length !== 0) {
-                if (data.timestamp - lastArray[lastArray.length - 1].timestamp > FOURTEEN_DAYS) {
-                    ret.push([]);
-                }
-            }
+interface GraphHeaderProps {
+    lineData: LineData[];
+    minimumValue: number;
+    dataRange: number;
+    id: number | undefined;
+}
 
-            ret[ret.length - 1].push(data);
-        }
-
-        return ret;
-    }, [props.data, props.days]);
-
+export const GraphHeader = ({ dataRange, lineData, minimumValue, id }: GraphHeaderProps) => {
     return (
-        <>
-            {datas.map((data, i) => (
-                <Curve key={data.map((d) => d.timestamp).join(",")} {...props} data={data} />
-            ))}
-        </>
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+            }}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                }}
+            >
+                {lineData.map((line) => (
+                    <Fragment key={line.name}>
+                        <div
+                            style={{
+                                height: "12px",
+                                width: "12px",
+                                backgroundColor: line.color,
+                                borderRadius: "2px",
+                                marginRight: "8px",
+                            }}
+                        ></div>
+                        <div
+                            style={{
+                                marginRight: "12px",
+                            }}
+                        >
+                            {line.name}
+                        </div>
+                    </Fragment>
+                ))}
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                }}
+            >
+                <p>Zoom</p>
+                {dataRange > ONE_DAY * 90 && (
+                    <div onClick={() => zoomTo("3M", id, minimumValue)} className="outline-button">
+                        3M
+                    </div>
+                )}
+                {dataRange > ONE_DAY * 180 && (
+                    <div onClick={() => zoomTo("6M", id, minimumValue)} className="outline-button">
+                        6M
+                    </div>
+                )}
+                {dataRange > ONE_DAY * 365 && (
+                    <div onClick={() => zoomTo("1Y", id, minimumValue)} className="outline-button">
+                        1Y
+                    </div>
+                )}
+                <div onClick={() => zoomTo("All", id, minimumValue)} className="outline-button">
+                    All
+                </div>
+            </div>
+        </div>
     );
 };
 
-export const CustomLineSegment = (props: any) => {
-    if (props.xcutoff && props.x1 < props.xcutoff) return <></>;
-    return <LineSegment {...props} x1={props.x1 + (props.dx1 ?? 0)} />;
+const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
+    if (id === undefined) return;
+    const chart = Chart.instances[id];
+    const lateTime = chart.scales.x.max;
+
+    const minMap: AnyMap = {
+        "3M": lateTime - ONE_DAY * 90,
+        "6M": lateTime - ONE_DAY * 180,
+        "1Y": lateTime - ONE_DAY * 365,
+    };
+
+    if (key === "All") {
+        const now = DateTime.now().toMillis();
+        chart.zoomScale("x", { min: minimumValue, max: now }, "active");
+    } else {
+        let minimum = minMap[key];
+        let maximum = lateTime;
+
+        if (minimum < minimumValue) {
+            const diff = minimumValue - minimum;
+            minimum += diff;
+            maximum += diff;
+        }
+
+        chart.zoomScale("x", { min: minimum, max: maximum }, "active");
+    }
 };
 
-export const CustomVictoryLabel = (props: any) => {
-    if (props.xcutoff && props.x < props.xcutoff) return <></>;
-    return <VictoryLabel {...props} y={props.y + (props.dy1 ?? 0)} x={props.x + (props.dx1 ?? 0)} />;
+interface GraphEvent {
+    chart: Chart;
+}
+
+const syncRange = function (e: GraphEvent) {
+    const xScale = e.chart.scales.x;
+    const zoom = { min: xScale.min, max: xScale.max };
+    for (let instance of Object.values(Chart.instances)) {
+        if (instance.id === e.chart.id) continue;
+        instance.zoomScale("x", zoom);
+    }
 };
 
-export const BlockerRectangle = (props: any) => {
-    return <rect x="0" y="0" width="80" height="350" style={{ fill: "var(--ion-background-color)" }} />;
+export const GRAPH_BASE_OPTIONS = () => {
+    return {
+        elements: {
+            point: {
+                pointStyle: false,
+            },
+        },
+        normalized: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            tooltip: {
+                enabled: false,
+            },
+            zoom: {
+                zoom: {
+                    wheel: {
+                        enabled: true,
+                    },
+                    pinch: {
+                        enabled: true,
+                    },
+                    mode: "x",
+                },
+                pan: {
+                    enabled: true,
+                    mode: "x",
+                },
+            },
+        },
+        scales: {
+            x: {
+                type: "time",
+                time: {
+                    unit: "day",
+                },
+                grid: {
+                    color: getComputedStyle(document.body).getPropertyValue("--graph-grid-color")
+                },
+                ticks: {
+                    maxTicksLimit: 16,
+                }
+            },
+            y: {
+                grid: {
+                    color: getComputedStyle(document.body).getPropertyValue("--graph-grid-color")
+                }
+            },
+        },
+    };
 };
 
-interface GraphHeaderProps {
-    lines: AnyMap[]
-    keyMap: AnyMap
-    zoomTo: (key: "3M" | "6M" | "1Y" | "All") => void;
-    dataRange: number | undefined
-}
-
-export const GraphHeader = ({ lines, keyMap, zoomTo, dataRange } : GraphHeaderProps) => {
-    return <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-    }}>
-        <div style={{
-            display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
-        }}>
-            {lines.map((line) => <Fragment key={line.y}>
-                <div style={{
-                    height: "12px",
-                    width: "12px",
-                    backgroundColor: line.color,
-                    borderRadius: "2px",
-                    marginRight: "8px",
-                }}></div>
-                <div style={{
-                    marginRight: "12px",
-                }}>{keyMap[line.y]}</div>
-            </Fragment>)}
-        </div>
-        <div style={{
-            display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
-        }}>
-            <p>Zoom</p>
-            {((dataRange ?? 0) > (ONE_DAY * 90)) && <div onClick={() => zoomTo("3M")} className="outline-button">3M</div>}
-            {((dataRange ?? 0) > (ONE_DAY * 180)) && <div onClick={() => zoomTo("6M")} className="outline-button">6M</div>}
-            {((dataRange ?? 0) > (ONE_DAY * 365)) && <div onClick={() => zoomTo("1Y")} className="outline-button">1Y</div>}
-            <div onClick={() => zoomTo("All")} className="outline-button">All</div>
-        </div>
-    </div>
-}
-
-export const VictoryDateAxis = (props: any) => {
-    const tickCount = useMemo(() => {
-        return Math.min(props.tickCount, props.data.length);
-    }, [props.data, props.tickCount]);
-
-    return <VictoryAxis
-        {...props}
-        crossAxis
-        tickFormat={props.tickFormatter}
-        style={{
-            grid: { stroke: "none" },
-            tickLabels: { padding: 20, angle: -45},
-        }}
-        axisComponent={<CustomLineSegment dx1={20} />}
-        tickComponent={<CustomLineSegment xcutoff={80} />}
-        tickLabelComponent={<CustomVictoryLabel xcutoff={80} dx1={props.flippedAxis ? 16 : -16} />}
-        tickCount={tickCount}
-    />;
-}
-
-export const DefaultLine = (props: any) => {
-    return <VictoryLine
-        {...props}
-        key={props.line.y}
-        data={props.data}
-        scale={{ x: "time", y: "linear" }}
-        x="timestamp"
-        y={props.line.y}
-        style={{
-            data: { stroke: props.line.color },
-        }}
-        interpolation="monotoneX"
-        dataComponent={<MultiCurve days={props.days} />}
-    />
-}
+export const GRAPH_SYNC_CHART = {
+    plugins: {
+        zoom: {
+            zoom: {
+                onZoom: syncRange,
+            },
+            pan: {
+                onPan: syncRange,
+            },
+        },
+    },
+};

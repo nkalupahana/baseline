@@ -14,7 +14,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import BaselineDescription from "./BaselineDescription";
 import BaselineGraph from "../graphs/BaselineGraph";
 import useGraphConfig from "../graphs/useGraphConfig";
-import IsolatedGraph from "../graphs/IsolatedGraph";
 
 interface Props {
     primary: Screener,
@@ -30,7 +29,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [swiperProgress, setSwiperProgress] = useState(0);
 
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
+    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount } = useGraphConfig();
 
     useEffect(() => {
         if (!user) return;
@@ -104,7 +103,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         <div className="text-center screener-slide">
                             { data && screener.graph && 
                                 <div className="swiper-no-swiping">
-                                    <IsolatedGraph graph={screener.graph} data={data} />
+                                    <screener.graph data={data} now={now} sync={false} />
                                 </div> }
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>
@@ -121,14 +120,9 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         { typeof baselineGraph === "object" && <>
                             <div className="swiper-no-swiping">
                                 <BaselineGraph
-                                    xZoomDomain={xZoomDomain}
-                                    setXZoomDomain={setXZoomDomain}
                                     data={baselineGraph}
                                     now={now}
-                                    pageWidth={pageWidth}
-                                    tickCount={tickCount}
-                                    tickFormatter={memoTickFormatter}
-                                    zoomTo={zoomTo}
+                                    sync={false}
                                 />
                             </div>
                             <BaselineDescription />

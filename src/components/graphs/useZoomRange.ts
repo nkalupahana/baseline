@@ -1,9 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AnyMap } from "../../helpers";
 import { ONE_DAY } from "./helpers";
 
-const useZoomRange = (now: number, data: AnyMap[], setXZoomDomain: (domain: [number, number] | undefined) => void) => {
+const useZoomRange = (now: number, data: AnyMap[]) => {
+    const [id, setId] = useState<number | undefined>(undefined);
     const dataRange = useMemo(() => {
+        if (data.length === 1) return 0;
         return now - data[0].timestamp;
     }, [now, data]);
 
@@ -12,22 +14,22 @@ const useZoomRange = (now: number, data: AnyMap[], setXZoomDomain: (domain: [num
         return Math.min(ONE_DAY * 60, dataRange);
     }, [data, dataRange]);
 
-    useEffect(() => {
-        if (data.length === 1) {
-            setXZoomDomain(undefined);
-        } else if (dataRange < ONE_DAY * 180) {
-            setXZoomDomain([now - dataRange - ONE_DAY, now]);
-        } else {
-            setXZoomDomain([now - ONE_DAY * 180, now]);
-        }
-    }, [now, dataRange, setXZoomDomain, data]);
+    const startMinimum = useMemo(() => {
+        if (data.length === 1) return 0;
+        return now - Math.min(ONE_DAY * 180, dataRange);
+    }, [data, dataRange, now]);
 
-    const maxDomain = useMemo(() => {
-        if (data.length === 1) return undefined;
-        return now + ONE_DAY;
-    }, [now, data]);
+    const yRange = useMemo(() => {
+        const min = Math.min(...data.map(d => d.value));
+        const max = Math.max(...data.map(d => d.value));
+        return { min: min - 0.4, max: max + 0.4 };
+    }, [data]);
+
+    const minimumValue = useMemo(() => {
+        return data[0].timestamp;
+    }, [data]);
     
-    return [dataRange, minimumZoom, maxDomain];
+    return { id, setId, dataRange, minimumZoom, yRange, startMinimum, minimumValue };
 }
 
 export default useZoomRange;

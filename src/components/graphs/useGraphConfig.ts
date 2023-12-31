@@ -1,7 +1,8 @@
-import { memoize } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ONE_DAY, formatDateTick } from "./helpers";
+import { ONE_DAY } from "./helpers";
+import "chartjs-adapter-luxon";
+import "./Graphs.css";
 
 const useGraphConfig = () => {
     // now value
@@ -50,16 +51,7 @@ const useGraphConfig = () => {
         return Math.round(ticks);
     }, [pageWidth]);
 
-    const memoTickFormatter = useMemo(() => {
-        const thisYear = DateTime.now().year;
-        const formatter = (timestamp: number) => {
-            return formatDateTick(timestamp, thisYear);
-        };
-
-        return memoize(formatter);
-    }, []);
-
-    return { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter };
+    return { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount };
 }
 
 export default useGraphConfig;
