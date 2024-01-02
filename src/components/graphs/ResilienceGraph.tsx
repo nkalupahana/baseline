@@ -1,10 +1,88 @@
-import { GraphProps } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom } from "./helpers";
+import { AnyMap, COLORS } from "../../helpers";
+import useGraphConfig from "./useGraphConfig";
+import { useEffect, useMemo } from "react";
+import { Chart } from "chart.js/auto";
+import zoomPlugin from "chartjs-plugin-zoom";
+import { merge } from "lodash";
+import InnerGraph from "./InnerGraph";
 
-const ResilienceGraph = ({ data, now }: GraphProps) => {
-    return (
-        <div>
-        </div>
-    );
+const LABEL_MAP: AnyMap = {
+    0.5: "Low",
+    1.5: "Medium",
+    2.5: "High",
+};
+
+const ResilienceGraph = ({ data, sync }: GraphProps) => {
+    const { id, setId, dataRange, minimumZoom, startMinimum, minimumValue, canvas, now } = useGraphConfig(data);
+
+    const lineData: LineData[] = useMemo(() => {
+        return [{
+            name: "Resilience Score",
+            color: COLORS[-3],
+        }];
+    }, []);
+
+    const options = useMemo(() => {
+        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_POINTS, {
+            parsing: {
+                xAxisKey: "timestamp",
+                yAxisKey: "value",
+            },
+            plugins: {
+                zoom: {
+                    limits: {
+                        x: {
+                            min: data[0].timestamp,
+                            max: now,
+                            minRange: minimumZoom,
+                        },
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    min: 0,
+                    max: 3,
+                    grid: {
+                        color: function (context: any) {
+                            if ([0, 1, 2, 3].includes(context.tick.value)) {
+                                return "#bdbdbd"; // TODO: light/dark mode -- extract to helper
+                            } else {
+                                return "rgba(0, 0, 0, 0)";
+                            }
+                        },
+                    },
+                    ticks: {
+                        callback: function (value: number) {
+                            return LABEL_MAP[value] ?? "";
+                        },
+                    },
+                }
+            },
+        }) as any;
+    }, [data, minimumZoom, now, sync]);
+
+    useEffect(() => {
+        if (!canvas.current) return;
+        Chart.register(zoomPlugin);
+        const chart = new Chart(canvas.current, {
+            type: "line",
+            data: {
+                datasets: [{ data, borderColor: lineData[0].color }],
+            },
+            options
+        });
+        
+        initialZoom(chart, startMinimum, now);
+        setId(Number(chart.id));
+
+        return () => {
+            chart.destroy();
+        };
+    }, [data, lineData, options, setId, startMinimum, now, canvas]);
+
+    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} minimumValue={minimumValue} canvas={canvas} />
 };
 
 export default ResilienceGraph;

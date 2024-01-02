@@ -1,58 +1,44 @@
-import { DateTime } from "luxon";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { AnyMap } from "../../helpers";
 import { ONE_DAY } from "./helpers";
+import { DateTime } from "luxon";
 import "chartjs-adapter-luxon";
 import "./Graphs.css";
 
-const useGraphConfig = () => {
-    // now value
+const useGraphConfig = (data: AnyMap[]) => {
+    const [id, setId] = useState<number | undefined>(undefined);
+    const canvas = useRef(null);
+
     const now = useMemo(() => {
         return DateTime.now().toMillis();
     }, []);
+
+    const dataRange = useMemo(() => {
+        if (data.length === 1) return 0;
+        return now - data[0].timestamp;
+    }, [now, data]);
+
+    const minimumZoom = useMemo(() => {
+        if (data.length === 1) return 0;
+        return Math.min(ONE_DAY * 60, dataRange);
+    }, [data, dataRange]);
+
+    const startMinimum = useMemo(() => {
+        if (data.length === 1) return 0;
+        return now - Math.min(ONE_DAY * 180, dataRange);
+    }, [data, dataRange, now]);
+
+    const yRange = useMemo(() => {
+        const min = Math.min(...data.map(d => d.value));
+        const max = Math.max(...data.map(d => d.value));
+        return { min: min - 0.4, max: max + 0.4 };
+    }, [data]);
+
+    const minimumValue = useMemo(() => {
+        return data[0].timestamp;
+    }, [data]);
     
-    // Zoom/width management
-    const [xZoomDomain, setXZoomDomain] = useState<undefined | [number, number]>([now - ONE_DAY * 180, now]);
-
-    const zoomTo = (key: "3M" | "6M" | "1Y" | "All") => {
-        const lateTime = xZoomDomain ? xZoomDomain[1] : now;
-        if (key === "3M") {
-            setXZoomDomain([lateTime - ONE_DAY * 90, lateTime]);
-        } else if (key === "6M") {
-            setXZoomDomain([lateTime - ONE_DAY * 180, lateTime]);
-        } else if (key === "1Y") {
-            setXZoomDomain([lateTime - ONE_DAY * 365, lateTime]);
-        } else if (key === "All") {
-            setXZoomDomain(undefined);
-        }
-    };
-
-    const pageWidthRef = useRef<null | HTMLDivElement>(null);
-    const [pageWidth, setPageWidth] = useState(0);
-    useEffect(() => {
-        if (!pageWidthRef.current) return;
-
-        const listener = () => {
-            if (!pageWidthRef.current) return;
-            setPageWidth(pageWidthRef.current.getBoundingClientRect().width);
-        };
-
-        window.addEventListener("resize", listener);
-        listener();
-
-        return () => {
-            window.removeEventListener("resize", listener);
-        };
-    }, []);
-
-    // Tick management
-    const tickCount = useMemo(() => {
-        let ticks = pageWidth * 0.0170811;
-        if (ticks < 6) ticks = 6;
-        return Math.round(ticks);
-    }, [pageWidth]);
-
-    return { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount };
+    return { canvas, id, setId, dataRange, minimumZoom, yRange, startMinimum, minimumValue, now };
 }
 
 export default useGraphConfig;
-

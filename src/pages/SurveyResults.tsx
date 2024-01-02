@@ -12,15 +12,12 @@ import SPF from "../screeners/spf";
 import DASSGraph from "../components/graphs/DASSGraph";
 import BaselineGraph from "../components/graphs/BaselineGraph";
 import ResilienceGraph from "../components/graphs/ResilienceGraph";
-import useGraphConfig from "../components/graphs/useGraphConfig";
 
 const SurveyResults = () => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [showLastWeek, setShowLastWeek] = useState(false);
-
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount } = useGraphConfig();
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
@@ -53,7 +50,7 @@ const SurveyResults = () => {
     return (
         <div className="container">
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
-            <div className="center-journal" ref={pageWidthRef}>
+            <div className="center-journal">
                 <div className="title">Survey Results</div>
                 <br />
                 {showLastWeek && (
@@ -66,7 +63,6 @@ const SurveyResults = () => {
                     <>
                         <BaselineGraph
                             data={baselineGraph}
-                            now={now}
                             sync={true}
                         />
                         <p className="text-center margin-bottom-0 max-width-600">
@@ -93,7 +89,6 @@ const SurveyResults = () => {
                     <p className="bold head2 text-center">Depression, Anxiety, and Stress Levels</p>
                     <DASSGraph
                         data={dassData}
-                        now={now}
                         sync={true}
                     />
                     <br />
@@ -104,7 +99,6 @@ const SurveyResults = () => {
                     </p>
                     <ResilienceGraph
                         data={spfData}
-                        now={now}
                         sync={true}
                     />
                     <p className="text-center margin-bottom-0 max-width-600">{RESILIENCE_EXP}</p>

@@ -1,14 +1,14 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_SYNC_CHART, GraphHeader, GraphProps, LineData } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_NO_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom } from "./helpers";
 import { COLORS } from "../../helpers";
-import useZoomRange from "./useZoomRange";
-import { useEffect, useMemo, useRef } from "react";
+import useGraphConfig from "./useGraphConfig";
+import { useEffect, useMemo } from "react";
 import { Chart } from "chart.js/auto";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { merge } from "lodash";
+import InnerGraph from "./InnerGraph";
 
-const BaselineGraph = ({ data, now, sync }: GraphProps) => {
-    const { id, setId, dataRange, minimumZoom, yRange, startMinimum, minimumValue } = useZoomRange(now, data);
-    const canvas = useRef(null);
+const BaselineGraph = ({ data, sync }: GraphProps) => {
+    const { id, setId, dataRange, minimumZoom, yRange, startMinimum, minimumValue, canvas, now } = useGraphConfig(data);
 
     const lineData: LineData[] = useMemo(() => {
         return [{
@@ -18,7 +18,7 @@ const BaselineGraph = ({ data, now, sync }: GraphProps) => {
     }, []);
 
     const options = useMemo(() => {
-        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, {
+        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_NO_POINTS, {
             parsing: {
                 xAxisKey: "timestamp",
                 yAxisKey: "value",
@@ -36,9 +36,9 @@ const BaselineGraph = ({ data, now, sync }: GraphProps) => {
             },
             scales: {
                 y: yRange,
-            },
+            }
         }) as any;
-    }, [data, minimumZoom, now, yRange]);
+    }, [data, minimumZoom, now, yRange, sync]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -51,29 +51,15 @@ const BaselineGraph = ({ data, now, sync }: GraphProps) => {
             options
         });
         
-        requestAnimationFrame(() => {
-            try {
-                chart.zoomScale("x", { min: startMinimum, max: now }, "none");
-            } catch {
-                console.log("zoomScale failed");
-            }
-        });
-
+        initialZoom(chart, startMinimum, now);
         setId(Number(chart.id));
 
         return () => {
             chart.destroy();
         };
-    }, [data, lineData, options, setId, startMinimum, now]);
+    }, [data, lineData, options, setId, startMinimum, now, canvas]);
 
-    return (
-        <div className="outerGraphContainer">
-            <GraphHeader lineData={lineData} dataRange={dataRange} id={id} minimumValue={minimumValue} />
-            <div className="innerGraphContainer">
-                <canvas ref={canvas} />
-            </div>
-        </div>
-    );
+    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} minimumValue={minimumValue} canvas={canvas} />
 };
 
 export default BaselineGraph;

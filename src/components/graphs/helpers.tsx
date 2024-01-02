@@ -5,7 +5,6 @@ import { Chart } from "chart.js";
 
 export interface GraphProps {
     data: any[];
-    now: number;
     sync: boolean;
 }
 
@@ -25,67 +24,41 @@ interface GraphHeaderProps {
 
 export const GraphHeader = ({ dataRange, lineData, minimumValue, id }: GraphHeaderProps) => {
     return (
-        <div
-            style={{
+        <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+        }}>
+            <div style={{
                 display: "flex",
-                justifyContent: "space-between",
+                alignItems: "center",
                 flexWrap: "wrap",
-            }}
-        >
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                }}
-            >
+            }}>
                 {lineData.map((line) => (
                     <Fragment key={line.name}>
-                        <div
-                            style={{
-                                height: "12px",
-                                width: "12px",
-                                backgroundColor: line.color,
-                                borderRadius: "2px",
-                                marginRight: "8px",
-                            }}
-                        ></div>
-                        <div
-                            style={{
-                                marginRight: "12px",
-                            }}
-                        >
-                            {line.name}
-                        </div>
+                        <div style={{
+                            height: "12px",
+                            width: "12px",
+                            backgroundColor: line.color,
+                            borderRadius: "2px",
+                            marginRight: "8px",
+                        }}></div>
+                        <div style={{
+                            marginRight: "12px",
+                        }}>{line.name}</div>
                     </Fragment>
                 ))}
             </div>
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                }}
-            >
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+            }}>
                 <p>Zoom</p>
-                {dataRange > ONE_DAY * 90 && (
-                    <div onClick={() => zoomTo("3M", id, minimumValue)} className="outline-button">
-                        3M
-                    </div>
-                )}
-                {dataRange > ONE_DAY * 180 && (
-                    <div onClick={() => zoomTo("6M", id, minimumValue)} className="outline-button">
-                        6M
-                    </div>
-                )}
-                {dataRange > ONE_DAY * 365 && (
-                    <div onClick={() => zoomTo("1Y", id, minimumValue)} className="outline-button">
-                        1Y
-                    </div>
-                )}
-                <div onClick={() => zoomTo("All", id, minimumValue)} className="outline-button">
-                    All
-                </div>
+                {dataRange > ONE_DAY * 90 && (<div onClick={() => zoomTo("3M", id, minimumValue)} className="outline-button">3M</div>)}
+                {dataRange > ONE_DAY * 180 && (<div onClick={() => zoomTo("6M", id, minimumValue)} className="outline-button">6M</div>)}
+                {dataRange > ONE_DAY * 365 && (<div onClick={() => zoomTo("1Y", id, minimumValue)} className="outline-button">1Y</div>)}
+                <div onClick={() => zoomTo("All", id, minimumValue)} className="outline-button">All</div>
             </div>
         </div>
     );
@@ -119,6 +92,16 @@ const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
     }
 };
 
+export const initialZoom = (chart: Chart, startMinimum: number, now: number) => {
+    requestAnimationFrame(() => {
+        try {
+            chart.zoomScale("x", { min: startMinimum, max: now }, "none");
+        } catch {
+            console.warn("zoomScale failed");
+        }
+    });
+}
+
 interface GraphEvent {
     chart: Chart;
 }
@@ -133,11 +116,12 @@ const syncRange = function (e: GraphEvent) {
 };
 
 export const GRAPH_BASE_OPTIONS = () => {
+    Chart.defaults.font.size = 14;
     return {
         elements: {
-            point: {
-                pointStyle: false,
-            },
+            line: {
+                tension: 0.15
+            }
         },
         normalized: true,
         maintainAspectRatio: false,
@@ -198,3 +182,19 @@ export const GRAPH_SYNC_CHART = {
         },
     },
 };
+
+export const GRAPH_NO_POINTS = {
+    elements: {
+        point: {
+            pointStyle: false,
+        },
+    }
+};
+
+export const GRAPH_POINTS = {
+    elements: {
+        point: {
+            pointStyle: true,
+        },
+    }
+}

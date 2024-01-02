@@ -1,0 +1,44 @@
+diff --git a/node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.esm.js b/node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.esm.js
+index 461c9d5..d8d3d36 100644
+--- a/node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.esm.js
++++ b/node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.esm.js
+@@ -13,7 +13,7 @@ const FORMATS = {
+   second: DateTime.TIME_WITH_SECONDS,
+   minute: DateTime.TIME_SIMPLE,
+   hour: {hour: 'numeric'},
+-  day: {day: 'numeric', month: 'short'},
++  day: "DAY_WITH_PREV_YEAR",
+   week: 'DD',
+   month: {month: 'short', year: 'numeric'},
+   quarter: "'Q'q - yyyy",
+@@ -22,6 +22,7 @@ const FORMATS = {
+ 
+ _adapters._date.override({
+   _id: 'luxon', // DEBUG
++  _currentYear: DateTime.now().year,
+ 
+   /**
+    * @private
+@@ -67,9 +68,19 @@ _adapters._date.override({
+ 
+   format: function(time, format) {
+     const datetime = this._create(time);
+-    return typeof format === 'string'
+-      ? datetime.toFormat(format)
+-      : datetime.toLocaleString(format);
++    if (typeof format === 'string') {
++      if (format === "DAY_WITH_PREV_YEAR") {
++        if (datetime.year === this._currentYear) {
++          return datetime.toFormat("LLL d");
++        } else {
++          return datetime.toFormat("LLL d yy");
++        }
++      }
++
++      return datetime.toFormat(format);
++    } else {
++      return datetime.toLocaleString(format);
++    }
+   },
+ 
+   add: function(time, amount, unit) {
