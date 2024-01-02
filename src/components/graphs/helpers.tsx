@@ -75,9 +75,11 @@ const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
         "1Y": lateTime - ONE_DAY * 365,
     };
 
+    let minMax = undefined;
+
     if (key === "All") {
         const now = DateTime.now().toMillis();
-        chart.zoomScale("x", { min: minimumValue, max: now }, "active");
+        minMax = { min: minimumValue, max: now };
     } else {
         let minimum = minMap[key];
         let maximum = lateTime;
@@ -88,7 +90,11 @@ const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
             maximum += diff;
         }
 
-        chart.zoomScale("x", { min: minimum, max: maximum }, "active");
+        minMax = { min: minimum, max: maximum };
+    }
+
+    for (let instance of Object.values(Chart.instances)) {
+        instance.zoomScale("x", minMax, "active");
     }
 };
 
