@@ -1,6 +1,6 @@
 import { GraphProps } from "./helpers";
 
-const DASSGraph = ({ data, now }: GraphProps) => {
+const DASSGraph = ({ data, sync }: GraphProps) => {
 
     return (
         <div>

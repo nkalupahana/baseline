@@ -13,7 +13,6 @@ import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import BaselineDescription from "./BaselineDescription";
 import BaselineGraph from "../graphs/BaselineGraph";
-import useGraphConfig from "../graphs/useGraphConfig";
 
 interface Props {
     primary: Screener,
@@ -28,8 +27,6 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
     const [swiperProgress, setSwiperProgress] = useState(0);
-
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount } = useGraphConfig();
 
     useEffect(() => {
         if (!user) return;
@@ -103,7 +100,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         <div className="text-center screener-slide">
                             { data && screener.graph && 
                                 <div className="swiper-no-swiping">
-                                    <screener.graph data={data} now={now} sync={false} />
+                                    <screener.graph data={data} sync={false} />
                                 </div> }
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>
@@ -116,12 +113,11 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                 }) }
                 <SwiperSlide>
                     <div className="title">Your baseline</div>
-                    <div className="text-center screener-slide" ref={pageWidthRef}>
+                    <div className="text-center screener-slide">
                         { typeof baselineGraph === "object" && <>
                             <div className="swiper-no-swiping">
                                 <BaselineGraph
                                     data={baselineGraph}
-                                    now={now}
                                     sync={false}
                                 />
                             </div>
