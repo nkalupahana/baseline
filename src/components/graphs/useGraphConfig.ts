@@ -5,40 +5,44 @@ import { DateTime } from "luxon";
 import "chartjs-adapter-luxon";
 import "./Graphs.css";
 
+const PADDING = ONE_DAY;
+
 const useGraphConfig = (data: AnyMap[]) => {
     const [id, setId] = useState<number | undefined>(undefined);
     const canvas = useRef(null);
 
+    /// Memoized Values
+    // Now timestamp
     const now = useMemo(() => {
         return DateTime.now().toMillis();
     }, []);
 
+    // Padded min and max for x axis
+    const leftLimit = useMemo(() => {
+        return data[0].timestamp - PADDING;
+    }, [data]);
+
+    const rightLimit = useMemo(() => {
+        if (data.length === 1) return data[0].timestamp + PADDING;
+        return now + PADDING;
+    }, [data.length, now]);
+
+    // Range for min to max
     const dataRange = useMemo(() => {
-        if (data.length === 1) return 0;
-        return now - data[0].timestamp;
-    }, [now, data]);
+        return rightLimit - leftLimit;
+    }, [rightLimit, leftLimit]);
 
+    // Minimum zoom level
     const minimumZoom = useMemo(() => {
-        if (data.length === 1) return 0;
         return Math.min(ONE_DAY * 60, dataRange);
-    }, [data, dataRange]);
+    }, [dataRange]);
 
+    // Where to start left side of graph (cut off at 180 day range)
     const startMinimum = useMemo(() => {
-        if (data.length === 1) return 0;
-        return now - Math.min(ONE_DAY * 180, dataRange);
-    }, [data, dataRange, now]);
+        return rightLimit - Math.min(ONE_DAY * 180, dataRange);
+    }, [dataRange, rightLimit]);
 
-    const yRange = useMemo(() => {
-        const min = Math.min(...data.map(d => d.value));
-        const max = Math.max(...data.map(d => d.value));
-        return { min: min - 0.4, max: max + 0.4 };
-    }, [data]);
-
-    const minimumValue = useMemo(() => {
-        return data[0].timestamp;
-    }, [data]);
-    
-    return { canvas, id, setId, dataRange, minimumZoom, yRange, startMinimum, minimumValue, now };
+    return { canvas, id, setId, dataRange, minimumZoom, startMinimum, leftLimit, rightLimit };
 }
 
 export default useGraphConfig;

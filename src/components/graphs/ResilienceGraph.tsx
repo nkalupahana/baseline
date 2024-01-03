@@ -14,7 +14,7 @@ const LABEL_MAP: AnyMap = {
 };
 
 const ResilienceGraph = ({ data, sync }: GraphProps) => {
-    const { id, setId, dataRange, minimumZoom, startMinimum, minimumValue, canvas, now } = useGraphConfig(data);
+    const { id, setId, dataRange, minimumZoom, startMinimum, canvas, leftLimit, rightLimit } = useGraphConfig(data);
 
     const lineData: LineData[] = useMemo(() => {
         return [{
@@ -33,8 +33,8 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
                 zoom: {
                     limits: {
                         x: {
-                            min: data[0].timestamp,
-                            max: now,
+                            min: leftLimit,
+                            max: rightLimit,
                             minRange: minimumZoom,
                         },
                     },
@@ -57,11 +57,12 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
                         callback: function (value: number) {
                             return LABEL_MAP[value] ?? "";
                         },
+                        stepSize: 0.5
                     },
                 }
             },
         }) as any;
-    }, [data, minimumZoom, now, sync]);
+    }, [minimumZoom, leftLimit, rightLimit, sync]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -69,20 +70,20 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
         const chart = new Chart(canvas.current, {
             type: "line",
             data: {
-                datasets: [{ data, borderColor: lineData[0].color }],
+                datasets: [{ data, borderColor: lineData[0].color, pointBackgroundColor: lineData[0].color }],
             },
             options
         });
         
-        initialZoom(chart, startMinimum, now);
+        initialZoom(chart, startMinimum, rightLimit);
         setId(Number(chart.id));
 
         return () => {
             chart.destroy();
         };
-    }, [data, lineData, options, setId, startMinimum, now, canvas]);
+    }, [lineData, options, setId, startMinimum, leftLimit, rightLimit, canvas, data]);
 
-    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} minimumValue={minimumValue} canvas={canvas} />
+    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} canvas={canvas} />
 };
 
 export default ResilienceGraph;

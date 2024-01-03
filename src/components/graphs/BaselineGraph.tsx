@@ -8,7 +8,7 @@ import { merge } from "lodash";
 import InnerGraph from "./InnerGraph";
 
 const BaselineGraph = ({ data, sync }: GraphProps) => {
-    const { id, setId, dataRange, minimumZoom, yRange, startMinimum, minimumValue, canvas, now } = useGraphConfig(data);
+    const { id, setId, dataRange, minimumZoom, startMinimum, canvas, leftLimit, rightLimit } = useGraphConfig(data);
 
     const lineData: LineData[] = useMemo(() => {
         return [{
@@ -16,6 +16,12 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
             color: COLORS[0],
         }];
     }, []);
+
+    const yRange = useMemo(() => {
+        const min = Math.min(...data.map(d => d.value));
+        const max = Math.max(...data.map(d => d.value));
+        return { min: min - 0.4, max: max + 0.4 };
+    }, [data]);
 
     const options = useMemo(() => {
         return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_NO_POINTS, {
@@ -27,8 +33,8 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                 zoom: {
                     limits: {
                         x: {
-                            min: data[0].timestamp,
-                            max: now,
+                            min: leftLimit,
+                            max: rightLimit,
                             minRange: minimumZoom,
                         },
                     },
@@ -38,7 +44,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                 y: yRange,
             }
         }) as any;
-    }, [data, minimumZoom, now, yRange, sync]);
+    }, [minimumZoom, leftLimit, rightLimit, yRange, sync]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -51,15 +57,15 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
             options
         });
         
-        initialZoom(chart, startMinimum, now);
+        initialZoom(chart, startMinimum, rightLimit);
         setId(Number(chart.id));
 
         return () => {
             chart.destroy();
         };
-    }, [data, lineData, options, setId, startMinimum, now, canvas]);
+    }, [lineData, options, setId, startMinimum, leftLimit, rightLimit, canvas, data]);
 
-    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} minimumValue={minimumValue} canvas={canvas} />
+    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} canvas={canvas} />
 };
 
 export default BaselineGraph;

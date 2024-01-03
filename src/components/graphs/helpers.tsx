@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import { Fragment } from "react";
 import { AnyMap } from "../../helpers";
 import { Chart } from "chart.js";
@@ -17,12 +16,13 @@ export const ONE_DAY = 86400 * 1000;
 
 interface GraphHeaderProps {
     lineData: LineData[];
-    minimumValue: number;
+    leftLimit: number;
+    rightLimit: number;
     dataRange: number;
     id: number | undefined;
 }
 
-export const GraphHeader = ({ dataRange, lineData, minimumValue, id }: GraphHeaderProps) => {
+export const GraphHeader = ({ dataRange, lineData, leftLimit, rightLimit, id }: GraphHeaderProps) => {
     return (
         <div style={{
             display: "flex",
@@ -55,16 +55,16 @@ export const GraphHeader = ({ dataRange, lineData, minimumValue, id }: GraphHead
                 flexWrap: "wrap",
             }}>
                 <p>Zoom</p>
-                {dataRange > ONE_DAY * 90 && (<div onClick={() => zoomTo("3M", id, minimumValue)} className="outline-button">3M</div>)}
-                {dataRange > ONE_DAY * 180 && (<div onClick={() => zoomTo("6M", id, minimumValue)} className="outline-button">6M</div>)}
-                {dataRange > ONE_DAY * 365 && (<div onClick={() => zoomTo("1Y", id, minimumValue)} className="outline-button">1Y</div>)}
-                <div onClick={() => zoomTo("All", id, minimumValue)} className="outline-button">All</div>
+                {dataRange > ONE_DAY * 90 && (<div onClick={() => zoomTo("3M", id, leftLimit, rightLimit)} className="outline-button">3M</div>)}
+                {dataRange > ONE_DAY * 180 && (<div onClick={() => zoomTo("6M", id, leftLimit, rightLimit)} className="outline-button">6M</div>)}
+                {dataRange > ONE_DAY * 365 && (<div onClick={() => zoomTo("1Y", id, leftLimit, rightLimit)} className="outline-button">1Y</div>)}
+                <div onClick={() => zoomTo("All", id, leftLimit, rightLimit)} className="outline-button">All</div>
             </div>
         </div>
     );
 };
 
-const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
+const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLimit: number) => {
     if (id === undefined) return;
     const chart = Chart.instances[id];
     const lateTime = chart.scales.x.max;
@@ -78,14 +78,13 @@ const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
     let minMax = undefined;
 
     if (key === "All") {
-        const now = DateTime.now().toMillis();
-        minMax = { min: minimumValue, max: now };
+        minMax = { min: leftLimit, max: rightLimit };
     } else {
         let minimum = minMap[key];
         let maximum = lateTime;
 
-        if (minimum < minimumValue) {
-            const diff = minimumValue - minimum;
+        if (minimum < leftLimit) {
+            const diff = leftLimit - minimum;
             minimum += diff;
             maximum += diff;
         }
@@ -98,10 +97,10 @@ const zoomTo = (key: string, id: number | undefined, minimumValue: number) => {
     }
 };
 
-export const initialZoom = (chart: Chart, startMinimum: number, now: number) => {
+export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: number) => {
     requestAnimationFrame(() => {
         try {
-            chart.zoomScale("x", { min: startMinimum, max: now }, "none");
+            chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "none");
         } catch {
             console.warn("zoomScale failed");
         }
@@ -161,7 +160,7 @@ export const GRAPH_BASE_OPTIONS = () => {
                     unit: "day",
                 },
                 grid: {
-                    color: getComputedStyle(document.body).getPropertyValue("--graph-grid-color")
+                    color: getComputedStyle(document.body).getPropertyValue("--graph-grid-color"),
                 },
                 ticks: {
                     maxTicksLimit: 16,
