@@ -11,69 +11,40 @@ import ldb from "../../src/db"
 import { ONE_DAY } from "../../src/components/graphs/helpers";
 
 const DASSGraphContainer = ({ data }) => {
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
 
-    return (
-        <div ref={pageWidthRef} style={{ backgroundColor: "var(--ion-background-color)" }}>
-            <DASSGraph
-                xZoomDomain={xZoomDomain}
-                setXZoomDomain={setXZoomDomain}
-                data={data}
-                now={now}
-                pageWidth={pageWidth}
-                tickCount={tickCount}
-                tickFormatter={memoTickFormatter}
-                zoomTo={zoomTo}
-            />
-        </div>
-    );
+    return <DASSGraph
+        data={data}
+        sync={false}
+    />
 };
 
 const SPFGraphContainer = ({ data }) => {
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
 
-    return (
-        <div ref={pageWidthRef} style={{ backgroundColor: "var(--ion-background-color)" }}>
-            <ResilienceGraph
-                xZoomDomain={xZoomDomain}
-                setXZoomDomain={setXZoomDomain}
-                data={data}
-                now={now}
-                pageWidth={pageWidth}
-                tickCount={tickCount}
-                tickFormatter={memoTickFormatter}
-                zoomTo={zoomTo}
-            />
-        </div>
-    );
+    return <ResilienceGraph
+        data={data}
+        sync={false}
+    />
 };
 
 const BaselineGraphContainer = () => {
-    const { now, xZoomDomain, setXZoomDomain, zoomTo, pageWidthRef, pageWidth, tickCount, memoTickFormatter } = useGraphConfig();
     const [baselineGraph, setBaselineGraph] = useState(undefined);
     useEffect(() => {
         calculateBaseline(setBaselineGraph);
     }, []);
 
     return (
-        <div ref={pageWidthRef} style={{ backgroundColor: "var(--ion-background-color)" }}>
+        <>
             { baselineGraph && typeof baselineGraph === "object" && <BaselineGraph
-                xZoomDomain={xZoomDomain}
-                setXZoomDomain={setXZoomDomain}
                 data={baselineGraph}
-                now={now}
-                pageWidth={pageWidth}
-                tickCount={tickCount}
-                tickFormatter={memoTickFormatter}
-                zoomTo={zoomTo}
+                sync={false}
             /> }
-        </div>
+        </>
     );
 };
 
 const DASS_PAUSE = false;
 const SPF_PAUSE = false;
-const BASELINE_PAUSE = false;
+const BASELINE_PAUSE = true;
 
 const SEED = 293432490;
 
@@ -197,6 +168,7 @@ describe("SPF (Resilience)", () => {
     it("One to 30 Points", () => {
         for (let i = SPF_POINTS; i >= 0; i--) {
             const dataSlice = spfData.slice(i);
+            console.log(dataSlice)
             cy.mount(<SPFGraphContainer data={dataSlice} />);
             if (SPF_PAUSE) cy.pause();
             cy.get("body").happoScreenshot();
@@ -251,7 +223,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -264,7 +236,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -288,7 +260,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -304,7 +276,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -323,7 +295,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -342,7 +314,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -356,7 +328,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })
@@ -371,7 +343,7 @@ describe("baseline", () => {
         }
         
         cy.mount(<BaselineGraphContainer />);
-        cy.get('.VictoryContainer').should("exist");
+        cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
         cy.get("body").happoScreenshot();
     })

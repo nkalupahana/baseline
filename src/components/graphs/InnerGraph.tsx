@@ -5,13 +5,14 @@ interface InnerGraphProps {
     lineData: LineData[];
     dataRange: number;
     id: number | undefined;
-    minimumValue: number;
+    leftLimit: number;
+    rightLimit: number;
     canvas: Ref<HTMLCanvasElement>;
 }
 
-const InnerGraph = ({ lineData, dataRange, id, minimumValue, canvas } : InnerGraphProps) => {
+const InnerGraph = ({ lineData, dataRange, id, leftLimit, rightLimit, canvas } : InnerGraphProps) => {
     return <div className="outerGraphContainer">
-        <GraphHeader lineData={lineData} dataRange={dataRange} id={id} minimumValue={minimumValue} />
+        <GraphHeader lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} />
         <div className="innerGraphContainer">
             <canvas ref={canvas} />
         </div>
