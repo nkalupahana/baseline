@@ -25,7 +25,7 @@ const useGraphConfig = (data: AnyMap[]) => {
     const rightLimit = useMemo(() => {
         if (data.length === 1) return data[0].timestamp + PADDING;
         return now + PADDING;
-    }, [data.length, now]);
+    }, [data, now]);
 
     // Range for min to max
     const dataRange = useMemo(() => {
