@@ -764,7 +764,7 @@ describe("Test Settings", () => {
         cy.contains("Surveys").should("exist").click()
         cy.get("ion-menu").should("not.exist")
 
-        cy.get(".VictoryContainer").should("have.length.at.least", 2)
+        cy.get("canvas").should("have.length.at.least", 2)
         cy.contains("baseline score").should("exist")
         cy.contains("Extremely").should("exist") // From DASS graph -- Extremely Severe
 
