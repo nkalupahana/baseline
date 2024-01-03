@@ -100,7 +100,7 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
 export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: number) => {
     requestAnimationFrame(() => {
         try {
-            chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "none");
+            chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "active");
         } catch {
             console.warn("zoomScale failed");
         }

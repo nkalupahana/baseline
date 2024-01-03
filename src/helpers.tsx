@@ -378,6 +378,11 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
                 timestamp: perDayDates[i],
                 value: sum / BASELINE_DAYS
             });
+        } else {
+            baseline.push({
+                timestamp: perDayDates[i],
+                value: NaN
+            });
         }
         ++i;
     }

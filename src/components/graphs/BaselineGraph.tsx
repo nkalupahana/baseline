@@ -25,6 +25,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
 
     const options = useMemo(() => {
         return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_NO_POINTS, {
+            spanGaps: false,
             parsing: {
                 xAxisKey: "timestamp",
                 yAxisKey: "value",

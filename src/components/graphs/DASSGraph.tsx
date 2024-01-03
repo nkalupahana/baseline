@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, initialZoom } from "./helpers";
 import { AnyMap } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -33,6 +33,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
 
     const options = useMemo(() => {
         return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_POINTS, {
+            spanGaps: ONE_DAY * 14,
             plugins: {
                 zoom: {
                     limits: {

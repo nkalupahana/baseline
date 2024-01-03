@@ -44,7 +44,7 @@ const BaselineGraphContainer = () => {
 
 const DASS_PAUSE = false;
 const SPF_PAUSE = false;
-const BASELINE_PAUSE = true;
+const BASELINE_PAUSE = false;
 
 const SEED = 293432490;
 
