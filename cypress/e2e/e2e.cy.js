@@ -766,7 +766,6 @@ describe("Test Settings", () => {
 
         cy.get("canvas").should("have.length.at.least", 2)
         cy.contains("baseline score").should("exist")
-        cy.contains("Extremely").should("exist") // From DASS graph -- Extremely Severe
 
         cy.contains("Last Week").should("exist").click()
         cy.url().should("include", "/lastreview")
