@@ -183,18 +183,30 @@ export default function DASS(): Screener {
             return getProblemFlag(this._results) ? Priority.HIGH : Priority.LOW;
         },
         processDataForGraph: function(data) {
-            let d = [];
+            let ret = [];
             for (let key in data) {
                 if (data[key]["key"] !== this._key) continue;
-                d.push({
+                let d = normalizeRange(data[key]["results"]["d"], ranges["d"]);
+                let a = normalizeRange(data[key]["results"]["a"], ranges["a"]);
+                let s = normalizeRange(data[key]["results"]["s"], ranges["s"]);
+
+                if (d === a || d === s) {
+                    d += 0.03;
+                }
+
+                if (s === a || s === d) {
+                    s -= 0.03;
+                }
+
+                ret.push({
                     timestamp: Number(key),
-                    d: normalizeRange(data[key]["results"]["d"], ranges["d"]),
-                    a: normalizeRange(data[key]["results"]["a"], ranges["a"]),
-                    s: normalizeRange(data[key]["results"]["s"], ranges["s"])
+                    d,
+                    a,
+                    s
                 });
             }
 
-            return d;
+            return ret;
         },
         graph: DASSGraph
     }

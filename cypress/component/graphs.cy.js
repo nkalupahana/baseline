@@ -1,7 +1,6 @@
 import DASSGraph from "../../src/components/graphs/DASSGraph";
 import ResilienceGraph from "../../src/components/graphs/ResilienceGraph";
 import BaselineGraph from "../../src/components/graphs/BaselineGraph";
-import useGraphConfig from "../../src/components/graphs/useGraphConfig";
 import "../../src/theme/variables.css";
 import "../../src/components/Journal/JournalComponents.css";
 import { DateTime } from "luxon";
