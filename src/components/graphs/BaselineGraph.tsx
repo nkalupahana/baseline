@@ -42,7 +42,14 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                 },
             },
             scales: {
-                y: yRange,
+                y: {
+                    ...yRange,
+                    ticks: {
+                        callback: function (value: number) {
+                            return "  " + value.toFixed(1);
+                        }
+                    }
+                }
             }
         }) as any;
     }, [minimumZoom, leftLimit, rightLimit, yRange, sync]);
