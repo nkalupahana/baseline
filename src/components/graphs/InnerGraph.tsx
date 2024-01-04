@@ -8,11 +8,12 @@ interface InnerGraphProps {
     leftLimit: number;
     rightLimit: number;
     canvas: Ref<HTMLCanvasElement>;
+    sync: boolean;
 }
 
-const InnerGraph = ({ lineData, dataRange, id, leftLimit, rightLimit, canvas } : InnerGraphProps) => {
+const InnerGraph = ({ lineData, dataRange, id, leftLimit, rightLimit, canvas, sync } : InnerGraphProps) => {
     return <div className="outerGraphContainer">
-        <GraphHeader lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} />
+        <GraphHeader lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} sync={sync} />
         <div className="innerGraphContainer">
             <canvas ref={canvas} />
         </div>
