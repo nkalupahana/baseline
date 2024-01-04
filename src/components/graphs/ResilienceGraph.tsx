@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom } from "./helpers";
 import { AnyMap, COLORS } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -48,7 +48,7 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
                     grid: {
                         color: function (context: any) {
                             if ([0, 1, 2, 3].includes(context.tick.value)) {
-                                return "#bdbdbd"; // TODO: light/dark mode -- extract to helper
+                                return getCSSVar("--graph-grid-color");
                             } else {
                                 return "rgba(0, 0, 0, 0)";
                             }
