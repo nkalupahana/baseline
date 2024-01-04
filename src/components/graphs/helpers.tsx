@@ -125,6 +125,10 @@ const syncRange = function (e: GraphEvent) {
     }
 };
 
+export const getCSSVar = (name: string) => {
+    return getComputedStyle(document.body).getPropertyValue(name);
+};
+
 export const GRAPH_BASE_OPTIONS = () => {
     Chart.defaults.font.size = 14;
     return {
@@ -165,7 +169,7 @@ export const GRAPH_BASE_OPTIONS = () => {
                     unit: "day",
                 },
                 grid: {
-                    color: getComputedStyle(document.body).getPropertyValue("--graph-grid-color"),
+                    color: getCSSVar("--graph-grid-color")
                 },
                 ticks: {
                     maxTicksLimit: 16,
@@ -173,7 +177,7 @@ export const GRAPH_BASE_OPTIONS = () => {
             },
             y: {
                 grid: {
-                    color: getComputedStyle(document.body).getPropertyValue("--graph-grid-color")
+                    color: getCSSVar("--graph-grid-color")
                 }
             },
         },
