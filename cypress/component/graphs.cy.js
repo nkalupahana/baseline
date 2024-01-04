@@ -46,6 +46,7 @@ const SPF_PAUSE = false;
 const BASELINE_PAUSE = false;
 
 const SEED = 293432490;
+const CANVAS_WAIT = 1000;
 
 function mulberry32(a) {
     return function() {
@@ -78,7 +79,8 @@ describe("DASS", () => {
             const dataSlice = dassData.slice(i);
             cy.mount(<DASSGraphContainer data={dataSlice} />);
             if (DASS_PAUSE) cy.pause();
-            cy.get("body").happoScreenshot();
+            cy.wait(CANVAS_WAIT);
+        cy.get("body").happoScreenshot();
         }
     });
 
@@ -106,6 +108,7 @@ describe("DASS", () => {
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
         if (DASS_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -118,7 +121,8 @@ describe("DASS", () => {
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
         if (DASS_PAUSE) cy.pause();
-cy.get("body").happoScreenshot();
+        cy.wait(CANVAS_WAIT);
+        cy.get("body").happoScreenshot();
     })
 
     it("Gap", () => {
@@ -145,6 +149,7 @@ cy.get("body").happoScreenshot();
         }]
         cy.mount(<DASSGraphContainer data={dataSlice} />);
         if (DASS_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 });
@@ -170,7 +175,8 @@ describe("SPF (Resilience)", () => {
             console.log(dataSlice)
             cy.mount(<SPFGraphContainer data={dataSlice} />);
             if (SPF_PAUSE) cy.pause();
-            cy.get("body").happoScreenshot();
+            cy.wait(CANVAS_WAIT);
+        cy.get("body").happoScreenshot();
         }
     });
 
@@ -183,6 +189,7 @@ describe("SPF (Resilience)", () => {
         ]
         cy.mount(<SPFGraphContainer data={dataSlice} />);
         if (SPF_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -192,6 +199,7 @@ describe("SPF (Resilience)", () => {
         ]
         cy.mount(<SPFGraphContainer data={dataSlice} />);
         if (SPF_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -205,6 +213,7 @@ describe("SPF (Resilience)", () => {
 
         cy.mount(<SPFGraphContainer data={dataSlice} />);
         if (SPF_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 });
@@ -224,6 +233,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -237,6 +247,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -261,6 +272,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -277,6 +289,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -296,6 +309,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -315,6 +329,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -329,6 +344,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 
@@ -344,6 +360,7 @@ describe("baseline", () => {
         cy.mount(<BaselineGraphContainer />);
         cy.get('canvas').should("exist");
         if (BASELINE_PAUSE) cy.pause();
+        cy.wait(CANVAS_WAIT);
         cy.get("body").happoScreenshot();
     })
 })
