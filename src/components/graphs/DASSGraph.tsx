@@ -94,7 +94,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
         };
     }, [lineData, options, setId, startMinimum, leftLimit, rightLimit, canvas, data]);
 
-    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} canvas={canvas} />
+    return <InnerGraph lineData={lineData} dataRange={dataRange} id={id} leftLimit={leftLimit} rightLimit={rightLimit} canvas={canvas} sync={sync} />
 };
 
 export default DASSGraph;

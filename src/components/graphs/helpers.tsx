@@ -20,9 +20,10 @@ interface GraphHeaderProps {
     rightLimit: number;
     dataRange: number;
     id: number | undefined;
+    sync: boolean;
 }
 
-export const GraphHeader = ({ dataRange, lineData, leftLimit, rightLimit, id }: GraphHeaderProps) => {
+export const GraphHeader = ({ dataRange, lineData, leftLimit, rightLimit, id, sync }: GraphHeaderProps) => {
     return (
         <div style={{
             display: "flex",
@@ -55,16 +56,16 @@ export const GraphHeader = ({ dataRange, lineData, leftLimit, rightLimit, id }: 
                 flexWrap: "wrap",
             }}>
                 <p>Zoom</p>
-                {dataRange > ONE_DAY * 90 && (<div onClick={() => zoomTo("3M", id, leftLimit, rightLimit)} className="outline-button">3M</div>)}
-                {dataRange > ONE_DAY * 180 && (<div onClick={() => zoomTo("6M", id, leftLimit, rightLimit)} className="outline-button">6M</div>)}
-                {dataRange > ONE_DAY * 365 && (<div onClick={() => zoomTo("1Y", id, leftLimit, rightLimit)} className="outline-button">1Y</div>)}
-                <div onClick={() => zoomTo("All", id, leftLimit, rightLimit)} className="outline-button">All</div>
+                {dataRange > ONE_DAY * 90 && (<div onClick={() => zoomTo("3M", id, leftLimit, rightLimit, sync)} className="outline-button">3M</div>)}
+                {dataRange > ONE_DAY * 180 && (<div onClick={() => zoomTo("6M", id, leftLimit, rightLimit, sync)} className="outline-button">6M</div>)}
+                {dataRange > ONE_DAY * 365 && (<div onClick={() => zoomTo("1Y", id, leftLimit, rightLimit, sync)} className="outline-button">1Y</div>)}
+                <div onClick={() => zoomTo("All", id, leftLimit, rightLimit, sync)} className="outline-button">All</div>
             </div>
         </div>
     );
 };
 
-const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLimit: number) => {
+const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLimit: number, sync: boolean) => {
     if (id === undefined) return;
     const chart = Chart.instances[id];
     const lateTime = chart.scales.x.max;
@@ -92,8 +93,12 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
         minMax = { min: minimum, max: maximum };
     }
 
-    for (let instance of Object.values(Chart.instances)) {
-        instance.zoomScale("x", minMax, "active");
+    if (sync) {
+        for (let instance of Object.values(Chart.instances)) {
+            instance.zoomScale("x", minMax, "active");
+        }
+    } else {
+        chart.zoomScale("x", minMax, "active");
     }
 };
 
