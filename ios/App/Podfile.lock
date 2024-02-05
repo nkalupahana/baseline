@@ -12,7 +12,7 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (5.0.6):
     - Capacitor
-  - CapacitorCloudkit (2.0.0):
+  - CapacitorCloudkit (2.1.0):
     - Capacitor
   - CapacitorCommunityMedia (5.2.2):
     - Capacitor
@@ -248,7 +248,7 @@ SPEC CHECKSUMS:
   ByteowlsCapacitorOauth2: 86f9a61aa413119226b12aabc5d03f185e9e1d28
   Capacitor: 6f44cbc33839b8a4202b8eac97041fe584083417
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
-  CapacitorCloudkit: 0283224895dd0e99979d3445b4bc5ac9b4392149
+  CapacitorCloudkit: 6e3eb693f0b8e4fad8229f75825e5ca6a7c7eb12
   CapacitorCommunityMedia: aee9c9b87120cbf881edaa06a694d339c8c7cfb8
   CapacitorCordova: 35def3ebfdef491f0a7b652816eb873ff4b20bbf
   CapacitorDevice: 2c968f98a1ec4d22357418c1521e7ddc46c675e6
@@ -286,4 +286,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 15ef6a75552882b66e6f6dc05c37376d1c245330
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.3

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import ldb from '../db';
 import { AuthCredential, FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { Capacitor } from "@capacitor/core";
-import { BASE_URL, fingerprint, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
+import { AnyMap, BASE_URL, fingerprint, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
@@ -49,6 +49,7 @@ let flow = Math.random();
 const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [loginState, setLoginState] = useState<LoginStates>(LoginStates.START);
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
+    const [storedAdditionalData, setStoredAdditionalData] = useState<AnyMap>({});
     const [passphrase, setPassphrase] = useState("");
     const [deleting, setDeleting] = useState(false);
 
@@ -70,6 +71,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         flow = flowVal;
         setLoggingIn(true);
         setLoginState(LoginStates.LOGGING_IN);
+        setStoredAdditionalData({});
         let credential: AuthCredential | null | undefined;
         try {
             credential = await signInFunc(flowVal);
@@ -87,6 +89,26 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         // Second round of auth needed on apple devices
         if (credential.providerId === "apple.com") {
             if (flowVal !== flow) return;
+            if (Capacitor.getPlatform() === "ios") {
+                let record = {};
+                try {
+                    record = await CloudKit.fetchRecord({
+                        containerIdentifier: "iCloud.baseline.getbaseline.app",
+                        database: "private",
+                        by: "recordName",
+                        recordName: "Keys"
+                    })
+                } catch {}
+
+                if ("visibleKey" in record && "encryptedKey" in record) {
+                    if (flowVal !== flow) return;
+                    await continueLoginFlow(credential, flowVal, {
+                        visibleKey: record["visibleKey"],
+                        encryptedKey: record["encryptedKey"]
+                    });
+                    return;
+                }
+            }
             setLoginState(LoginStates.CLOUDKIT_NEEDED);
             return;
         }
@@ -111,13 +133,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         await continueLoginFlow(credential, flowVal);
     }
 
-    const continueLoginFlow = async (credential: AuthCredential, flowVal: number) => {
+    const continueLoginFlow = async (credential: AuthCredential, flowVal: number, additionalData={}) => {
         setLoginState(LoginStates.GETTING_KEYS);
         if (flowVal !== flow) return;
 
         const method = await (await get(ref(db, `/${auth.currentUser?.uid}/pdp/method`))).val();
         if (flowVal !== flow) return;
         if (method && !passphrase) {
+            setStoredCredential(credential);
+            setStoredAdditionalData(additionalData);
             setLoginState(LoginStates.UNLOCK);
             return;
         }
@@ -135,7 +159,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 body: JSON.stringify({
                     credential,
                     platform: Capacitor.getPlatform(),
-                    passphrase
+                    passphrase,
+                    ...additionalData
                 })
             });
             
@@ -314,7 +339,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             { loginState === LoginStates.UNLOCK && <>
                 <UnlockCmp unlock={e => {
                     e.preventDefault();
-                    continueLoginFlow(storedCredential!, flow);
+                    continueLoginFlow(storedCredential!, flow, storedAdditionalData);
                 }} getter={passphrase} setter={setPassphrase} />
                 <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
             </> }

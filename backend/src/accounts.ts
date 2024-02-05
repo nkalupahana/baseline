@@ -23,7 +23,12 @@ const CLOUDKIT: any = {
 
 export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
     const body = req.body;
-    if (typeof body.credential !== "object" || typeof body.credential.providerId !== "string" || typeof body.credential.accessToken !== "string") {
+    if (typeof body.credential !== "object" || typeof body.credential.providerId !== "string") {
+        res.send(400);
+        return;
+    }
+
+    if ((typeof body.credential.accessToken !== "string") && (typeof body.visibleKey !== "string" || typeof body.encryptedKey !== "string")) {
         res.send(400);
         return;
     }
@@ -82,30 +87,38 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
             keys = respData["properties"];
             keys["encryptedKeyVisible"] = AES.decrypt(keys["encryptedKey"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8);
         } else if (body.credential.providerId === "apple.com") {
-            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
-            const response = await fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    "records": {
-                        "recordName": "Keys",
-                        "desiredFields": ["encryptedKey", "visibleKey"]
-                    }
-                })
-            });
-            let respData = await response.json();
-            if ("serverErrorCode" in respData || !("records" in respData) || "serverErrorCode" in respData["records"][0]) {
-                console.log("KEY GET FAIL");
-                console.log(JSON.stringify(respData));
-                res.send(406);
-                return;
+            if (typeof body.credentials.accessToken === "string") {
+                const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "records": {
+                            "recordName": "Keys",
+                            "desiredFields": ["encryptedKey", "visibleKey"]
+                        }
+                    })
+                });
+                let respData = await response.json();
+                if ("serverErrorCode" in respData || !("records" in respData) || "serverErrorCode" in respData["records"][0]) {
+                    console.log("KEY GET FAIL");
+                    console.log(JSON.stringify(respData));
+                    res.send(406);
+                    return;
+                }
+    
+                respData = respData["records"][0]["fields"];
+                keys = {
+                    encryptedKey: respData["encryptedKey"]["value"],
+                    visibleKey: respData["visibleKey"]["value"],
+                    encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
+                };
+            } else {
+                keys = {
+                    encryptedKey: body.encryptedKey,
+                    visibleKey: body.visibleKey,
+                    encryptedKeyVisible: AES.decrypt(body.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
+                };
             }
-
-            respData = respData["records"][0]["fields"];
-            keys = {
-                encryptedKey: respData["encryptedKey"]["value"],
-                visibleKey: respData["visibleKey"]["value"],
-                encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
-            };
         } else if (body.credential.providerId === "anonymous") {
             // Anonymous users shouldn't be signing in again!
             res.send(400);
