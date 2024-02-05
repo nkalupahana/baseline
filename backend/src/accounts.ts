@@ -87,7 +87,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
             keys = respData["properties"];
             keys["encryptedKeyVisible"] = AES.decrypt(keys["encryptedKey"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8);
         } else if (body.credential.providerId === "apple.com") {
-            if (typeof body.credentials.accessToken === "string") {
+            if (typeof body.credential.accessToken === "string") {
                 const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
                 const response = await fetch(url, {
                     method: "POST",
