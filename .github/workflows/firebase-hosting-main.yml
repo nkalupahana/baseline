@@ -13,12 +13,6 @@ jobs:
       - run: npm run build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      - name: Build Landing Page
-        run: |
-          cd docs
-          sudo gem install bundler
-          sudo bundle install 
-          bundle exec jekyll build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
