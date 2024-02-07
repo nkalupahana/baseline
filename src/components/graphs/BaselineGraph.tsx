@@ -18,8 +18,8 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
     }, []);
 
     const yRange = useMemo(() => {
-        const min = Math.min(...data.map(d => d.value));
-        const max = Math.max(...data.map(d => d.value));
+        const min = Math.min(...data.map(d => d.value).filter(d => !Number.isNaN(d)));
+        const max = Math.max(...data.map(d => d.value).filter(d => !Number.isNaN(d)));
         return { min: min - 0.4, max: max + 0.4 };
     }, [data]);
 

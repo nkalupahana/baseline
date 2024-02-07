@@ -109,10 +109,14 @@ export const chooseTicks = (chart: Chart, originalMin: number, originalMax: numb
     const updatedMin = chart.scales.x.min;
     if (!chart.options.scales || !chart.options.scales.x) return;
     const updatedRange = updatedMax - updatedMin;
-    const interval = updatedRange / numGridlines;
-    let i = originalMin;
+    const minInterval = updatedRange / numGridlines;
+    let interval = 0;
+    while (interval < minInterval) {
+        interval += 24*60*60*1000;
+    }
+    let i = originalMin - interval * 10;
     const ticks: number[] = [];
-    while (i <= originalMax) {
+    while (i <= originalMax + interval * 10) {
         ticks.push(i);
         i += interval;
     }
