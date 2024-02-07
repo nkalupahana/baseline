@@ -41,9 +41,9 @@ const BaselineGraphContainer = () => {
     );
 };
 
-const DASS_PAUSE = true;
-const SPF_PAUSE = true;
-const BASELINE_PAUSE = true;
+const DASS_PAUSE = false;
+const SPF_PAUSE = false;
+const BASELINE_PAUSE = false;
 
 const SEED = 293432490;
 const CANVAS_WAIT = 1000;
