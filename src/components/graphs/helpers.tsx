@@ -112,7 +112,7 @@ export const chooseTicks = (chart: Chart, originalMin: number, originalMax: numb
     const minInterval = updatedRange / numGridlines;
     let interval = 0;
     while (interval < minInterval) {
-        interval += 24*60*60*1000;
+        interval += ONE_DAY;
     }
     let i = originalMin - interval * 10;
     const ticks: number[] = [];
