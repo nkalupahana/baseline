@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_NO_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_NO_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom, chooseTicks } from "./helpers";
 import { COLORS } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -39,6 +39,11 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                             minRange: minimumZoom,
                         },
                     },
+                    zoom: {
+                        onZoom: ({ chart }: { chart: Chart }) => {
+                            chooseTicks(chart, data[0].timestamp, data[data.length - 1].timestamp, 15);
+                          },
+                    }
                 },
             },
             scales: {
@@ -49,10 +54,10 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                             return "  " + value.toFixed(1);
                         }
                     }
-                }
-            }
+                },
+            },
         }) as any;
-    }, [minimumZoom, leftLimit, rightLimit, yRange, sync]);
+    }, [sync, leftLimit, rightLimit, minimumZoom, yRange, data]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -65,7 +70,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
             options
         });
         
-        initialZoom(chart, startMinimum, rightLimit);
+        initialZoom(chart, startMinimum, rightLimit, data[data.length - 1].timestamp, data[0].timestamp);
         setId(Number(chart.id));
 
         return () => {

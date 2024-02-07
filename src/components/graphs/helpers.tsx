@@ -96,16 +96,46 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
     if (sync) {
         for (let instance of Object.values(Chart.instances)) {
             instance.zoomScale("x", minMax, "active");
+            chooseTicks(chart, leftLimit, rightLimit, 15);
         }
     } else {
         chart.zoomScale("x", minMax, "active");
+        chooseTicks(chart, leftLimit, rightLimit, 15);
     }
 };
 
-export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: number) => {
+export const chooseTicks = (chart: Chart, originalMin: number, originalMax: number, numGridlines: number) => {
+    const updatedMax = chart.scales.x.max;
+    const updatedMin = chart.scales.x.min;
+    if (!chart.options.scales || !chart.options.scales.x) return;
+    const updatedRange = updatedMax - updatedMin;
+    const interval = updatedRange / numGridlines;
+    let i = originalMin;
+    const ticks: number[] = [];
+    while (i <= originalMax) {
+        ticks.push(i);
+        i += interval;
+    }
+    chart.options.scales.x.afterBuildTicks = (scale) => {
+        if (scale.ticks) {
+            scale.ticks = ticks
+            .filter(
+                (v) =>
+                v > chart.scales.x.min && v < chart.scales.x.max
+            )
+            .map((v) => ({ value: v }));
+        }
+    }
+    chart.pan({
+        x: 1
+    });
+}
+
+export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: number, originalMax: number, originalMin: number) => {
     requestAnimationFrame(() => {
         try {
             chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "active");
+            chooseTicks(chart, originalMin, originalMax, 15);
         } catch {
             console.warn("zoomScale failed");
         }

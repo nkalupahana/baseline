@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom, chooseTicks } from "./helpers";
 import { AnyMap } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -43,6 +43,11 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
                             minRange: minimumZoom,
                         },
                     },
+                    zoom: {
+                        onZoom: ({ chart }: { chart: Chart }) => {
+                            chooseTicks(chart, data[0].timestamp, data[data.length - 1].timestamp, 15);
+                          },
+                    }
                 },
             },
             scales: {
@@ -86,7 +91,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
             options
         });
         
-        initialZoom(chart, startMinimum, rightLimit);
+        initialZoom(chart, startMinimum, rightLimit, data[data.length - 1].timestamp, data[0].timestamp);
         setId(Number(chart.id));
 
         return () => {
