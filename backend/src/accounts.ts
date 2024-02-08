@@ -207,6 +207,10 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
                     }
                 }]
             })
+        }).catch(e => {
+            console.log(JSON.stringify(body));
+            console.log(url);
+            throw e;
         });
 
         const respData = await response.json();
