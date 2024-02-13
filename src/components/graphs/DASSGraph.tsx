@@ -73,7 +73,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
                 }
             },
         }) as any;
-    }, [sync, leftLimit, rightLimit, minimumZoom, data]);
+    }, [sync, leftLimit, rightLimit, minimumZoom]);
 
     useEffect(() => {
         if (!canvas.current) return;

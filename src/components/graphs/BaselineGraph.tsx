@@ -57,7 +57,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                 },
             },
         }) as any;
-    }, [sync, leftLimit, rightLimit, minimumZoom, yRange, data]);
+    }, [sync, leftLimit, rightLimit, minimumZoom, yRange]);
 
     useEffect(() => {
         if (!canvas.current) return;
