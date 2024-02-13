@@ -96,7 +96,7 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
     if (sync) {
         for (let instance of Object.values(Chart.instances)) {
             instance.zoomScale("x", minMax, "active");
-            chooseTicks(chart, leftLimit, rightLimit, 15);
+            chooseTicks(instance, leftLimit, rightLimit, 15);
         }
     } else {
         chart.zoomScale("x", minMax, "active");
@@ -105,9 +105,9 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
 };
 
 export const chooseTicks = (chart: Chart, originalMin: number, originalMax: number, numGridlines: number) => {
+    if (!chart.options.scales?.x || !chart.scales?.x) return;
     const updatedMax = chart.scales.x.max;
     const updatedMin = chart.scales.x.min;
-    if (!chart.options.scales || !chart.options.scales.x) return;
     const updatedRange = updatedMax - updatedMin;
     const minInterval = updatedRange / numGridlines;
     let interval = 0;
@@ -206,6 +206,8 @@ export const GRAPH_BASE_OPTIONS = () => {
                     color: getCSSVar("--graph-grid-color")
                 },
                 ticks: {
+                    minRotation: 30,
+                    maxRotation: 30,
                     maxTicksLimit: 16,
                 }
             },

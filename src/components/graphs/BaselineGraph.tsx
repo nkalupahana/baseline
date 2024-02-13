@@ -42,7 +42,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                     zoom: {
                         onZoom: ({ chart }: { chart: Chart }) => {
                             chooseTicks(chart, data[0].timestamp, data[data.length - 1].timestamp, 15);
-                          },
+                        },
                     }
                 },
             },
@@ -51,7 +51,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                     ...yRange,
                     ticks: {
                         callback: function (value: number) {
-                            return "  " + value.toFixed(1);
+                            return "    " + value.toFixed(1) + " ";
                         }
                     }
                 },

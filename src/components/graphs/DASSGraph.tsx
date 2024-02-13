@@ -46,8 +46,8 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
                     zoom: {
                         onZoom: ({ chart }: { chart: Chart }) => {
                             chooseTicks(chart, data[0].timestamp, data[data.length - 1].timestamp, 15);
-                          },
-                    }
+                        },
+                    },
                 },
             },
             scales: {
