@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { AnyMap } from "../../helpers";
 import { Chart } from "chart.js";
+import { clamp } from "lodash";
 
 export interface GraphProps {
     data: any[];
@@ -96,19 +97,20 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
     if (sync) {
         for (let instance of Object.values(Chart.instances)) {
             instance.zoomScale("x", minMax, "active");
-            chooseTicks(instance, leftLimit, rightLimit, 15);
+            chooseTicks(instance, leftLimit, rightLimit);
         }
     } else {
         chart.zoomScale("x", minMax, "active");
-        chooseTicks(chart, leftLimit, rightLimit, 15);
+        chooseTicks(chart, leftLimit, rightLimit);
     }
 };
 
-export const chooseTicks = (chart: Chart, originalMin: number, originalMax: number, numGridlines: number) => {
+export const chooseTicks = (chart: Chart, originalMin: number, originalMax: number) => {
     if (!chart.options.scales?.x || !chart.scales?.x) return;
     const updatedMax = chart.scales.x.max;
     const updatedMin = chart.scales.x.min;
     const updatedRange = updatedMax - updatedMin;
+    const numGridlines = Math.floor(clamp(chart.chartArea.width * (0.014), 8, 15));
     const minInterval = updatedRange / numGridlines;
     let interval = 0;
     while (interval < minInterval) {
@@ -130,6 +132,7 @@ export const chooseTicks = (chart: Chart, originalMin: number, originalMax: numb
             .map((v) => ({ value: v }));
         }
     }
+
     chart.pan({
         x: 1
     });
@@ -139,7 +142,7 @@ export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: numb
     requestAnimationFrame(() => {
         try {
             chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "active");
-            chooseTicks(chart, originalMin, originalMax, 15);
+            chooseTicks(chart, originalMin, originalMax);
         } catch {
             console.warn("zoomScale failed");
         }
