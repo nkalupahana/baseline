@@ -8,11 +8,11 @@ import { merge } from "lodash";
 import InnerGraph from "./InnerGraph";
 
 const LABEL_MAP: AnyMap = {
-    0.5: "Normal",
-    1.5: "Mild",
-    2.5: "Moderate",
-    3.5: "Severe",
-    4.5: ["Extremely", "Severe"],
+    0.5: " Normal",
+    1.5: " Mild",
+    2.5: " Moderate",
+    3.5: " Severe",
+    4.5: [" Extremely", "Severe"],
   };
 
 const DASSGraph = ({ data, sync }: GraphProps) => {

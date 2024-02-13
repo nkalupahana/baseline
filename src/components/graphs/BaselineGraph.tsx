@@ -46,7 +46,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                     ...yRange,
                     ticks: {
                         callback: function (value: number) {
-                            return "    " + value.toFixed(1) + " ";
+                            return "      " + value.toFixed(1) + " ";
                         }
                     }
                 },

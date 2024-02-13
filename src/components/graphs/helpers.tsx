@@ -112,7 +112,7 @@ export const chooseTicks = (chart: Chart, originalMin: number, originalMax: numb
     const updatedMax = chart.scales.x.max;
     const updatedMin = chart.scales.x.min;
     const updatedRange = updatedMax - updatedMin;
-    const numGridlines = Math.floor(clamp(chart.chartArea.width * (0.014), 8, 15));
+    const numGridlines = Math.floor(clamp(chart.chartArea.width * (0.014), 5, 15));
     const minInterval = updatedRange / numGridlines;
     let interval = 0;
     while (interval < minInterval) {
