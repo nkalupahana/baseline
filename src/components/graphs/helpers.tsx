@@ -97,7 +97,9 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
     if (sync) {
         for (let instance of Object.values(Chart.instances)) {
             instance.zoomScale("x", minMax, "active");
-            chooseTicks(instance, leftLimit, rightLimit);
+            requestAnimationFrame(() => {
+                chooseTicks(instance, leftLimit, rightLimit);
+            });
         }
     } else {
         chart.zoomScale("x", minMax, "active");
