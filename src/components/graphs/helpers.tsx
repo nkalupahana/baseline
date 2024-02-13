@@ -171,6 +171,7 @@ export const getCSSVar = (name: string) => {
 
 export const GRAPH_BASE_OPTIONS = () => {
     Chart.defaults.font.size = 14;
+    Chart.defaults.font.family = "'Lato', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
     return {
         elements: {
             line: {
