@@ -140,12 +140,13 @@ export const chooseTicks = (chart: Chart, originalMin: number, originalMax: numb
     });
 }
 
-export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: number, originalMax: number, originalMin: number) => {
+export const initialZoom = (chart: Chart, startMinimum: number, leftLimit: number, rightLimit: number) => {
     requestAnimationFrame(() => {
         try {
             chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "active");
-            chooseTicks(chart, originalMin, originalMax);
-        } catch {
+            chooseTicks(chart, leftLimit, rightLimit);
+        } catch (e) {
+            console.log(e);
             console.warn("zoomScale failed");
         }
     });
@@ -251,5 +252,22 @@ export const GRAPH_POINTS = {
         point: {
             pointStyle: true,
         },
+    }
+}
+
+export const GRAPH_TICK_HANDLER = (leftLimit: number, rightLimit: number) => {
+    return {
+        onResize: (chart: Chart, _: any) => {
+            chooseTicks(chart, leftLimit, rightLimit);
+        },
+        plugins: {
+            zoom: {
+                zoom: {
+                    onZoom: ({ chart }: { chart: Chart }) => {
+                        chooseTicks(chart, leftLimit, rightLimit);
+                    }
+                }
+            }
+        }
     }
 }
