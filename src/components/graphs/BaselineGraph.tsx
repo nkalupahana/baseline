@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_NO_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_NO_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, initialZoom, GRAPH_TICK_HANDLER } from "./helpers";
 import { COLORS } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -18,13 +18,13 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
     }, []);
 
     const yRange = useMemo(() => {
-        const min = Math.min(...data.map(d => d.value));
-        const max = Math.max(...data.map(d => d.value));
+        const min = Math.min(...data.map(d => d.value).filter(d => !Number.isNaN(d)));
+        const max = Math.max(...data.map(d => d.value).filter(d => !Number.isNaN(d)));
         return { min: min - 0.4, max: max + 0.4 };
     }, [data]);
 
     const options = useMemo(() => {
-        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_NO_POINTS, {
+        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_NO_POINTS, GRAPH_TICK_HANDLER(leftLimit, rightLimit), {
             spanGaps: false,
             parsing: {
                 xAxisKey: "timestamp",
@@ -38,7 +38,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                             max: rightLimit,
                             minRange: minimumZoom,
                         },
-                    },
+                    }
                 },
             },
             scales: {
@@ -46,13 +46,13 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
                     ...yRange,
                     ticks: {
                         callback: function (value: number) {
-                            return "  " + value.toFixed(1);
+                            return "      " + value.toFixed(1) + " ";
                         }
                     }
-                }
-            }
+                },
+            },
         }) as any;
-    }, [minimumZoom, leftLimit, rightLimit, yRange, sync]);
+    }, [sync, leftLimit, rightLimit, minimumZoom, yRange]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -65,7 +65,7 @@ const BaselineGraph = ({ data, sync }: GraphProps) => {
             options
         });
         
-        initialZoom(chart, startMinimum, rightLimit);
+        initialZoom(chart, startMinimum, leftLimit, rightLimit);
         setId(Number(chart.id));
 
         return () => {

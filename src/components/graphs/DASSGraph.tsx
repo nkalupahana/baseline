@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom, GRAPH_TICK_HANDLER } from "./helpers";
 import { AnyMap } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -8,11 +8,11 @@ import { merge } from "lodash";
 import InnerGraph from "./InnerGraph";
 
 const LABEL_MAP: AnyMap = {
-    0.5: "Normal",
-    1.5: "Mild",
-    2.5: "Moderate",
-    3.5: "Severe",
-    4.5: ["Extremely", "Severe"],
+    0.5: " Normal",
+    1.5: " Mild",
+    2.5: " Moderate",
+    3.5: " Severe",
+    4.5: [" Extremely", "Severe"],
   };
 
 const DASSGraph = ({ data, sync }: GraphProps) => {
@@ -32,7 +32,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
     }, []);
 
     const options = useMemo(() => {
-        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_POINTS, {
+        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_POINTS, GRAPH_TICK_HANDLER(leftLimit, rightLimit), {
             spanGaps: ONE_DAY * 14,
             plugins: {
                 zoom: {
@@ -68,7 +68,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
                 }
             },
         }) as any;
-    }, [minimumZoom, leftLimit, rightLimit, sync]);
+    }, [sync, leftLimit, rightLimit, minimumZoom]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -86,7 +86,7 @@ const DASSGraph = ({ data, sync }: GraphProps) => {
             options
         });
         
-        initialZoom(chart, startMinimum, rightLimit);
+        initialZoom(chart, startMinimum, leftLimit, rightLimit);
         setId(Number(chart.id));
 
         return () => {

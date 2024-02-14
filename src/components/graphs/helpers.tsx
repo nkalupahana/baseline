@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { AnyMap } from "../../helpers";
 import { Chart } from "chart.js";
+import { clamp } from "lodash";
 
 export interface GraphProps {
     data: any[];
@@ -96,17 +97,56 @@ const zoomTo = (key: string, id: number | undefined, leftLimit: number, rightLim
     if (sync) {
         for (let instance of Object.values(Chart.instances)) {
             instance.zoomScale("x", minMax, "active");
+            requestAnimationFrame(() => {
+                chooseTicks(instance, leftLimit, rightLimit);
+            });
         }
     } else {
         chart.zoomScale("x", minMax, "active");
+        chooseTicks(chart, leftLimit, rightLimit);
     }
 };
 
-export const initialZoom = (chart: Chart, startMinimum: number, rightLimit: number) => {
+export const chooseTicks = (chart: Chart, originalMin: number, originalMax: number) => {
+    if (!chart.options.scales?.x || !chart.scales?.x) return;
+    const updatedMax = chart.scales.x.max;
+    const updatedMin = chart.scales.x.min;
+    const updatedRange = updatedMax - updatedMin;
+    const numGridlines = Math.floor(clamp(chart.chartArea.width * (0.014), 4, 15));
+    const minInterval = updatedRange / numGridlines;
+    let interval = 0;
+    while (interval < minInterval) {
+        interval += ONE_DAY;
+    }
+    let i = originalMin - interval * 10;
+    const ticks: number[] = [];
+    while (i <= originalMax + interval * 10) {
+        ticks.push(i);
+        i += interval;
+    }
+    chart.options.scales.x.afterBuildTicks = (scale) => {
+        if (scale.ticks) {
+            scale.ticks = ticks
+            .filter(
+                (v) =>
+                v > chart.scales.x.min && v < chart.scales.x.max
+            )
+            .map((v) => ({ value: v }));
+        }
+    }
+
+    chart.pan({
+        x: 1
+    });
+}
+
+export const initialZoom = (chart: Chart, startMinimum: number, leftLimit: number, rightLimit: number) => {
     requestAnimationFrame(() => {
         try {
             chart.zoomScale("x", { min: startMinimum, max: rightLimit }, "active");
-        } catch {
+            chooseTicks(chart, leftLimit, rightLimit);
+        } catch (e) {
+            console.log(e);
             console.warn("zoomScale failed");
         }
     });
@@ -131,6 +171,7 @@ export const getCSSVar = (name: string) => {
 
 export const GRAPH_BASE_OPTIONS = () => {
     Chart.defaults.font.size = 14;
+    Chart.defaults.font.family = "'Lato', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
     return {
         elements: {
             line: {
@@ -172,6 +213,8 @@ export const GRAPH_BASE_OPTIONS = () => {
                     color: getCSSVar("--graph-grid-color")
                 },
                 ticks: {
+                    minRotation: 30,
+                    maxRotation: 30,
                     maxTicksLimit: 16,
                 }
             },
@@ -210,5 +253,22 @@ export const GRAPH_POINTS = {
         point: {
             pointStyle: true,
         },
+    }
+}
+
+export const GRAPH_TICK_HANDLER = (leftLimit: number, rightLimit: number) => {
+    return {
+        onResize: (chart: Chart, _: any) => {
+            chooseTicks(chart, leftLimit, rightLimit);
+        },
+        plugins: {
+            zoom: {
+                zoom: {
+                    onZoom: ({ chart }: { chart: Chart }) => {
+                        chooseTicks(chart, leftLimit, rightLimit);
+                    }
+                }
+            }
+        }
     }
 }

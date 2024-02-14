@@ -1,4 +1,4 @@
-import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom } from "./helpers";
+import { GRAPH_BASE_OPTIONS, GRAPH_POINTS, GRAPH_SYNC_CHART, GraphProps, LineData, ONE_DAY, getCSSVar, initialZoom, GRAPH_TICK_HANDLER } from "./helpers";
 import { AnyMap, COLORS } from "../../helpers";
 import useGraphConfig from "./useGraphConfig";
 import { useEffect, useMemo } from "react";
@@ -24,7 +24,7 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
     }, []);
 
     const options = useMemo(() => {
-        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_POINTS, {
+        return merge(GRAPH_BASE_OPTIONS(), sync ? GRAPH_SYNC_CHART : {}, GRAPH_POINTS, GRAPH_TICK_HANDLER(leftLimit, rightLimit), {
             spanGaps: ONE_DAY * 60,
             parsing: {
                 xAxisKey: "timestamp",
@@ -38,7 +38,7 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
                             max: rightLimit,
                             minRange: minimumZoom,
                         },
-                    },
+                    }
                 },
             },
             scales: {
@@ -63,7 +63,7 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
                 }
             },
         }) as any;
-    }, [minimumZoom, leftLimit, rightLimit, sync]);
+    }, [sync, leftLimit, rightLimit, minimumZoom]);
 
     useEffect(() => {
         if (!canvas.current) return;
@@ -76,7 +76,7 @@ const ResilienceGraph = ({ data, sync }: GraphProps) => {
             options
         });
         
-        initialZoom(chart, startMinimum, rightLimit);
+        initialZoom(chart, startMinimum, leftLimit, rightLimit);
         setId(Number(chart.id));
 
         return () => {
