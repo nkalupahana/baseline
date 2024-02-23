@@ -51,7 +51,7 @@ const SurveyResults = () => {
         <div className="container">
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
-                <div className="title">Survey Results</div>
+                <div className="title">Week In Review Results</div>
                 <br />
                 {showLastWeek && (
                     <div className="finish-button" onClick={() => history.push("/lastreview")} style={{ width: "80%", maxWidth: "500px" }}>

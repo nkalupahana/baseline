@@ -241,7 +241,7 @@ const Summary = () => {
                         </IonItem>
                         <IonItem onClick={() => history.push("/surveys")} mode="ios">
                             <IonIcon icon={analytics} slot="start" />
-                            <IonLabel>Surveys</IonLabel>
+                            <IonLabel>Week In Review</IonLabel>
                         </IonItem>
                         <IonItem onClick={() => history.push("/gethelp")} mode="ios">
                             <IonIcon icon={helpBuoyOutline} slot="start" />
