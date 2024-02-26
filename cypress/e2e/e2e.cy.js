@@ -379,7 +379,7 @@ describe("Desktop Flow", () => {
 
     it("Test WIR Button on Survey Results", () => {
         cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Surveys").should("exist").click()
+        cy.contains("Week In Review").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         
         cy.contains("Last Week").should("not.exist")
@@ -426,7 +426,7 @@ describe("Desktop Flow", () => {
     it("Test Skip WIR", () => {
         cy.contains("Skip").should("not.exist")
         cy.contains("Later").click()
-        cy.contains("Week In Review").should("not.exist")
+        cy.contains("Week In Review").should("not.be.visible")
 
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
@@ -761,7 +761,7 @@ describe("Test Settings", () => {
 
     it("Test Survey Results", () => {
         cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Surveys").should("exist").click()
+        cy.contains("Week In Review").should("exist").click()
         cy.get("ion-menu").should("not.exist")
 
         cy.get("canvas").should("have.length.at.least", 2)
