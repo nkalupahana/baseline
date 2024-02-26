@@ -57,7 +57,7 @@ const bad: SimpleLog[] = [
 const generateNumber = (num: number) => {
     return <><svg width="40" height="40" style={{"verticalAlign": "middle"}}>
         <circle cx="20" cy="20" r="18" stroke="var(--background-color-inverted)" strokeWidth="2" fill="var(--background-color-inverted)" />
-        <text fill="var(--ion-background-color)" x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="20">{ num }</text>
+        <text fill="var(--ion-background-color)" x="50%" y="66%" textAnchor="middle" fontSize="20">{ num }</text>
     </svg>&nbsp;</>
 }
 
