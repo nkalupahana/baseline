@@ -97,7 +97,7 @@ const ExportData = () => {
         <IonButton mode="ios" onClick={exportDataAsJSON} disabled={dataOptionsArray.length === 0}>
             Export Journal Data as JSON
         </IonButton>
-        <div className="br"></div>
+        <br />
         <IonButton mode="ios" onClick={exportDataAsCSV} disabled={dataOptionsArray.length === 0}>
             Export Journal Data as CSV
         </IonButton>
