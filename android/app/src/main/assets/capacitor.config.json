@@ -15,7 +15,7 @@
 			]
 		},
 		"Keyboard": {
-			"resize": "none"
+			"resize": "native"
 		},
 		"LocalNotifications": {
 			"largeIcon": "notification_logo",
