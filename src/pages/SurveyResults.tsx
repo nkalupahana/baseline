@@ -52,7 +52,7 @@ const SurveyResults = () => {
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
                 <div className="title">Week In Review Results</div>
-                <br />
+                <div className="br"></div>
                 {showLastWeek && (
                     <div className="finish-button" onClick={() => history.push("/lastreview")} style={{ width: "80%", maxWidth: "500px" }}>
                         View Last Week's Results
@@ -80,7 +80,7 @@ const SurveyResults = () => {
                 {baselineGraph === PullDataStates.NOT_ENOUGH_DATA && (
                     <p className="text-center margin-0">We don't have enough data to calculate your baseline. Check back in later!</p>
                 )}
-                <br />
+                <div className="br"></div>
                 {surveyHistory === PullDataStates.NOT_STARTED && <IonSpinner className="loader" name="crescent" />}
                 {surveyHistory === PullDataStates.NOT_ENOUGH_DATA && (
                     <p className="text-center">As you complete surveys each week, more data will show up here.</p>
@@ -91,7 +91,7 @@ const SurveyResults = () => {
                         data={dassData}
                         sync={true}
                     />
-                    <br />
+                    <div className="br"></div>
                 </> }
                 { spfData && spfData.length > 0 && <>
                     <p className="bold head2 text-center">

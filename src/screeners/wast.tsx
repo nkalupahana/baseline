@@ -124,8 +124,8 @@ export default function WAST(): WASTScreener {
                         If you need additional help, advice, or a second opinion for getting out of your 
                         relationship, you should also reach out to one of these hotlines:
                     </p>
-                    <p className="text-center margin-bottom-0">National Domestic Violence Hotline <br /><a href="tel:18007997233">Call</a>, <a href="sms:88788?&body=START">Text START to 88788</a>, or <a target="_blank" rel="noreferrer" href="https://www.thehotline.org/">Online Chat</a></p>
-                    <p className="text-center margin-bottom-0">love is respect (for teens & young adults) <br /><a href="tel:18663319474">Call</a>, <a href="sms:22522?&body=LOVEIS">Text LOVEIS to 22522</a>, or <a target="_blank" rel="noreferrer" href="https://www.loveisrespect.org/">Online Chat</a></p>
+                    <p className="text-center margin-bottom-0">National Domestic Violence Hotline <div className="br"></div><a href="tel:18007997233">Call</a>, <a href="sms:88788?&body=START">Text START to 88788</a>, or <a target="_blank" rel="noreferrer" href="https://www.thehotline.org/">Online Chat</a></p>
+                    <p className="text-center margin-bottom-0">love is respect (for teens & young adults) <div className="br"></div><a href="tel:18663319474">Call</a>, <a href="sms:22522?&body=LOVEIS">Text LOVEIS to 22522</a>, or <a target="_blank" rel="noreferrer" href="https://www.loveisrespect.org/">Online Chat</a></p>
                     <p>
                         If you need any financial assistance at all to get help or get out, the baseline Gap Fund can help. { GAP_FUND_REFER }
                     </p>

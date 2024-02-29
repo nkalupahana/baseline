@@ -327,8 +327,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             </> }
             { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
                 <Preloader spacing={false} message="Logging in, please wait." />
-                <br />
-                <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+                <div className="br"></div>
+                <p>Been stuck here for over a minute?<div className="br"></div><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
             { loginState === LoginStates.CLOUDKIT_NEEDED && <div style={{"maxWidth": "500px"}}>
                 <div className="title">One more time!</div>
@@ -345,8 +345,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             </> }
             { loginState === LoginStates.GETTING_KEYS && <>
                 <Preloader spacing={false} message="One moment! We're getting your encryption keys." />
-                <br />
-                <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+                <div className="br"></div>
+                <p>Been stuck here for over a minute?<div className="br"></div><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
             </> }
             { loginState === LoginStates.DELETE_ACCOUNT && <div style={{"maxWidth": "500px"}}>
                 <div className="title">Delete Account?</div>

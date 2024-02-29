@@ -129,7 +129,7 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
                     Once you've changed it, <span onClick={() => setReloadAllowed(Math.random())} className="fake-link">click here to reload.</span></p> }
             </div>
             { !page && !globalEditing && <>
-                <br />
+                <div className="br"></div>
                 <div onClick={continueFlow} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>
                     { !loadingFlow && <>All done!</> }
                     { loadingFlow && <IonSpinner className="loader" name="crescent" /> }

@@ -38,7 +38,7 @@ const ChangePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
     };
 
     return <>
-        <br />
+        <div className="br"></div>
         <div className="margin-bottom-0 passphrase-box">
             <p>Change your passphrase below. For your new passphrase, we recommend using <a href="https://www.useapassphrase.com/" target="_blank" rel="noreferrer">a set of memorable words</a> you haven't used elsewhere, or a password manager. If you've forgotten your old passphrase, email us { user && <>from { user.email }</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
             <form onSubmit={submitPassphrase}>
@@ -54,12 +54,12 @@ const ChangePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
                     <IonLabel className="ion-text-wrap" position="stacked">Confirm New Passphrase</IonLabel>
                     <input autoComplete="new-password" className="invisible-input" value={newConfirmPassphrase} type="password" onChange={e => setNewConfirmPassphrase(e.target.value)} />
                 </IonItem>
-                <br />
+                <div className="br"></div>
                 <div className="finish-button" onClick={submitPassphrase}>
                     { !submitting && <>Change Passphrase</> }
                     { submitting && <IonSpinner className="loader" name="crescent" /> }
                 </div>
-                <br />
+                <div className="br"></div>
             </form>
         </div>
     </>

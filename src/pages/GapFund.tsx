@@ -153,12 +153,12 @@ const GapFund = () => {
                         <p>Make sure you get this right — we'll be sending more information here. If your email is monitored by people
                             you don't want seeing this request, make a burner email, or list a safer contact method above.
                         </p>
-                        <br />
+                        <div className="br"></div>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">What do you need money for?</IonLabel>
                             <Textarea id="need" getter={need} setter={setNeed} placeholder="At least two sentences — the more detail, the better." />
                         </IonItem>
-                        <br />
+                        <div className="br"></div>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">How much money do you need?</IonLabel>
                             <Textarea id="amount" getter={amount} setter={setAmount} />
@@ -166,7 +166,7 @@ const GapFund = () => {
                         <p>We may not be able to give the full amount you need due to financial limitations, 
                             so list multiple amounts if there are different ways we can help you.
                             We'll try our best to complete your full request.</p>
-                        <br />
+                        <div className="br"></div>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Paypal / Venmo / Cash App / Zelle</IonLabel>
                             <Textarea id="method" getter={method} setter={setMethod} placeholder={"Give the name of the method and your username."} />
@@ -180,7 +180,7 @@ const GapFund = () => {
                             This information is used to match you with any other 
                             services that might be able to help you in your area.
                         </p>
-                        <br />
+                        <div className="br"></div>
                         <div className="finish-button" onClick={submit}>
                             { !submitting && <>Submit</> }
                             { submitting && <IonSpinner className="loader" name="crescent" /> }

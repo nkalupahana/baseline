@@ -99,7 +99,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     and there's no one right way to do it.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.STEPS)}>Okay!</div>
-                { onboarding ? <p>step 3 of 5</p> : <br /> }
+                { onboarding ? <p>step 3 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.STEPS && <>
                 <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry you write should aim to capture three things:</p>
@@ -113,7 +113,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     writing with these questions in mind isn't much harder, and it's so much more rewarding.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.GOOD)}>Makes sense.</div>
-                { onboarding ? <p>step 3 of 5</p> : <br /> }
+                { onboarding ? <p>step 3 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.GOOD && <>
                 <p className="onboard-text">Here are some examples of good entries:</p>
@@ -135,7 +135,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     and some deeper reflection as needed.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.BAD)}>Got it!</div>
-                { onboarding ? <p>step 4 of 5</p> : <br /> }
+                { onboarding ? <p>step 4 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.BAD && <>
                 <p className="onboard-text">And here are some entries that could use a little more work:</p>
@@ -161,7 +161,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     context you add, the more you'll be able to remember when you look back on your entries!
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.OUTRO)}>Alright, I think I'm ready.</div>
-                { onboarding ? <p>step 5 of 5</p> : <br /> }
+                { onboarding ? <p>step 5 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.OUTRO && <>
                 <div className="align-box">
@@ -181,7 +181,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 </div>
                 
                 <div className="finish-button onboarding-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
-                <br />
+                <div className="br"></div>
             </> }
         </>;
 }
