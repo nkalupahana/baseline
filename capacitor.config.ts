@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
       "providers": ["apple.com", "google.com"]
     },
     Keyboard: {
-      "resize": "none"
+      "resize": "native"
     },
     LocalNotifications: {
       largeIcon: "notification_logo",
