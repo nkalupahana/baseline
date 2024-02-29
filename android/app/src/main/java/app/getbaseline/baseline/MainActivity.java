@@ -30,6 +30,9 @@ public class MainActivity extends BridgeActivity {
             webSettings.setForceDark(WebSettings.FORCE_DARK_ON);
         }
 
+        WebSettings settings = this.bridge.getWebView().getSettings();
+        settings.setTextZoom(100);
+
         SharedPreferences prefs = bridge.getActivity().getPreferences(Context.MODE_PRIVATE);
         PackageInfo webViewInfo = WebViewCompat.getCurrentWebViewPackage(bridge.getContext());
 
