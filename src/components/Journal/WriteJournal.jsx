@@ -4,7 +4,7 @@ import history from "../../history";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
-import { decrypt, encrypt } from "../../helpers";
+import { encrypt } from "../../helpers";
 
 const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     const textarea = useRef();
@@ -17,23 +17,14 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     }, [setMoodRead, moodWrite]);
 
     useEffect(() => {
-        if (localStorage.getItem("eautosave")) {
-            const pwd = sessionStorage.getItem("pwd");
-            if (pwd) setText(decrypt(localStorage.getItem("eautosave"), pwd));
-        } else {
-            const autosave = localStorage.getItem("autosave");
-            if (autosave) {
-                setText(autosave);
-            }
-        }
-
-        textarea.current?.focus();
-    }, [setText]);
+        if (!textarea.current) return;
+        textarea.current.focus();
+    }, []);
 
     useEffect(() => {
         if (sessionStorage.getItem("pwd")) {
             localStorage.setItem("eautosave", encrypt(props.text, sessionStorage.getItem("pwd")));
-        } else {
+        } else if (props.text) {
             localStorage.setItem("autosave", props.text);
         }
     }, [props.text]);

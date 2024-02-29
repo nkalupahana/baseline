@@ -3,7 +3,7 @@ import WriteJournal from "../components/Journal/WriteJournal";
 import FinishJournal from "../components/Journal/FinishJournal";
 import { useEffect, useState } from "react";
 import "./Container.css";
-import { checkKeys } from "../helpers";
+import { checkKeys, decrypt } from "../helpers";
 import { signOutAndCleanUp } from "../firebase";
 
 const Journal = () => {
@@ -17,6 +17,18 @@ const Journal = () => {
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (localStorage.getItem("eautosave")) {
+            const pwd = sessionStorage.getItem("pwd");
+            if (pwd) setText(decrypt(localStorage.getItem("eautosave") ?? "", pwd));
+        } else {
+            const autosave = localStorage.getItem("autosave");
+            if (autosave) {
+                setText(autosave);
+            }
         }
     }, []);
 
