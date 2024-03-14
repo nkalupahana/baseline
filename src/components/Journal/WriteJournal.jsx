@@ -22,9 +22,11 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
     }, []);
 
     useEffect(() => {
+        if (!props.text) return;
+
         if (sessionStorage.getItem("pwd")) {
             localStorage.setItem("eautosave", encrypt(props.text, sessionStorage.getItem("pwd")));
-        } else if (props.text) {
+        } else {
             localStorage.setItem("autosave", props.text);
         }
     }, [props.text]);
