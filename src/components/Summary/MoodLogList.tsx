@@ -118,7 +118,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             els.push(createLocator(now));
             els.push(<div className="text-center" key="end1">
                 <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
-                <br />
+                <div className="br"></div>
             </div>);
             firstLogs = 0;
         }

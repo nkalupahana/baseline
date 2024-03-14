@@ -77,7 +77,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     }, []);
     
     return <div className="center-summary container">
-            <br />
+            <div className="br"></div>
             <Swiper 
                 modules={[Pagination]}
                 navigation={true}
@@ -107,7 +107,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                                 If you want to discuss these results with a 
                                 professional, show them this: { screener.getClinicalInformation() }
                             </p>
-                            <br />
+                            <div className="br"></div>
                         </div>
                     </SwiperSlide>
                 }) }
@@ -131,7 +131,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                             { !loading && <>Finish</> }
                             { loading && <IonSpinner className="loader" name="crescent" /> }
                         </div>
-                        <br />
+                        <div className="br"></div>
                     </div>
                 </SwiperSlide>
             </Swiper>

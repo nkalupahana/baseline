@@ -118,7 +118,7 @@ const App = () => {
                         a way better experience than this website &mdash; in fact, the web 
                         version will likely have issues running on a mobile 
                         device. <a href="https://getbaseline.app">Check out 
-                        our website to install the app!</a> <br /><br/>
+                        our website to install the app!</a> <div className="br"></div><div className="br"></div>
                         Or, click <span className="fake-link" onClick={overrideWeb}>here</span> to 
                         continue to the web version anyways.
                     </p>

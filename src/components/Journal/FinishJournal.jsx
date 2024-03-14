@@ -244,7 +244,7 @@ const FinishJournal = props => {
                     you own, but "average" journal entries should generally be clustered around 0.
                 </p>
                 <div className="finish-button" onClick={dismissDialog}>Sounds good!</div>
-                <br />
+                <div className="br"></div>
             </Dialog> }
             { dialog === Dialogs.NO_WRITING && <Dialog title="One second!">
                 <p className="margin-top-12 margin-bottom-24 text-center">
@@ -254,7 +254,7 @@ const FinishJournal = props => {
                     might be feeling that way</b>. By doing this and writing more,
                     you'll get more out of journaling, and you'll have more 
                     context when you look back on your entries later!
-                    <br /><br />
+                    <div className="br"></div><div className="br"></div>
                     For more tips, check out our <span onClick={() => history.push("/onboarding/howto")} className="fake-link">How to 
                     Journal guide now</span> or later in the main menu.
                 </p>
@@ -272,7 +272,7 @@ const FinishJournal = props => {
                             </div>
                             <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
                             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
-                            <br />
+                            <div className="br"></div>
                             <span className="bold" id="react-circular-slider">
                                 <CircularSlider
                                     width={190}
@@ -299,7 +299,7 @@ const FinishJournal = props => {
                                 />
                             </span>
 
-                            <br /><br />
+                            <div className="br"></div><div className="br"></div>
 
                             <p id="average-segment-desc" style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
                             <div className="container">
@@ -315,7 +315,7 @@ const FinishJournal = props => {
                                     </IonSegmentButton>
                                 </IonSegment>
                             </div>
-                            <br /><br />
+                            <div className="br"></div><div className="br"></div>
                             { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
                             { props.files.length < 3 && 
                                 <>
@@ -337,12 +337,12 @@ const FinishJournal = props => {
                         <Route exact path="/journal/finish/neg">
                             <div className="container-desktop">
                                 <Negative5 />
-                                <br />
+                                <div className="br"></div>
                                 { !submitted && props.moodWrite === -5 && <div onClick={submit} className="finish-button">
                                     { !submitting && "Save Mood Log" }
                                     { submitting && <IonSpinner className="loader" name="crescent" /> }
                                 </div> }
-                                <br />
+                                <div className="br"></div>
                             </div>
                         </Route>
                     </div>

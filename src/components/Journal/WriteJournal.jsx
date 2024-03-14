@@ -49,7 +49,7 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, ...props }) => {
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
                 <KeyboardSpacer />
-                <br />
+                <div className="br"></div>
             </div>
         </div>
     );

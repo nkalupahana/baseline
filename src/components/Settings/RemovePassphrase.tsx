@@ -30,7 +30,7 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
     };
 
     return <>
-        <br />
+        <div className="br"></div>
         <div className="margin-bottom-0 passphrase-box">
             <p>In order to remove your passphrase, you need to enter your current one. If you've forgotten it, email us { user && <>from { user.email }</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
             <form onSubmit={submitPassphrase}>
@@ -38,12 +38,12 @@ const RemovePassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
                     <IonLabel className="ion-text-wrap" position="stacked">Passphrase</IonLabel>
                     <input autoComplete="current-password" className="invisible-input" value={passphrase} type="password" onChange={e => setPassphrase(e.target.value)} />
                 </IonItem>
-                <br />
+                <div className="br"></div>
                 <div className="finish-button" onClick={submitPassphrase}>
                     { !submitting && <>Remove Passphrase</> }
                     { submitting && <IonSpinner className="loader" name="crescent" /> }
                 </div>
-                <br />
+                <div className="br"></div>
             </form>
         </div>
     </>

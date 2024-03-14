@@ -48,7 +48,7 @@ const Settings = () => {
         { doingAsyncTask && <IonSpinner className="top-corner x loader" name="crescent" /> }
         <div className="center-journal container">
             <div className="title">Settings</div>
-            <br />
+            <div className="br"></div>
             <div style={{"maxWidth": "600px"}}>
                 { user && <SettingsBox
                     attr="introQuestions"
@@ -74,7 +74,7 @@ const Settings = () => {
                 <PDP taskBlock={setDoingAsyncTask} />
                 <p className="bold margin-bottom-0">Partner Connections</p>
                 <GraniteLink />
-                <br /><br />
+                <div className="br"></div><div className="br"></div>
                 <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                 <p>
                     baseline is an open source, volunteer-driven project. If there's a feature you'd like to see or 

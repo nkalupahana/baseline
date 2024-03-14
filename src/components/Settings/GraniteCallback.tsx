@@ -9,8 +9,8 @@ const GraniteCallback = () => {
     return <>
         <div className="container text-center">
             <Preloader message="One minute, we're linking your account." />
-            <br />
-            <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+            <div className="br"></div>
+            <p>Been stuck here for over a minute?<div className="br"></div><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
         </div>
     </>;
 };

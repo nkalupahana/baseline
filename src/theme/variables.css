@@ -151,3 +151,8 @@ textarea {
 .__floater__open {
     transition: opacity 0.4s !important;
 }
+
+.br {
+    height: 19.5px;
+    width: 0px;
+}
