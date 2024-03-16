@@ -9,11 +9,11 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Use Node.js 16
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: "16.x"
         cache: "npm"
@@ -36,11 +36,11 @@ jobs:
       run:
         working-directory: ./backend
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Use Node.js 18
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: "18.x"
         cache: "npm"
@@ -52,11 +52,11 @@ jobs:
       run:
         working-directory: ./scheduled-services
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Use Node.js 18
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: "18.x"
         cache: "npm"
