@@ -5,7 +5,7 @@ import { sample } from "underscore";
 import { makeInternalRequest } from "./index.js";
 import { Request, Response } from "express";
 import { getDatabase } from "firebase-admin/database";
-import { chunk } from "lodash";
+import _ from "lodash";
 
 interface AnyMap {
     [key: string]: any;
@@ -157,7 +157,7 @@ export const logReminder = async (req: Request, res: Response) => {
     }
     
     if (messages.length > 0) {
-        const chunkedMessages = chunk(messages, 500);
+        const chunkedMessages = _.chunk(messages, 500);
         for (const messageChunk of chunkedMessages) {
             const messagingResult = await getMessaging().sendAll(messageChunk);
             console.log(JSON.stringify(messagingResult));
