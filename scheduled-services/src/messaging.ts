@@ -185,7 +185,7 @@ export const cleanUpTokens = async (req: Request, res: Response) => {
             if (messagingResult[i].error.code === "messaging/registration-token-not-registered") {
                 promises.push(db.ref(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`).remove());
             } else {
-                console.warn("Unknown error code", messagingResult[i].error.code);
+                console.warn("Unknown messaging error code", messagingResult[i].error.code, messagingResult[i].error.message);
             }
         }
     }
