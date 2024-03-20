@@ -157,8 +157,8 @@ export const logReminder = async (req: Request, res: Response) => {
     }
     
     if (messages.length > 0) {
-        const chunkedMessages = _.chunk(messages, 500);
-        const chunkedAssociations = _.chunk(userMessageAssociation, 500);
+        const chunkedMessages = _.chunk(messages, 100);
+        const chunkedAssociations = _.chunk(userMessageAssociation, 100);
         for (let i = 0; i < chunkedMessages.length; ++i) {
             const messagingResult = await getMessaging().sendAll(chunkedMessages[i]);
             console.log(JSON.stringify(messagingResult));
