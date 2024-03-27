@@ -13,7 +13,7 @@ import UnlockCmp from "../components/Settings/UnlockCmp";
 import { get, ref } from "firebase/database";
 import hash from "crypto-js/sha512";
 import "./Login.css";
-import { logoApple, logoGoogle } from "ionicons/icons";
+import { lockClosed, logoApple, logoGoogle } from "ionicons/icons";
 import history from "../history";
 import { DateTime } from "luxon";
 import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
@@ -318,6 +318,9 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                <div style={{"maxWidth": "400px"}}>
+                    <p><IonIcon icon={lockClosed} /> Your data is private: we're a non-profit, and we have no interest in using your data for anything.</p>
+                </div>
                 <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
                     <span className="line">By logging in, you agree 
                     to</span> <span className="line">our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms 
