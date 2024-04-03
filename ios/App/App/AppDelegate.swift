@@ -3,8 +3,7 @@ import Capacitor
 
 import FirebaseCore
 import FirebaseAuth
-
-import Adjust
+import FirebaseAnalytics
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        Analytics.setAnalyticsCollectionEnabled(true)
+        
         let activity = NSUserActivity(activityType: "app.getbaseline.baseline.using-app")
         activity.webpageURL = URL(string: "https://web.getbaseline.app")
         activity.isEligibleForHandoff = true
@@ -30,14 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
           }
         #endif
-        
-        let adjustConfig = ADJConfig(
-            appToken: "puajgh4ny41s",
-            environment: ADJEnvironmentProduction
-        )
-        adjustConfig?.allowIdfaReading = false
-            
-        Adjust.appDidLaunch(adjustConfig)
         
         return true
     }
