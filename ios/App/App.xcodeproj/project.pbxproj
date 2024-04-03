@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,9 +16,10 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		F43DAAC027C57A7D00566D61 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F43DAABF27C57A7C00566D61 /* GoogleService-Info.plist */; };
-		F4B35BDB2A4CA42200A10990 /* Adjust in Frameworks */ = {isa = PBXBuildFile; productRef = F4B35BDA2A4CA42200A10990 /* Adjust */; };
 		F4B35BDD2A4CA44B00A10990 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B35BDC2A4CA44B00A10990 /* StoreKit.framework */; };
 		F4B35BDF2A4CA45F00A10990 /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B35BDE2A4CA45F00A10990 /* AdServices.framework */; };
+		F4B453CA2BBDD2BD0015BC30 /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B35BDE2A4CA45F00A10990 /* AdServices.framework */; };
+		F4B453CC2BBDD2C90015BC30 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B453CB2BBDD2C90015BC30 /* AdSupport.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		F43DAABF27C57A7C00566D61 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F4B35BDC2A4CA44B00A10990 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		F4B35BDE2A4CA45F00A10990 /* AdServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdServices.framework; path = System/Library/Frameworks/AdServices.framework; sourceTree = SDKROOT; };
+		F4B453CB2BBDD2C90015BC30 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 		FE6B42F1849A2895643B62CC /* Pods-baseline.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baseline.release.xcconfig"; path = "Pods/Target Support Files/Pods-baseline/Pods-baseline.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,9 +52,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4B35BDD2A4CA44B00A10990 /* StoreKit.framework in Frameworks */,
+				F4B453CC2BBDD2C90015BC30 /* AdSupport.framework in Frameworks */,
+				F4B453CA2BBDD2BD0015BC30 /* AdServices.framework in Frameworks */,
 				F4B35BDF2A4CA45F00A10990 /* AdServices.framework in Frameworks */,
 				2178B8FB38C295A9057E4DD6 /* Pods_baseline.framework in Frameworks */,
-				F4B35BDB2A4CA42200A10990 /* Adjust in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +65,7 @@
 		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F4B453CB2BBDD2C90015BC30 /* AdSupport.framework */,
 				F4B35BDE2A4CA45F00A10990 /* AdServices.framework */,
 				F4B35BDC2A4CA44B00A10990 /* StoreKit.framework */,
 				F413097F28232F7E004118CE /* CloudKit.framework */,
@@ -137,7 +141,6 @@
 			);
 			name = baseline;
 			packageProductDependencies = (
-				F4B35BDA2A4CA42200A10990 /* Adjust */,
 			);
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* baseline.app */;
@@ -476,14 +479,6 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		F4B35BDA2A4CA42200A10990 /* Adjust */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F4B35BD92A4CA42200A10990 /* XCRemoteSwiftPackageReference "ios_sdk" */;
-			productName = Adjust;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 504EC2FC1FED79650016851F /* Project object */;
 }
