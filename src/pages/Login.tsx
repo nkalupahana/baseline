@@ -217,7 +217,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 });
 
                 if (additionalData.introQuestions) setSettings("introQuestions", additionalData.introQuestions);
-                if (platform === "android") await FirebaseAnalytics.logEvent({ name: "sign_in"});
+                if (platform !== "web") await FirebaseAnalytics.logEvent({ name: "sign_in"});
 
                 if (!additionalData.onboarded) {
                     localStorage.setItem("onboarding", "start");
