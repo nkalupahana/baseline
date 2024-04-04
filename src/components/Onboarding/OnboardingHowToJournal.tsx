@@ -78,7 +78,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
         if (!user || !submitting) return;
         (async () => {
             await set(ref(db, `${user.uid}/onboarding/onboarded`), true);
-            if (Capacitor.getPlatform() === "android") await FirebaseAnalytics.logEvent({ name: "onboard_complete" });
+            if (Capacitor.getPlatform() !== "web") await FirebaseAnalytics.logEvent({ name: "onboard_complete" });
             localStorage.removeItem("onboarding");
             history.replace("/journal");
         })();
