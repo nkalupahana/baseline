@@ -16,7 +16,7 @@
     "private": true,
     "type": "module",
     "dependencies": {
-        "@google-cloud/pubsub": "^3.2.1",
+        "@google-cloud/pubsub": "^4.3.3",
         "@googleapis/gmail": "^1.0.0",
         "@googleapis/sheets": "^4.0.0",
         "@sentry/node": "^7.32.1",
@@ -27,7 +27,7 @@
         "crypto-js": "^4.1.1",
         "crypto-random-string": "^5.0.0",
         "express": "^4.18.2",
-        "firebase-admin": "^11.4.1",
+        "firebase-admin": "^12.0.0",
         "formidable": "^2.1.1",
         "lodash": "^4.17.21",
         "luxon": "^3.2.1",
