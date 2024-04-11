@@ -297,10 +297,14 @@ export const sync = async (req: UserRequest, res: Response) => {
     checkToken();
 
     // Broad geolocation
-    const geo = await (await fetch(`http://ip-api.com/json/${req.get("X-Forwarded-For")}`)).json();
-    if (geo.status === "success") {
-        update["country"] = geo["country"];
-        update["region"] = geo["regionName"];
+    try {
+        const geo = await (await fetch(`http://ip-api.com/json/${req.get("X-Forwarded-For")}`)).json();
+        if (geo.status === "success") {
+            update["country"] = geo["country"];
+            update["region"] = geo["regionName"];
+        }
+    } catch (e) {
+        console.warn("Failed to get geolocation data.");
     }
 
     const ref = getDatabase().ref(`${req.user!.user_id}/info`);
