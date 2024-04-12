@@ -3,23 +3,33 @@ import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
 import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
+import { Log } from "../../db";
+import { AnyMap } from "../../helpers";
 
-const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, colors }) => {
+interface Props {
+    log: Log;
+    setInFullscreen: (inFullscreen: boolean) => void;
+    reduceMotion: boolean;
+    LOCATOR_OFFSET: number;
+    colors: AnyMap;
+}
+
+const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, colors } : Props) => {
     const [grow, setGrow] = useState(false);
-    const card = useRef();
-    const logContainer = useRef();
+    const card = useRef<HTMLDivElement>(null);
+    const logContainer = useRef<HTMLDivElement>(null);
     const NOGROW_HEIGHT = 58;
 
     function toggleGrow() {
         if (!grow) {
-            if ((log.files && log.files.length > 0) || logContainer.current.offsetHeight === NOGROW_HEIGHT) {
+            if ((log.files && log.files.length > 0) || logContainer.current?.offsetHeight === NOGROW_HEIGHT) {
                 setGrow(true);
             }
         } else {
             setGrow(false);
         }
 
-        if (card.current.parentElement.getBoundingClientRect().y > card.current.getBoundingClientRect().y) {
+        if (card.current?.parentElement && (card.current.parentElement.getBoundingClientRect().y > card.current.getBoundingClientRect().y)) {
             card.current.parentElement.scrollTo({
                 top: card.current.offsetTop - card.current.parentElement.offsetTop - LOCATOR_OFFSET - 25,
                 left: 0,
@@ -28,7 +38,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
         }
     }
 
-    const SYMBOL_MAP = {
+    const SYMBOL_MAP: AnyMap = {
         "below": caretDownOutline,
         "average": caretForwardOutline,
         "above": caretUpOutline
@@ -44,7 +54,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
             { log.journal && 
             <div 
                 ref={logContainer} 
-                onClick={grow ? undefined : toggleGrow} 
+                onClick={grow ? undefined : toggleGrow}
                 className="mood-card-log" 
                 style={grow ? {"height": "auto"} : {"maxHeight": `${NOGROW_HEIGHT}px`, "overflow": "hidden"}}>
                     { localStorage.getItem("fake") ? "Test data" : log.journal }
