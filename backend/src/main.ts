@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { UserRequest, validateKeys } from "./helpers.js";
+import { AnyMap, UserRequest, validateKeys } from "./helpers.js";
 import { getDatabase } from "firebase-admin/database";
 import { getStorage } from "firebase-admin/storage";
 import AES from "crypto-js/aes.js";
@@ -183,6 +183,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
                 if (err.httpCode === 413) {
                     res.status(400).send("Please keep your images under 8MB.");
                 } else {
+                    console.warn(err);
                     res.status(400).send("Something's wrong with your images. Please remove them and try again.");
                 }
             }
@@ -211,7 +212,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Journal validation
     const MAX_CHARS = 25000;
     if (typeof data.journal !== "string" || data.journal.length > MAX_CHARS) {
-        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters. You can split up your journal into multiple logs if you need to.`);
+        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters. You can split up your journal into multiple entries if you need to.`);
         return;
     }
 
@@ -222,7 +223,15 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const globalNow = DateTime.utc();
+    data.editTimestamp = data.editTimestamp ? Number(data.editTimestamp) : null;
+    if (data.editTimestamp) {
+        if (typeof data.mood !== "number" || isNaN(data.mood) || data.editTimestamp !== parseInt(data.editTimestamp) || data.editTimestamp < 0) {
+            res.send(400);
+            return;
+        }
+    }
+
+    const globalNow = data.editTimestamp ? DateTime.fromMillis(data.editTimestamp) : DateTime.utc();
 
     // Timezone validation
     if (typeof data.timezone !== "string" || !globalNow.setZone(data.timezone).isValid) {
@@ -281,18 +290,37 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
     }
 
-    const userNow = globalNow.setZone(data.timezone);
-    const logData = {
-        year: userNow.year,
-        month: userNow.month,
-        day: userNow.day,
-        time: userNow.toFormat("h:mm a"),
-        zone: userNow.zone.name,
-        mood: data.mood,
-        journal: data.journal,
-        average: data.average,
-        files: filePaths,
-    };
+    let logData: AnyMap = {};
+
+    let promises = [];
+
+    if (!data.editTimestamp) {
+        const userNow = globalNow.setZone(data.timezone);
+        logData = {
+            year: userNow.year,
+            month: userNow.month,
+            day: userNow.day,
+            time: userNow.toFormat("h:mm a"),
+            zone: userNow.zone.name,
+            mood: data.mood,
+            journal: data.journal,
+            average: data.average,
+            files: filePaths,
+        };
+    } else {
+        logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
+        if (!logData) {
+            res.send(400);
+            return;
+        }
+
+        logData = JSON.parse(AES.decrypt(logData.data, encryptionKey).toString(aesutf8));
+        logData.mood = data.mood;
+        logData.journal = data.journal;
+        logData.average = data.average;
+        promises.push(db.ref(`/${req.user!.user_id}/offline`).set(Math.random()));
+    }
+    
 
     const p1 = db.ref(`/${req.user!.user_id}/logs/${globalNow.toMillis()}`).set({
         data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
@@ -301,6 +329,6 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     const p2 = db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
     const p3 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
 
-    await Promise.all([p1, p2, p3]);
+    await Promise.all([p1, p2, p3, ...promises]);
     res.sendStatus(200);
 }

@@ -60,7 +60,7 @@ const FinishJournal = props => {
             placement: "top"
         }, {
             target: "#review-textarea",
-            content: `Journals can't be edited, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
+            content: `Journals can't be edited after an hour, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
             disableBeacon: true,
             placement: "top-start",
             styles: {
@@ -125,6 +125,7 @@ const FinishJournal = props => {
         data.append("journal", props.text);
         data.append("average", props.average);
         data.append("keys", JSON.stringify(checkKeys()));
+        data.append("editTimestamp", props.editTimestamp);
         for (let file of props.files) {
             data.append("file", file);
         }
@@ -329,7 +330,8 @@ const FinishJournal = props => {
                             <div className="bottom-bar">
                                 <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
                                 <div onClick={submit} className="finish-button">
-                                    { !submitting && "Done!" }
+                                    { !submitting && props.editTimestamp === null && "Done!" }
+                                    { !submitting && props.editTimestamp !== null && "Edit!" }
                                     { submitting && <IonSpinner className="loader" name="crescent" /> }
                                 </div>
                             </div>
