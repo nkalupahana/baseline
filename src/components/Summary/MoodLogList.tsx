@@ -49,6 +49,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         let els = [];
         let top: Log | undefined = undefined;
         const zone = DateTime.now().zone.name;
+        const nowTimestamp = DateTime.now().toMillis();
     
         let firstLogs = 0;
         if (logs.length === 0) {
@@ -99,7 +100,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 if (!log.time.includes(addZone)) log.time += " " + addZone;
             }
     
-            today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} />);
+            today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} now={nowTimestamp} />);
         }
     
         // Add final information

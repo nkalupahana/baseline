@@ -12,11 +12,25 @@ const Journal = () => {
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
     const [average, setAverage] = useState("average");
+    const [editTimestamp, setEditTimestamp] = useState<number | null>(null);
     
     useEffect(() => {
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();
+        }
+        
+        // Get query parameters
+        const params = new URLSearchParams(window.location.search);
+        const editTimestamp = params.get("edit");
+        const editAverage = localStorage.getItem("editAverage");
+        const editMood = Number(localStorage.getItem("editMood"));
+        if (editTimestamp && editMood && editAverage) {
+            setEditTimestamp(Number(editTimestamp));
+            setMoodRead(editMood);
+            setAverage(editAverage);
+            localStorage.removeItem("editTimestamp");
+            localStorage.removeItem("editAverage");
         }
     }, []);
 
@@ -38,7 +52,17 @@ const Journal = () => {
                 <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
             </Route>
             <Route path="/journal/finish">
-                <FinishJournal files={files} setFiles={setFiles} text={text} moodWrite={moodWrite} setMoodWrite={setMoodWrite} moodRead={moodRead} average={average} setAverage={setAverage} />
+                <FinishJournal 
+                    files={files} 
+                    setFiles={setFiles} 
+                    text={text} 
+                    moodWrite={moodWrite} 
+                    setMoodWrite={setMoodWrite} 
+                    moodRead={moodRead} 
+                    average={average} 
+                    setAverage={setAverage} 
+                    editTimestamp={editTimestamp}
+                />
             </Route>
         </>
     );

@@ -1,10 +1,12 @@
 import "./MoodLogCard.css";
 import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
-import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline } from "ionicons/icons";
+import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline, pencil } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 import { Log } from "../../db";
 import { AnyMap } from "../../helpers";
+import { ONE_DAY } from "../graphs/helpers";
+import history from "../../history";
 
 interface Props {
     log: Log;
@@ -12,9 +14,10 @@ interface Props {
     reduceMotion: boolean;
     LOCATOR_OFFSET: number;
     colors: AnyMap;
+    now: number;
 }
 
-const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, colors } : Props) => {
+const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, colors, now } : Props) => {
     const [grow, setGrow] = useState(false);
     const card = useRef<HTMLDivElement>(null);
     const logContainer = useRef<HTMLDivElement>(null);
@@ -38,6 +41,13 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
         }
     }
 
+    function goToEdit() {
+        localStorage.setItem("autosave", log.journal ?? "");
+        localStorage.setItem("editMood", String(log.mood));
+        localStorage.setItem("editAverage", log.average);
+        history.push(`/journal?edit=${log.timestamp}`);
+    }
+
     const SYMBOL_MAP: AnyMap = {
         "below": caretDownOutline,
         "average": caretForwardOutline,
@@ -59,17 +69,19 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                 style={grow ? {"height": "auto"} : {"maxHeight": `${NOGROW_HEIGHT}px`, "overflow": "hidden"}}>
                     { localStorage.getItem("fake") ? "Test data" : log.journal }
             </div> }
-            
-            { !grow && 
-            <>
-                { log.files && log.files.length > 0 && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
-            </> }
+            <div style={{"gridArea": "bottom"}}>
+                { !grow && 
+                <>
+                    { log.files && log.files.length > 0 && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
+                </> }
 
-            { grow && 
-            <>
-                { log.files && log.files.length > 0 && <ImageCarousel setInFullscreen={setInFullscreen} files={log.files}></ImageCarousel> }
-                <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
-            </> }
+                { grow && 
+                <>
+                    { log.files && log.files.length > 0 && <ImageCarousel setInFullscreen={setInFullscreen} files={log.files}></ImageCarousel> }
+                    <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
+                </> }
+                { (now - log.timestamp) < (ONE_DAY / 12) && <IonIcon className="close-btn" icon={pencil} onClick={goToEdit} /> }
+            </div>
         </div>
     );
 };
