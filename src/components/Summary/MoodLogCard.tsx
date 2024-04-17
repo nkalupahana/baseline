@@ -5,7 +5,7 @@ import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, image
 import ImageCarousel from "./ImageCarousel";
 import { Log } from "../../db";
 import { AnyMap } from "../../helpers";
-import { ONE_DAY, ONE_MINUTE } from "../graphs/helpers";
+import { ONE_MINUTE } from "../graphs/helpers";
 import history from "../../history";
 
 interface Props {

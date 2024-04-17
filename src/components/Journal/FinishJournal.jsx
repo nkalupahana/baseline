@@ -76,7 +76,7 @@ const FinishJournal = props => {
     ]
     
     useEffect(() => {
-        if (!lastLogs || !lastAverageLogs) return;
+        if (!lastLogs || !lastAverageLogs || props.editTimestamp) return;
         const lastLog = lastLogs[0];
        
         // Check if user isn't writing enough
@@ -100,7 +100,7 @@ const FinishJournal = props => {
             }
         }
 
-    }, [lastLogs, lastAverageLogs, props.text]);
+    }, [lastLogs, lastAverageLogs, props.text, props.editTimestamp]);
 
     useEffect(() => {
         if (submitted) {
@@ -112,7 +112,7 @@ const FinishJournal = props => {
 
     const submit = async () => {
         if (submitting) return;
-        if (props.moodWrite === -5) history.push("/journal/finish/neg");
+        if (props.moodWrite === -5 && !props.editTimestamp) history.push("/journal/finish/neg");
         if (!user) {
             toast("No internet connectivity -- please try again.");
             return;
