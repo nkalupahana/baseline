@@ -14,6 +14,7 @@ export interface LineData {
 }
 
 export const ONE_DAY = 86400 * 1000;
+export const ONE_MINUTE = 60 * 1000;
 
 interface GraphHeaderProps {
     lineData: LineData[];

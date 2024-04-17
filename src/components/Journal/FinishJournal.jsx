@@ -157,6 +157,7 @@ const FinishJournal = props => {
                         if (count > 10 && props.average === "above") RateApp.requestReview();
                     });
                 }
+                if (props.editTimestamp) ldb.logs.delete(props.editTimestamp);
                 toast("Mood log saved!", "bottom");
                 // Delay for some confetti!
                 if (props.moodWrite === 5) await new Promise(res => setTimeout(res, 700));
@@ -318,7 +319,7 @@ const FinishJournal = props => {
                             </div>
                             <div className="br"></div><div className="br"></div>
                             { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
-                            { props.files.length < 3 && 
+                            { props.files.length < 3 && !props.editTimestamp &&
                                 <>
                                     <label htmlFor="files">
                                         <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)

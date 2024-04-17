@@ -5,7 +5,7 @@ import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, image
 import ImageCarousel from "./ImageCarousel";
 import { Log } from "../../db";
 import { AnyMap } from "../../helpers";
-import { ONE_DAY } from "../graphs/helpers";
+import { ONE_DAY, ONE_MINUTE } from "../graphs/helpers";
 import history from "../../history";
 
 interface Props {
@@ -80,7 +80,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                     { log.files && log.files.length > 0 && <ImageCarousel setInFullscreen={setInFullscreen} files={log.files}></ImageCarousel> }
                     <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
                 </> }
-                { (now - log.timestamp) < (ONE_DAY / 12) && <IonIcon className="close-btn" icon={pencil} onClick={goToEdit} /> }
+                { (now - log.timestamp) < (ONE_MINUTE * 15) && <IonIcon className="close-btn" icon={pencil} onClick={goToEdit} /> }
             </div>
         </div>
     );
