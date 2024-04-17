@@ -44,12 +44,23 @@ const Journal = () => {
                 setText(autosave);
             }
         }
-    }, []);
+
+        if (editTimestamp) {
+            localStorage.removeItem("eautosave");
+            localStorage.removeItem("autosave");
+        }
+    }, [editTimestamp]);
 
     return (
         <>
             <Route exact path="/journal">
-                <WriteJournal text={text} setText={setText} setMoodRead={setMoodRead} moodWrite={moodWrite} />
+                <WriteJournal 
+                    text={text} 
+                    setText={setText} 
+                    setMoodRead={setMoodRead} 
+                    moodWrite={moodWrite} 
+                    editTimestamp={editTimestamp} 
+                />
             </Route>
             <Route path="/journal/finish">
                 <FinishJournal 
