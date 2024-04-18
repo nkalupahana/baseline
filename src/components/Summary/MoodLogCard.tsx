@@ -45,7 +45,8 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
         localStorage.setItem("autosave", log.journal ?? "");
         localStorage.setItem("editMood", String(log.mood));
         localStorage.setItem("editAverage", log.average);
-        history.push(`/journal?edit=${log.timestamp}`);
+        localStorage.setItem("editTimestamp", String(log.timestamp));
+        history.push(`/journal`);
     }
 
     const SYMBOL_MAP: AnyMap = {
