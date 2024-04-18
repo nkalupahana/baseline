@@ -21,16 +21,16 @@ const Journal = () => {
         }
         
         // Get query parameters
-        const params = new URLSearchParams(window.location.search);
-        const editTimestamp = params.get("edit");
+        const editTimestamp = localStorage.getItem("editTimestamp");
         const editAverage = localStorage.getItem("editAverage");
         const editMood = Number(localStorage.getItem("editMood"));
         if (editTimestamp && editMood && editAverage) {
             setEditTimestamp(Number(editTimestamp));
             setMoodRead(editMood);
             setAverage(editAverage);
-            localStorage.removeItem("editTimestamp");
+            localStorage.removeItem("editMood");
             localStorage.removeItem("editAverage");
+            localStorage.removeItem("editTimestamp");
         }
     }, []);
 

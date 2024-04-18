@@ -151,6 +151,7 @@ describe("Mobile Flow", () => {
         cy.contains("Edit!").should("exist").click()
 
         cy.contains("Hello world!!!").should("exist")
+        cy.wait(WAIT_FOR_CONSISTENCY)
     })
 
     it("Test Beginner Mode Dialog", () => {
