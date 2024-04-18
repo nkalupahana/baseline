@@ -139,6 +139,7 @@ describe("Mobile Flow", () => {
     })
 
     it("Test Editing", () => {
+        cy.wait(WAIT_FOR_CONSISTENCY)
         cy.get(".mood-edit-btn").should("exist").click()
 
         cy.url().should("include", "/journal")
