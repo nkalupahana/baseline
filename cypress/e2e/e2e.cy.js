@@ -138,6 +138,20 @@ describe("Mobile Flow", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
     })
 
+    it("Test Editing", () => {
+        cy.get(".mood-edit-btn").should("exist").click()
+
+        cy.url().should("include", "/journal")
+        cy.contains("Edit Journal").should("exist")
+        cy.get("textarea").type("!!")
+        cy.contains("Continue").should("exist").click()
+
+        cy.url().should("include", "/journal/finish")
+        cy.contains("Edit!").should("exist").click()
+
+        cy.contains("Hello world!!!").should("exist")
+    })
+
     it("Test Beginner Mode Dialog", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")

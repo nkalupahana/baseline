@@ -60,7 +60,7 @@ const FinishJournal = props => {
             placement: "top"
         }, {
             target: "#review-textarea",
-            content: `Journals can't be edited after an hour, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
+            content: `Journals can't be edited for long, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
             disableBeacon: true,
             placement: "top-start",
             styles: {
