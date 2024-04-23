@@ -20,7 +20,7 @@ const Journal = () => {
             signOutAndCleanUp();
         }
         
-        // Get query parameters
+        // Get edit parameters
         const editTimestamp = localStorage.getItem("editTimestamp");
         const editAverage = localStorage.getItem("editAverage");
         const editMood = Number(localStorage.getItem("editMood"));
