@@ -23,10 +23,10 @@ const Journal = () => {
         // Get edit parameters
         const editTimestamp = localStorage.getItem("editTimestamp");
         const editAverage = localStorage.getItem("editAverage");
-        const editMood = Number(localStorage.getItem("editMood"));
+        const editMood = localStorage.getItem("editMood");
         if (editTimestamp && editMood && editAverage) {
             setEditTimestamp(Number(editTimestamp));
-            setMoodRead(editMood);
+            setMoodRead(Number(editMood));
             setAverage(editAverage);
             localStorage.removeItem("editMood");
             localStorage.removeItem("editAverage");
