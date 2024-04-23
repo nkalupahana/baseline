@@ -225,7 +225,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
     data.editTimestamp = data.editTimestamp ? Number(data.editTimestamp) : null;
     if (data.editTimestamp) {
-        if (typeof data.mood !== "number" || isNaN(data.mood) || data.editTimestamp !== parseInt(data.editTimestamp) || data.editTimestamp < 0) {
+        if (typeof data.editTimestamp !== "number" || isNaN(data.editTimestamp) || data.editTimestamp !== parseInt(data.editTimestamp) || data.editTimestamp < 0) {
             res.send(400);
             return;
         }
