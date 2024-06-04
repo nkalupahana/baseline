@@ -1,6 +1,6 @@
 {
   "name": "baseline",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "private": true,
   "dependencies": {
     "@byteowls/capacitor-oauth2": "^4.0.0",
