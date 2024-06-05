@@ -60,10 +60,11 @@ const ImageCarousel = ({ files, setInFullscreen }) => {
             } else {
                 let opts = { path: dataurl };
                 if (Capacitor.getPlatform() === "android") {
-                    const albums = await Media.getAlbums();
+                    let albums = await Media.getAlbums();
                     let album = albums.albums.find(x => x.name === "baseline");
                     if (!album) {
                         await Media.createAlbum({ name: "baseline" });
+                        albums = await Media.getAlbums();
                         album = albums.albums.find(x => x.name === "baseline");
                     }
                     opts["albumIdentifier"] = album.identifier
