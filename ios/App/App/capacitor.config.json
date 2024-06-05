@@ -22,5 +22,27 @@
 			"smallIcon": "notification_icon",
 			"iconColor": "#03A9F4"
 		}
-	}
+	},
+	"packageClassList": [
+		"MediaPlugin",
+		"MediaPlugin",
+		"FirebaseAnalyticsPlugin",
+		"FirebaseAnalyticsPlugin",
+		"FirebaseAuthenticationPlugin",
+		"FirebaseAuthenticationPlugin",
+		"FirebaseMessagingPlugin",
+		"FirebaseMessagingPlugin",
+		"AppPlugin",
+		"DevicePlugin",
+		"FilesystemPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"LocalNotificationsPlugin",
+		"SharePlugin",
+		"StatusBarPlugin",
+		"CloudKitPlugin",
+		"CloudKitPlugin",
+		"InAppReviewPlugin",
+		"InAppReviewPlugin"
+	]
 }

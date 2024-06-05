@@ -1,0 +1,17 @@
+diff --git a/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift b/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
+index 463be9a..c45fb99 100644
+--- a/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
++++ b/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
+@@ -267,6 +267,12 @@ public class LocalNotificationsPlugin: CAPPlugin, CAPBridgedPlugin {
+             content.attachments = try makeAttachments(attachments)
+         }
+ 
++        if #available(iOS 15.0, *), let timeSensitive = notification["timeSensitive"] as? Bool {
++            if timeSensitive {
++                content.interruptionLevel = .timeSensitive
++            }
++        }
++
+         return content
+     }
+ 

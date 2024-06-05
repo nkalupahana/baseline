@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
-import GraniteLink from "../components/Settings/GraniteLink";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
@@ -73,7 +72,6 @@ const Settings = () => {
                 />
                 <PDP taskBlock={setDoingAsyncTask} />
                 <p className="bold margin-bottom-0">Partner Connections</p>
-                <GraniteLink />
                 <div className="br"></div><div className="br"></div>
                 <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                 <p>

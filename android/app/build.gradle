@@ -6,7 +6,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "app.getbaseline.baseline"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "app.getbaseline.baseline"
         minSdkVersion rootProject.ext.minSdkVersion

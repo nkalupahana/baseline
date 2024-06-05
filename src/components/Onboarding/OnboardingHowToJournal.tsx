@@ -1,5 +1,5 @@
 import { Capacitor } from "@capacitor/core";
-import { set, ref } from "@firebase/database";
+import { set, ref } from "firebase/database";
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "swiper";
