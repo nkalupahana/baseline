@@ -1,4 +1,4 @@
-import { DataSnapshot, off, ref } from "@firebase/database";
+import { DataSnapshot, off, ref } from "firebase/database";
 import { IonIcon, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";

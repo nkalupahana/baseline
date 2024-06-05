@@ -1,9 +1,5 @@
 [
 	{
-		"pkg": "@byteowls/capacitor-oauth2",
-		"classpath": "com.byteowls.capacitor.oauth2.OAuth2ClientPlugin"
-	},
-	{
 		"pkg": "@capacitor-community/media",
 		"classpath": "com.getcapacitor.community.media.MediaPlugin"
 	},
@@ -56,7 +52,7 @@
 		"classpath": "cloudkit.baseline.getbaseline.app.CloudKitPlugin"
 	},
 	{
-		"pkg": "capacitor-rate-app",
-		"classpath": "com.capacitor.rateApp.CapacitorRateAppPlugin"
+		"pkg": "@capacitor-community/in-app-review",
+		"classpath": "com.getcapacitor.community.inappreview.InAppReviewPlugin"
 	}
 ]

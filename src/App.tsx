@@ -49,7 +49,6 @@ import { CSSTransition } from "react-transition-group";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
 import * as Sentry from "@sentry/react";
-import GraniteCallback from "./components/Settings/GraniteCallback";
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -99,7 +98,6 @@ const App = () => {
         { path: "/rsummary", Component: RSummary },
         { path: "/surveys", Component: SurveyResults },
         { path: "/onboarding", Component: Onboarding },
-        { path: "/granite/callback", Component: GraniteCallback },
         { path: "/mydata", Component: MyData }
     ];
 

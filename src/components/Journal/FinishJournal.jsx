@@ -1,7 +1,7 @@
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
 import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIcon } from "@ionic/react";
-import { getIdToken } from "@firebase/auth";
+import { getIdToken } from "firebase/auth"
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import { Route } from "react-router";
 import Negative5 from "./Negative5";
 import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
 import ldb from "../../db";
-import { RateApp } from "capacitor-rate-app";
+import { InAppReview } from '@capacitor-community/in-app-review';
 import Confetti from "react-confetti";
 import Dialog, { checkPromptAllowed } from "../Dialog";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -154,7 +154,7 @@ const FinishJournal = props => {
                 if (Capacitor.getPlatform() !== "web") {
                     LocalNotifications.removeAllDeliveredNotifications();
                     ldb.logs.count().then(count => {
-                        if (count > 10 && props.average === "above") RateApp.requestReview();
+                        if (count > 10 && props.average === "above") InAppReview.requestReview();
                     });
                 }
                 if (props.editTimestamp) ldb.logs.delete(props.editTimestamp);
