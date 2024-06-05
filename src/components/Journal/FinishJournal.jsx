@@ -154,7 +154,7 @@ const FinishJournal = props => {
                 if (Capacitor.getPlatform() !== "web") {
                     LocalNotifications.removeAllDeliveredNotifications();
                     ldb.logs.count().then(count => {
-                        if (count > 10 && props.average === "above") InAppReview.requestReview();
+                        if (count > 8 && props.average === "above") InAppReview.requestReview();
                     });
                 }
                 if (props.editTimestamp) ldb.logs.delete(props.editTimestamp);
