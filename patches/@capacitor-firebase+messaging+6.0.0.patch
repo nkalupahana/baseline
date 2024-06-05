@@ -1,8 +1,8 @@
 diff --git a/node_modules/@capacitor-firebase/messaging/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/messaging/MessagingService.java b/node_modules/@capacitor-firebase/messaging/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/messaging/MessagingService.java
-index 97cdf21..c211246 100644
+index 97cdf21..13ecbf8 100644
 --- a/node_modules/@capacitor-firebase/messaging/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/messaging/MessagingService.java
 +++ b/node_modules/@capacitor-firebase/messaging/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/messaging/MessagingService.java
-@@ -1,6 +1,11 @@
+@@ -1,6 +1,12 @@
  package io.capawesome.capacitorjs.plugins.firebase.messaging;
  
  import androidx.annotation.NonNull;
@@ -10,11 +10,12 @@ index 97cdf21..c211246 100644
 +import android.service.notification.StatusBarNotification;
 +
 +import java.util.ArrayList;
++import android.util.Log;
 +
  import com.google.firebase.messaging.FirebaseMessagingService;
  import com.google.firebase.messaging.RemoteMessage;
  
-@@ -15,6 +20,37 @@ public class MessagingService extends FirebaseMessagingService {
+@@ -15,6 +21,39 @@ public class MessagingService extends FirebaseMessagingService {
      @Override
      public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
          super.onMessageReceived(remoteMessage);
@@ -30,8 +31,8 @@ index 97cdf21..c211246 100644
 +                    ArrayList<Integer> ids = new ArrayList<>();
 +                    StatusBarNotification latestNotif = null;
 +                    for (StatusBarNotification notif : notificationManager.getActiveNotifications()) {
-+                        // Push notifications always have id 0 (identified by tag instead)
-+                        if (notif.getId() == 0) continue;
++                        // Push notifications sometimes have id 0, and have tags -- use to ignore
++                        if (notif.getId() == 0 || notif.getTag() != null) continue;
 +                        ids.add(notif.getId());
 +                        if (latestNotif == null || latestNotif.getPostTime() < notif.getPostTime()) {
 +                            latestNotif = notif;
@@ -39,7 +40,9 @@ index 97cdf21..c211246 100644
 +                    }
 +
 +                    // Remove the latest from the list of all delivered
-+                    if (latestNotif != null) ids.remove((Integer) latestNotif.getId());
++                    if (latestNotif != null) {
++                        ids.remove((Integer) latestNotif.getId());
++                    }
 +
 +                    // And remove all other notifications
 +                    for (Integer id : ids) {
