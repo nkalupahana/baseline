@@ -10,6 +10,7 @@ import { getImage, moodLog, survey } from "./main.js";
 import { gapFund } from "./gap.js";
 import { beacon } from "./analytics.js";
 import { graniteLink } from "./granite.js";
+import { search } from "./spotify.js";
 
 const app = express();
 initializeApp({
@@ -68,6 +69,7 @@ app.post("/survey", survey);
 app.post("/getImage", getImage);
 
 app.post("/gap", gapFund);
+app.post("/spotify/search", search);
 
 app.use(Sentry.Handlers.errorHandler());
 
