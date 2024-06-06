@@ -1,10 +1,10 @@
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
-import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIcon } from "@ionic/react";
+import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIcon, IonButton } from "@ionic/react";
 import { getIdToken } from "firebase/auth"
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
@@ -20,6 +20,7 @@ import Dialog, { checkPromptAllowed } from "../Dialog";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
+import { Spotify } from "@getbaseline/capacitor-spotify";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -33,6 +34,14 @@ const FinishJournal = props => {
     const dismissDialog = () => {
         setDialog(undefined);
     };
+
+    const signInWithSpotify = useCallback(async () => {
+        const { resultUri } = await Spotify.signIn({
+            clientId: "a2180d494e344adba301c5bae9bd324c",
+            redirectUri: "app.getbaseline.baseline.spotify://callback"
+        });
+        console.log(resultUri);
+    }, []);
 
     useEffect(() => {
         // Refresh ID token in the background to speed up submission
@@ -327,6 +336,7 @@ const FinishJournal = props => {
                                     <input onClick={beginAttachFiles} disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                                 </>
                             }
+                            <IonButton mode={"ios"} onClick={signInWithSpotify}>Sign in with Spotify</IonButton>
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
                                 <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />

@@ -2,6 +2,9 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
 
+include ':capacitor-community-in-app-review'
+project(':capacitor-community-in-app-review').projectDir = new File('../node_modules/@capacitor-community/in-app-review/android')
+
 include ':capacitor-community-media'
 project(':capacitor-community-media').projectDir = new File('../node_modules/@capacitor-community/media/android')
 
@@ -38,8 +41,8 @@ project(':capacitor-share').projectDir = new File('../node_modules/@capacitor/sh
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
+include ':getbaseline-capacitor-spotify'
+project(':getbaseline-capacitor-spotify').projectDir = new File('../node_modules/@getbaseline/capacitor-spotify/android')
+
 include ':capacitor-cloudkit'
 project(':capacitor-cloudkit').projectDir = new File('../node_modules/capacitor-cloudkit/android')
-
-include ':capacitor-community-in-app-review'
-project(':capacitor-community-in-app-review').projectDir = new File('../node_modules/@capacitor-community/in-app-review/android')

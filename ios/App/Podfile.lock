@@ -120,6 +120,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.13)
     - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesSwift (~> 2.1)
+  - GetbaselineCapacitorSpotify (0.0.2):
+    - Capacitor
   - GoogleAppMeasurement (10.27.0):
     - GoogleAppMeasurement/AdIdSupport (= 10.27.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
@@ -213,6 +215,7 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - FirebaseCrashlytics
+  - "GetbaselineCapacitorSpotify (from `../../node_modules/@getbaseline/capacitor-spotify`)"
 
 SPEC REPOS:
   trunk:
@@ -273,6 +276,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/share"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  GetbaselineCapacitorSpotify:
+    :path: "../../node_modules/@getbaseline/capacitor-spotify"
 
 SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
@@ -303,6 +308,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 585984d0a1df120617eb10b44cad8968b859815e
   FirebaseRemoteConfigInterop: c55a739f5ab121792776e191d9fd437dc624a541
   FirebaseSessions: 2fdf949f9e58295a57703ae8f2efc44f9fa3aa16
+  GetbaselineCapacitorSpotify: 21c513b11fc8a3db03ca534ab479360d5c33dec8
   GoogleAppMeasurement: f65fc137531af9ad647f1c0a42f3b6a4d3a98049
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
@@ -315,6 +321,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
 
-PODFILE CHECKSUM: 46f120be096115a7e977b2a2953f6cc80226a5e5
+PODFILE CHECKSUM: 7d6ebf222a3d7a423a5e1403d583925a30c15f1d
 
 COCOAPODS: 1.14.3

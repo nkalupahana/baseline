@@ -63,6 +63,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationCenter.default.post(name: NSNotification.Name("cloudkitLogin"), object: url);
         }
         
+        if (url.scheme == "app.getbaseline.baseline.spotify") {
+            NotificationCenter.default.post(name: NSNotification.Name("spotifyLogin"), object: url);
+        }
+        
         if Auth.auth().canHandle(url) {
             return true
         }

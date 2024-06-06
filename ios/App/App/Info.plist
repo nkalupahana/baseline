@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Photo library access is needed to save your images.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -20,8 +18,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
-	<true/>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -54,9 +50,21 @@
 				<string>app.getbaseline.baseline</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Spotify SDK</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app.getbaseline.baseline.spotify</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<true/>
 	<key>FirebaseMessagingAutoInitEnabled</key>
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -67,6 +75,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is needed to take pictures for mood logs.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Photo library access is needed to save your images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo library access is needed to save your images.</string>
 	<key>NSUserActivityTypes</key>
@@ -94,5 +104,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>spotify</string>
+	</array>
 </dict>
 </plist>

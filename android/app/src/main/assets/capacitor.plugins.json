@@ -1,5 +1,9 @@
 [
 	{
+		"pkg": "@capacitor-community/in-app-review",
+		"classpath": "com.getcapacitor.community.inappreview.InAppReviewPlugin"
+	},
+	{
 		"pkg": "@capacitor-community/media",
 		"classpath": "com.getcapacitor.community.media.MediaPlugin"
 	},
@@ -48,11 +52,11 @@
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
-		"pkg": "capacitor-cloudkit",
-		"classpath": "cloudkit.baseline.getbaseline.app.CloudKitPlugin"
+		"pkg": "@getbaseline/capacitor-spotify",
+		"classpath": "app.getbaseline.capacitor.spotify.SpotifyPlugin"
 	},
 	{
-		"pkg": "@capacitor-community/in-app-review",
-		"classpath": "com.getcapacitor.community.inappreview.InAppReviewPlugin"
+		"pkg": "capacitor-cloudkit",
+		"classpath": "cloudkit.baseline.getbaseline.app.CloudKitPlugin"
 	}
 ]

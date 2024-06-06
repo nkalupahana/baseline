@@ -24,6 +24,8 @@
 		}
 	},
 	"packageClassList": [
+		"InAppReviewPlugin",
+		"InAppReviewPlugin",
 		"MediaPlugin",
 		"MediaPlugin",
 		"FirebaseAnalyticsPlugin",
@@ -40,9 +42,9 @@
 		"LocalNotificationsPlugin",
 		"SharePlugin",
 		"StatusBarPlugin",
+		"SpotifyPlugin",
+		"SpotifyPlugin",
 		"CloudKitPlugin",
-		"CloudKitPlugin",
-		"InAppReviewPlugin",
-		"InAppReviewPlugin"
+		"CloudKitPlugin"
 	]
 }
