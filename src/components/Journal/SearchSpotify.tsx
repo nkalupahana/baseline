@@ -10,6 +10,7 @@ import { BASE_URL } from "../../helpers";
 import { User, getIdToken } from "firebase/auth";
 import { closeCircle, musicalNotes } from "ionicons/icons";
 import { SpotifySelection } from "../../pages/Journal";
+import { Keyboard } from "@capacitor/keyboard";
 
 interface Props {
     user: User;
@@ -69,6 +70,10 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
 
     useEffect(() => {
         setResults([]);
+
+        if (!open) {
+            Keyboard.hide();
+        }
     }, [open]);
 
     const onSearchbarMount = useCallback(async (el) => {
