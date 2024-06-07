@@ -6,6 +6,12 @@ import "./Container.css";
 import { checkKeys, decrypt } from "../helpers";
 import { signOutAndCleanUp } from "../firebase";
 
+export interface SpotifySelection {
+    uri: string;
+    name: string;
+}
+
+
 const Journal = () => {
     const [text, setText] = useState("");
     const [files, setFiles] = useState([]);
@@ -13,6 +19,7 @@ const Journal = () => {
     const [moodWrite, setMoodWrite] = useState(0);
     const [average, setAverage] = useState("average");
     const [editTimestamp, setEditTimestamp] = useState<number | null>(null);
+    const [song, setSong] = useState<SpotifySelection | undefined>(undefined);
     
     useEffect(() => {
         const keys = checkKeys();
@@ -73,6 +80,8 @@ const Journal = () => {
                     average={average} 
                     setAverage={setAverage} 
                     editTimestamp={editTimestamp}
+                    song={song}
+                    setSong={setSong}
                 />
             </Route>
         </>
