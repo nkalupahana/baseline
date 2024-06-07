@@ -8,7 +8,7 @@ const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 export const search = async (req: UserRequest, res: Response) => {
     const body = req.body;
     const query = body.query;
-    if (typeof query !== "string" || query.length === 0) {
+    if (typeof query !== "string" || query.trim() === "") {
         res.status(400).send("Missing query!");
         return;
     }
