@@ -20,6 +20,7 @@ import Dialog, { checkPromptAllowed } from "../Dialog";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
+import SearchSpotify from "./SearchSpotify";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -208,7 +209,7 @@ const FinishJournal = props => {
     }
 
     return (
-        <div className="outer-noscroll">
+        <div className="outer-noscroll rss-backdrop">
             { firstTimer && <Joyride 
                 locale={{last: "Close"}} 
                 disableOverlay={true} 
@@ -321,12 +322,13 @@ const FinishJournal = props => {
                             { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
                             { props.files.length < 3 && !props.editTimestamp &&
                                 <>
-                                    <label htmlFor="files">
-                                        <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
+                                    <label htmlFor="files" style={{"cursor": "pointer"}}>
+                                        <IonIcon icon={attach} className="journal-additions-icon"></IonIcon>Attach A Photo ({3 - props.files.length} left)
                                     </label>
                                     <input onClick={beginAttachFiles} disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                                 </>
                             }
+                            <SearchSpotify user={user} song={props.song} setSong={props.setSong} />
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
                                 <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />

@@ -145,6 +145,7 @@
     border-radius: 10px;
     margin-top: 15px;
     color: white;
+    cursor: pointer;
 }
 
 .text-center {
@@ -178,6 +179,8 @@
     color: white;
     margin: 0 auto;
     border-radius: 10px;
+
+    cursor: pointer;
 }
 
 .finish-button:active {
@@ -229,4 +232,9 @@ input[type=file]#files {
 ion-segment-button > ion-label {
     text-overflow: unset !important;
     max-width: unset !important;
+}
+
+.journal-additions-icon {
+    font-size: 25px;
+    transform: translateY(6px);
 }

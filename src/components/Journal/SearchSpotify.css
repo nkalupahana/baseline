@@ -1,0 +1,85 @@
+div[role="dialog"] {
+    z-index: 1002;
+}
+
+.rss-footer {
+    display: none;
+}
+
+.rss-header {
+    padding: 10px 24px;
+}
+
+.rss-content {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 70px;
+    padding-bottom: 32px;
+}
+
+.spotify-track {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 64px auto;
+    grid-template-areas: "album title" "album artists";
+    column-gap: 13px;
+    height: 64px;
+    margin-bottom: 12px;
+
+    cursor: pointer;
+}
+
+.spotify-track:hover {
+    background-color: var(--card-background);
+    border-radius: 4px;
+}
+
+.spotify-title {
+    grid-area: title;
+    padding-top: 8px;
+    font-size: 1.1em;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spotify-artists {
+    grid-area: artists;
+    color: grey;
+    margin-top: -4px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spotify-album {
+    grid-area: album;
+    width: 64px;
+    height: 64px;
+    border-radius: 4px;
+}
+
+.spotify-search {
+    margin-bottom: 16px;
+}
+
+.spotify-explicit {
+    border: 1px black solid;
+    background-color: grey;
+    color: white;
+    padding: 0 4px 1px 4px;
+    margin-right: 4px;
+    border-radius: 2px;
+}
+
+.spotify-modal-close {
+    float: right;
+    margin-top: 3px;
+}
+
+.spotify-start-btn {
+    margin-top: 7px;
+    cursor: pointer;
+}
