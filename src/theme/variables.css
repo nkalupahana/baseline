@@ -156,3 +156,7 @@ textarea {
     height: 19.5px;
     width: 0px;
 }
+
+.rss-backdrop {
+    background-color: var(--ion-background-color);
+}
