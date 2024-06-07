@@ -240,7 +240,7 @@ ion-segment-button > ion-label {
 }
 
 .secondary-icon {
-    font-size: 18px;
-    transform: translateY(4px);
+    font-size: 20px;
+    transform: translateY(5px);
     cursor: pointer;
 }

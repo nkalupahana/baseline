@@ -73,7 +73,7 @@ div[role="dialog"] {
     border: 1px black solid;
     background-color: grey;
     color: white;
-    padding: 0 4px 1px 4px;
+    padding: 0 4px 1px;
     margin-right: 4px;
     border-radius: 2px;
 }
