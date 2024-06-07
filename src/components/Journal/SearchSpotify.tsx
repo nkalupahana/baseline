@@ -61,9 +61,22 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     }, [user]);
     const throttledSearch = useMemo(() => throttle(search, 1000), [search]);
 
+    const keyboardCloser = useCallback((e) => {
+        if (e.key === "Enter") {
+            (e.target as HTMLInputElement).blur();
+        }
+    }, []);
+
     useEffect(() => {
         setResults([]);
     }, [open]);
+
+    const onSearchbarMount = useCallback(async (el) => {
+        if (el) {
+            const input = await el.getInputElement();
+            if (input && input.value === "") input.focus();
+        }
+    }, []);
     
     return (
         <>
@@ -71,7 +84,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                 if (song) {
                     setSong(undefined);
                 } else {
-                    setOpen(true)
+                    setOpen(true);
                 }
             }}>
                 <IonIcon icon={musicalNotes} className="journal-additions-icon"></IonIcon>
@@ -92,7 +105,14 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                         </h1>
                     </Header>
                     <Content className="rss-content">
-                        <IonSearchbar className="spotify-search" onIonInput={throttledSearch} />
+                        <IonSearchbar 
+                            className="spotify-search" 
+                            onIonInput={throttledSearch} 
+                            inputMode="search" 
+                            onKeyUp={keyboardCloser}
+                            id="spotify-search-bar"
+                            ref={onSearchbarMount}
+                        />
                         {results.map((track: SpotifyTrack) => {
                             return (
                                 <div key={track.uri} className="spotify-track" onClick={() => {

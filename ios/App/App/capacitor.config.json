@@ -24,6 +24,8 @@
 		}
 	},
 	"packageClassList": [
+		"InAppReviewPlugin",
+		"InAppReviewPlugin",
 		"MediaPlugin",
 		"MediaPlugin",
 		"FirebaseAnalyticsPlugin",
@@ -41,8 +43,6 @@
 		"SharePlugin",
 		"StatusBarPlugin",
 		"CloudKitPlugin",
-		"CloudKitPlugin",
-		"InAppReviewPlugin",
-		"InAppReviewPlugin"
+		"CloudKitPlugin"
 	]
 }
