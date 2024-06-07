@@ -11,6 +11,7 @@ import { User, getIdToken } from "firebase/auth";
 import { closeCircle, musicalNotes } from "ionicons/icons";
 import { SpotifySelection } from "../../pages/Journal";
 import { Keyboard } from "@capacitor/keyboard";
+import { Capacitor } from "@capacitor/core";
 
 interface Props {
     user: User;
@@ -71,7 +72,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     useEffect(() => {
         setResults([]);
 
-        if (!open) {
+        if (!open && Capacitor.getPlatform() !== "web") {
             Keyboard.hide();
         }
     }, [open]);
