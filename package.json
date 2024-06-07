@@ -64,6 +64,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "^5.0.0",
     "react-sheet-slide": "^1.4.0",
+    "react-spotify-embed": "^2.0.4",
     "react-transition-group": "^4.4.5",
     "smoothscroll-polyfill": "^0.4.4",
     "swiper": "^8.2.2",
