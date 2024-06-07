@@ -75,7 +75,7 @@ const requestAccessToken = async () => {
     }
 
     const json = await response.json();
-    if (json.error) {
+    if (!json.access_token) {
         console.error(json);
         accessToken = undefined;
         return;
