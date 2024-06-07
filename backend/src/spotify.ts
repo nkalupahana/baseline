@@ -14,6 +14,10 @@ export const search = async (req: UserRequest, res: Response) => {
     }
 
     if (!accessToken) await requestAccessToken();
+    if (!accessToken) {
+        res.status(500).send("Error connecting to Spotify, try again in a minute.");
+        return;
+    }
 
     const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=20`, {
             headers: {
@@ -23,13 +27,12 @@ export const search = async (req: UserRequest, res: Response) => {
     )
 
     if (response.status === 429) {
-        res.status(429).send("Rate limit from Spotify -- try again in a minute.");
+        res.status(429).send("Rate limit from Spotify, try again in a minute.");
         return;
     }
 
     if (response.status === 401) {
         accessToken = undefined;
-        await requestAccessToken();
         search(req, res);
         return;
     }
@@ -38,7 +41,7 @@ export const search = async (req: UserRequest, res: Response) => {
         console.error(response)
         console.error(response.status)
         console.error(await response.text());
-        res.status(500).send("Error fetching data from Spotify -- try again in a minute.");
+        res.status(500).send("Error getting data from Spotify, try again in a minute.");
         return;
     }
 
@@ -47,7 +50,6 @@ export const search = async (req: UserRequest, res: Response) => {
 };
 
 const requestAccessToken = async () => {
-    console.log("getting new access token")
     const data = new FormData();
     data.append("grant_type", "client_credentials");
 
@@ -72,7 +74,7 @@ const requestAccessToken = async () => {
         return;
     }
 
-    const json = await response?.json();
+    const json = await response.json();
     if (json.error) {
         console.error(json);
         accessToken = undefined;
