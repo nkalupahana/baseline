@@ -10,6 +10,10 @@ div[role="dialog"] {
     padding: 10px 24px;
 }
 
+.rss-header > svg {
+    top: 10px;
+}
+
 .rss-content {
     padding-left: 24px;
     padding-right: 24px;
