@@ -26,7 +26,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
 
     function toggleGrow() {
         if (!grow) {
-            if ((log.files && log.files.length > 0) || logContainer.current?.offsetHeight === NOGROW_HEIGHT) {
+            if ((log.files && log.files.length > 0) || log.song || logContainer.current?.offsetHeight === NOGROW_HEIGHT) {
                 setGrow(true);
             }
         } else {

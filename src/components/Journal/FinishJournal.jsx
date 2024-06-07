@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
-import { attach, closeOutline, trashOutline } from "ionicons/icons";
+import { attach, closeCircleOutline, closeOutline } from "ionicons/icons";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
@@ -320,7 +320,6 @@ const FinishJournal = props => {
                                 </IonSegment>
                             </div>
                             <div className="br"></div><div className="br"></div>
-                            { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
                             { props.files.length < 3 && !props.editTimestamp &&
                                 <>
                                     <label htmlFor="files" style={{"cursor": "pointer"}}>
@@ -329,6 +328,7 @@ const FinishJournal = props => {
                                     <input onClick={beginAttachFiles} disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                                 </>
                             }
+                            { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}>{truncate(file.name)} <IonIcon onClick={() => {removeFile(fileDesc(file))}} className="secondary-icon" icon={closeCircleOutline}></IonIcon></span>)}
                             { !props.editTimestamp && <SearchSpotify user={user} song={props.song} setSong={props.setSong} /> }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">

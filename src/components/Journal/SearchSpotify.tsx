@@ -8,7 +8,7 @@ import { IonSearchbarCustomEvent, SearchbarInputEventDetail } from "@ionic/core"
 import { throttle } from "lodash";
 import { BASE_URL } from "../../helpers";
 import { User, getIdToken } from "firebase/auth";
-import { closeCircle, musicalNotes } from "ionicons/icons";
+import { closeCircle, closeCircleOutline, musicalNotes } from "ionicons/icons";
 import { SpotifySelection } from "../../pages/Journal";
 import { Keyboard } from "@capacitor/keyboard";
 import { Capacitor } from "@capacitor/core";
@@ -87,15 +87,15 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     return (
         <>
             <span className="spotify-start-btn" onClick={() => {
-                if (song) {
-                    setSong(undefined);
-                } else {
-                    setOpen(true);
-                }
+                setOpen(true);
             }}>
                 <IonIcon icon={musicalNotes} className="journal-additions-icon"></IonIcon>
                 { song === undefined && <span> Add Music</span> }
-                { song !== undefined && <span> { song.name }</span> }
+                { song !== undefined && <span> { song.name } <IonIcon className="secondary-icon" icon={closeCircleOutline} onClick={(e) => {
+                        e.stopPropagation(); 
+                        setSong(undefined);
+                    }}></IonIcon>
+                </span> }
             </span>
             <Portal>
                 <Sheet
