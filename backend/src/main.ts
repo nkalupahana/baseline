@@ -231,6 +231,13 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
     }
 
+    if (data.song) {
+        if (typeof data.song !== "string" || !data.song.startsWith("spotify:track:") || data.song.length > 100) {
+            res.send(400);
+            return;
+        }
+    }
+
     const globalNow = data.editTimestamp ? DateTime.fromMillis(data.editTimestamp) : DateTime.utc();
 
     // Timezone validation
@@ -307,6 +314,10 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             average: data.average,
             files: filePaths,
         };
+
+        if (data.song) {
+            logData.song = data.song;
+        }
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
         if (!logData) {
