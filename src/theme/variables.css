@@ -157,6 +157,12 @@ textarea {
     width: 0px;
 }
 
-.rss-backdrop {
-    background-color: var(--ion-background-color);
+/* Search bar adjustments bc Ionic :/ */
+.searchbar-input.sc-ion-searchbar-ios {
+    -webkit-padding-start: 2.1rem !important;
+    padding-inline-start: 2.1rem !important;
+}
+
+.searchbar-input.sc-ion-searchbar-ios {
+    padding-bottom: 8px;
 }
