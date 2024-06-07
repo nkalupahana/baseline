@@ -51,6 +51,10 @@
     min-height: 100px;
 }
 
+.carousel-mods:not(.is-fullscreen) {
+    margin-top: 12px;
+}
+
 .carousel-mods.is-fullscreen > div > div > div {
     height: 100%;
     width: 100%;
