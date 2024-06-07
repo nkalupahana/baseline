@@ -87,3 +87,7 @@ div[role="dialog"] {
     margin-top: 7px;
     cursor: pointer;
 }
+
+.rss-backdrop {
+    background-color: var(--ion-background-color);
+}
