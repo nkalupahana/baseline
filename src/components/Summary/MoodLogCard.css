@@ -88,9 +88,9 @@ div.flickity-enabled.is-fullscreen > .flickity-download-button {
 
 .spotify-embed-box {
     padding-left: 8px;
-    padding-right: 16px;
+    padding-right: 8px;
 }
 
 .spotify-embed {
-    border-radius: 12px !important;
+    border-radius: 14px !important;
 }
