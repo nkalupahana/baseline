@@ -13,6 +13,7 @@ export interface Log {
     average: string,
     files?: string[],
     efiles?: string
+    song?: string;
 }
 
 interface DB extends Dexie {
@@ -21,7 +22,7 @@ interface DB extends Dexie {
 
 const ldb = new Dexie('ldb');
 ldb.version(1).stores({
-    logs: `&timestamp, year, month, day, time, zone, mood, average`,
+    logs: `&timestamp, year, month, day, time, zone, mood, average, song`,
 });
 
 export default ldb as DB;

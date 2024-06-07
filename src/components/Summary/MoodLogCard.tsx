@@ -1,12 +1,13 @@
 import "./MoodLogCard.css";
 import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
-import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline, pencil } from "ionicons/icons";
+import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline, musicalNotes, pencil } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 import { Log } from "../../db";
 import { AnyMap } from "../../helpers";
 import { ONE_MINUTE } from "../graphs/helpers";
 import history from "../../history";
+import { Spotify } from "react-spotify-embed";
 
 interface Props {
     log: Log;
@@ -74,10 +75,14 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                 { !grow && 
                 <>
                     { log.files && log.files.length > 0 && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
+                    { log.song && <IonIcon className="close-btn mood-edit-btn" icon={musicalNotes} onClick={toggleGrow} /> }
                 </> }
 
                 { grow && 
                 <>
+                    { log.song && <div className="spotify-embed-box">
+                        <Spotify className="spotify-embed" wide={true} link={"https://open.spotify.com/track/" + log.song.split(":")[2]} /> 
+                    </div> }
                     { log.files && log.files.length > 0 && <ImageCarousel setInFullscreen={setInFullscreen} files={log.files}></ImageCarousel> }
                     <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
                 </> }

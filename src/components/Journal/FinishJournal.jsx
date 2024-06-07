@@ -127,6 +127,7 @@ const FinishJournal = props => {
         data.append("average", props.average);
         data.append("keys", JSON.stringify(checkKeys()));
         data.append("editTimestamp", props.editTimestamp);
+        if (props.song) data.append("song", props.song.uri);
         for (let file of props.files) {
             data.append("file", file);
         }
@@ -328,7 +329,7 @@ const FinishJournal = props => {
                                     <input onClick={beginAttachFiles} disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                                 </>
                             }
-                            <SearchSpotify user={user} song={props.song} setSong={props.setSong} />
+                            { !props.editTimestamp && <SearchSpotify user={user} song={props.song} setSong={props.setSong} /> }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
                                 <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
