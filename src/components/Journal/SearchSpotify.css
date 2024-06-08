@@ -91,3 +91,16 @@ div[role="dialog"] {
 .rss-backdrop {
     background-color: var(--ion-background-color);
 }
+
+.spotify-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px auto 4px;
+}
+
+.spotify-link > img {
+    width: 24px;
+}

@@ -4,6 +4,7 @@ import { Sheet, Header, Content, Footer, detents, Portal } from "react-sheet-sli
 import "react-sheet-slide/style.css";
 import "./SearchSpotify.css";
 import logo from "./spotify.png";
+import icon from "./spotify-icon.png";
 import { IonSearchbarCustomEvent, SearchbarInputEventDetail } from "@ionic/core";
 import { throttle } from "lodash";
 import { BASE_URL } from "../../helpers";
@@ -43,12 +44,15 @@ interface SpotifyImage {
 
 const SearchSpotify = ({ user, song, setSong } : Props) => {
     const [open, setOpen] = useState(false);
+    const [searchValue, setSearchValue] = useState("");
     const [results, setResults] = useState<SpotifyTrack[]>([]);
     const search = useCallback(async (e: IonSearchbarCustomEvent<SearchbarInputEventDetail>) => {
-        if (e.detail.value?.trim() === "") {
+        if (!e.detail.value || e.detail.value?.trim() === "") {
             setResults([]);
             return;
         }
+
+        const val = e.detail.value.trim();
 
         const response = await fetch(`${BASE_URL}/spotify/search`, {
             method: "POST",
@@ -56,10 +60,11 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                 "Authorization": `Bearer ${await getIdToken(user)}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ query: e.detail.value })
+            body: JSON.stringify({ query: val })
         });
         const data = await response.json();
         setResults(data.tracks.items);
+        setSearchValue(val);
     }, [user]);
     const throttledSearch = useMemo(() => throttle(search, 1000), [search]);
 
@@ -71,6 +76,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
 
     useEffect(() => {
         setResults([]);
+        setSearchValue("");
 
         if (!open && Capacitor.getPlatform() !== "web") {
             Keyboard.hide();
@@ -83,6 +89,11 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
             if (input && input.value === "") input.focus();
         }
     }, []);
+
+    const truncate = useCallback((str: string) => {
+        if (str.length <= 30) return str;
+        return str.substring(0, 30) + "...";
+    }, []);
     
     return (
         <>
@@ -91,7 +102,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
             }}>
                 <IonIcon icon={musicalNotes} className="journal-additions-icon"></IonIcon>
                 { song === undefined && <span> Add Music</span> }
-                { song !== undefined && <span> { song.name } <IonIcon className="secondary-icon" icon={closeCircleOutline} onClick={(e) => {
+                { song !== undefined && <span> { truncate(song.name) } <IonIcon className="secondary-icon" icon={closeCircleOutline} onClick={(e) => {
                         e.stopPropagation(); 
                         setSong(undefined);
                     }}></IonIcon>
@@ -137,10 +148,18 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                                 </div>
                             );
                         })}
-                        <div style={{"textAlign": "center"}}>
+                        { results.length === 0 && <div style={{"textAlign": "center"}}>
                             <p style={{"marginBottom": "8px"}}>Provided by</p>
                             <img style={{height: "40px"}} src={logo} alt="Spotify Logo" />
-                        </div>
+                        </div> }
+                        { results.length > 0 && 
+                            <div 
+                                className="fake-button spotify-link" 
+                                onClick={() => window.open(`https://open.spotify.com/search/${encodeURIComponent(searchValue)}/tracks`, "_blank")}>
+                                <img src={icon} alt="Spotify icon" />
+                                <span><b>OPEN SPOTIFY</b></span>
+                            </div>
+                        }
                     </Content>
                     <Footer className="rss-footer">
                     </Footer>
