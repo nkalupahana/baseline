@@ -118,6 +118,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                             onKeyUp={keyboardCloser}
                             id="spotify-search-bar"
                             ref={onSearchbarMount}
+                            mode="ios"
                         />
                         {results.map((track: SpotifyTrack) => {
                             return (
