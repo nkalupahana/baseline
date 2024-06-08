@@ -247,6 +247,60 @@ describe("Mobile Flow", () => {
         cy.contains("week has been looking").should("exist")
     })
 
+    it("Add Music", () => {
+        cy.pause()
+        cy.get(".fab-button-close-active").should("exist").click()
+        cy.contains("What's happening").should("exist")
+        cy.get("textarea").should("exist").focus().type(`Add a song!`).should("have.value", `Add a song!`)
+        cy.contains("Continue").should("exist").click()
+
+        // Add song
+        cy.get(".rss-content").should("not.exist")
+        cy.contains("Add Music").click()
+        cy.get(".rss-content").should("be.visible")
+        cy.contains("Search for Music")
+        cy.get(".rss-content").find("input").should("be.focused")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.get("body").happoScreenshot()
+
+        cy.get(".rss-content").find("input").type("False Alarms")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.get("body").happoScreenshot()
+        cy.contains("Jon Bellion").click()
+        cy.get(".rss-content").should("not.exist")
+
+        // Edit song
+        cy.contains("Add Music").should("not.exist")
+        cy.contains("False Alarms").click()
+        cy.get(".rss-content").should("be.visible")
+        cy.get(".rss-header").find("ion-icon").click()
+        cy.get(".rss-content").should("not.exist")
+        cy.contains("False Alarms").should("exist")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        // Remove song
+        cy.contains("False Alarms").find("ion-icon").click()
+        cy.contains("False Alarms").should("not.exist")
+        cy.contains("Add Music").click()
+
+        // Add song again
+        cy.get(".rss-content").find("input").type("False Alarms")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.contains("Jon Bellion").click()
+        cy.get(".rss-content").should("not.exist")
+        cy.contains("False Alarms").should("exist")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        // Finish
+        cy.contains("Done!").click()
+        cy.url().should("include", "/summary")
+
+        // Verify
+        cy.contains("Add a song!").parent().find("iframe").should("not.exist")
+        cy.contains("Add a song!").click()
+        cy.contains("Add a song!").parent().find("iframe").should("exist")
+    })
+
     it("Test -5 Warning Behavior", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
@@ -342,7 +396,7 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get("#search-num-results").should("have.text", "16 entries")
+        cy.get("#search-num-results").should("have.text", "17 entries")
         cy.get(".image-btn").click()
         cy.contains("No Results").should("exist")
         cy.get("#search-num-results").should("have.text", "0 entries")
@@ -556,7 +610,7 @@ describe("Test My Data", () => {
         cy.get("#timestamp").should("have.class", "checkbox-checked")
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(37)
+            expect(json).to.have.length(38)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(6)
             }
@@ -564,7 +618,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(37)
+            expect(data).to.have.length(38)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(6)
             }
@@ -575,7 +629,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(37)
+            expect(json).to.have.length(38)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(5)
                 expect(record).to.not.have.property("timestamp")
@@ -585,7 +639,7 @@ describe("Test My Data", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(37)
+            expect(data).to.have.length(38)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(5)
                 expect(record).to.not.have.property("timestamp")
