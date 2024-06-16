@@ -70,7 +70,6 @@ div[role="dialog"] {
 }
 
 .spotify-explicit {
-    border: 1px black solid;
     background-color: grey;
     color: white;
     padding: 0 4px 1px;
