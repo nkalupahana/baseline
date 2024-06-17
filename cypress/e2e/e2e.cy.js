@@ -1,6 +1,7 @@
 import Dexie from "dexie"
 import { DateTime } from "luxon"
 import { parse } from "csv-parse/sync"
+import { dataOptionsObjArr } from "../../src/components/MyData/constants"
 
 /* global cy */
 
@@ -8,7 +9,9 @@ import { parse } from "csv-parse/sync"
 // and views are inconsistent, so this just ensures
 // everything is okay before continuing
 const WAIT_FOR_CONSISTENCY = 4000;
+
 const NUM_TOGGLES = 4;
+const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
 
 // Toggle indices
 const PRACTICE_PROMPTS = 0;
@@ -264,7 +267,16 @@ describe("Mobile Flow", () => {
         cy.get("body").happoScreenshot()
 
         cy.get(".rss-content").find("input").type("False Alarms")
-        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.get(".spotify-search-loading").should("exist")
+
+        cy.get(".spotify-track").should("exist")
+        cy.get(".rss-content").find("input").clear({ force: true })
+        cy.get(".spotify-track").should("not.exist")
+
+        cy.get(".rss-content").find("input").type("False Alarms")
+        cy.get(".spotify-track").should("exist")
+        cy.get(".spotify-search-loading").should("not.exist")
+
         cy.get("body").happoScreenshot()
         cy.contains("Jon Bellion").click()
         cy.get(".rss-content").should("not.exist")
@@ -285,7 +297,9 @@ describe("Mobile Flow", () => {
 
         // Add song again
         cy.get(".rss-content").find("input").type("False Alarms")
-        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.get(".spotify-search-loading").should("exist")
+        cy.get(".spotify-search-loading").should("not.exist")
+
         cy.contains("Jon Bellion").click()
         cy.get(".rss-content").should("not.exist")
         cy.contains("False Alarms").should("exist")
@@ -612,7 +626,7 @@ describe("Test My Data", () => {
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
             expect(json).to.have.length(38)
             for (let record of json) {
-                expect(Object.keys(record)).to.have.length(6)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
         })
         cy.contains("Export Journal Data as CSV").should("exist").click()
@@ -620,7 +634,7 @@ describe("Test My Data", () => {
             const data = parse(csv, {columns: true});
             expect(data).to.have.length(38)
             for (let record of data) {
-                expect(Object.keys(record)).to.have.length(6)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
         })
 
