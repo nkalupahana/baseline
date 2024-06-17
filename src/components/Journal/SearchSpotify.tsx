@@ -7,7 +7,7 @@ import logo from "./spotify.png";
 import icon from "./spotify-icon.png";
 import { SearchbarInputEventDetail } from "@ionic/core";
 import { throttle } from "lodash";
-import { BASE_URL } from "../../helpers";
+import { BASE_URL, toast } from "../../helpers";
 import { User, getIdToken } from "firebase/auth";
 import { closeCircle, closeCircleOutline, musicalNotes, searchOutline, syncCircleOutline } from "ionicons/icons";
 import { SpotifySelection } from "../../pages/Journal";
@@ -69,11 +69,19 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ query: val })
+        }).catch(() => {
+            toast("Failed to connect to music search. Are you connected to the Internet?");
         });
-        const data = await response.json();
-        setResults(data.tracks.items);
-        setSearchValue(val);
-        setLoadingEndRequest(throttleStart);
+
+        if (response?.ok) {
+            const data = await response.json();
+            setResults(data.tracks.items);
+            setSearchValue(val);
+            setLoadingEndRequest(throttleStart);
+        } else if (response) {
+            const error = await response.text();
+            toast(`Failed to search for music: ${error}`);
+        }
     }, [user]);
     const _throttledSearch = useMemo(() => throttle(_search, 1000), [_search]);
     const loggedThrottledSearch = useCallback((e: SearchbarEvent) => {
