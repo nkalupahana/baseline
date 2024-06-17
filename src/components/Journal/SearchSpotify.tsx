@@ -51,9 +51,6 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     const [loading, setLoading] = useState<number | null>(null);
     const _search = useCallback(async (e: SearchbarEvent) => {
         if (!e.detail.value || e.detail.value?.trim() === "") {
-            setResults([]);
-            setSearchValue("");
-            setLoading(null);
             return;
         }
 
@@ -86,6 +83,14 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     }, [user]);
     const _throttledSearch = useMemo(() => throttle(_search, 1000), [_search]);
     const loggedThrottledSearch = useCallback((e: SearchbarEvent) => {
+        if (!e.detail.value || e.detail.value?.trim() === "") {
+            setResults([]);
+            setSearchValue("");
+            setLoading(null);
+            _throttledSearch.cancel();
+            return;
+        }
+
         setLoading(performance.now());
         _throttledSearch(e);
     }, [_throttledSearch]);
