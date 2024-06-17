@@ -103,3 +103,19 @@ div[role="dialog"] {
 .spotify-link > img {
     width: 24px;
 }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spotify-search-loading ion-icon.searchbar-search-icon {
+    animation-name: spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
