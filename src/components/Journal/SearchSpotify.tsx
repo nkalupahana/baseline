@@ -5,11 +5,11 @@ import "react-sheet-slide/style.css";
 import "./SearchSpotify.css";
 import logo from "./spotify.png";
 import icon from "./spotify-icon.png";
-import { IonSearchbarCustomEvent, SearchbarInputEventDetail } from "@ionic/core";
+import { SearchbarInputEventDetail } from "@ionic/core";
 import { throttle } from "lodash";
 import { BASE_URL } from "../../helpers";
 import { User, getIdToken } from "firebase/auth";
-import { closeCircle, closeCircleOutline, musicalNotes } from "ionicons/icons";
+import { closeCircle, closeCircleOutline, musicalNotes, searchOutline, syncCircleOutline } from "ionicons/icons";
 import { SpotifySelection } from "../../pages/Journal";
 import { Keyboard } from "@capacitor/keyboard";
 import { Capacitor } from "@capacitor/core";
@@ -42,13 +42,18 @@ interface SpotifyImage {
     url: string;
 }
 
+type SearchbarEvent = CustomEvent<SearchbarInputEventDetail>;
+
 const SearchSpotify = ({ user, song, setSong } : Props) => {
     const [open, setOpen] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [results, setResults] = useState<SpotifyTrack[]>([]);
-    const search = useCallback(async (e: IonSearchbarCustomEvent<SearchbarInputEventDetail>) => {
+    const [loading, setLoading] = useState<number | null>(null);
+    const _search = useCallback(async (e: SearchbarEvent) => {
         if (!e.detail.value || e.detail.value?.trim() === "") {
             setResults([]);
+            setSearchValue("");
+            setLoading(null);
             return;
         }
 
@@ -65,8 +70,13 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
         const data = await response.json();
         setResults(data.tracks.items);
         setSearchValue(val);
-    }, [user]);
-    const throttledSearch = useMemo(() => throttle(search, 1000), [search]);
+        if (!loading || loading <= performance.now()) setLoading(null);
+    }, [user, loading]);
+    const _throttledSearch = useMemo(() => throttle(_search, 1000), [_search]);
+    const loggedThrottledSearch = useCallback((e: SearchbarEvent) => {
+        setLoading(performance.now());
+        _throttledSearch(e);
+    }, [_throttledSearch]);
 
     const keyboardCloser = useCallback((e) => {
         if (e.key === "Enter") {
@@ -77,6 +87,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     useEffect(() => {
         setResults([]);
         setSearchValue("");
+        setLoading(null);
 
         if (!open && Capacitor.getPlatform() !== "web") {
             Keyboard.hide();
@@ -122,14 +133,15 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                         </h1>
                     </Header>
                     <Content className="rss-content">
-                        <IonSearchbar 
-                            className="spotify-search" 
-                            onIonInput={throttledSearch} 
-                            inputMode="search" 
+                        <IonSearchbar
+                            className={"spotify-search" + (loading ? " spotify-search-loading" : "")}
+                            onIonInput={loggedThrottledSearch}
+                            inputMode="search"
                             onKeyUp={keyboardCloser}
                             id="spotify-search-bar"
                             ref={onSearchbarMount}
                             mode="ios"
+                            searchIcon={loading ? syncCircleOutline : searchOutline}
                         />
                         {results.map((track: SpotifyTrack) => {
                             return (
