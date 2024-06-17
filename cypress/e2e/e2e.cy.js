@@ -645,7 +645,7 @@ describe("Test My Data", () => {
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
             expect(json).to.have.length(38)
             for (let record of json) {
-                expect(Object.keys(record)).to.have.length(5)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
             }
         })
@@ -655,7 +655,7 @@ describe("Test My Data", () => {
             const data = parse(csv, {columns: true});
             expect(data).to.have.length(38)
             for (let record of data) {
-                expect(Object.keys(record)).to.have.length(5)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
             }
         })
