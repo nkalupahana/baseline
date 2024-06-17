@@ -35,7 +35,7 @@ export const dataOptionsObjArr: DataOption[] = [
     {
         value: "song",
         description: "Attached Song",
-        getEntryAttribute: entry => entry.song
+        getEntryAttribute: entry => entry.song ?? null
     },
     {
         value: "files",
