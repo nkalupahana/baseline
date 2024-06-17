@@ -49,14 +49,17 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     const [searchValue, setSearchValue] = useState("");
     const [results, setResults] = useState<SpotifyTrack[]>([]);
     const [loading, setLoading] = useState<number | null>(null);
+    const [loadingEndRequest, setLoadingEndRequest] = useState<number | null>(null);
     const _search = useCallback(async (e: SearchbarEvent) => {
         if (!e.detail.value || e.detail.value?.trim() === "") {
             setResults([]);
             setSearchValue("");
             setLoading(null);
+            setLoadingEndRequest(null);
             return;
         }
 
+        const throttleStart = performance.now();
         const val = e.detail.value.trim();
 
         const response = await fetch(`${BASE_URL}/spotify/search`, {
@@ -70,13 +73,20 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
         const data = await response.json();
         setResults(data.tracks.items);
         setSearchValue(val);
-        if (!loading || loading <= performance.now()) setLoading(null);
-    }, [user, loading]);
+        setLoadingEndRequest(throttleStart);
+    }, [user]);
     const _throttledSearch = useMemo(() => throttle(_search, 1000), [_search]);
     const loggedThrottledSearch = useCallback((e: SearchbarEvent) => {
         setLoading(performance.now());
         _throttledSearch(e);
     }, [_throttledSearch]);
+
+    useEffect(() => {
+        if (loading && loadingEndRequest && loadingEndRequest > loading) {
+            setLoading(null);
+            setLoadingEndRequest(null);
+        }
+    }, [loading, loadingEndRequest]);
 
     const keyboardCloser = useCallback((e) => {
         if (e.key === "Enter") {
@@ -88,6 +98,7 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
         setResults([]);
         setSearchValue("");
         setLoading(null);
+        setLoadingEndRequest(null);
 
         if (!open && Capacitor.getPlatform() !== "web") {
             Keyboard.hide();
