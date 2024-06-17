@@ -81,7 +81,8 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                 { grow && 
                 <>
                     { log.song && <div className="spotify-embed-box">
-                        <Spotify className="spotify-embed" wide={true} link={"https://open.spotify.com/track/" + log.song.split(":")[2]} /> 
+                        { window.navigator.onLine && <Spotify className="spotify-embed" wide={true} link={"https://open.spotify.com/track/" + log.song.split(":")[2]} /> }
+                        { !window.navigator.onLine && <p><i>Internet connection required to load music from Spotify.</i></p>}
                     </div> }
                     { log.files && log.files.length > 0 && <ImageCarousel setInFullscreen={setInFullscreen} files={log.files}></ImageCarousel> }
                     <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
