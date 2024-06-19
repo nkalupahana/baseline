@@ -31,7 +31,7 @@ const RecordJournal = ({ setAudio } : Props) => {
         }
 
         navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(onSuccess, console.log);
-    }, []);
+    }, [setAudio]);
 
     return (
         <div>
