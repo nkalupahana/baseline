@@ -1,5 +1,5 @@
 import { Route } from "react-router-dom";
-import WriteJournal from "../components/Journal/WriteJournal";
+import StartJournal from "../components/Journal/StartJournal";
 import FinishJournal from "../components/Journal/FinishJournal";
 import { useEffect, useState } from "react";
 import "./Container.css";
@@ -20,6 +20,7 @@ const Journal = () => {
     const [average, setAverage] = useState("average");
     const [editTimestamp, setEditTimestamp] = useState<number | null>(null);
     const [song, setSong] = useState<SpotifySelection | undefined>(undefined);
+    const [audio, setAudio] = useState<Blob | null>(null);
     
     useEffect(() => {
         const keys = checkKeys();
@@ -61,12 +62,13 @@ const Journal = () => {
     return (
         <>
             <Route exact path="/journal">
-                <WriteJournal 
+                <StartJournal 
                     text={text} 
                     setText={setText} 
                     setMoodRead={setMoodRead} 
                     moodWrite={moodWrite} 
-                    editTimestamp={editTimestamp} 
+                    editTimestamp={editTimestamp}
+                    setAudio={setAudio}
                 />
             </Route>
             <Route path="/journal/finish">
@@ -82,6 +84,7 @@ const Journal = () => {
                     editTimestamp={editTimestamp}
                     song={song}
                     setSong={setSong}
+                    audio={audio}
                 />
             </Route>
         </>

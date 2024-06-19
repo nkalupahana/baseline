@@ -127,6 +127,8 @@ const FinishJournal = props => {
         data.append("average", props.average);
         data.append("keys", JSON.stringify(checkKeys()));
         data.append("editTimestamp", props.editTimestamp);
+        data.append("audio", props.audio);
+
         if (props.song) data.append("song", props.song.uri);
         for (let file of props.files) {
             data.append("file", file);
