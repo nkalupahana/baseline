@@ -111,7 +111,8 @@ resource "google_service_account_iam_member" "give-perms-to-gh-actions" {
   member              = "serviceAccount:${var.gh-actions-sa}@${var.project}.iam.gserviceaccount.com"
 }
 
-# Pub/Sub
+## Pub/Sub
+# Cleanup
 resource "google_pubsub_topic" "pubsub_trigger_cleanup" {
   name = "pubsub-trigger-cleanup"
 }
@@ -121,6 +122,23 @@ resource "google_pubsub_subscription" "pubsub_trigger_cleanup_sub" {
   topic = google_pubsub_topic.pubsub_trigger_cleanup.name
   push_config {
     push_endpoint = "${var.endpoint}/messaging/removeUserNotifications"
+    oidc_token {
+      service_account_email = module.scheduled-services-sa.email
+      audience = var.endpoint
+    }
+  }
+}
+
+# Audio Processing
+resource "google_pubsub_topic" "pubsub_audio_processing" {
+  name = "pubsub-audio-processing"
+}
+
+resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
+  name  = "pubsub-audio-processing-sub"
+  topic = google_pubsub_topic.pubsub_audio_processing.name
+  push_config {
+    push_endpoint = "${var.endpoint}/processAudio"
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
       audience = var.endpoint
