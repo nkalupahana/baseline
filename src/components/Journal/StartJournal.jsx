@@ -5,8 +5,9 @@ import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import KeyboardSpacer from "../KeyboardSpacer";
 import { encrypt } from "../../helpers";
+import RecordJournal from "./RecordJournal";
 
-const WriteJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props }) => {
+const StartJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props }) => {
     const textarea = useRef();
     const next = () => {
         history.push("/journal/finish");
@@ -50,10 +51,11 @@ const WriteJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
                 <KeyboardSpacer />
+                <RecordJournal setAudio={props.setAudio} />
                 <div className="br"></div>
             </div>
         </div>
     );
 };
 
-export default WriteJournal;
+export default StartJournal;
