@@ -316,7 +316,10 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
 
         const storagePath = "tmp/" + audio.newFilename;
-        promises.push(getStorage().bucket().file(storagePath).save(audio.filepath, { contentType: audio.mimetype ?? undefined }));
+        promises.push(getStorage().bucket().file(storagePath).save(fs.readFileSync(audio.filepath), { contentType: audio.mimetype ?? undefined }).then(() => {
+            // Clean up temp file
+            fs.rmSync(audio.filepath);
+        }));
         audioData = {
             user: req.user!.user_id,
             log: globalNow.toMillis(),
@@ -343,7 +346,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             logData.song = data.song;
         }
 
-        if (data.audio) {
+        if (audioData) {
             logData.journal = "Audio upload and transcription in progress! Check back in a minute.";
         }
     } else {
