@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import StartJournal from "../components/Journal/StartJournal";
 import FinishJournal from "../components/Journal/FinishJournal";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Container.css";
 import { checkKeys, decrypt } from "../helpers";
 import { signOutAndCleanUp } from "../firebase";
@@ -20,7 +20,7 @@ const Journal = () => {
     const [average, setAverage] = useState("average");
     const [editTimestamp, setEditTimestamp] = useState<number | null>(null);
     const [song, setSong] = useState<SpotifySelection | undefined>(undefined);
-    const [audio, setAudio] = useState<Blob | null>(null);
+    const audioChunks = useRef<Blob[]>([]);
     
     useEffect(() => {
         const keys = checkKeys();
@@ -68,7 +68,7 @@ const Journal = () => {
                     setMoodRead={setMoodRead} 
                     moodWrite={moodWrite} 
                     editTimestamp={editTimestamp}
-                    setAudio={setAudio}
+                    audioChunks={audioChunks}
                 />
             </Route>
             <Route path="/journal/finish">
@@ -84,7 +84,7 @@ const Journal = () => {
                     editTimestamp={editTimestamp}
                     song={song}
                     setSong={setSong}
-                    audio={audio}
+                    audioChunks={audioChunks}
                 />
             </Route>
         </>

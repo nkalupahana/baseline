@@ -1,17 +1,17 @@
 import { IonButton } from "@ionic/react";
-import { useCallback, useRef } from "react";
+import { MutableRefObject, useCallback, useRef } from "react";
 import history from "../../history";
 
 interface Props {
-    setAudio: (audio: Blob) => void;
+    audioChunks: MutableRefObject<Blob[]>;
 }
 
-const RecordJournal = ({ setAudio } : Props) => {
-    const chunks = useRef<Blob[]>([]);
+const RecordJournal = ({ audioChunks } : Props) => {
     const startRecording = useRef<HTMLIonButtonElement | null>(null);
     const stopRecording = useRef<HTMLIonButtonElement | null>(null);
 
     const setUpRecording = useCallback(() => {
+        console.log("set up recording");
         const onSuccess = (stream: MediaStream) => {
             console.log(stream);
             console.log(stream.getTracks());
@@ -21,7 +21,7 @@ const RecordJournal = ({ setAudio } : Props) => {
                 console.log("data data")
                 console.log(e.data);
                 console.log(e.data.size);
-                chunks.current.push(e.data);
+                audioChunks.current.push(e.data);
             };
 
             mediaRecorder.onstart = () => {
@@ -39,14 +39,6 @@ const RecordJournal = ({ setAudio } : Props) => {
             stopRecording.current!.onclick = () => {
                 mediaRecorder.stop();
                 stream.getTracks().forEach(track => track.stop());
-                
-                console.log(chunks.current)
-                const blob = new Blob(chunks.current, { type: mediaRecorder.mimeType });
-                console.log("--");
-                console.log(blob);
-                console.log(blob.size);
-                console.log(blob.type);
-                setAudio(blob);
                 history.push("/journal/finish");
             }
         }
@@ -67,7 +59,7 @@ const RecordJournal = ({ setAudio } : Props) => {
         };
 
         navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, console.log);
-    }, [setAudio]);
+    }, [audioChunks]);
 
     return (
         <div>

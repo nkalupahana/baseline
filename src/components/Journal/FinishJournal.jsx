@@ -127,7 +127,13 @@ const FinishJournal = props => {
         data.append("average", props.average);
         data.append("keys", JSON.stringify(checkKeys()));
         data.append("editTimestamp", props.editTimestamp);
-        data.append("audio", props.audio);
+
+        if (props.audioChunks.current.length > 0) {
+            console.log(props.audioChunks)
+            const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
+            console.log(audioBlob);
+            data.append("audio", audioBlob);
+        }
 
         if (props.song) data.append("song", props.song.uri);
         for (let file of props.files) {

@@ -51,7 +51,7 @@ const StartJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props
                 </label>
                 { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
                 <KeyboardSpacer />
-                <RecordJournal setAudio={props.setAudio} />
+                <RecordJournal audioChunks={props.audioChunks} />
                 <div className="br"></div>
             </div>
         </div>
