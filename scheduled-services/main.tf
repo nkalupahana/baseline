@@ -34,6 +34,7 @@ module "scheduled-services-sa" {
     "${var.project}=>roles/firebasenotifications.admin",
     "${var.project}=>roles/firebasecloudmessaging.admin",
     "${var.project}=>roles/datastore.viewer",
+    "${var.project}=>roles/secretmanager.secretAccessor",
   ]
 }
 
