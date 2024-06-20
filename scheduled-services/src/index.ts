@@ -62,6 +62,7 @@ app.post("/messaging/cleanup", async (_, res) => {
 });
 
 app.post("/messaging/removeUserNotifications", removeUserNotifications);
+app.post("/processAudio", removeUserNotifications);
 
 app.post("/messaging/cleanUpTokens", cleanUpTokens);
 
