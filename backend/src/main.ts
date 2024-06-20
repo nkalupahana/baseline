@@ -178,10 +178,10 @@ export const survey = async (req: UserRequest, res: Response) => {
 export const moodLog = async (req: UserRequest, res: Response) => {
     const MEGABYTE = 1024 * 1024;
     let { data, files } : any = await new Promise(resolve => {
-        formidable({ keepExtensions: true, multiples: true, maxFileSize: (8 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
+        formidable({ keepExtensions: true, multiples: true, maxFileSize: (500 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
             if (err) {
                 if (err.httpCode === 413) {
-                    res.status(400).send("Please keep your images under 8MB.");
+                    res.status(400).send("Your images or audio recording are too big. If it's an image, remove it and try again. If it's an audio recording, you may need to make a smaller recording.");
                 } else {
                     console.warn(err);
                     res.status(400).send("Something's wrong with your images. Please remove them and try again.");
@@ -247,20 +247,20 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     }
 
     let filePaths: string[] = [];
-    files = files["file"];
+    let images = files["file"];
     // If user has screenshots:
-    if (files) {
+    if (images) {
         // If there's only one, they'll be given as just an object,
         // so put them into an array
-        if (!Array.isArray(files)) files = [files];
+        if (!Array.isArray(images)) images = [images];
         // Validate file limit
-        if (files.length > 3) {
+        if (images.length > 3) {
             res.send(400);
             return;
         }
 
         let promises = [];
-        for (const file of files) {
+        for (const file of images) {
             // Convert file to WEBP (with compression), and then save
             // Promises array for parallel processing
             try {
@@ -301,6 +301,30 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
     let promises = [];
 
+    // Audio processing
+    let audio = files["audio"] as formidable.File;
+    let audioData = null;
+    if (audio) {        
+        if (Array.isArray(audio)) {
+            res.send(400);
+            return;
+        }
+
+        if (!audio.mimetype) {
+            res.send(400);
+            return;
+        }
+
+        const storagePath = "tmp/" + audio.newFilename;
+        promises.push(getStorage().bucket().file(storagePath).save(audio.filepath, { contentType: audio.mimetype ?? undefined }));
+        audioData = {
+            user: req.user!.user_id,
+            log: globalNow.toMillis(),
+            file: storagePath,
+            encryptionKey: encryptionKey
+        }
+    }
+
     if (!data.editTimestamp) {
         const userNow = globalNow.setZone(data.timezone);
         logData = {
@@ -317,6 +341,10 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
         if (data.song) {
             logData.song = data.song;
+        }
+
+        if (data.audio) {
+            logData.journal = "Audio upload and transcription in progress! Check back in a minute.";
         }
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
@@ -341,5 +369,9 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     const p3 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
 
     await Promise.all([p1, p2, p3, ...promises]);
+    if (audioData) {
+        await pubsub.topic("pubsub-audio-processing").publishMessage({ json: audioData });
+    }
+    
     res.sendStatus(200);
 }
