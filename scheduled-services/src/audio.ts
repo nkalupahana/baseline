@@ -100,14 +100,15 @@ export const processAudio = async (req: Request, res: Response) => {
     // Encrypt and upload
     const mp3 = fs.readFileSync(`/tmp/${id}-upload.mp3`);
     const mp3Encrypted = AES.encrypt(mp3.toString("base64"), body.encryptionKey).toString();
-    await getStorage().bucket().file(`user/${body.user}/${id}.mp3.enc`).save(mp3Encrypted);
+    const encFilename = `${id}.mp3.enc`;
+    await getStorage().bucket().file(`user/${body.user}/${encFilename}`).save(mp3Encrypted);
 
     // Update log
     const db = getDatabase();
     const ref = db.ref(`/${body.user}/logs/${body.log}`);
     let logData = await (await ref.get()).val();
     logData = JSON.parse(AES.decrypt(logData.data, body.encryptionKey).toString(aesutf8));
-    logData.audio = id;
+    logData.audio = encFilename;
     logData.journal = text;
 
     await ref.set({
