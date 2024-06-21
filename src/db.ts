@@ -22,7 +22,7 @@ interface DB extends Dexie {
 }
 
 const ldb = new Dexie("ldb");
-ldb.version(2).stores({
+ldb.version(1).stores({
     logs: `&timestamp, year, month, day, time, zone, mood, average`,
 });
 
