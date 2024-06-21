@@ -108,7 +108,7 @@ export const processAudio = async (req: Request, res: Response) => {
     let logData = await (await ref.get()).val();
     logData = JSON.parse(AES.decrypt(logData.data, body.encryptionKey).toString(aesutf8));
     logData.audio = id;
-    logData.text = text;
+    logData.journal = text;
 
     await ref.set({
         data: AES.encrypt(JSON.stringify(logData), body.encryptionKey).toString()
