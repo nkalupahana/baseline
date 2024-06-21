@@ -77,5 +77,5 @@ export const getAudio = async (req: UserRequest, res: Response) => {
     }
 
     res.setHeader("Content-Type", "audio/mp3");
-    res.send(AES.decrypt(file[0].toString("utf8"), encryptionKey).toString());
+    res.send(Buffer.from(AES.decrypt(file[0].toString("utf8"), encryptionKey).toString(), "base64"));
 }
