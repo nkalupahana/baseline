@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BASE_URL, checkKeys } from "../../helpers";
 import { getIdToken } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -10,10 +10,11 @@ interface Props {
 
 const AudioViewer = ({ filename } : Props) => {
     const [user] = useAuthState(auth);
+    const [audio, setAudio] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         if (!user) return;
-
+        let url: string | undefined = undefined;
         (async () => {
             const keys = JSON.stringify(checkKeys());
             const resp = await fetch(`${BASE_URL}/getAudio`, {
@@ -28,13 +29,18 @@ const AudioViewer = ({ filename } : Props) => {
                 })
             });
             const blob = await resp.blob();
-            console.log(blob);
-            const url = URL.createObjectURL(blob);
-            console.log(url);
+            url = URL.createObjectURL(blob);
+            setAudio(url); 
         })();
+
+        return () => {
+            if (url) URL.revokeObjectURL(url);
+        };
     }, [filename, user]);
 
-    return <p>Audio Viewer { filename }</p>;
+    return <>
+        { audio && <audio controls src={audio} /> }
+    </>;
 };
 
 export default AudioViewer;
