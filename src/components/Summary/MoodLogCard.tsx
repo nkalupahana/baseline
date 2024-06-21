@@ -1,13 +1,14 @@
 import "./MoodLogCard.css";
 import { IonIcon } from "@ionic/react";
 import { useRef, useState } from "react";
-import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline, musicalNotes, pencil } from "ionicons/icons";
+import { caretDownOutline, caretForwardOutline, caretUpOutline, chevronUp, imagesOutline, musicalNotes, pencil, volumeHigh } from "ionicons/icons";
 import ImageCarousel from "./ImageCarousel";
 import { Log } from "../../db";
 import { AnyMap } from "../../helpers";
 import { ONE_MINUTE } from "../graphs/helpers";
 import history from "../../history";
 import { Spotify } from "react-spotify-embed";
+import AudioViewer from "./AudioViewer";
 
 interface Props {
     log: Log;
@@ -26,7 +27,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
 
     function toggleGrow() {
         if (!grow) {
-            if ((log.files && log.files.length > 0) || log.song || logContainer.current?.offsetHeight === NOGROW_HEIGHT) {
+            if ((log.files && log.files.length > 0) || log.song || log.audio || logContainer.current?.offsetHeight === NOGROW_HEIGHT) {
                 setGrow(true);
             }
         } else {
@@ -76,6 +77,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                 <>
                     { log.files && log.files.length > 0 && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
                     { log.song && <IonIcon className="close-btn mood-edit-btn" icon={musicalNotes} onClick={toggleGrow} /> }
+                    { log.audio && <IonIcon className="close-btn mood-edit-btn" icon={volumeHigh} onClick={toggleGrow} /> }
                 </> }
 
                 { grow && 
@@ -84,6 +86,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                         { window.navigator.onLine && <Spotify className="spotify-embed" wide={true} link={"https://open.spotify.com/track/" + log.song.split(":")[2]} /> }
                         { !window.navigator.onLine && <p><i>Internet connection required to load music from Spotify.</i></p>}
                     </div> }
+                    { log.audio && <AudioViewer filename={log.audio} />}
                     { log.files && log.files.length > 0 && <ImageCarousel setInFullscreen={setInFullscreen} files={log.files}></ImageCarousel> }
                     <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
                 </> }
