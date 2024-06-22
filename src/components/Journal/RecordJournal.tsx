@@ -9,14 +9,16 @@ interface Props {
 
 const RecordJournal = ({ audioChunks } : Props) => {
     const mediaRecorder = useRef<MediaRecorder | null>(null);
-    const timeRef = useRef<HTMLParagraphElement>(null);
     const visualizerRef = useRef<HTMLDivElement>(null);
     const [recording, setRecording] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [timeDisplay, setTimeDisplay] = useState("00:00");
 
     const setUpRecording = useCallback(() => {
         console.log("set up recording");
         const onSuccess = (stream: MediaStream) => {
             mediaRecorder.current = new MediaRecorder(stream);
+            let startTime = Math.round(Date.now() / 1000);
 
             let audioContext: AudioContext | null = new AudioContext();
             const analyser = audioContext.createAnalyser();
@@ -34,9 +36,14 @@ const RecordJournal = ({ audioChunks } : Props) => {
             
             mediaRecorder.current.onstart = () => {
                 setRecording(true);
+                startTime = Math.round(Date.now() / 1000);
             };
                 
             mediaRecorder.current.onstop = () => {
+                setElapsedTime(prevTime => {
+                    const time = Math.round(Date.now() / 1000) - startTime;
+                    return prevTime + time;
+                });
                 setRecording(false);
                 stream.getTracks().forEach(track => track.stop());    
                 mediaRecorder.current = null;
@@ -47,10 +54,13 @@ const RecordJournal = ({ audioChunks } : Props) => {
 
             const frequencyData = new Uint8Array(analyser.frequencyBinCount);
             const visualizer = () => {
+                const time = (Math.round(Date.now() / 1000) - startTime) + elapsedTime;
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                setTimeDisplay(`${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
+
                 if (!mediaRecorder.current) return;
                 try {
-                    timeRef.current!.textContent = (parseInt(timeRef.current!.textContent!) + 1).toString();
-
                     analyser.getByteFrequencyData(frequencyData);
                     const bars = visualizerRef.current!.children;
                     const dataMap: AnyMap = { 0: 9, 1: 7, 2: 6, 3: 5, 4: 4, 5: 3, 6: 2, 7: 1, 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 6, 15: 7, 16: 9 };
@@ -58,7 +68,7 @@ const RecordJournal = ({ audioChunks } : Props) => {
                         const value = frequencyData[dataMap[i]] / 255;
                         const elmStyles = (bars[i] as HTMLDivElement).style;
                         elmStyles.transform = `scaleY(${Math.max(0.05, value)})`;
-                        elmStyles.opacity = Math.max(0.25, value * 2).toFixed(4);
+                        elmStyles.opacity = Math.min(Math.max(0.25, value * 2), 1).toFixed(4);
                     }
                 } catch {}
                 requestAnimationFrame(visualizer);
@@ -81,11 +91,11 @@ const RecordJournal = ({ audioChunks } : Props) => {
                     ideal: 16
                 },
             },
-            video: false 
+            video: false
         };
 
         navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, console.log);
-    }, [audioChunks]);
+    }, [audioChunks, elapsedTime]);
 
     useEffect(() => {
         return () => {
@@ -95,6 +105,7 @@ const RecordJournal = ({ audioChunks } : Props) => {
     
     return (
         <div>
+            <p>{ timeDisplay } / 60:00</p>
             <div className="rj-visualizer" ref={visualizerRef}>
                 { /* 17 bars */ }
                 <div></div>
@@ -115,7 +126,6 @@ const RecordJournal = ({ audioChunks } : Props) => {
                 <div></div>
                 <div></div>
             </div>
-            <p ref={timeRef}>0</p>
             <IonButton onClick={!recording ? setUpRecording : () => {mediaRecorder.current?.stop();}}>{ recording ? "Stop Recording" : "Obtain Stream" }</IonButton>
         </div>
     );

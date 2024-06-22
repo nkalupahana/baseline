@@ -13,13 +13,17 @@ export interface SpotifySelection {
 
 
 const Journal = () => {
+    // Standard journaling
     const [text, setText] = useState("");
     const [files, setFiles] = useState([]);
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
     const [average, setAverage] = useState("average");
+    // Editing
     const [editTimestamp, setEditTimestamp] = useState<number | null>(null);
+    // Spotify integration
     const [song, setSong] = useState<SpotifySelection | undefined>(undefined);
+    // Audio recording
     const audioChunks = useRef<Blob[]>([]);
     
     useEffect(() => {
