@@ -3,12 +3,19 @@ import { useEffect, useRef } from "react";
 import history from "../../history";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
-import KeyboardSpacer from "../KeyboardSpacer";
 import { encrypt } from "../../helpers";
-import RecordJournal from "./RecordJournal";
+import WriteJournal from "./WriteJournal";
 
-const StartJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props }) => {
-    const textarea = useRef();
+interface Props {
+    setMoodRead: (mood: number) => void;
+    moodWrite: number;
+    setText: (text: string) => void;
+    editTimestamp: number | null;
+    text: string;
+}
+
+const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp } : Props) => {
+    const textarea = useRef<HTMLTextAreaElement>(null);
     const next = () => {
         history.push("/journal/finish");
     };
@@ -23,14 +30,15 @@ const StartJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props
     }, []);
 
     useEffect(() => {
-        if (!props.text || editTimestamp) return;
+        if (!text || editTimestamp) return;
 
-        if (sessionStorage.getItem("pwd")) {
-            localStorage.setItem("eautosave", encrypt(props.text, sessionStorage.getItem("pwd")));
+        const pwd = sessionStorage.getItem("pwd");
+        if (pwd) {
+            localStorage.setItem("eautosave", encrypt(text, pwd));
         } else {
-            localStorage.setItem("autosave", props.text);
+            localStorage.setItem("autosave", text);
         }
-    }, [props.text, editTimestamp]);
+    }, [text, editTimestamp]);
 
     return (
         <div className="container">
@@ -46,13 +54,7 @@ const StartJournal = ({ setMoodRead, moodWrite, setText, editTimestamp, ...props
                         <div className="br"></div>
                     </>
                 }
-                <label data-value={props.text} className="input-sizer stacked">
-                    <textarea ref={textarea} className="tx" value={props.text} onInput={e => setText(e.target.value)} rows="1" placeholder="Start typing here!"></textarea>
-                </label>
-                { props.text.trim() && <div onClick={next} className="fake-button">Continue</div> }
-                <KeyboardSpacer />
-                <RecordJournal audioChunks={props.audioChunks} />
-                <div className="br"></div>
+                <WriteJournal textarea={textarea} text={text} setText={setText} next={next} />
             </div>
         </div>
     );

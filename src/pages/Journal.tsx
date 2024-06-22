@@ -72,7 +72,6 @@ const Journal = () => {
                     setMoodRead={setMoodRead} 
                     moodWrite={moodWrite} 
                     editTimestamp={editTimestamp}
-                    audioChunks={audioChunks}
                 />
             </Route>
             <Route path="/journal/finish">
