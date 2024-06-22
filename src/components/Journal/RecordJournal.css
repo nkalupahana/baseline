@@ -1,0 +1,16 @@
+.rj-visualizer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rj-visualizer > div {
+    display: inline-block;
+    width: 3px;
+    height: 100px;
+    margin: 0 7px;
+    background: grey;
+    transform: scaleY( .1 );
+    opacity: .25;
+}
