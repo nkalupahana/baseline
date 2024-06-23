@@ -1,10 +1,11 @@
 import "./JournalComponents.css";
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useCallback, useEffect } from "react";
 import history from "../../history";
 import { closeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import { encrypt } from "../../helpers";
 import WriteJournal from "./WriteJournal";
+import RecordJournal from "./RecordJournal";
 
 interface Props {
     setMoodRead: (mood: number) => void;
@@ -12,22 +13,21 @@ interface Props {
     setText: (text: string) => void;
     editTimestamp: number | null;
     text: string;
+    audioChunks: MutableRefObject<Blob[]>;
+    elapsedTime: number;
+    setElapsedTime: (time: number) => void;
+    audioView: boolean;
+    setAudioView: (view: boolean) => void;
 }
 
-const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp } : Props) => {
-    const textarea = useRef<HTMLTextAreaElement>(null);
-    const next = () => {
+const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, audioChunks, elapsedTime, setElapsedTime, audioView, setAudioView } : Props) => {
+    const next = useCallback(() => {
         history.push("/journal/finish");
-    };
+    }, []);
 
     useEffect(() => {
         setMoodRead(moodWrite);
     }, [setMoodRead, moodWrite]);
-
-    useEffect(() => {
-        if (!textarea.current) return;
-        textarea.current.focus();
-    }, []);
 
     useEffect(() => {
         if (!text || editTimestamp) return;
@@ -54,7 +54,20 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp } :
                         <div className="br"></div>
                     </>
                 }
-                <WriteJournal textarea={textarea} text={text} setText={setText} next={next} />
+                { !audioView && <WriteJournal 
+                    text={text} 
+                    setText={setText} 
+                    next={next} 
+                    setAudioView={setAudioView} 
+                    editTimestamp={editTimestamp}
+                /> }
+                { audioView && <RecordJournal 
+                    audioChunks={audioChunks} 
+                    elapsedTime={elapsedTime}
+                    setElapsedTime={setElapsedTime}
+                    next={next}
+                    setAudioView={setAudioView}
+                /> }
             </div>
         </div>
     );

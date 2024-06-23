@@ -25,6 +25,8 @@ const Journal = () => {
     const [song, setSong] = useState<SpotifySelection | undefined>(undefined);
     // Audio recording
     const audioChunks = useRef<Blob[]>([]);
+    const [audioView, setAudioView] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState(0);
     
     useEffect(() => {
         const keys = checkKeys();
@@ -72,6 +74,11 @@ const Journal = () => {
                     setMoodRead={setMoodRead} 
                     moodWrite={moodWrite} 
                     editTimestamp={editTimestamp}
+                    audioChunks={audioChunks}
+                    elapsedTime={elapsedTime}
+                    setElapsedTime={setElapsedTime}
+                    audioView={audioView}
+                    setAudioView={setAudioView}
                 />
             </Route>
             <Route path="/journal/finish">
@@ -88,6 +95,7 @@ const Journal = () => {
                     song={song}
                     setSong={setSong}
                     audioChunks={audioChunks}
+                    elapsedTime={elapsedTime}
                 />
             </Route>
         </>

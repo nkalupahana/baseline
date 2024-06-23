@@ -432,3 +432,9 @@ export function fingerprint() {
     const hash = murmurhash3_32_gc(fingerprint, 921743158);
     return hash;
 }
+
+export function timeToString (time: number) {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}

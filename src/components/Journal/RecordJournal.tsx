@@ -1,20 +1,33 @@
 import { IonButton } from "@ionic/react";
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 import "./RecordJournal.css";
-import { AnyMap } from "../../helpers";
+import { AnyMap, timeToString } from "../../helpers";
 
 interface Props {
     audioChunks: MutableRefObject<Blob[]>;
+    elapsedTime: number;
+    setElapsedTime: (time: number) => void;
+    next: () => void;
+    setAudioView: (view: boolean) => void;
 }
 
-const RecordJournal = ({ audioChunks } : Props) => {
+const MAX_RECORDING_LENGTH_SECS = 60 * 60;
+
+const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudioView } : Props) => {
     const mediaRecorder = useRef<MediaRecorder | null>(null);
     const visualizerRef = useRef<HTMLDivElement>(null);
     const [recording, setRecording] = useState(false);
-    const [elapsedTime, setElapsedTime] = useState(0);
     const [timeDisplay, setTimeDisplay] = useState("00:00");
 
+    const clear = useCallback(() => {
+        audioChunks.current = [];
+        setElapsedTime(0);
+        setTimeDisplay("00:00");
+    }, [audioChunks, setElapsedTime]);
+
     const setUpRecording = useCallback(() => {
+        if (elapsedTime >= MAX_RECORDING_LENGTH_SECS) return;
+
         console.log("set up recording");
         const onSuccess = (stream: MediaStream) => {
             mediaRecorder.current = new MediaRecorder(stream);
@@ -40,10 +53,8 @@ const RecordJournal = ({ audioChunks } : Props) => {
             };
                 
             mediaRecorder.current.onstop = () => {
-                setElapsedTime(prevTime => {
-                    const time = Math.round(Date.now() / 1000) - startTime;
-                    return prevTime + time;
-                });
+                const time = Math.round(Date.now() / 1000) - startTime;
+                setElapsedTime(elapsedTime + time);
                 setRecording(false);
                 stream.getTracks().forEach(track => track.stop());    
                 mediaRecorder.current = null;
@@ -54,12 +65,18 @@ const RecordJournal = ({ audioChunks } : Props) => {
 
             const frequencyData = new Uint8Array(analyser.frequencyBinCount);
             const visualizer = () => {
+                // Update time display
                 const time = (Math.round(Date.now() / 1000) - startTime) + elapsedTime;
-                const minutes = Math.floor(time / 60);
-                const seconds = time % 60;
-                setTimeDisplay(`${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
+                setTimeDisplay(timeToString(time));
 
+                // Stop recording if time is up, or recorder was stopped
+                if (time >= MAX_RECORDING_LENGTH_SECS) {
+                    mediaRecorder.current?.stop();
+                    return;
+                }
                 if (!mediaRecorder.current) return;
+
+                // Update visualizer
                 try {
                     analyser.getByteFrequencyData(frequencyData);
                     const bars = visualizerRef.current!.children;
@@ -71,6 +88,8 @@ const RecordJournal = ({ audioChunks } : Props) => {
                         elmStyles.opacity = Math.min(Math.max(0.25, value * 2), 1).toFixed(4);
                     }
                 } catch {}
+
+                // Request next frame
                 requestAnimationFrame(visualizer);
             };
 
@@ -78,7 +97,7 @@ const RecordJournal = ({ audioChunks } : Props) => {
 
             requestAnimationFrame(visualizer);
         }
- 
+
         const constraints: MediaStreamConstraints = {
             audio: {
                 channelCount: {
@@ -95,17 +114,22 @@ const RecordJournal = ({ audioChunks } : Props) => {
         };
 
         navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, console.log);
-    }, [audioChunks, elapsedTime]);
+    }, [audioChunks, elapsedTime, setElapsedTime]);
 
+    // Exit on unmount
     useEffect(() => {
         return () => {
             mediaRecorder.current?.stop();
         };
     }, []);
+
+    useEffect(() => {
+        setTimeDisplay(timeToString(elapsedTime));
+    }, [elapsedTime]);
     
     return (
         <div>
-            <p>{ timeDisplay } / 60:00</p>
+            <p>{ timeDisplay } / 1:00</p>
             <div className="rj-visualizer" ref={visualizerRef}>
                 { /* 17 bars */ }
                 <div></div>
@@ -127,6 +151,13 @@ const RecordJournal = ({ audioChunks } : Props) => {
                 <div></div>
             </div>
             <IonButton onClick={!recording ? setUpRecording : () => {mediaRecorder.current?.stop();}}>{ recording ? "Stop Recording" : "Obtain Stream" }</IonButton>
+            { audioChunks.current.length === 0 && !recording && <>
+                <IonButton onClick={() => setAudioView(false)}>Switch to Text Journaling</IonButton>
+            </> }
+            { audioChunks.current.length > 0 && !recording && <>
+                <IonButton onClick={clear}>Clear Recording</IonButton>
+                <div onClick={next} className="fake-button">Continue</div>
+            </> }
         </div>
     );
 };
