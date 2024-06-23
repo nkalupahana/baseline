@@ -4,7 +4,7 @@ import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIco
 import { getIdToken } from "firebase/auth"
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
@@ -12,7 +12,7 @@ import { attach, closeCircleOutline, closeOutline } from "ionicons/icons";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
-import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
+import { BASE_URL, checkKeys, networkFailure, timeToString, toast } from "../../helpers";
 import ldb from "../../db";
 import { InAppReview } from '@capacitor-community/in-app-review';
 import Confetti from "react-confetti";
@@ -74,10 +74,16 @@ const FinishJournal = props => {
                 hideArrow: true
             }
         }
-    ]
+    ];
+
+    // Display text
+    const displayText = useMemo(() => {
+        if (props.elapsedTime === 0) return props.text;
+        return `Audio journal (${timeToString(props.elapsedTime)})`;
+    }, [props.text, props.elapsedTime])
     
     useEffect(() => {
-        if (!lastLogs || !lastAverageLogs || props.editTimestamp) return;
+        if (!lastLogs || !lastAverageLogs || props.editTimestamp || props.audioChunks.length > 0) return;
         const lastLog = lastLogs[0];
        
         // Check if user isn't writing enough
@@ -101,7 +107,7 @@ const FinishJournal = props => {
             }
         }
 
-    }, [lastLogs, lastAverageLogs, props.text, props.editTimestamp]);
+    }, [lastLogs, lastAverageLogs, props.text, props.editTimestamp, props.audioChunks]);
 
     useEffect(() => {
         if (submitted) {
@@ -340,7 +346,7 @@ const FinishJournal = props => {
                             { !props.editTimestamp && <SearchSpotify user={user} song={props.song} setSong={props.setSong} /> }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
-                                <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
+                                <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={displayText} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
                                 <div onClick={submit} className="finish-button">
                                     { !submitting && props.editTimestamp === null && "Done!" }
                                     { !submitting && props.editTimestamp !== null && "Edit!" }
