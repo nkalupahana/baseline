@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import KeyboardSpacer from "../KeyboardSpacer";
+import { IonIcon } from "@ionic/react";
+import { mic } from "ionicons/icons";
 
 interface Props {
     text: string;
@@ -20,10 +22,13 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
 
     return <>
         <label data-value={text} className="input-sizer stacked">
-        <textarea ref={textarea} className="tx" value={text} onInput={e => setText((e.target as HTMLTextAreaElement).value)} rows={1} placeholder="Start typing here!"></textarea>
+            <textarea ref={textarea} className="tx" value={text} onInput={e => setText((e.target as HTMLTextAreaElement).value)} rows={1} placeholder="Start typing here!"></textarea>
         </label>
+        { !text.trim() && !editTimestamp && <p onClick={() => setAudioView(true)} className="input-sizer sizing-only rj-switch">
+            <IonIcon icon={mic} className="rj-switch-icon" />
+            <span style={{"paddingLeft": "1.5px"}}>Switch to Audio Journal</span>
+        </p> }
         { text.trim() && <div onClick={next} className="fake-button">Continue</div> }
-        { !text.trim() && !editTimestamp && <div onClick={() => setAudioView(true)} className="fake-button">Switch to Audio Journal</div> }
         <KeyboardSpacer />
         <div className="br"></div>
     </>
