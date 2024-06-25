@@ -98,3 +98,20 @@ div.flickity-enabled.is-fullscreen > .flickity-download-button {
 .spotify-embed {
     border-radius: 14px !important;
 }
+
+.rj-audio-element {
+    margin-left: 4px;
+    width: 100%;
+    margin-top: 8px;
+    padding-right: 8px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.rj-audio-element.rj-audio-loading {
+    margin-left: 8px;
+}
+
+.pad-left {
+    padding-left: 8px;
+}
