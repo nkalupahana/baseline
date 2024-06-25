@@ -309,6 +309,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
         if (audioData) {
             logData.journal = "Audio upload and transcription in progress! Check back in a minute.";
+            logData.audio = "inprogress";
         }
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
