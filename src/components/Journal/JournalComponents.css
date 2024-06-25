@@ -95,6 +95,10 @@
     line-height: 21px;
 }
 
+.input-sizer.sizing-only {
+    display: block;
+}
+
 @media only screen and (min-width: 800px) {
     .input-sizer {
         width: 80%;

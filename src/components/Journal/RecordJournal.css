@@ -14,3 +14,52 @@
     transform: scaleY( .1 );
     opacity: .25;
 }
+
+.rj-timedisplay {
+    text-align: center;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.rj-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rj-color-animate {
+    transition-property: background-color;
+    transition-duration: 0.5s;
+}
+
+.fake-button.rj-record.rj-red {
+    background-color: #c80000;
+}
+
+.rj-close {
+    transform: translateY(3.5px);
+    cursor: pointer;
+}
+
+.rj-switch-icon {
+    transform: translateY(3.2px) scale(1.1);
+}
+
+.rj-switch {
+    text-underline-offset: 4px;
+    text-decoration-thickness: 0.5px;
+    opacity: 0.7;
+    cursor: pointer;
+    text-decoration-line: underline;
+}
+
+.rj-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.fake-button.rj-record {
+    border-radius: 40px;
+    width: 160px;
+    background-color: var(--dark-action);
+}

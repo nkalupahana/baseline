@@ -1,7 +1,9 @@
-import { IonButton } from "@ionic/react";
-import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
+import { IonIcon } from "@ionic/react";
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./RecordJournal.css";
-import { AnyMap, timeToString } from "../../helpers";
+import { AnyMap, timeToString, toast } from "../../helpers";
+import { closeCircleOutline, pencil } from "ionicons/icons";
+import * as Sentry from "@sentry/react";
 
 interface Props {
     audioChunks: MutableRefObject<Blob[]>;
@@ -28,8 +30,14 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
     const setUpRecording = useCallback(() => {
         if (elapsedTime >= MAX_RECORDING_LENGTH_SECS) return;
 
-        console.log("set up recording");
         const onSuccess = (stream: MediaStream) => {
+            if (mediaRecorder.current) {
+                // If there's a currently running recording,
+                // cancel this one
+                stream.getTracks().forEach(track => track.stop());
+                return;
+            }
+
             mediaRecorder.current = new MediaRecorder(stream);
             let startTime = Math.round(Date.now() / 1000);
 
@@ -51,6 +59,11 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
                 setRecording(true);
                 startTime = Math.round(Date.now() / 1000);
             };
+
+            mediaRecorder.current.onerror = (e: any) => {
+                toast(`An error occurred while recording. Please try again. (${e.error.code}, ${e.error.message})`);
+                Sentry.captureException(e.error);
+            };
                 
             mediaRecorder.current.onstop = () => {
                 const time = Math.round(Date.now() / 1000) - startTime;
@@ -61,6 +74,14 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
 
                 audioContext?.close();
                 audioContext = null;
+
+                // Reset visualizer bars
+                const bars = visualizerRef.current!.children;
+                for (let i = 0; i < bars.length; i++) {
+                    const elmStyles = (bars[i] as HTMLDivElement).style;
+                    elmStyles.transform = "";
+                    elmStyles.opacity = "";
+                }
             };
 
             const frequencyData = new Uint8Array(analyser.frequencyBinCount);
@@ -113,7 +134,10 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
             video: false
         };
 
-        navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, console.log);
+        navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, (err) => {
+            toast(`Couldn't access microphone to record. (${err.name}, ${err.message})`, "bottom");
+            Sentry.captureException(err);
+        });
     }, [audioChunks, elapsedTime, setElapsedTime]);
 
     // Exit on unmount
@@ -126,10 +150,22 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
     useEffect(() => {
         setTimeDisplay(timeToString(elapsedTime));
     }, [elapsedTime]);
+
+    const recordButtonClass = useMemo(() => {
+        return "fake-button rj-record rj-color-animate" 
+            + (recording ? " rj-red" : "") 
+            + (elapsedTime >= MAX_RECORDING_LENGTH_SECS ? " rj-disabled" : "");
+    }, [recording, elapsedTime]);
+
+    const stopRecording = () => {
+        mediaRecorder.current?.stop();
+    }
     
     return (
         <div>
-            <p>{ timeDisplay } / 1:00</p>
+            <p className="rj-timedisplay">{ timeDisplay } / 60:00&nbsp;
+                { !recording && elapsedTime > 0 && <IonIcon className="rj-close" icon={closeCircleOutline} onClick={clear} /> }
+            </p>
             <div className="rj-visualizer" ref={visualizerRef}>
                 { /* 17 bars */ }
                 <div></div>
@@ -150,14 +186,16 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
                 <div></div>
                 <div></div>
             </div>
-            <IonButton onClick={!recording ? setUpRecording : () => {mediaRecorder.current?.stop();}}>{ recording ? "Stop Recording" : "Obtain Stream" }</IonButton>
-            { audioChunks.current.length === 0 && !recording && <>
-                <IonButton onClick={() => setAudioView(false)}>Switch to Text Journaling</IonButton>
-            </> }
-            { audioChunks.current.length > 0 && !recording && <>
-                <IonButton onClick={clear}>Clear Recording</IonButton>
-                <div onClick={next} className="fake-button">Continue</div>
-            </> }
+            <div className="rj-buttons">
+                <div className={recordButtonClass} onClick={!recording ? setUpRecording : stopRecording}>{ recording ? "Stop Recording" : "Record" }</div>
+                { elapsedTime === 0 && !recording && <p onClick={() => setAudioView(false)} className="input-sizer sizing-only rj-switch text-center">
+                    <IonIcon icon={pencil} className="rj-switch-icon" />
+                    <span style={{"paddingLeft": "5px"}}>Switch to Written Journal</span>
+                </p> }
+                { elapsedTime > 0 && !recording && <>
+                    <div onClick={next} className="fake-button">Continue</div>
+                </> }
+            </div>
         </div>
     );
 };
