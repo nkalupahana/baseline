@@ -61,7 +61,6 @@ export const processAudio = async (req: Request, res: Response) => {
         const form = new FormData();
         form.append("file", new Blob([fs.readFileSync(outputFilepath)], { type: "audio/ogg" }));
         form.append("model", "whisper-1");
-        form.append("prompt", "This is a journal entry on the journaling app baseline. Use correct punctuation.");
 
         const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
             method: "POST",
