@@ -135,9 +135,7 @@ const FinishJournal = props => {
         data.append("editTimestamp", props.editTimestamp);
 
         if (props.audioChunks.current.length > 0) {
-            console.log(props.audioChunks)
             const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
-            console.log(audioBlob);
             data.append("audio", audioBlob);
         }
 

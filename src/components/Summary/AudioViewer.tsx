@@ -39,7 +39,8 @@ const AudioViewer = ({ filename } : Props) => {
     }, [filename, user]);
 
     return <>
-        { audio && <audio controls src={audio} /> }
+        { audio && <audio className="rj-audio-element" controls src={audio} /> }
+        { !audio && <p className="rj-audio-element rj-audio-loading"><i>Audio loading...</i></p> }
     </>;
 };
 
