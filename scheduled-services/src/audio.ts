@@ -98,7 +98,7 @@ export const processAudio = async (req: Request, res: Response) => {
 
     // Encrypt and upload
     const mp3 = fs.readFileSync(`/tmp/${id}-upload.mp3`);
-    const mp3Encrypted = AES.encrypt(mp3.toString("base64"), body.encryptionKey).toString();
+    const mp3Encrypted = AES.encrypt(mp3.toString("binary"), body.encryptionKey).toString();
     const encFilename = `${id}.mp3.enc`;
     await getStorage().bucket().file(`user/${body.user}/${encFilename}`).save(mp3Encrypted);
 
