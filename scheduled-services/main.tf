@@ -140,7 +140,6 @@ resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
   topic = google_pubsub_topic.pubsub_audio_processing.name
 
   ack_deadline_seconds = 360
-  enable_exactly_once_delivery = true
   
   push_config {
     push_endpoint = "${var.endpoint}/processAudio"
