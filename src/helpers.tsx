@@ -60,7 +60,7 @@ export const COLORS_CB: AnyMap = {
     "5": "var(--background-color-inverted)"
 };
 
-export const BASE_URL = "https://latest---baseline-backend-lg27dbkpuq-uc.a.run.app";
+export const BASE_URL = "https://api.getbaseline.app";
 
 export function createPoints(data: Log[], colors: AnyMap) {
     let points = [];
