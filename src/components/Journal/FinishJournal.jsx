@@ -83,7 +83,7 @@ const FinishJournal = props => {
     }, [props.text, props.elapsedTime])
     
     useEffect(() => {
-        if (!lastLogs || !lastAverageLogs || props.editTimestamp || props.audioChunks.length > 0) return;
+        if (!lastLogs || !lastAverageLogs || props.editTimestamp || props.elapsedTime > 0) return;
         const lastLog = lastLogs[0];
        
         // Check if user isn't writing enough
@@ -107,7 +107,7 @@ const FinishJournal = props => {
             }
         }
 
-    }, [lastLogs, lastAverageLogs, props.text, props.editTimestamp, props.audioChunks]);
+    }, [lastLogs, lastAverageLogs, props.text, props.editTimestamp, props.elapsedTime]);
 
     useEffect(() => {
         if (submitted) {
