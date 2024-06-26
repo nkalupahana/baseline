@@ -98,8 +98,13 @@ export const processAudio = async (req: Request, res: Response) => {
 
         if (response && response.ok) {
             const json = await response.json();
-            if (json.text) {
-                text = json.text;
+            if (typeof json.text === "string") {
+                if (json.text.trim() === "") {
+                    // Empty transcription; add filler text
+                    text = "Open to listen (no transcription).";
+                } else {
+                    text = json.text;
+                }
             } else {
                 console.error(new Error("OPENAI TRANSCRIPTION FAILED - 1"));
                 console.error(json);
