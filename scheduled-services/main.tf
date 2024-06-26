@@ -138,6 +138,9 @@ resource "google_pubsub_topic" "pubsub_audio_processing" {
 resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
   name  = "pubsub-audio-processing-sub"
   topic = google_pubsub_topic.pubsub_audio_processing.name
+
+  ack_deadline_seconds = 360
+  
   push_config {
     push_endpoint = "${var.endpoint}/processAudio"
     oidc_token {
