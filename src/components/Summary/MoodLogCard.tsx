@@ -77,7 +77,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                 <>
                     { log.files && log.files.length > 0 && <IonIcon className="close-btn" icon={imagesOutline} onClick={toggleGrow} /> }
                     { log.song && <IonIcon className="close-btn mood-edit-btn" icon={musicalNotes} onClick={toggleGrow} /> }
-                    { log.audio && <IonIcon className="close-btn mood-edit-btn" icon={volumeHigh} onClick={toggleGrow} /> }
+                    { log.audio && <IonIcon className="close-btn mood-edit-btn audio-btn" icon={volumeHigh} onClick={toggleGrow} /> }
                 </> }
 
                 { grow && 

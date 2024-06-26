@@ -315,6 +315,38 @@ describe("Mobile Flow", () => {
         cy.contains("Add a song!").parent().find("iframe").should("exist")
     })
 
+    it("Test Audio Journaling", () => {
+        cy.get(".fab-button-close-active").should("exist").click()
+        cy.contains("What's happening").should("exist")
+        cy.contains("Switch to Audio Journal").click()
+
+        cy.contains("00:00").should("exist")
+        cy.get(".rj-close").should("not.exist")
+        cy.get("body").happoScreenshot()
+
+        cy.contains("Record").click()
+        cy.contains("Stop Recording").should("exist")
+        cy.get("body").happoScreenshot()
+
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        cy.contains("Stop Recording").click()
+        cy.contains("Record").should("exist")
+        
+        cy.contains("00:00").should("not.exist")
+        cy.get(".rj-close").click()
+        cy.contains("00:00").should("exist")
+
+        cy.contains("Record").click()
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.contains("Stop Recording").click()
+
+        cy.contains("Continue").click()
+        cy.contains("Done!").should("exist").click()
+        cy.url().should("include", "/summary")
+        cy.get(".audio-btn").should("exist")
+    })
+
     it("Test -5 Warning Behavior", () => {
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
@@ -410,7 +442,7 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get("#search-num-results").should("have.text", "17 entries")
+        cy.get("#search-num-results").should("have.text", "18 entries")
         cy.get(".image-btn").click()
         cy.contains("No Results").should("exist")
         cy.get("#search-num-results").should("have.text", "0 entries")
@@ -624,7 +656,7 @@ describe("Test My Data", () => {
         cy.get("#timestamp").should("have.class", "checkbox-checked")
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(38)
+            expect(json).to.have.length(39)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
@@ -632,7 +664,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(38)
+            expect(data).to.have.length(39)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
@@ -643,7 +675,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(38)
+            expect(json).to.have.length(39)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
@@ -653,7 +685,7 @@ describe("Test My Data", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(38)
+            expect(data).to.have.length(39)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
