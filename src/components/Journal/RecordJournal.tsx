@@ -13,7 +13,7 @@ interface Props {
     setAudioView: (view: boolean) => void;
 }
 
-const MAX_RECORDING_LENGTH_SECS = 60 * 60;
+const MAX_RECORDING_LENGTH_SECS = 60 * 15;
 
 const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudioView } : Props) => {
     const mediaRecorder = useRef<MediaRecorder | null>(null);
@@ -163,7 +163,7 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
     
     return (
         <div>
-            <p className="rj-timedisplay">{ timeDisplay } / 60:00&nbsp;
+            <p className="rj-timedisplay">{ timeDisplay } / 15:00&nbsp;
                 { !recording && elapsedTime > 0 && <IonIcon className="rj-close" icon={closeCircleOutline} onClick={clear} /> }
             </p>
             <div className="rj-visualizer" ref={visualizerRef}>
