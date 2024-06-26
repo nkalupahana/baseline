@@ -139,7 +139,12 @@ resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
   name  = "pubsub-audio-processing-sub"
   topic = google_pubsub_topic.pubsub_audio_processing.name
 
-  ack_deadline_seconds = 360
+  ack_deadline_seconds = 300
+
+  retry_policy {
+    minimum_backoff = "300s"
+    maximum_backoff = "600s"
+  }
   
   push_config {
     push_endpoint = "${var.endpoint}/processAudio"
