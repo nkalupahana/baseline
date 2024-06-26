@@ -320,6 +320,8 @@ describe("Mobile Flow", () => {
         cy.contains("What's happening").should("exist")
         cy.contains("Switch to Audio Journal").click()
 
+        cy.get(".toastify").should("not.exist")
+
         cy.contains("00:00").should("exist")
         cy.get(".rj-close").should("not.exist")
         cy.get("body").happoScreenshot()
