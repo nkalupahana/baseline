@@ -40,6 +40,18 @@ export const processAudio = async (req: Request, res: Response) => {
     const inputFilepath = `/tmp/${id}`;
     const outputFilepath = `/tmp/${id}.ogg`;
 
+    // Get log
+    const db = getDatabase();
+    const ref = db.ref(`/${body.user}/logs/${body.log}`);
+    let logData = await (await ref.get()).val();
+    logData = JSON.parse(AES.decrypt(logData.data, body.encryptionKey).toString(aesutf8));
+
+    // Already processed? Skip.
+    if (logData.audio !== "inprogress") {
+        res.sendStatus(204);
+        return;
+    }
+
     await getStorage().bucket().file(body.file).download({ destination: inputFilepath });
 
     // Convert to starting bitrate ogg
@@ -62,15 +74,29 @@ export const processAudio = async (req: Request, res: Response) => {
         form.append("file", new Blob([fs.readFileSync(outputFilepath)], { type: "audio/ogg" }));
         form.append("model", "whisper-1");
 
-        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-            },
-            body: form
-        });
-        
-        if (response.ok) {
+        let retryCount = 5;
+
+        let response;
+        while (retryCount > 0) {
+            response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+                },
+                body: form
+            });
+            
+            if (!response.ok) {
+                console.log("OPENAI RETRY");
+                retryCount--;
+                await new Promise(res => setTimeout(res, 10000));
+            } else {
+                // Exit loop
+                retryCount = 0;
+            }
+        }
+
+        if (response && response.ok) {
             const json = await response.json();
             if (json.text) {
                 text = json.text;
@@ -78,9 +104,11 @@ export const processAudio = async (req: Request, res: Response) => {
                 console.error(new Error("OPENAI TRANSCRIPTION FAILED - 1"));
                 console.error(json);
             }
-        } else {
+        } else if (response) {
             console.error(new Error("OPENAI TRANSCRIPTION FAILED - 2"));
             console.error(await response.text());
+        } else {
+            console.error(new Error("OPENAI TRANSCRIPTION FAILED - 3"));
         }
     }
 
@@ -103,10 +131,6 @@ export const processAudio = async (req: Request, res: Response) => {
     await getStorage().bucket().file(`user/${body.user}/${encFilename}`).save(mp3Encrypted);
 
     // Update log
-    const db = getDatabase();
-    const ref = db.ref(`/${body.user}/logs/${body.log}`);
-    let logData = await (await ref.get()).val();
-    logData = JSON.parse(AES.decrypt(logData.data, body.encryptionKey).toString(aesutf8));
     logData.audio = encFilename;
     logData.journal = text;
 
