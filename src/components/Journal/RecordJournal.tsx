@@ -57,13 +57,7 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
             // If the audio context is suspended, resume it
             // (Happens due to some input device changes)
             audioContext.onstatechange = e => {
-                console.log("---");
-                console.log(stream.active);
-                console.log(audioContext?.state);
-                console.log(audioContext);
-                console.log(stream);
                 if (stream.active && audioContext?.state === "suspended") {
-                    console.log("Resume audio context")
                     audioContext?.resume();
                 }
             }

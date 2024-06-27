@@ -21,6 +21,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
 import SearchSpotify from "./SearchSpotify";
+import * as Sentry from "@sentry/react";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -136,6 +137,14 @@ const FinishJournal = props => {
 
         if (props.audioChunks.current.length > 0) {
             const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
+            if (audioBlob.size === 0) {
+                const type = Capacitor.getPlatform() === "web" ? "browser" : "device";
+                toast(`Your audio journal has no data. Please try recording again. If you continue to see this message, you will not be able to make audio recordings on this ${type}.`, "top", 8000);
+                Sentry.captureException(new Error(`Empty audio blob, ${navigator.userAgent}`));
+                setSubmitting(false);
+                return;
+            }
+
             data.append("audio", audioBlob);
         }
 
