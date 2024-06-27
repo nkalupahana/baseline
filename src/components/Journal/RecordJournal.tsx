@@ -20,11 +20,13 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
     const visualizerRef = useRef<HTMLDivElement>(null);
     const [recording, setRecording] = useState(false);
     const [timeDisplay, setTimeDisplay] = useState("00:00");
+    const [restart, setRestart] = useState(false);
 
     const clear = useCallback(() => {
         audioChunks.current = [];
         setElapsedTime(0);
         setTimeDisplay("00:00");
+        setRestart(false);
     }, [audioChunks, setElapsedTime]);
 
     const setUpRecording = useCallback(() => {
@@ -40,6 +42,7 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
 
             mediaRecorder.current = new MediaRecorder(stream);
             let startTime = Math.round(Date.now() / 1000);
+            let tryRestart = false;
 
             let audioContext: AudioContext | null = new AudioContext();
             const analyser = audioContext.createAnalyser();
@@ -48,8 +51,29 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
             analyser.fftSize = 32;
             analyser.smoothingTimeConstant = 0.55;
             
-            const source = audioContext.createMediaStreamSource(stream);
+            let source = audioContext.createMediaStreamSource(stream);
             source.connect(analyser);
+
+            // If the audio context is suspended, resume it
+            // (Happens due to some input device changes)
+            audioContext.onstatechange = e => {
+                console.log("---");
+                console.log(stream.active);
+                console.log(audioContext?.state);
+                console.log(audioContext);
+                console.log(stream);
+                if (stream.active && audioContext?.state === "suspended") {
+                    console.log("Resume audio context")
+                    audioContext?.resume();
+                }
+            }
+            
+            // If stream dies, stop recording and request instant restart
+            stream.getTracks()[0].onended = () => {
+                toast("Microphone access was lost. Attempting to restart recording...", "bottom");
+                tryRestart = true;
+                mediaRecorder.current?.stop();
+            }
 
             mediaRecorder.current.ondataavailable = (e: BlobEvent) => {
                 audioChunks.current.push(e.data);
@@ -69,6 +93,11 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
                 const time = Math.round(Date.now() / 1000) - startTime;
                 setElapsedTime(elapsedTime + time);
                 setRecording(false);
+                if (tryRestart) {
+                    // Request instant restart
+                    setRestart(true);
+                }
+
                 stream.getTracks().forEach(track => track.stop());    
                 mediaRecorder.current = null;
 
@@ -151,6 +180,15 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
         setTimeDisplay(timeToString(elapsedTime));
     }, [elapsedTime]);
 
+    // If instant restart requested,
+    // attempt restart
+    useEffect(() => {
+        if (restart) {
+            setRestart(false);
+            setUpRecording();
+        }
+    }, [restart, setUpRecording]);
+
     const recordButtonClass = useMemo(() => {
         return "fake-button rj-record rj-color-animate" 
             + (recording ? " rj-red" : "") 
@@ -159,7 +197,7 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
 
     const stopRecording = () => {
         mediaRecorder.current?.stop();
-    }
+    };
     
     return (
         <div>
