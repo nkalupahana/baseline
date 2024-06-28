@@ -73,6 +73,7 @@ export const processAudio = async (req: Request, res: Response) => {
         const form = new FormData();
         form.append("file", new Blob([fs.readFileSync(outputFilepath)], { type: "audio/ogg" }));
         form.append("model", "whisper-1");
+        form.append("user", body.user);
 
         let retryCount = 5;
 
