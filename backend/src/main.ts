@@ -276,6 +276,11 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             return;
         }
 
+        if (audio.size === 0) {
+            res.status(400).send("Your audio journal has no data. Please try submitting/recording again. If you continue to see this message, your device/browser may not support audio recording.");
+            return;
+        }
+
         const storagePath = "tmp/" + audio.newFilename;
         promises.push(getStorage().bucket().file(storagePath).save(fs.readFileSync(audio.filepath), { contentType: audio.mimetype ?? undefined }).then(() => {
             // Clean up temp file
