@@ -135,6 +135,11 @@ resource "google_pubsub_topic" "pubsub_audio_processing" {
   name = "pubsub-audio-processing"
 }
 
+resource "google_pubsub_topic" "pubsub_audio_dead_letter" {
+  name = "pubsub-audio-dead-letter"
+}
+
+// Audio processing subscription
 resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
   name  = "pubsub-audio-processing-sub"
   topic = google_pubsub_topic.pubsub_audio_processing.name
@@ -147,10 +152,32 @@ resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
   }
   
   push_config {
-    push_endpoint = "${var.endpoint}/processAudio"
+    push_endpoint = "${var.endpoint}/audio/process"
     oidc_token {
       service_account_email = module.scheduled-services-sa.email
       audience = var.endpoint
     }
   }
+
+  dead_letter_policy {
+    dead_letter_topic = google_pubsub_topic.pubsub_audio_dead_letter.id
+    max_delivery_attempts = 10
+  }
+}
+
+// Dead letter subscription
+resource "google_pubsub_subscription" "pubsub_audio_dl_sub" {
+  name  = "pubsub-audio-processing-sub"
+  topic = google_pubsub_topic.pubsub_audio_dead_letter.name
+  
+  push_config {
+    push_endpoint = "${var.endpoint}/audio/dl"
+    oidc_token {
+      service_account_email = module.scheduled-services-sa.email
+      audience = var.endpoint
+    }
+  }
+
+  retain_acked_messages = true
+  message_retention_duration = "604800s"
 }

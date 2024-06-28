@@ -146,3 +146,19 @@ export const processAudio = async (req: Request, res: Response) => {
     
     res.sendStatus(200);
 };
+
+export const audioDeadLetter = async (req: Request, res: Response) => {
+    try {
+        const data = req.body.message.data;
+        const body = JSON.parse(Buffer.from(data, "base64").toString("utf-8")) as ProcessAudioMessage;
+
+        console.error(new Error(`DEAD LETTER SENT TO AUDIO QUEUE, ${body.user}`));
+        console.error(`User: ${body.user}`);
+        console.error(`File: ${body.file}`);
+        console.error(`Log: ${body.log}`);
+    } catch (e) {
+        console.error(e);
+    }
+
+    res.sendStatus(200);
+}
