@@ -7,7 +7,7 @@ import { cleanUpTokens, logReminder, removeUserNotifications, sendCleanUpMessage
 import { AnyMap } from "./helpers.js";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
-import { processAudio } from "./audio.js";
+import { audioDeadLetter, processAudio } from "./audio.js";
 
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
@@ -63,9 +63,11 @@ app.post("/messaging/cleanup", async (_, res) => {
 });
 
 app.post("/messaging/removeUserNotifications", removeUserNotifications);
-app.post("/processAudio", processAudio);
 
 app.post("/messaging/cleanUpTokens", cleanUpTokens);
+
+app.post("/audio/process", processAudio);
+app.post("/audio/dl", audioDeadLetter);
 
 app.post("/cleanup/anonymous", async (_, res) => {
     await cleanUpAnonymous();
