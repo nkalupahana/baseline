@@ -5,7 +5,7 @@ PODS:
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
-  - Capacitor (6.0.0):
+  - Capacitor (6.1.0):
     - CapacitorCordova
   - CapacitorApp (6.0.0):
     - Capacitor
@@ -16,7 +16,7 @@ PODS:
   - CapacitorCommunityMedia (6.0.0):
     - Capacitor
     - SDWebImage
-  - CapacitorCordova (6.0.0)
+  - CapacitorCordova (6.1.0)
   - CapacitorDevice (6.0.0):
     - Capacitor
   - CapacitorFilesystem (6.0.0):
@@ -45,11 +45,11 @@ PODS:
     - FirebaseMessaging (~> 10.24)
   - CapacitorHaptics (6.0.0):
     - Capacitor
-  - CapacitorKeyboard (6.0.0):
+  - CapacitorKeyboard (6.0.1):
     - Capacitor
   - CapacitorLocalNotifications (6.0.0):
     - Capacitor
-  - CapacitorShare (6.0.0):
+  - CapacitorShare (6.0.1):
     - Capacitor
   - CapacitorStatusBar (6.0.0):
     - Capacitor
@@ -276,21 +276,21 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
-  Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
+  Capacitor: 187bd7847b6f71467015a20200a1a071be3e5f14
   CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
   CapacitorCloudkit: a8242b6f83b10564ef6f46b0169a0573436a3d80
   CapacitorCommunityInAppReview: c69a9392f39a10f28092d823cfa979637f4fa079
   CapacitorCommunityMedia: 51cc6c8782b92cf622d9644cac37ae024fafb377
-  CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
+  CapacitorCordova: be703980ca797f847c3356f78fa175d21c8330c2
   CapacitorDevice: f8fd88f9edd1261c55a109f32015b09bbbfdc4a0
   CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
   CapacitorFirebaseAnalytics: ce6ce6b5f29c7df937d9bb0cbcd1af001e16fd80
   CapacitorFirebaseAuthentication: 8c75784e96c4106ebab9da2fc022366bca661451
   CapacitorFirebaseMessaging: 449f81e1fffcee3f3934680200742d148b9f269e
   CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
-  CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
+  CapacitorKeyboard: 5f32a712adf41e07a61caafb82cf29fb6d8ba123
   CapacitorLocalNotifications: 4ab68f0be5f697a579558fadd307d823a9ec1c26
-  CapacitorShare: a771200d3b924a5d7ad9d9fecbac517e4c0aa74f
+  CapacitorShare: 02222f2457ff003e642370a9c1ecd101baaa27c8
   CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   FirebaseAnalytics: f9211b719db260cc91aebee8bb539cb367d0dfd1
   FirebaseAppCheckInterop: 0dd062c9926a76332ca5711dbed6f1a9ac540b54
