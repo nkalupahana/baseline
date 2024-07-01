@@ -16,7 +16,6 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		F43DAAC027C57A7D00566D61 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F43DAABF27C57A7C00566D61 /* GoogleService-Info.plist */; };
-		F4B35BDD2A4CA44B00A10990 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B35BDC2A4CA44B00A10990 /* StoreKit.framework */; };
 		F4B35BDF2A4CA45F00A10990 /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B35BDE2A4CA45F00A10990 /* AdServices.framework */; };
 		F4B453CA2BBDD2BD0015BC30 /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B35BDE2A4CA45F00A10990 /* AdServices.framework */; };
 		F4B453CC2BBDD2C90015BC30 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4B453CB2BBDD2C90015BC30 /* AdSupport.framework */; };
@@ -39,7 +38,6 @@
 		E2AD3EC8EC6BE39DD59F3DDF /* Pods-moody.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-moody.debug.xcconfig"; path = "Pods/Target Support Files/Pods-moody/Pods-moody.debug.xcconfig"; sourceTree = "<group>"; };
 		F413097F28232F7E004118CE /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		F43DAABF27C57A7C00566D61 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		F4B35BDC2A4CA44B00A10990 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		F4B35BDE2A4CA45F00A10990 /* AdServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdServices.framework; path = System/Library/Frameworks/AdServices.framework; sourceTree = SDKROOT; };
 		F4B453CB2BBDD2C90015BC30 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -51,7 +49,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4B35BDD2A4CA44B00A10990 /* StoreKit.framework in Frameworks */,
 				F4B453CC2BBDD2C90015BC30 /* AdSupport.framework in Frameworks */,
 				F4B453CA2BBDD2BD0015BC30 /* AdServices.framework in Frameworks */,
 				F4B35BDF2A4CA45F00A10990 /* AdServices.framework in Frameworks */,
@@ -67,7 +64,6 @@
 			children = (
 				F4B453CB2BBDD2C90015BC30 /* AdSupport.framework */,
 				F4B35BDE2A4CA45F00A10990 /* AdServices.framework */,
-				F4B35BDC2A4CA44B00A10990 /* StoreKit.framework */,
 				F413097F28232F7E004118CE /* CloudKit.framework */,
 				40CBD264F71156B3FC86972E /* Pods_baseline.framework */,
 			);
