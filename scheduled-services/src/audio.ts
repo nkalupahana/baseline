@@ -157,6 +157,19 @@ export const audioDeadLetter = async (req: Request, res: Response) => {
         console.error(`User: ${body.user}`);
         console.error(`File: ${body.file}`);
         console.error(`Log: ${body.log}`);
+
+        const db = getDatabase();
+        const ref = db.ref(`/${body.user}/logs/${body.log}`);
+        let logData = await (await ref.get()).val();
+        logData = JSON.parse(AES.decrypt(logData.data, body.encryptionKey).toString(aesutf8));
+
+        delete logData.audio;
+        logData.journal = "Unable to process audio journal. If you continue to see this message, your device/browser is unable to correctly record audio.";
+
+        await ref.set({
+            data: AES.encrypt(JSON.stringify(logData), body.encryptionKey).toString()
+        });
+        await db.ref(`/${body.user}/offline`).set(Math.random());
     } catch (e) {
         console.error(e);
     }
