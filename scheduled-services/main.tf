@@ -167,7 +167,7 @@ resource "google_pubsub_subscription" "pubsub_audio_processing_sub" {
 
 // Dead letter subscription
 resource "google_pubsub_subscription" "pubsub_audio_dl_sub" {
-  name  = "pubsub-audio-processing-sub"
+  name  = "pubsub-audio-dl-sub"
   topic = google_pubsub_topic.pubsub_audio_dead_letter.name
   
   push_config {
