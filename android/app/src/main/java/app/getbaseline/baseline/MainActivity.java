@@ -15,8 +15,13 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.webkit.WebViewCompat;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.getcapacitor.BridgeActivity;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends BridgeActivity {
     final String WEBVIEW_PACKAGE = "com.google.android.webview";
@@ -24,15 +29,18 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onStart() {
         super.onStart();
+        // Force dark mode based on UI mode
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         WebSettings webSettings = this.bridge.getWebView().getSettings();
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             webSettings.setForceDark(WebSettings.FORCE_DARK_ON);
         }
 
+        // Disable weird accessibility text scaling
         WebSettings settings = this.bridge.getWebView().getSettings();
         settings.setTextZoom(100);
 
+        // Show update notice if WebView is too old
         SharedPreferences prefs = bridge.getActivity().getPreferences(Context.MODE_PRIVATE);
         PackageInfo webViewInfo = WebViewCompat.getCurrentWebViewPackage(bridge.getContext());
 
@@ -44,7 +52,7 @@ public class MainActivity extends BridgeActivity {
                         .setTitle("Warning")
                         .setMessage("You have an old version of Android WebView installed, which will " +
                                 "cause significant display issues on baseline since it's what we use to display the app. " +
-                                "Click below to go the Google Play Store and update 'Android System WebView' to fix this.")
+                                "Click below to go to the Google Play Store and update 'Android System WebView' to fix this.")
                         .setPositiveButton("Open Play Store", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -66,6 +74,17 @@ public class MainActivity extends BridgeActivity {
                         .setCanceledOnTouchOutside(false);
             }
         }
+
+        // Schedule background notification clearing
+        PeriodicWorkRequest request =
+                new PeriodicWorkRequest.Builder(NotificationWorker.class,
+                        30, TimeUnit.MINUTES,
+                        30, TimeUnit.MINUTES)
+                        .build();
+
+        WorkManager.getInstance(bridge.getContext())
+                .enqueueUniquePeriodicWork("app.getbaseline.baseline.notifications",
+                    ExistingPeriodicWorkPolicy.UPDATE, request);
      }
 
     @Override

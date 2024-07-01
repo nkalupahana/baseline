@@ -47,6 +47,8 @@ dependencies {
     implementation project(':capacitor-cordova-android-plugins')
 
     implementation "com.google.firebase:firebase-crashlytics:18.2.13"
+    implementation 'androidx.work:work-runtime:2.9.0'
+    implementation 'com.google.guava:guava:29.0-android'
 }
 
 apply from: 'capacitor.build.gradle'
