@@ -1,3 +1,15 @@
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java
+index 0a5c0ad..d6bf6b9 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java
++++ b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java
+@@ -46,6 +46,7 @@ public class TimedNotificationPublisher extends BroadcastReceiver {
+         NotificationStorage storage = new NotificationStorage(context);
+         JSObject notificationJson = storage.getSavedNotificationAsJSObject(Integer.toString(id));
+         LocalNotificationsPlugin.fireReceived(notificationJson);
++        notificationManager.cancelAll();
+         notificationManager.notify(id, notification);
+         if (!rescheduleNotificationIfNeeded(context, intent, id)) {
+             storage.deleteNotification(Integer.toString(id));
 diff --git a/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift b/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
 index 463be9a..c45fb99 100644
 --- a/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
