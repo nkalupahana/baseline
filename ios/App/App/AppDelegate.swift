@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
+        self.clearExcessNotifications(resolve: {})
         return true
     }
 
@@ -94,7 +95,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.post(name: Notification.Name.init("didReceiveRemoteNotification"), object: completionHandler, userInfo: userInfo)
         
-        completionHandler(.newData)
+        clearExcessNotifications(resolve: {
+            completionHandler(.newData)
+        })
+        
         return
     }
     
@@ -116,7 +120,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func handleAppRefresh(task: BGAppRefreshTask) {
         // Schedule next refresh
         scheduleAppRefresh()
-        
+        clearExcessNotifications(resolve: {
+            task.setTaskCompleted(success: true)
+        })
+    }
+    
+    func clearExcessNotifications(resolve: @escaping () -> Void) {
         UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
             // Find the latest notification (only one we want to keep)
             var latestNotification: Optional<UNNotification> = nil;
@@ -139,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             // Remove all remaining notifications, and complete
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: identifiers)
-            task.setTaskCompleted(success: true)
+            resolve()
         }
     }
 }
