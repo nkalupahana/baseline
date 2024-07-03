@@ -49,7 +49,11 @@ const Summary = () => {
     const [searchMode, setSearchMode] = useState(false);
 
     useEffect(() => {
-        if (Capacitor.getPlatform() !== "web") FirebaseMessaging.subscribeToTopic({ topic: "all" });
+        const platform = Capacitor.getPlatform();
+        if (platform !== "web") {
+            FirebaseMessaging.subscribeToTopic({ topic: "all" });
+            FirebaseMessaging.subscribeToTopic({ topic: platform });
+        }
         const keys = checkKeys();
         if (!keys) {
             signOutAndCleanUp();

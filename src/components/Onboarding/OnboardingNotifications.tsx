@@ -24,6 +24,7 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
                 platform
             });
             await FirebaseMessaging.subscribeToTopic({ topic: "all" });
+            await FirebaseMessaging.subscribeToTopic({ topic: platform });
         } catch {}
         if (localStorage.getItem("onboarding")) {
             localStorage.setItem("onboarding", "howto");
