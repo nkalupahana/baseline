@@ -18,6 +18,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
 import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
 import { FirebaseMessaging } from "@capacitor-firebase/messaging";
+import * as Sentry from "@sentry/react";
 
 // Add timestamp to data object, and decrypt as needed
 const processNewData = (newData, keys) => {
@@ -56,6 +57,7 @@ const Summary = () => {
         }
         const keys = checkKeys();
         if (!keys) {
+            Sentry.captureMessage("Summary.jsx keys - Sign Out", "log");
             signOutAndCleanUp();
         }
     }, []);
@@ -74,6 +76,7 @@ const Summary = () => {
                 const update = parseSettings()["passphraseUpdate"];
                 if (update !== val && !(!val && !update)) {
                     toast("Your data protection method has changed elsewhere. To protect your security, we ask that you sign in again.");
+                    Sentry.captureMessage("Summary.jsx PDP - Sign Out", "log");
                     signOutAndCleanUp();
                 }
             });
