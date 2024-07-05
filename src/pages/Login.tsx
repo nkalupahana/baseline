@@ -64,7 +64,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         setLoggingIn(false);
         setLoginState(LoginStates.START);
         setPassphrase("");
-        Sentry.captureMessage("Login.tsx resetFlow - Sign Out (normal)", "log");
+        Sentry.addBreadcrumb({
+            category: "Login.tsx resetFlow",
+            message: "Sign Out"
+        });
         signOutAndCleanUp();
     }
 

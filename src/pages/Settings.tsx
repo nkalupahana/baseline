@@ -103,7 +103,10 @@ const Settings = () => {
                     role: 'confirm',
                     handler: () => { 
                         sessionStorage.setItem("deleteAccount", user.uid);
-                        Sentry.captureMessage("Delete Account - Sign Out", "log");
+                        Sentry.addBreadcrumb({
+                            category: "Delete Account",
+                            message: "Sign Out"
+                        });
                         signOutAndCleanUp();
                         toast("Sign in again now to delete your account.");
                     }
