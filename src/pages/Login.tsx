@@ -17,6 +17,7 @@ import { lockClosed, logoApple, logoGoogle } from "ionicons/icons";
 import history from "../history";
 import { DateTime } from "luxon";
 import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
+import * as Sentry from "@sentry/react";
 
 enum LoginStates {
     START,
@@ -63,6 +64,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         setLoggingIn(false);
         setLoginState(LoginStates.START);
         setPassphrase("");
+        Sentry.captureMessage("Login.tsx resetFlow - Sign Out (normal)", "log");
         signOutAndCleanUp();
     }
 

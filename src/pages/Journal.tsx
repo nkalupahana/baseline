@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Container.css";
 import { checkKeys, decrypt } from "../helpers";
 import { signOutAndCleanUp } from "../firebase";
+import * as Sentry from "@sentry/react";
 
 export interface SpotifySelection {
     uri: string;
@@ -31,6 +32,7 @@ const Journal = () => {
     useEffect(() => {
         const keys = checkKeys();
         if (!keys) {
+            Sentry.captureMessage("Journal.tsx - Sign Out", "log");
             signOutAndCleanUp();
         }
         

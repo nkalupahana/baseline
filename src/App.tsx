@@ -75,6 +75,7 @@ const App = () => {
     useEffect(() => {
         smoothscroll.polyfill();
         if (!keys) {
+            Sentry.captureMessage("App.tsx - Sign Out", "log");
             signOutAndCleanUp();
         } else {
             const onboarding = localStorage.getItem("onboarding");

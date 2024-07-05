@@ -11,6 +11,7 @@ import { goBackSafely, toast } from "../helpers";
 import history from "../history";
 import { DateTime } from "luxon";
 import ldb from "../db";
+import * as Sentry from "@sentry/react";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
@@ -102,6 +103,7 @@ const Settings = () => {
                     role: 'confirm',
                     handler: () => { 
                         sessionStorage.setItem("deleteAccount", user.uid);
+                        Sentry.captureMessage("Delete Account - Sign Out", "log");
                         signOutAndCleanUp();
                         toast("Sign in again now to delete your account.");
                     }

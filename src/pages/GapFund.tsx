@@ -13,6 +13,7 @@ import { auth, db, signOutAndCleanUp } from "../firebase";
 import { checkKeys, decrypt, goBackSafely, makeRequest, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
+import * as Sentry from "@sentry/react";
 
 interface GapFundData {
     email: string;
@@ -66,6 +67,7 @@ const GapFund = () => {
             } else {
                 if ("data" in data) {
                     if (!keys) {
+                        Sentry.captureMessage("GapFund.tsx - Sign Out", "log");
                         signOutAndCleanUp();
                         return;
                     } else if (typeof keys === "string") {
