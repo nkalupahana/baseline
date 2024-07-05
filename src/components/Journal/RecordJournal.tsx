@@ -98,13 +98,15 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
                 audioContext?.close();
                 audioContext = null;
 
-                // Reset visualizer bars
-                const bars = visualizerRef.current!.children;
-                for (let i = 0; i < bars.length; i++) {
-                    const elmStyles = (bars[i] as HTMLDivElement).style;
-                    elmStyles.transform = "";
-                    elmStyles.opacity = "";
-                }
+                // Reset visualizer bars (if on page)
+                try {
+                    const bars = visualizerRef.current!.children;
+                    for (let i = 0; i < bars.length; i++) {
+                        const elmStyles = (bars[i] as HTMLDivElement).style;
+                        elmStyles.transform = "";
+                        elmStyles.opacity = "";
+                    }
+                } catch {}
             };
 
             const frequencyData = new Uint8Array(analyser.frequencyBinCount);
@@ -120,7 +122,7 @@ const RecordJournal = ({ audioChunks, elapsedTime, setElapsedTime, next, setAudi
                 }
                 if (!mediaRecorder.current) return;
 
-                // Update visualizer
+                // Update visualizer (if on page)
                 try {
                     analyser.getByteFrequencyData(frequencyData);
                     const bars = visualizerRef.current!.children;
