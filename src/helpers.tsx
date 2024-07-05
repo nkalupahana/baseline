@@ -120,7 +120,10 @@ export function checkKeys() {
                 const ekeys = decrypt(JSON.parse(localStorage.getItem("ekeys") ?? "{}")["keys"], pwd);
                 if (!ekeys) {
                     toast("Something went wrong, please sign in again.");
-                    Sentry.captureMessage("checkKeys - Sign Out", "log");
+                    Sentry.addBreadcrumb({
+                        category: "checkKeys",
+                        message: "Sign Out"
+                    });
                     signOutAndCleanUp();
                     return;
                 }
@@ -267,7 +270,10 @@ export function encrypt(data: string, key: string) {
         return AES.encrypt(data, key).toString();
     } catch {
         toast("Data encryption failed, so as a security precaution, we ask that you sign in again.");
-        Sentry.captureMessage("encrypt - Sign Out", "log");
+        Sentry.addBreadcrumb({
+            category: "encrypt",
+            message: "Sign Out"
+        });
         signOutAndCleanUp();
         return "";
     }
@@ -278,7 +284,10 @@ export function decrypt(data: string, key: string, signOut=true) {
         return AES.decrypt(data, key).toString(aesutf8);
     } catch {
         if (signOut) {
-            Sentry.captureMessage("decrypt - Sign Out", "log");
+            Sentry.addBreadcrumb({
+                category: "decrypt",
+                message: "Sign Out"
+            });
             toast("Data decryption failed, so as a security precaution, we ask that you sign in again.");
             signOutAndCleanUp();
         }

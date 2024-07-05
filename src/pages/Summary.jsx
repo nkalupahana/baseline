@@ -57,7 +57,10 @@ const Summary = () => {
         }
         const keys = checkKeys();
         if (!keys) {
-            Sentry.captureMessage("Summary.jsx keys - Sign Out", "log");
+            Sentry.addBreadcrumb({
+                category: "Summary.tsx keys",
+                message: "Sign Out"
+            });
             signOutAndCleanUp();
         }
     }, []);
@@ -76,7 +79,10 @@ const Summary = () => {
                 const update = parseSettings()["passphraseUpdate"];
                 if (update !== val && !(!val && !update)) {
                     toast("Your data protection method has changed elsewhere. To protect your security, we ask that you sign in again.");
-                    Sentry.captureMessage("Summary.jsx PDP - Sign Out", "log");
+                    Sentry.addBreadcrumb({
+                        category: "Summary.tsx PDP",
+                        message: "Sign Out"
+                    });
                     signOutAndCleanUp();
                 }
             });

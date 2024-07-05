@@ -67,7 +67,10 @@ const GapFund = () => {
             } else {
                 if ("data" in data) {
                     if (!keys) {
-                        Sentry.captureMessage("GapFund.tsx - Sign Out", "log");
+                        Sentry.addBreadcrumb({
+                            category: "GapFund.tsx",
+                            message: "Sign Out"
+                        });
                         signOutAndCleanUp();
                         return;
                     } else if (typeof keys === "string") {

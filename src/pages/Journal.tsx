@@ -32,7 +32,10 @@ const Journal = () => {
     useEffect(() => {
         const keys = checkKeys();
         if (!keys) {
-            Sentry.captureMessage("Journal.tsx - Sign Out", "log");
+            Sentry.addBreadcrumb({
+                category: "Journal.tsx",
+                message: "Sign Out"
+            });
             signOutAndCleanUp();
         }
         
