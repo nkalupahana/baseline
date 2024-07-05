@@ -17,7 +17,6 @@ import ldb from "../../db";
 import { InAppReview } from '@capacitor-community/in-app-review';
 import Confetti from "react-confetti";
 import Dialog, { checkPromptAllowed } from "../Dialog";
-import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
 import SearchSpotify from "./SearchSpotify";
@@ -28,13 +27,29 @@ const FinishJournal = props => {
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [dialog, setDialog] = useState(undefined);
-    const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(1).toArray());
-    const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
+    const [lastLogs, setLastLogs] = useState(undefined);
+    const [lastAverageLogs, setLastAverageLogs] = useState(undefined);
     const [firstTimer, setFirstTimer] = useState(false);
 
     const dismissDialog = () => {
         setDialog(undefined);
     };
+    
+    useEffect(() => {
+        (async () => {
+            try {
+                const logs = await ldb.logs.orderBy("timestamp").reverse().limit(1).toArray();
+                setLastLogs(logs);
+
+                const averageLogs = await ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray();
+                setLastAverageLogs(averageLogs);
+            } catch (e) {
+                console.log("Error fetching data from Dexie (caught).");
+                console.error(e);
+                Sentry.captureException(e, {tags: {caught: true}});
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         // Refresh ID token in the background to speed up submission

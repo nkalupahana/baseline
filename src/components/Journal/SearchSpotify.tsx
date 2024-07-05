@@ -57,16 +57,20 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
         const throttleStart = performance.now();
         const val = e.detail.value.trim();
 
-        const response = await fetch(`${BASE_URL}/spotify/search`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${await getIdToken(user)}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ query: val })
-        }).catch(() => {
+        let response = undefined;
+        try {
+            const token = await getIdToken(user);
+            response = await fetch(`${BASE_URL}/spotify/search`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ query: val })
+            })
+        } catch (e) {
             toast("Failed to connect to music search. Are you connected to the Internet?");
-        });
+        }
 
         if (response?.ok) {
             const data = await response.json();

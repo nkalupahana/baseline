@@ -26,4 +26,6 @@ ldb.version(1).stores({
     logs: `&timestamp, year, month, day, time, zone, mood, average`,
 });
 
+ldb.on("close", () => console.log("db was forcibly closed"));
+
 export default ldb as DB;
