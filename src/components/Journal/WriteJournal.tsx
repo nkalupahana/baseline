@@ -20,11 +20,13 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
     const cursor = useRef<HTMLSpanElement>(null);
 
     useEffect(() => {
-        if (!textarea.current) return;
-        textarea.current.focus();
+        requestAnimationFrame(() => {
+            if (!textarea.current) return;
+            textarea.current.focus();
+        })
     }, []);
 
-    const onInput = useCallback((e: SyntheticEvent<HTMLTextAreaElement>) => {
+    const onTxEvent = useCallback((e: SyntheticEvent<HTMLTextAreaElement>) => {
         setText(e.currentTarget.value);
         setSpos(e.currentTarget.selectionStart);
         
@@ -33,7 +35,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
             const textareaAbsPos = textarea.current?.getBoundingClientRect().top || 0;
 
             const cursorAbsPos = cursorRelPos + textareaAbsPos;
-            const BOTTOM_LIMIT = window.innerHeight - 100 - keyboardHeight.current;
+            const BOTTOM_LIMIT = window.innerHeight - 100 - (keyboardHeight.current || 100);
             console.log(TOP_LIMIT, cursorAbsPos, BOTTOM_LIMIT);
             if (cursorAbsPos > BOTTOM_LIMIT) {
                 document.querySelector(".page")?.scrollBy({
@@ -51,7 +53,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
 
     return <>
         <label data-value={text} className="input-sizer stacked">
-            <textarea ref={textarea} className="tx" value={text} onInput={onInput} rows={1} placeholder="Start typing here!"></textarea>
+            <textarea ref={textarea} className="tx" value={text} onInput={onTxEvent} onFocus={onTxEvent} rows={1} placeholder="Start typing here!"></textarea>
         </label>
         <div className="container jc-faked-container">
             <div className="center-journal">
