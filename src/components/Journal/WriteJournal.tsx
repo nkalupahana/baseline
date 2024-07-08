@@ -36,7 +36,6 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
 
             const cursorAbsPos = cursorRelPos + textareaAbsPos;
             const BOTTOM_LIMIT = window.innerHeight - 100 - (keyboardHeight.current || 100);
-            console.log(TOP_LIMIT, cursorAbsPos, BOTTOM_LIMIT);
             if (cursorAbsPos > BOTTOM_LIMIT) {
                 document.querySelector(".page")?.scrollBy({
                     top: cursorAbsPos - BOTTOM_LIMIT + 25,
