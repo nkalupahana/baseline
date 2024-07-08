@@ -14,7 +14,9 @@ const config: CapacitorConfig = {
       "providers": ["apple.com", "google.com"]
     },
     Keyboard: {
-      "resize": "none"
+      // to stop webview resizing on iOS, which causes
+      // weird rendering when going from WriteJournal to FinishJournal
+      "resize": "none" 
     },
     LocalNotifications: {
       largeIcon: "notification_logo",
