@@ -111,13 +111,15 @@
 
 .input-sizer.stacked::after,
 .input-sizer.stacked input,
-.input-sizer.stacked textarea {
+.input-sizer.stacked textarea,
+.input-sizer.stacked div {
     grid-area: 2/1;
 }
 
 .input-sizer::after,
 .input-sizer input,
-.input-sizer textarea {
+.input-sizer textarea,
+.input-sizer div {
     width: auto;
     min-width: 1em;
     grid-area: 1/2;
@@ -247,4 +249,15 @@ ion-segment-button > ion-label {
     font-size: 20px;
     transform: translateY(5px);
     cursor: pointer;
+}
+
+.jc-faked-input {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.jc-faked-container {
+    position: absolute;
+    visibility: hidden;
+    top: 0px;
 }
