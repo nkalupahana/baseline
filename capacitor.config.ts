@@ -16,12 +16,14 @@ const config: CapacitorConfig = {
     Keyboard: {
       // to stop webview resizing on iOS, which causes
       // weird rendering when going from WriteJournal to FinishJournal
-      "resize": "none" 
+      // Because of the status bar plugin, on Android, the webview
+      // doesn't resize by default
+      "resize": "none",
     },
     LocalNotifications: {
       largeIcon: "notification_logo",
       smallIcon: "notification_icon",
-      iconColor: "#03A9F4"
+      iconColor: "#03A9F4",
     }
   }
 };
