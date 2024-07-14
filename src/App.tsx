@@ -29,7 +29,6 @@ import { checkKeys } from "./helpers";
 import history from "./history";
 import { Capacitor } from "@capacitor/core";
 import "./lifecycle";
-import smoothscroll from "smoothscroll-polyfill";
 
 import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
@@ -73,7 +72,6 @@ const App = () => {
     }, [user]);
 
     useEffect(() => {
-        smoothscroll.polyfill();
         if (!keys) {
             Sentry.addBreadcrumb({
                 category: "App.tsx",

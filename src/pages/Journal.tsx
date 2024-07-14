@@ -13,9 +13,29 @@ export interface SpotifySelection {
 }
 
 
+const getStartingText = () => {
+    let text = "";
+    if (localStorage.getItem("eautosave")) {
+        const pwd = sessionStorage.getItem("pwd");
+        if (pwd) text = decrypt(localStorage.getItem("eautosave") ?? "", pwd);
+    } else {
+        const autosave = localStorage.getItem("autosave");
+        if (autosave) {
+            text = autosave;
+        }
+    }
+
+    if (localStorage.getItem("editTimestamp")) {
+        localStorage.removeItem("eautosave");
+        localStorage.removeItem("autosave");
+    }
+
+    return text;
+}
+
 const Journal = () => {
     // Standard journaling
-    const [text, setText] = useState("");
+    const [text, setText] = useState(getStartingText());
     const [files, setFiles] = useState([]);
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
@@ -52,23 +72,6 @@ const Journal = () => {
             localStorage.removeItem("editTimestamp");
         }
     }, []);
-
-    useEffect(() => {
-        if (localStorage.getItem("eautosave")) {
-            const pwd = sessionStorage.getItem("pwd");
-            if (pwd) setText(decrypt(localStorage.getItem("eautosave") ?? "", pwd));
-        } else {
-            const autosave = localStorage.getItem("autosave");
-            if (autosave) {
-                setText(autosave);
-            }
-        }
-
-        if (editTimestamp) {
-            localStorage.removeItem("eautosave");
-            localStorage.removeItem("autosave");
-        }
-    }, [editTimestamp]);
 
     return (
         <>

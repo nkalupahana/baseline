@@ -1,12 +1,12 @@
 import { Capacitor } from "@capacitor/core";
 import { Keyboard, KeyboardInfo } from "@capacitor/keyboard";
-import { MutableRefObject, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface Props {
-    externalRef?: MutableRefObject<number>;
+    externalSetter?: Dispatch<SetStateAction<number>>;
 }
 
-const KeyboardSpacer = ({ externalRef } : Props) => {
+const KeyboardSpacer = ({ externalSetter } : Props) => {
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     useEffect(() => {
@@ -30,9 +30,9 @@ const KeyboardSpacer = ({ externalRef } : Props) => {
     }, []);
 
     useEffect(() => {
-        if (!externalRef) return;
-        externalRef.current = keyboardHeight;
-    }, [keyboardHeight, externalRef]);
+        if (!externalSetter) return;
+        externalSetter(keyboardHeight);
+    }, [keyboardHeight, externalSetter]);
 
     return <div style={{"height": `${keyboardHeight + 50}px`, width: "100%"}}></div>
 }
