@@ -2,6 +2,7 @@ import { SyntheticEvent, useCallback, useEffect, useRef, useState } from "react"
 import KeyboardSpacer from "../KeyboardSpacer";
 import { IonIcon } from "@ionic/react";
 import { mic } from "ionicons/icons";
+import { Capacitor } from "@capacitor/core";
 
 interface Props {
     text: string;
@@ -18,9 +19,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
     const [spos, setSpos] = useState(0);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const cursor = useRef<HTMLSpanElement>(null);
-    const smoothScrollStop = useRef(Date.now());
     const startingText = useRef(text);
-    const prevCursorRelHeight = useRef<number | undefined>(undefined);
 
     useEffect(() => {
         requestAnimationFrame(() => {
@@ -32,7 +31,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
                 textarea.current.selectionEnd = startingText.current.length;
                 setSpos(startingText.current.length);
             }
-        })
+        });
     }, []);
 
     const onTxEvent = useCallback((e: SyntheticEvent<HTMLTextAreaElement>) => {
@@ -44,20 +43,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
         requestAnimationFrame(() => {
             const cursorRelPos = cursor.current?.offsetTop || 0;
             const textareaAbsPos = textarea.current?.getBoundingClientRect().top || 0;
-    
             const cursorAbsPos = cursorRelPos + textareaAbsPos;
-            if (prevCursorRelHeight.current !== undefined && cursorRelPos < prevCursorRelHeight.current) {
-                const difference = cursorRelPos - prevCursorRelHeight.current;
-                console.log("scroll difference", difference);
-                document.querySelector(".page")?.scrollBy({
-                    top: difference,
-                    behavior: "smooth"
-                });
-                prevCursorRelHeight.current = cursorRelPos;
-                return;
-            }
-            
-            prevCursorRelHeight.current = cursorRelPos;
 
             const BOTTOM_LIMIT = window.innerHeight - 100 - (keyboardHeight || 100);
     
@@ -66,8 +52,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
                 return;
             }
     
-            const shouldSmoothScroll = Date.now() - smoothScrollStop.current > 2000;
-            const scrollBehavior = shouldSmoothScroll ? "smooth" : "auto";
+            const scrollBehavior = Capacitor.getPlatform() === "ios" ? "auto" : "smooth";
     
             if (cursorAbsPos > BOTTOM_LIMIT) {
                 console.log("scroll down", cursorAbsPos - BOTTOM_LIMIT + 25);
