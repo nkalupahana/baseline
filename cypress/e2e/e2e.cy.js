@@ -251,7 +251,6 @@ describe("Mobile Flow", () => {
     })
 
     it("Add Music", () => {
-        cy.pause()
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
         cy.get("textarea").should("exist").focus().type(`Add a song!`).should("have.value", `Add a song!`)
@@ -387,11 +386,20 @@ describe("Desktop Flow", () => {
         cy.viewport("macbook-13")
     })
 
-    it("Write Mood Log", () => {
+    it("Write Mood Log and test Autoscroll", () => {
+        // Autoscroll
         cy.visit("/")
         cy.contains("What's happening").should("exist")
         cy.get("textarea").type("Hello desktop world!{enter}Multi-line journal{enter}Valid,ation")
         cy.get("body").happoScreenshot()
+        cy.get("textarea").type("{enter}".repeat(40))
+        cy.contains("Continue").should("be.visible")
+
+        // Autofocus to end of text
+        cy.visit("/")
+        cy.contains("What's happening").should("exist")
+        cy.contains("Continue").should("be.visible")
+        cy.get("textarea").type("{backspace}".repeat(40))
         cy.contains("Continue").should("exist").click()
     })
 
