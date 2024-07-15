@@ -26,6 +26,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
             if (!textarea.current) return;
             textarea.current.focus({ preventScroll: true });
             if (startingText.current.length > 0) {
+                // TODO: verify
                 console.log("start run");
                 textarea.current.selectionStart = startingText.current.length;
                 textarea.current.selectionEnd = startingText.current.length;
@@ -34,6 +35,7 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
         });
     }, []);
 
+    // TODO: ensure there are no other events to sniff on
     const onTxEvent = useCallback((e: SyntheticEvent<HTMLTextAreaElement>) => {
         setText(e.currentTarget.value);
         setSpos(e.currentTarget.selectionStart);
@@ -48,12 +50,14 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
             const BOTTOM_LIMIT = window.innerHeight - 100 - (keyboardHeight || 100);
     
             if (TOP_LIMIT > BOTTOM_LIMIT) {
+                // TODO: Add error reporting for this
                 console.log("AAA");
                 return;
             }
     
             const scrollBehavior = Capacitor.getPlatform() === "ios" ? "auto" : "smooth";
     
+            // TODO: remove console statements
             if (cursorAbsPos > BOTTOM_LIMIT) {
                 console.log("scroll down", cursorAbsPos - BOTTOM_LIMIT + 25);
                 document.querySelector(".page")?.scrollBy({

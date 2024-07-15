@@ -25,17 +25,12 @@ const getStartingText = () => {
         }
     }
 
-    if (localStorage.getItem("editTimestamp")) {
-        localStorage.removeItem("eautosave");
-        localStorage.removeItem("autosave");
-    }
-
     return text;
 }
 
 const Journal = () => {
     // Standard journaling
-    const [text, setText] = useState(getStartingText());
+    const [text, setText] = useState(getStartingText);
     const [files, setFiles] = useState([]);
     const [moodRead, setMoodRead] = useState(0);
     const [moodWrite, setMoodWrite] = useState(0);
@@ -70,6 +65,8 @@ const Journal = () => {
             localStorage.removeItem("editMood");
             localStorage.removeItem("editAverage");
             localStorage.removeItem("editTimestamp");
+            localStorage.removeItem("autosave");
+            localStorage.removeItem("eautosave");
         }
     }, []);
 
