@@ -349,6 +349,7 @@ describe("Mobile Flow", () => {
     })
 
     it("Test -5 Warning Behavior", () => {
+        cy.wait(WAIT_FOR_CONSISTENCY)
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
         cy.get("textarea").should("exist").focus().type(`-5`).should("have.value", `-5`)
