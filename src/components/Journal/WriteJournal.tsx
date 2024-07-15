@@ -3,6 +3,8 @@ import KeyboardSpacer from "../KeyboardSpacer";
 import { IonIcon } from "@ionic/react";
 import { mic } from "ionicons/icons";
 import { Capacitor } from "@capacitor/core";
+import { Keyboard } from "@capacitor/keyboard";
+import * as Sentry from "@sentry/react";
 
 interface Props {
     text: string;
@@ -20,22 +22,26 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const cursor = useRef<HTMLSpanElement>(null);
     const startingText = useRef(text);
+    const noscrollExceptionCaptured = useRef(false);
 
     useEffect(() => {
         requestAnimationFrame(() => {
             if (!textarea.current) return;
             textarea.current.focus({ preventScroll: true });
             if (startingText.current.length > 0) {
-                // TODO: verify
-                console.log("start run");
                 textarea.current.selectionStart = startingText.current.length;
                 textarea.current.selectionEnd = startingText.current.length;
                 setSpos(startingText.current.length);
             }
+
+            // Quirk: Android doesn't show the keyboard
+            // on first focus, so we have to manually show it
+            if (Capacitor.getPlatform() === "android") {
+                Keyboard.show();
+            }
         });
     }, []);
 
-    // TODO: ensure there are no other events to sniff on
     const onTxEvent = useCallback((e: SyntheticEvent<HTMLTextAreaElement>) => {
         setText(e.currentTarget.value);
         setSpos(e.currentTarget.selectionStart);
@@ -50,22 +56,46 @@ const WriteJournal = ({ text, setText, next, setAudioView, editTimestamp } : Pro
             const BOTTOM_LIMIT = window.innerHeight - 100 - (keyboardHeight || 100);
     
             if (TOP_LIMIT > BOTTOM_LIMIT) {
-                // TODO: Add error reporting for this
-                console.log("AAA");
+                // Send exception to Sentry only once
+                if (!noscrollExceptionCaptured.current) {
+                    Sentry.captureException(
+                        new Error(`Top limit greater than bottom limit, autoscroll disabled.`),
+                        {
+                            extra: {
+                                TOP_LIMIT,
+                                BOTTOM_LIMIT,
+                                cursorRelPos,
+                                textareaAbsPos,
+                                cursorAbsPos,
+                                spos,
+                                keyboardHeight,
+                                windowInnerHeight: window.innerHeight,
+                                textareaBounds: textarea.current?.getBoundingClientRect(),
+                                ua: navigator.userAgent
+                            }
+                        }
+                    );
+                    noscrollExceptionCaptured.current = true;
+                }
                 return;
             }
     
             const scrollBehavior = Capacitor.getPlatform() === "ios" ? "auto" : "smooth";
     
-            // TODO: remove console statements
             if (cursorAbsPos > BOTTOM_LIMIT) {
-                console.log("scroll down", cursorAbsPos - BOTTOM_LIMIT + 25);
+                Sentry.addBreadcrumb({
+                    message: `Autoscroll down ${cursorAbsPos - BOTTOM_LIMIT + 25}`,
+                });
+
                 document.querySelector(".page")?.scrollBy({
                     top: cursorAbsPos - BOTTOM_LIMIT + 25,
                     behavior: scrollBehavior
                 });
             } else if (cursorAbsPos < TOP_LIMIT) {
-                console.log("scroll up", cursorAbsPos - TOP_LIMIT);
+                Sentry.addBreadcrumb({
+                    message: `Autoscroll up ${cursorAbsPos - TOP_LIMIT}`,
+                });
+
                 document.querySelector(".page")?.scrollBy({
                     top: cursorAbsPos - TOP_LIMIT,
                     behavior: scrollBehavior
