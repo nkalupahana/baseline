@@ -57,9 +57,9 @@ const GapFund = () => {
                     dates.add(DateTime.fromMillis(log.timestamp).toISODate());
                 }
 
-                // If person has journaled on at least 14 of the last 18 days (dayWindow),
+                // If person has journaled on at least 9 of the last 18 days (dayWindow),
                 // they're eligible
-                if (dates.size >= 14) {
+                if (dates.size >= 9) {
                     setGapFundData(SubmissionState.NO_SUBMISSION);
                 } else {
                     setGapFundData(SubmissionState.NOT_ELIGIBLE);
