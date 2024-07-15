@@ -22,8 +22,10 @@ ionic cap open [ios|android] # Open iOS/Android project for development
 - `cypress/` - Cypress E2E and Component test suite (run with npm test commands in `package.json`)
 - `docs/` - Jekyll site for `getbaseline.app` (run with `bundle exec jekyll serve`)
 - `empty/` - Empty directory for `link.getbaseline.app` to deploy off of
-- `functions/` - Source for Google Cloud Functions (deploy with `firebase deploy --only functions`)
+- `backend/` - Source for baseline backend API
+- `scheduled-services/` - Source for baseline internal services (scheduled or asynchronous from other services)
 - `helpers/` - Helper scripts for baseline development
 - `ios/` - iOS project for baseline (open in Xcode)
 - `public/` - static files for baseline React app
-- `src/` - baseline React app source 
+- `src/` - baseline React app source
+- `patches/` - Patches for baseline dependencies
