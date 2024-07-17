@@ -4,6 +4,7 @@ import { Ref, useEffect, useState } from "react";
 import { Log } from "../../db";
 import { COLORS, COLORS_CB, getDateFromLog, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
+import { YESTERDAY_BACKLOG } from "../../data";
 
 interface Props {
     logs: Log[],
@@ -57,11 +58,11 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             return;
         }
         
-        const first = getDateFromLog(logs[0]);
-        
         let prevTopDate;
         let today = [];
         const colors = parseSettings()["colorblind"] ? COLORS_CB : COLORS;
+
+        const first = getDateFromLog(logs[0]);
 
         // Count number of first day logs, for bottom spacing for calendar
         for (let log of logs) {
@@ -70,6 +71,35 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             } else {
                 break;
             }
+        }
+
+        const todayDT = DateTime.now().startOf("day");
+        const yesterdayDT = todayDT.minus({ days: 1 });
+        let checkInsertYesterday = false;
+
+        /*
+         * If the first log is not today, add a message
+         * to write the first log for the day.
+         * If the first log is not yesterday, add a message
+         * to add a backlog for yesterday.
+         * If the first log is from today, set a flag
+         * to check if we need to add a backlog for yesterday
+         * in the primary log loop.
+         */
+        if (!filtered && first.toISODate() !== todayDT.toISODate()) {
+            els.push(<div className="text-center" key="end1">
+                <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
+                <div className="br"></div>
+            </div>);
+            els.push(createLocator(todayDT));
+            firstLogs = 0;
+
+            if (first.toISODate() !== yesterdayDT.toISODate()) {
+                els.push(YESTERDAY_BACKLOG);
+                els.push(createLocator(yesterdayDT));
+            }
+        } else {
+            checkInsertYesterday = true;
         }
 
         for (let log of logs) {
@@ -85,7 +115,16 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 if (top) {
                     prevTopDate = getDateFromLog(top);
                     els.push(createLocator(prevTopDate));
+
+                    // If we've passed the first day (today), check to see if
+                    // we need to add a backlog message for yesterday
+                    if (checkInsertYesterday && !filtered && getDateFromLog(top).toISODate() !== yesterdayDT.toISODate()) {
+                        els.push(YESTERDAY_BACKLOG);
+                        els.push(createLocator(yesterdayDT));
+                        checkInsertYesterday = false;
+                    }
                 }
+
                 today = [];
                 top = log;
             }
@@ -97,7 +136,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             if (log.zone !== zone) {
                 if (!prevTopDate) prevTopDate = getDateFromLog(top);
                 const addZone = prevTopDate.setZone(log.zone).zone.offsetName(prevTopDate.toMillis(), { format: "short" });
-                if (!log.time.includes(addZone)) log.time += " " + addZone;
+                if (!log.time.endsWith(addZone)) log.time += " " + addZone;
             }
     
             today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} now={nowTimestamp} />);
@@ -113,16 +152,6 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
     
         // Reverse for display
         els.reverse();
-
-        const now = DateTime.now().startOf("day");
-        if ((now.day !== first.day || now.month !== first.month || now.year !== first.year) && !filtered) {
-            els.push(createLocator(now));
-            els.push(<div className="text-center" key="end1">
-                <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
-                <div className="br"></div>
-            </div>);
-            firstLogs = 0;
-        }
     
         els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
