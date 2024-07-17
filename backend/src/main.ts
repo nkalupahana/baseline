@@ -184,6 +184,8 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         return;
     }
 
+    /// Non-now journaling validation
+    // Basic property validation
     data.editTimestamp = data.editTimestamp ? Number(data.editTimestamp) : null;
     if (data.editTimestamp) {
         if (typeof data.editTimestamp !== "number" || isNaN(data.editTimestamp) || data.editTimestamp !== parseInt(data.editTimestamp) || data.editTimestamp < 0) {
@@ -192,19 +194,44 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
     }
 
-    if (data.song) {
-        if (typeof data.song !== "string" || !data.song.startsWith("spotify:track:") || data.song.length > 100) {
+    if (data.editTimestamp && data.addFlag) {
+        res.send(400);
+        return;
+    }
+
+    // Set globalNow based on sent properties
+    let globalNow = DateTime.utc();
+
+    if (data.addFlag) {
+        if (typeof data.addFlag !== "string" || !data.addFlag.startsWith("summary:")) {
+            res.send(400);
+            return;
+        }
+
+        globalNow = DateTime.fromISO(data.addFlag.split(":")[1], { zone: data.timezone });
+
+        if (!globalNow.isValid) {
             res.send(400);
             return;
         }
     }
 
-    const globalNow = data.editTimestamp ? DateTime.fromMillis(data.editTimestamp) : DateTime.utc();
+    if (data.editTimestamp) {
+        globalNow = DateTime.fromMillis(data.editTimestamp);
+    }
 
-    // Timezone validation
+    // Final timezone validation
     if (typeof data.timezone !== "string" || !globalNow.setZone(data.timezone).isValid) {
         res.send(400);
         return;
+    }
+
+    // Song validation
+    if (data.song) {
+        if (typeof data.song !== "string" || !data.song.startsWith("spotify:track:") || data.song.length > 100) {
+            res.send(400);
+            return;
+        }
     }
 
     let filePaths: string[] = [];
@@ -315,6 +342,11 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         if (audioData) {
             logData.journal = "Audio upload and transcription in progress! Check back in a minute.";
             logData.audio = "inprogress";
+        }
+
+        if (data.addFlag.startsWith("summary:")) {
+            logData.time = "Summary";
+            logData.zone = "none";
         }
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
