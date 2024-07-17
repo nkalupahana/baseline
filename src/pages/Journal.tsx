@@ -37,6 +37,8 @@ const Journal = () => {
     const [average, setAverage] = useState("average");
     // Editing
     const [editTimestamp, setEditTimestamp] = useState<number | null>(null);
+    // Add flag
+    const [addFlag, setAddFlag] = useState<string | null>(null);
     // Spotify integration
     const [song, setSong] = useState<SpotifySelection | undefined>(undefined);
     // Audio recording
@@ -68,6 +70,12 @@ const Journal = () => {
             localStorage.removeItem("autosave");
             localStorage.removeItem("eautosave");
         }
+
+        const afl = localStorage.getItem("addFlag");
+        if (afl) {
+            setAddFlag(afl);
+            localStorage.removeItem("addFlag");
+        }
     }, []);
 
     return (
@@ -84,6 +92,7 @@ const Journal = () => {
                     setElapsedTime={setElapsedTime}
                     audioView={audioView}
                     setAudioView={setAudioView}
+                    addFlag={addFlag}
                 />
             </Route>
             <Route path="/journal/finish">
@@ -101,6 +110,7 @@ const Journal = () => {
                     setSong={setSong}
                     audioChunks={audioChunks}
                     elapsedTime={elapsedTime}
+                    addFlag={addFlag}
                 />
             </Route>
         </>

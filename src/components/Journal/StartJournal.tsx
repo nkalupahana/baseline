@@ -18,9 +18,10 @@ interface Props {
     setElapsedTime: (time: number) => void;
     audioView: boolean;
     setAudioView: (view: boolean) => void;
+    addFlag: string | null;
 }
 
-const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, audioChunks, elapsedTime, setElapsedTime, audioView, setAudioView } : Props) => {
+const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, audioChunks, elapsedTime, setElapsedTime, audioView, setAudioView, addFlag } : Props) => {
     const next = useCallback(() => {
         history.push("/journal/finish");
     }, []);
@@ -46,7 +47,7 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
             <div className="center-journal">
                 { !editTimestamp && <>
                     <div className="title">What's happening?</div>
-                    <p className="text-center bold max-width-600 margin-top-8">What have you been doing, how have you been feeling, and why might you be feeling that way?</p>
+                    <p className="text-center bold max-width-600 margin-top-8">{ !!addFlag ? "Yesterday: what" : "What" } have you been doing, how have you been feeling, and why might you be feeling that way?</p>
                 </> }
                 { !!editTimestamp && 
                     <>

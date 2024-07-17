@@ -39,7 +39,7 @@ export const RESILIENCE_EXP = <>
 
 export const YESTERDAY_BACKLOG = <div className="text-center" key="yesterday1">
     <p className="fake-link" style={{textDecoration: "underline"}} onClick={() => {
-        localStorage.setItem("addTimestamp", "yesterday");
+        localStorage.setItem("addFlag", "yesterday");
         history.push("/journal");
     }}>Missed a day? Keep your journaling streak going! Click here to add a 
         journal entry summarizing what happened to you yesterday.
