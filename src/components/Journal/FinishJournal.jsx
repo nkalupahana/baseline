@@ -148,8 +148,8 @@ const FinishJournal = props => {
         data.append("journal", props.text);
         data.append("average", props.average);
         data.append("keys", JSON.stringify(checkKeys()));
-        data.append("editTimestamp", props.editTimestamp);
-        data.append("addFlag", props.addFlag);
+        if (props.editTimestamp) data.append("editTimestamp", props.editTimestamp);
+        if (props.addFlag) data.append("addFlag", props.addFlag);
 
         if (props.audioChunks.current.length > 0) {
             const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
