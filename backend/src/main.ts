@@ -345,7 +345,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             logData.audio = "inprogress";
         }
 
-        if (data.addFlag.startsWith("summary:")) {
+        if (data.addFlag && data.addFlag.startsWith("summary:")) {
             logData.time = "12:00 PM";
             logData.zone = "local";
             logData.addFlag = "summary";
