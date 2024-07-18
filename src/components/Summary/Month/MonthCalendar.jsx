@@ -176,7 +176,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             if (el) {
                 el.classList.remove("less-highlight-day");
             }
-            document.querySelector(`#${requestedDate.el.replace("i", "g")}`).children[0].classList.add("less-highlight-day");
+            document.querySelector(`#${requestedDate.el.replace("i", "g")}`)?.children[0]?.classList.add("less-highlight-day");
         }
     }, [requestedDate, rows]);
 
