@@ -74,6 +74,7 @@ const Journal = () => {
         const afl = localStorage.getItem("addFlag");
         if (afl) {
             setAddFlag(afl);
+            setText("");
             localStorage.removeItem("addFlag");
         }
     }, []);
