@@ -94,7 +94,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
                     </> }
                     <IonIcon className="close-btn" icon={chevronUp} onClick={toggleGrow} />
                 </> }
-                { (now - log.timestamp) < (ONE_MINUTE * 15) && log.audio !== "inprogress" && <IonIcon className="close-btn mood-edit-btn" icon={pencil} onClick={goToEdit} /> }
+                { (now - (log.timeLogged ?? log.timestamp)) < (ONE_MINUTE * 15) && log.audio !== "inprogress" && <IonIcon className="close-btn mood-edit-btn" icon={pencil} onClick={goToEdit} /> }
             </div>
         </div>
     );

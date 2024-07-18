@@ -16,6 +16,7 @@ export interface Log {
     song?: string;
     audio?: string;
     addFlag?: string;
+    timeLogged?: number;
 }
 
 interface DB extends Dexie {
