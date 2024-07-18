@@ -95,7 +95,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             firstLogs = 0;
 
             if (first.toISODate() !== yesterdayDT.toISODate()) {
-                els.push(YESTERDAY_BACKLOG);
+                els.push(YESTERDAY_BACKLOG());
                 els.push(createLocator(yesterdayDT));
             }
         } else {
@@ -119,7 +119,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                     // If we've passed the first day (today), check to see if
                     // we need to add a backlog message for yesterday
                     if (checkInsertYesterday && !filtered && getDateFromLog(top).toISODate() !== yesterdayDT.toISODate()) {
-                        els.push(YESTERDAY_BACKLOG);
+                        els.push(YESTERDAY_BACKLOG());
                         els.push(createLocator(yesterdayDT));
                         checkInsertYesterday = false;
                     }
