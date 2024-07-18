@@ -320,7 +320,8 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             encryptionKey: encryptionKey
         }
     }
-
+    
+    let setLastUpdated = true;
     if (!data.editTimestamp) {
         const userNow = globalNow.setZone(data.timezone);
         logData = {
@@ -345,8 +346,15 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
 
         if (data.addFlag.startsWith("summary:")) {
-            logData.time = "Summary";
+            logData.time = "12:00 PM";
             logData.zone = "none";
+            logData.addFlag = "summary";
+
+            const lastUpdated = (await db.ref(`/${req.user!.user_id}/lastUpdated`).get()).val();
+            if (lastUpdated && lastUpdated > globalNow.toMillis()) {
+                setLastUpdated = false;
+                promises.push(db.ref(`/${req.user!.user_id}/offline`).set(Math.random()));
+            }
         }
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
@@ -367,10 +375,13 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
     });
 
-    const p2 = db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
-    const p3 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
+    const p2 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
 
-    await Promise.all([p1, p2, p3, ...promises]);
+    if (setLastUpdated) {
+        promises.push(db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis()));
+    }
+
+    await Promise.all([p1, p2, ...promises]);
     if (audioData) {
         await pubsub.topic("pubsub-audio-processing").publishMessage({ json: audioData });
     }
