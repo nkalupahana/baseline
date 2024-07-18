@@ -347,7 +347,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
         if (data.addFlag.startsWith("summary:")) {
             logData.time = "12:00 PM";
-            logData.zone = "none";
+            logData.zone = "local";
             logData.addFlag = "summary";
 
             const lastUpdated = (await db.ref(`/${req.user!.user_id}/lastUpdated`).get()).val();
