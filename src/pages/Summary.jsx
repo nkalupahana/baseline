@@ -148,6 +148,7 @@ const Summary = () => {
             console.log("Offline sync, invalidating cache.");
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey()))).val();
             processNewData(newData, keys);
+            await ldb.logs.clear();
             await ldb.logs.bulkPut(Object.values(newData));
             localStorage.setItem("offline", offlineValue);
         };

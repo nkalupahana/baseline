@@ -118,11 +118,11 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
 
                     // If we've passed the first day (today), check to see if
                     // we need to add a backlog message for yesterday
-                    if (checkInsertYesterday && !filtered && getDateFromLog(top).toISODate() !== yesterdayDT.toISODate()) {
+                    if (checkInsertYesterday && !filtered && getDateFromLog(log).toISODate() !== yesterdayDT.toISODate()) {
                         els.push(YESTERDAY_BACKLOG());
                         els.push(createLocator(yesterdayDT));
-                        checkInsertYesterday = false;
                     }
+                    checkInsertYesterday = false;
                 }
 
                 today = [];
@@ -136,7 +136,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             if (log.zone !== zone) {
                 if (!prevTopDate) prevTopDate = getDateFromLog(top);
                 const addZone = prevTopDate.setZone(log.zone).zone.offsetName(prevTopDate.toMillis(), { format: "short" });
-                if (!log.time.endsWith(addZone)) log.time += " " + addZone;
+                if (!log.time.endsWith(addZone) && log.addFlag !== "summary") log.time += " " + addZone;
             }
     
             today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} now={nowTimestamp} />);

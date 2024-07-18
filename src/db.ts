@@ -15,6 +15,7 @@ export interface Log {
     efiles?: string
     song?: string;
     audio?: string;
+    addFlag?: string;
 }
 
 interface DB extends Dexie {
