@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import history from "./history"
 
 export const TALK_TO_SOMEONE = <>
@@ -37,11 +38,13 @@ export const RESILIENCE_EXP = <>
     you're low on it, stress could have a much bigger impact on you than it would normally.
 </>;
 
-export const YESTERDAY_BACKLOG = <div className="text-center" key="yesterday1">
-    <p className="fake-link" style={{textDecoration: "underline"}} onClick={() => {
-        localStorage.setItem("addFlag", "yesterday");
-        history.push("/journal");
-    }}>Missed a day? Keep your journaling streak going! Click here to add a 
-        journal entry summarizing what happened to you yesterday.
-    </p>
-</div>
+export const YESTERDAY_BACKLOG = () => {
+    return <div className="text-center" key="yesterday1">
+        <p className="fake-link" style={{textDecoration: "underline"}} onClick={() => {
+            localStorage.setItem("addFlag", "summary:" + DateTime.now().minus({ days: 1 }).toISODate());
+            history.push("/journal");
+        }}>Missed a day? Keep your journaling streak going! Click here to add a 
+            journal entry summarizing what happened to you yesterday.
+        </p>
+    </div>
+};
