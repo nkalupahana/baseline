@@ -22,7 +22,7 @@ const Settings = () => {
     }, []);
 
     const addFakeData = useCallback(() => {
-        let date = DateTime.now();
+        let date = DateTime.now().minus({ days: 2 });
         for (let i = 0; i < 30; i++) {
             ldb.logs.add({
                 timestamp: date.toMillis(),

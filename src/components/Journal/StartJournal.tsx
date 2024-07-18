@@ -31,7 +31,7 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
     }, [setMoodRead, moodWrite]);
 
     useEffect(() => {
-        if (!text || editTimestamp) return;
+        if (!text || editTimestamp || addFlag) return;
 
         const pwd = sessionStorage.getItem("pwd");
         if (pwd) {
@@ -39,7 +39,7 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
         } else {
             localStorage.setItem("autosave", text);
         }
-    }, [text, editTimestamp]);
+    }, [text, editTimestamp, addFlag]);
 
     return (
         <div className="container">
