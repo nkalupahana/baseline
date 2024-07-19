@@ -12,6 +12,7 @@ const WAIT_FOR_CONSISTENCY = 4000;
 
 const NUM_TOGGLES = 4;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
+const NUM_EXPORTED_JOURNALS = 40;
 
 // Toggle indices
 const PRACTICE_PROMPTS = 0;
@@ -520,13 +521,13 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "/summary")
     })
 
-    it("Makes User Eligible (Week In Review, Gap Fund)", () => {
+    it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
         const ldb = new Dexie('ldb')
         ldb.version(1).stores({
             logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
         })
         
-        let date =  DateTime.now()
+        let date =  DateTime.now().minus({ days: 1 });
         for (let i = 0; i < 21; i++) {
             date = date.minus({ days: 1 })
             ldb.logs.add({
@@ -649,6 +650,27 @@ describe("Desktop Flow", () => {
             }
         })
     })
+
+    it("Test Summary Logging", () => {
+        cy.visit("/summary")
+        cy.contains("Missed a day").click({ force: true })
+
+        cy.url().should("include", "/journal")
+        cy.contains("Yesterday").should("exist")
+        cy.get("textarea").type("Yesterday's journal")
+
+        cy.contains("Continue").click()
+        cy.contains("Done!").click()
+
+        cy.url().should("include", "/summary")
+
+        const moodCard = cy.contains("Yesterday's journal").parent(".mood-card");
+        moodCard.should("exist")
+        moodCard.find(".mood-edit-btn").should("exist")
+        moodCard.contains("Summary").should("exist")
+
+        cy.contains("Missed a day").should("not.exist")
+    })
 })
 
 describe("Test My Data", () => {
@@ -667,7 +689,7 @@ describe("Test My Data", () => {
         cy.get("#timestamp").should("have.class", "checkbox-checked")
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(39)
+            expect(json).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
@@ -675,7 +697,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(39)
+            expect(data).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
@@ -686,7 +708,7 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(39)
+            expect(json).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of json) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
@@ -696,7 +718,7 @@ describe("Test My Data", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(39)
+            expect(data).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of data) {
                 expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
