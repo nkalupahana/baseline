@@ -20,6 +20,30 @@ const REDUCE_MOTION = 1;
 const COLORBLIND_COLORS = 2;
 const SKIP_WIR = 3;
 
+const createEligibility = () => {
+    const ldb = new Dexie('ldb')
+        ldb.version(1).stores({
+            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
+        })
+        
+        let date =  DateTime.now().minus({ days: 1 });
+        for (let i = 0; i < 21; i++) {
+            date = date.minus({ days: 1 })
+            ldb.logs.add({
+                timestamp: date.toMillis(),
+                month: date.month,
+                day: date.day,
+                year: date.year,
+                time: "1:00 CST",
+                zone: "America/Chicago",
+                average: "average",
+                mood: 0,
+                journal: "fake",
+                files: []
+            });
+        }
+}
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -522,27 +546,7 @@ describe("Desktop Flow", () => {
     })
 
     it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
-        const ldb = new Dexie('ldb')
-        ldb.version(1).stores({
-            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
-        })
-        
-        let date =  DateTime.now().minus({ days: 1 });
-        for (let i = 0; i < 21; i++) {
-            date = date.minus({ days: 1 })
-            ldb.logs.add({
-                timestamp: date.toMillis(),
-                month: date.month,
-                day: date.day,
-                year: date.year,
-                time: "1:00 CST",
-                zone: "America/Chicago",
-                average: "average",
-                mood: 0,
-                journal: "fake",
-                files: []
-            });
-        }
+        createEligibility()
 
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
@@ -650,7 +654,9 @@ describe("Desktop Flow", () => {
             }
         })
     })
+})
 
+describe("Test Streaks", () => {
     it("Test Summary Logging", () => {
         cy.visit("/summary")
         cy.contains("Missed a day").click({ force: true })
@@ -664,14 +670,17 @@ describe("Desktop Flow", () => {
 
         cy.url().should("include", "/summary")
 
-        const moodCard = cy.contains("Yesterday's journal").parent(".mood-card");
-        moodCard.should("exist")
-        moodCard.find(".mood-edit-btn").should("exist")
-        moodCard.contains("Summary").should("exist")
+        const moodCard = () => cy.contains("Yesterday's journal").parent(".mood-card");
+        moodCard().should("exist")
+        moodCard().find(".mood-edit-btn").should("exist")
+        moodCard().contains("Summary").should("exist")
+
+        createEligibility()
 
         cy.contains("Missed a day").should("not.exist")
     })
 })
+
 
 describe("Test My Data", () => {
     beforeEach(() => {
@@ -930,8 +939,12 @@ describe("Test Settings", () => {
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
     })
+})
 
+describe("Test Cleanup", () => {
     it("Start Deletion", () => {
+        cy.visit("/summary")
+
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.contains("Settings").should("exist")
