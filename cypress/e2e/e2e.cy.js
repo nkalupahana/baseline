@@ -608,6 +608,29 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "summary")
     })
 
+    it("Test WIR Results", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Week In Review").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+
+        cy.get("canvas").should("have.length.at.least", 2)
+        cy.contains("baseline score").should("exist")
+
+        cy.contains("Last Week").should("exist").click()
+        cy.url().should("include", "/lastreview")
+        cy.contains("Hi there").should("exist")
+        cy.get("ion-icon").eq(1).click()
+        cy.contains("Results").should("exist")
+        cy.contains("d=0, a=0, s=0").should("exist")
+        cy.get("ion-icon").eq(1).click()
+        cy.get("ion-icon").eq(1).click()
+        cy.contains("Finish").should("exist").click()
+        cy.url().should("include", "/surveys")
+
+        cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
+    })
+
     it("Attempts Gap Fund Request", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Gap Fund").should("exist").click()
@@ -909,29 +932,6 @@ describe("Test Settings", () => {
         cy.get(".top-corner").should("have.length", 1).click()
         cy.url().should("include", "/summary")
         cy.contains("Test 0")
-    })
-
-    it("Test Survey Results", () => {
-        cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Week In Review").should("exist").click()
-        cy.get("ion-menu").should("not.exist")
-
-        cy.get("canvas").should("have.length.at.least", 2)
-        cy.contains("baseline score").should("exist")
-
-        cy.contains("Last Week").should("exist").click()
-        cy.url().should("include", "/lastreview")
-        cy.contains("Hi there").should("exist")
-        cy.get("ion-icon").eq(1).click()
-        cy.contains("Results").should("exist")
-        cy.contains("d=0, a=0, s=0").should("exist")
-        cy.get("ion-icon").eq(1).click()
-        cy.get("ion-icon").eq(1).click()
-        cy.contains("Finish").should("exist").click()
-        cy.url().should("include", "/surveys")
-
-        cy.get(".top-corner").should("have.length", 1).click()
-        cy.url().should("include", "/summary")
     })
 })
 
