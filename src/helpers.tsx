@@ -451,3 +451,28 @@ export function timeToString (time: number) {
     const seconds = time % 60;
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 }
+
+export function calculateStreak(logs: Log[]) {
+    if (logs.length === 0) return 0;
+    
+    const today = DateTime.now();
+    let top = getDateFromLog(logs[0]);
+    if (top.toISODate() !== today.toISODate() && top.toISODate() !== today.minus({ days: 1 }).toISODate()) return 0;
+    
+    let streak = 1;
+    for (const log of logs) {
+        // When the date changes, check if it's only changed by one
+        // day. If it is, continue the streak, else break.
+        if (top.day !== log.day || top.month !== log.month || top.year !== log.year) {
+            const logDT = getDateFromLog(log);
+            if (logDT.toISODate() === top.minus({ days: 1}).toISODate()) {
+                top = logDT;
+                ++streak;
+            } else {
+                break;
+            }
+        }
+    }
+
+    return streak;
+}

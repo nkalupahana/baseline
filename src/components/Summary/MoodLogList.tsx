@@ -1,10 +1,11 @@
 import { IonSpinner } from "@ionic/react";
 import { DateTime } from "luxon";
-import { Ref, useEffect, useState } from "react";
+import { Ref, useEffect, useMemo, useState } from "react";
 import { Log } from "../../db";
 import { COLORS, COLORS_CB, getDateFromLog, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 import { YESTERDAY_BACKLOG } from "../../data";
+import StreakBadge from "./StreakBadge";
 
 interface Props {
     logs: Log[],
@@ -31,7 +32,6 @@ const createEmptyLocator = (t: DateTime) => {
 }
 
 const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight, filtered, LOCATOR_OFFSET } : Props) => {
-    const [els, setEls] = useState<JSX.Element[]>([]);
     const [updating, setUpdating] = useState(window.location.hash === "#update");
     const settings = parseSettings();
 
@@ -46,7 +46,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         };
     }, []);
 
-    useEffect(() => {
+    const els = useMemo(() => {
         let els = [];
         let top: Log | undefined = undefined;
         const zone = DateTime.now().zone.name;
@@ -54,8 +54,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
     
         let firstLogs = 0;
         if (logs.length === 0) {
-            setEls([<div key="top-spacer-no-results" style={{"width": "100%", "height": "90px"}}></div>, <p key="no-results" className="text-center">No Results</p>]);
-            return;
+            return [<div key="top-spacer-no-results" style={{"width": "100%", "height": "120px"}}></div>, <p key="no-results" className="text-center">No Results</p>];
         }
         
         let prevTopDate;
@@ -76,6 +75,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         const todayDT = DateTime.now().startOf("day");
         const yesterdayDT = todayDT.minus({ days: 1 });
         let checkInsertYesterday = false;
+        let streakIndicatorAdded = false;
 
         /*
          * If the first log is not today, add a message
@@ -87,6 +87,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
          * in the primary log loop.
          */
         if (!filtered && first.toISODate() !== todayDT.toISODate()) {
+            els.push(<StreakBadge logs={logs} key="streakbadge" />)
             els.push(<div className="text-center" key="end1">
                 <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <div className="br"></div>
@@ -114,6 +115,11 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 els.push(...today);
                 if (top) {
                     prevTopDate = getDateFromLog(top);
+                    if (!streakIndicatorAdded) {
+                        els.push(<StreakBadge logs={logs} key="streakbadge" />);
+                        streakIndicatorAdded = true;
+                    }
+
                     els.push(createLocator(prevTopDate));
 
                     // If we've passed the first day (today), check to see if
@@ -149,13 +155,13 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             els.push(createLocator(prevTopDate));
         }
         els.push(<div key={filtered ? "top-br-filtered" : "top-br"} style={{"width": "100%", "height": `${LOCATOR_OFFSET}px`}}></div>);
-    
+
         // Reverse for display
         els.reverse();
     
         els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
-        setEls(els);
+        return els;
     }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating, filtered, LOCATOR_OFFSET]);
     
     // Scroll to last log item on load
