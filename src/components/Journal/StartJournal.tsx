@@ -41,13 +41,23 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
         }
     }, [text, editTimestamp, addFlag]);
 
+    let title = "What's happening?";
+    if (addFlag?.startsWith("summary")) {
+        title = "What happened?";
+    }
+
+    let subtitle = "What have you been doing, how have you been feeling, and why might you be feeling that way?";
+    if (addFlag?.startsWith("summary")) {
+        subtitle = "Yesterday, what happened, how did you feel, and why might you have felt that way?";
+    }
+
     return (
         <div className="container">
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
                 { !editTimestamp && <>
-                    <div className="title">What's happening?</div>
-                    <p className="text-center bold max-width-600 margin-top-8">{ !!addFlag ? "Yesterday: what" : "What" } have you been doing, how have you been feeling, and why might you be feeling that way?</p>
+                    <div className="title">{ title }</div>
+                    <p className="text-center bold max-width-600 margin-top-8">{ subtitle }</p>
                 </> }
                 { !!editTimestamp && 
                     <>
