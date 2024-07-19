@@ -12,37 +12,13 @@ const WAIT_FOR_CONSISTENCY = 4000;
 
 const NUM_TOGGLES = 4;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
-const NUM_EXPORTED_JOURNALS = 40;
+const NUM_EXPORTED_JOURNALS = 19;
 
 // Toggle indices
 const PRACTICE_PROMPTS = 0;
 const REDUCE_MOTION = 1;
 const COLORBLIND_COLORS = 2;
 const SKIP_WIR = 3;
-
-const createEligibility = () => {
-    const ldb = new Dexie('ldb')
-        ldb.version(1).stores({
-            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
-        })
-        
-        let date =  DateTime.now().minus({ days: 1 });
-        for (let i = 0; i < 21; i++) {
-            date = date.minus({ days: 1 })
-            ldb.logs.add({
-                timestamp: date.toMillis(),
-                month: date.month,
-                day: date.day,
-                year: date.year,
-                time: "1:00 CST",
-                zone: "America/Chicago",
-                average: "average",
-                mood: 0,
-                journal: "fake",
-                files: []
-            });
-        }
-}
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -546,7 +522,27 @@ describe("Desktop Flow", () => {
     })
 
     it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
-        createEligibility()
+        const ldb = new Dexie('ldb')
+        ldb.version(1).stores({
+            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
+        })
+        
+        let date = DateTime.now().minus({ days: 1 });
+        for (let i = 0; i < 21; i++) {
+            date = date.minus({ days: 1 })
+            ldb.logs.add({
+                timestamp: date.toMillis(),
+                month: date.month,
+                day: date.day,
+                year: date.year,
+                time: "1:00 CST",
+                zone: "America/Chicago",
+                average: "average",
+                mood: 0,
+                journal: "fake",
+                files: []
+            });
+        }
 
         cy.get(".fab-button-close-active").click()
         cy.contains("What's happening").should("exist")
@@ -674,8 +670,6 @@ describe("Test Streaks", () => {
         moodCard().should("exist")
         moodCard().find(".mood-edit-btn").should("exist")
         moodCard().contains("Summary").should("exist")
-
-        createEligibility()
 
         cy.contains("Missed a day").should("not.exist")
     })
