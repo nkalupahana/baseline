@@ -87,13 +87,14 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
          * in the primary log loop.
          */
         if (!filtered && first.toISODate() !== todayDT.toISODate()) {
-            els.push(<StreakBadge logs={logs} key="streakbadge" />)
             els.push(<div className="text-center" key="end1">
                 <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <div className="br"></div>
             </div>);
+            els.push(<StreakBadge logs={logs} key="streakbadge" />);
             els.push(createLocator(todayDT));
             firstLogs = 0;
+            streakIndicatorAdded = true;
 
             if (first.toISODate() !== yesterdayDT.toISODate()) {
                 els.push(YESTERDAY_BACKLOG());
