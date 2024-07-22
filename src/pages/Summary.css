@@ -204,3 +204,7 @@
         font-size: 1.3em;
     }
 }
+
+p.first-journal {
+    margin-top: 12px;
+}

@@ -88,7 +88,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
          */
         if (!filtered && first.toISODate() !== todayDT.toISODate()) {
             els.push(<div className="text-center" key="end1">
-                <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
+                <p className="first-journal">Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <div className="br"></div>
             </div>);
             els.push(<StreakBadge logs={logs} key="streakbadge" />);
