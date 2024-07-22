@@ -6,9 +6,6 @@
       ".read": true,
       ".write": false
     },
-    "beginnerQuestions": {
-      ".read": true
-    },
     "$uid": {
       "logs": {
         ".read": "auth != null && auth.uid == $uid"
@@ -44,18 +41,25 @@
         ".read": "auth != null && auth.uid == $uid"
       },
       "onboarding": {
-        ".read": true,
+        ".read": "auth != null && auth.uid == $uid",
         "beginner": {
-          ".write": true,
+          ".write": "auth != null && auth.uid == $uid",
           ".validate": "(newData.isNumber() && newData.val() == now) || newData.val() == false"
         },
         "questions": {
-          ".write": true,
+          ".write": "auth != null && auth.uid == $uid",
           ".validate": "newData.isBoolean()"
         },
         "onboarded": {
-          ".write": true,
+          ".write": "auth != null && auth.uid == $uid",
           ".validate": "newData.isBoolean() && newData.val() == true"
+        }
+      },
+      "prompts": {
+        ".read": "auth != null && auth.uid == $uid",
+        "streak": {
+          ".write": "auth != null && auth.uid == $uid",
+          ".validate": "newData.isNumber() && newData.val() > 0"
         }
       }
     }
