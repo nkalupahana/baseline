@@ -230,11 +230,11 @@ export function checkPassphrase(passphrase: string): boolean {
     }
 }
 
-export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting?: (_: boolean) => void) {
+export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting?: (_: boolean) => void, failSilently?: boolean) {
     let response;
-    let toasted = false;
+    let toasted = failSilently ?? false;
     try {
-        response = await fetch(`${BASE_URL}/${route}`,{
+        response = await fetch(`${BASE_URL}/${route}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${await getIdToken(user)}`,
@@ -243,21 +243,23 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
             body: JSON.stringify(body)
         });
     } catch (e: any) {
-        if (networkFailure(e.message)) {
-            toast(`We can't reach our servers. Check your internet connection and try again.`);
-        } else {
-            toast(`Something went wrong, please try again! \nError: ${e.message}`);
+        if (!toasted) {
+            if (networkFailure(e.message)) {
+                toast(`We can't reach our servers. Check your internet connection and try again.`);
+            } else {
+                toast(`Something went wrong, please try again! \nError: ${e.message}`);
+            }
+            toasted = true;
         }
-        toasted = true;
     }
 
-    if (response && !toasted) {
+    if (response) {
         if (!response.ok) {
-            toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+            if (!toasted) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
         } else {
             return true;
         }
-    } else {
+    } else if (!toasted) {
         toast(`Something went wrong, please try again!`);
     }
 

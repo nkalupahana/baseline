@@ -67,7 +67,7 @@ const PromptWeekInReview = () => {
                 data["fcmToken"] = token.token;
                 data["deviceId"] = (await Device.getId()).identifier;
             }
-            await makeRequest("accounts/sync", auth.currentUser!, data);
+            await makeRequest("accounts/sync", user, data, undefined, true);
         })();
     }, [user, show]);
 

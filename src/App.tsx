@@ -25,7 +25,7 @@ import "./theme/variables.css";
 import { auth, signOutAndCleanUp } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import { checkKeys } from "./helpers";
+import { AnyMap, checkKeys, makeRequest } from "./helpers";
 import history from "./history";
 import { Capacitor } from "@capacitor/core";
 import "./lifecycle";
@@ -48,6 +48,7 @@ import { CSSTransition } from "react-transition-group";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
 import * as Sentry from "@sentry/react";
+import { DateTime } from "luxon";
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -69,6 +70,14 @@ const App = () => {
         Sentry.setUser({
             id: user.uid
         });
+
+        // Sync basic information whenever app is opened
+        const platform = Capacitor.getPlatform();
+        let data: AnyMap = {
+            offset: DateTime.now().offset,
+            platform
+        };
+        makeRequest("accounts/sync", user, data, undefined, true);
     }, [user]);
 
     useEffect(() => {
