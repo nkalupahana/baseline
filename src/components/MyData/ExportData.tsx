@@ -80,7 +80,7 @@ const ExportData = () => {
             Share.share({
                 "title": "Journal Data",
                 "files": [uri]
-            });
+            }).catch(() => {});
         }
     }
 

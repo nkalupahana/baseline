@@ -16,11 +16,12 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
-import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast, calculateStreak } from "../helpers";
+import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
 import StreakContext from "../components/Streaks/StreakContext";
 import { FirebaseMessaging } from "@capacitor-firebase/messaging";
-import * as Sentry from "@sentry/react";
 import StreakDialog from "../components/Streaks/StreakDialog";
+import { calculateStreak } from "../components/Streaks/helpers";
+import * as Sentry from "@sentry/react";
 
 // Add timestamp to data object, and decrypt as needed
 const processNewData = (newData, keys) => {

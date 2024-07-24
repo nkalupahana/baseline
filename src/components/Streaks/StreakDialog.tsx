@@ -6,9 +6,7 @@ import StreakContext from "./StreakContext";
 import Dialog from "../Dialog";
 import StreakBadge from "./StreakBadge";
 import { DateTime } from "luxon";
-import { Capacitor } from "@capacitor/core";
-import { Share } from "@capacitor/share";
-import { toast } from "../../helpers";
+import { share } from "./helpers";
 
 enum OpenDialog {
     NONE,
@@ -26,7 +24,7 @@ const StreakDialog = () => {
         setOpenDialog(OpenDialog.NONE);
     };
 
-    const share = async () => {
+    const shareStreak = () => {
         let text;
         if (streak === 1) {
             text = "I just started journaling with baseline, a free non-profit journaling app! Try it out and join me. https://getbaseline.app";
@@ -34,18 +32,11 @@ const StreakDialog = () => {
             text = `I just got to a ${streak}-day journaling streak on baseline! Try it out and join me. https://getbaseline.app`;
         }
 
-        if (Capacitor.getPlatform() === "web") {
-            navigator.clipboard.writeText(text);
-            toast("Copied to clipboard!");
-        } else {
-            try {
-                Share.share({ text });
-            } catch {}
-        }
+        share(text);
     }
 
     const bottomButtons = <>
-        <div className="finish-button" onClick={share} style={{"backgroundColor": "var(--dark-action)", "marginBottom": "8px"}}>Share my progress!</div>
+        <div className="finish-button" onClick={shareStreak} style={{"backgroundColor": "var(--dark-action)", "marginBottom": "8px"}}>Share my progress!</div>
         <div className="finish-button" onClick={dismissDialog} style={{"marginBottom": "12px"}}>Close</div>
     </>
 

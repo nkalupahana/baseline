@@ -51,6 +51,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         let top: Log | undefined = undefined;
         const zone = DateTime.now().zone.name;
         const nowTimestamp = DateTime.now().toMillis();
+        const streakBadge = <StreakBadge shareOnClick={true} key="streakbadge" />;
     
         let firstLogs = 0;
         if (logs.length === 0) {
@@ -91,7 +92,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 <p className="first-journal">Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <div className="br"></div>
             </div>);
-            els.push(<StreakBadge key="streakbadge" />);
+            els.push(streakBadge);
             els.push(createLocator(todayDT));
             firstLogs = 0;
             streakIndicatorAdded = true;
@@ -117,7 +118,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 if (top) {
                     prevTopDate = getDateFromLog(top);
                     if (!streakIndicatorAdded) {
-                        els.push(<StreakBadge key="streakbadge" />);
+                        els.push(streakBadge);
                         streakIndicatorAdded = true;
                     }
 
@@ -152,7 +153,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         // Add final information
         els.push(...today);
         if (top) {
-            if (!streakIndicatorAdded) els.push(<StreakBadge key="streakbadge" />);
+            if (!streakIndicatorAdded) els.push(streakBadge);
             prevTopDate = getDateFromLog(top);
             els.push(createLocator(prevTopDate));
         }
