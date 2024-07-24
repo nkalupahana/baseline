@@ -1,5 +1,5 @@
 import { IonContent, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonMenu } from "@ionic/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import ldb from "../db";
 import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db, signOutAndCleanUp } from "../firebase";
@@ -16,9 +16,11 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 import { Capacitor } from "@capacitor/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import Preloader from "./Preloader";
-import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast } from "../helpers";
+import { checkKeys, decrypt, encrypt, parseSettings, setSettings, toast, calculateStreak } from "../helpers";
+import StreakContext from "../components/Streaks/StreakContext";
 import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import * as Sentry from "@sentry/react";
+import StreakDialog from "../components/Streaks/StreakDialog";
 
 // Add timestamp to data object, and decrypt as needed
 const processNewData = (newData, keys) => {
@@ -48,6 +50,7 @@ const Summary = () => {
     const logsQuery = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().toArray());
     const [logs, setLogs] = useState([]);
     const [searchMode, setSearchMode] = useState(false);
+    const streak = useMemo(() => calculateStreak(logs), [logs]);
 
     useEffect(() => {
         const platform = Capacitor.getPlatform();
@@ -184,104 +187,110 @@ const Summary = () => {
     }, [logsQuery]);
 
     return (
-        <div>
-            <div id="mainContent">
-                <Media
-                    queries={{
-                        week: "(max-width: 900px)",
-                        month: "(min-width: 901px) and (min-height: 501px)",
-                        tooShortMonth: "(min-width: 901px) and (max-height: 500px)",
-                    }}
-                >
-                    {matches => (
-                        <>
-                            { matches.week && <WeekSummary 
-                                inFullscreen={inFullscreen} 
-                                setInFullscreen={setInFullscreen} 
-                                search={{
-                                    get: searchMode,
-                                    set: setSearchMode
-                                }} 
-                                logs={logs} 
-                            /> }
-                            { matches.month && <MonthSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
-                            { matches.tooShortMonth && <div className="center-summary">
-                                <div className="title">Turn your device or resize your window!</div>
-                                <p className="text-center" style={{"maxWidth": "600px"}}>
-                                    Right now, your screen is too wide and short to display baseline's month summary view correctly. 
-                                    Either rotate your screen if you're on a mobile device, or make your window taller on desktop.
-                                </p>
-                            </div> }
-                            { logs && logs.length === 0 && !gettingData && <p className="text-center container">Write your first mood log by clicking on the pencil in the bottom right!</p> }
-                            { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
-                        </>
-                    )}
-                </Media>
+        <StreakContext.Provider value={streak}>
+            <div>
+                <div id="mainContent">
+                    <Media
+                        queries={{
+                            week: "(max-width: 900px)",
+                            month: "(min-width: 901px) and (min-height: 501px)",
+                            tooShortMonth: "(min-width: 901px) and (max-height: 500px)",
+                        }}
+                    >
+                        {matches => (
+                            <>
+                                { matches.week && <WeekSummary 
+                                    inFullscreen={inFullscreen} 
+                                    setInFullscreen={setInFullscreen} 
+                                    search={{
+                                        get: searchMode,
+                                        set: setSearchMode
+                                    }} 
+                                    logs={logs} 
+                                /> }
+                                { matches.month && <MonthSummary inFullscreen={inFullscreen} setInFullscreen={setInFullscreen} logs={logs} /> }
+                                { matches.tooShortMonth && <div className="center-summary">
+                                    <div className="title">Turn your device or resize your window!</div>
+                                    <p className="text-center" style={{"maxWidth": "600px"}}>
+                                        Right now, your screen is too wide and short to display baseline's month summary view correctly. 
+                                        Either rotate your screen if you're on a mobile device, or make your window taller on desktop.
+                                    </p>
+                                </div> }
+                                { logs && logs.length === 0 && !gettingData && 
+                                    <p className="text-center container">
+                                        Write your first mood log by clicking on the pencil in the bottom right!
+                                    </p> }
+                                { (!logs || (logs.length === 0 && gettingData)) && <Preloader /> }
+                            </>
+                        )}
+                    </Media>
+                </div>
+                { !inFullscreen && <IonFab vertical="bottom" horizontal="end" slot="fixed" class="journal-fab" id="journal-fab">
+                    <IonFabButton
+                        size="small"
+                        color="light"
+                        style={{ marginBottom: "16px" }}
+                        onClick={() => menuRef.current?.open()}
+                    >
+                        <IonIcon style={{fontSize: "22px"}} icon={menuOutline} />
+                    </IonFabButton>
+                    <IonFabButton
+                        closeIcon={pencil}
+                        activated={true}
+                        onClick={() => {
+                            history.push("/journal");
+                        }}
+                    >
+                        <IonIcon icon={pencil} />
+                    </IonFabButton>
+                </IonFab> }
+                <IonMenu ref={menuRef} disabled={inFullscreen} side="end" contentId="mainContent" menuId="mainMenu">
+                    <IonContent>
+                        <IonList className="menu">
+                            <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>
+                            <IonItem onClick={() => history.push("/onboarding/howto")} mode="ios">
+                                <IonIcon icon={bookOutline} slot="start" />
+                                <IonLabel>How To Journal</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={() => history.push("/notifications")} mode="ios" >
+                                <IonIcon icon={notifications} slot="start" />
+                                <IonLabel>Notifications</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={() => history.push("/gap")} mode="ios">
+                                <IonIcon icon={cashOutline} slot="start" />
+                                <IonLabel>Gap Fund</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={() => history.push("/surveys")} mode="ios">
+                                <IonIcon icon={analytics} slot="start" />
+                                <IonLabel>Week In Review</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={() => history.push("/gethelp")} mode="ios">
+                                <IonIcon icon={helpBuoyOutline} slot="start" />
+                                <IonLabel>Get Help</IonLabel>
+                            </IonItem>
+                            <IonItem className="move-rest-down" onClick={() => history.push("/donate")} mode="ios">
+                                <IonIcon icon={heartCircleOutline} slot="start" />
+                                <IonLabel>Donate</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={() => history.push("/mydata")} mode="ios">
+                                <IonIcon icon={fileTrayFull} slot="start" />
+                                <IonLabel>My Data</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={() => history.push("/settings")} mode="ios">
+                                <IonIcon icon={cogOutline} slot="start" />
+                                <IonLabel>Settings</IonLabel>
+                            </IonItem>
+                            <IonItem onClick={signOutAndCleanUp} mode="ios">
+                                <IonLabel>Sign Out</IonLabel>
+                            </IonItem>
+                            <div style={{"height": "20px"}}></div>
+                        </IonList>
+                    </IonContent>
+                </IonMenu>
+                <PromptWeekInReview />
+                <StreakDialog />
             </div>
-            { !inFullscreen && <IonFab vertical="bottom" horizontal="end" slot="fixed" class="journal-fab" id="journal-fab">
-                <IonFabButton
-                    size="small"
-                    color="light"
-                    style={{ marginBottom: "16px" }}
-                    onClick={() => menuRef.current?.open()}
-                >
-                    <IonIcon style={{fontSize: "22px"}} icon={menuOutline} />
-                </IonFabButton>
-                <IonFabButton
-                    closeIcon={pencil}
-                    activated={true}
-                    onClick={() => {
-                        history.push("/journal");
-                    }}
-                >
-                    <IonIcon icon={pencil} />
-                </IonFabButton>
-            </IonFab> }
-            <IonMenu ref={menuRef} disabled={inFullscreen} side="end" contentId="mainContent" menuId="mainMenu">
-                <IonContent>
-                    <IonList className="menu">
-                        <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>
-                        <IonItem onClick={() => history.push("/onboarding/howto")} mode="ios">
-                            <IonIcon icon={bookOutline} slot="start" />
-                            <IonLabel>How To Journal</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={() => history.push("/notifications")} mode="ios" >
-                            <IonIcon icon={notifications} slot="start" />
-                            <IonLabel>Notifications</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={() => history.push("/gap")} mode="ios">
-                            <IonIcon icon={cashOutline} slot="start" />
-                            <IonLabel>Gap Fund</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={() => history.push("/surveys")} mode="ios">
-                            <IonIcon icon={analytics} slot="start" />
-                            <IonLabel>Week In Review</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={() => history.push("/gethelp")} mode="ios">
-                            <IonIcon icon={helpBuoyOutline} slot="start" />
-                            <IonLabel>Get Help</IonLabel>
-                        </IonItem>
-                        <IonItem className="move-rest-down" onClick={() => history.push("/donate")} mode="ios">
-                            <IonIcon icon={heartCircleOutline} slot="start" />
-                            <IonLabel>Donate</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={() => history.push("/mydata")} mode="ios">
-                            <IonIcon icon={fileTrayFull} slot="start" />
-                            <IonLabel>My Data</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={() => history.push("/settings")} mode="ios">
-                            <IonIcon icon={cogOutline} slot="start" />
-                            <IonLabel>Settings</IonLabel>
-                        </IonItem>
-                        <IonItem onClick={signOutAndCleanUp} mode="ios">
-                            <IonLabel>Sign Out</IonLabel>
-                        </IonItem>
-                        <div style={{"height": "20px"}}></div>
-                    </IonList>
-                </IonContent>
-            </IonMenu>
-            <PromptWeekInReview />
-        </div>
+        </StreakContext.Provider>
     );
 };
 

@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import "./Dialog.css";
+import { PropsWithChildren } from "react";
 
 // get/set for last shown (dialogs)
 export const getLastShown = (key: string) => {
@@ -23,7 +24,11 @@ export const setLastShown = (key: string, value: number) => {
     localStorage.setItem("lastShown", JSON.stringify(lastShown));
 }
 
-const Dialog = ({ children, title } : { children: JSX.Element, title: string }) => {
+interface Props extends PropsWithChildren<{}> {
+    title: string;
+}
+
+const Dialog = ({ children, title } : Props) => {
     return <div className="dialog-background">
         <div className="dialog">
             <div className="dialog-title">{ title }</div>
