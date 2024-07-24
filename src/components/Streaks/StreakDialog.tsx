@@ -46,7 +46,7 @@ const StreakDialog = () => {
 
     const bottomButtons = <>
         <div className="finish-button" onClick={share} style={{"backgroundColor": "var(--dark-action)", "marginBottom": "8px"}}>Share my progress!</div>
-        <div className="finish-button margin-bottom-12" onClick={dismissDialog}>Close</div>
+        <div className="finish-button" onClick={dismissDialog} style={{"marginBottom": "12px"}}>Close</div>
     </>
 
     useEffect(() => {
@@ -63,11 +63,12 @@ const StreakDialog = () => {
 
         // If we have a streak, and it's been a week since we last showed a streak message
         if (streak > 0 && shownStreakTime < DateTime.now().minus({ days: 7 }).toMillis()) {
-            if (streak === 1) {
-                console.log("Starting streak message");
+            // Only ever show the first journaling message once
+            if (streak === 1 && shownStreakTime === 0) {
                 newShownStreak = true;
                 setOpenDialog(OpenDialog.FIRST_DAY);
             } else if (streak % 10 === 0) {
+                // Show every ten consecutive days
                 console.log("Streak is a multiple of 10 message");
                 newShownStreak = true;
                 setOpenDialog(OpenDialog.CONTINUING);

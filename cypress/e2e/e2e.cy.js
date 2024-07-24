@@ -12,7 +12,7 @@ const WAIT_FOR_CONSISTENCY = 4000;
 
 const NUM_TOGGLES = 4;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
-const NUM_EXPORTED_JOURNALS = 19;
+const NUM_EXPORTED_JOURNALS = 47;
 
 // Toggle indices
 const PRACTICE_PROMPTS = 0;
@@ -134,7 +134,13 @@ describe("Mobile Flow", () => {
     })
 
     it("Verify Mood Log on Summary", () => {
+        cy.get(".dialog").should("exist")
+        cy.get(".dialog").happoScreenshot()
+        cy.contains("Close").click()
+        cy.get(".dialog").should("not.exist")
+
         cy.contains("Hello world!").should("exist")
+        cy.get(".sb-badge").contains("1").should("exist")
         cy.get("div.toastify").invoke("remove")
         
         // This is due to the segment button not resetting.
@@ -695,6 +701,25 @@ describe("Test Streaks", () => {
         moodCard().contains("Summary").should("exist")
 
         cy.contains("Missed a day").should("not.exist")
+    })
+
+    it("Load Fake Data", () => {
+        cy.visit("/settings")
+        cy.contains("Add Local Fake Data").click({ force: true })
+        cy.contains("Clear Journal Prompt").click({ force: true })
+        cy.get(".toastify").should("have.length", 2)
+    })
+
+    it("Test Streak Dialog", () => {
+        cy.visit("/summary")
+        cy.get(".dialog").should("exist")
+        cy.contains("30 days").should("exist")
+        cy.get(".dialog").happoScreenshot()
+
+        cy.contains("Close").click()
+        cy.get(".dialog").should("not.exist")
+
+        cy.get(".sb-badge").contains("30").should("exist")
     })
 })
 
