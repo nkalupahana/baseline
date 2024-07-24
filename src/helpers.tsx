@@ -453,7 +453,7 @@ export function timeToString (time: number) {
 }
 
 export function calculateStreak(logs: Log[]) {
-    if (logs.length === 0) return 0;
+    if (!logs || logs.length === 0) return 0;
     
     const today = DateTime.now();
     let top = getDateFromLog(logs[0]);

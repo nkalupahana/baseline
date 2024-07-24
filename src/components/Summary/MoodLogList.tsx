@@ -5,7 +5,7 @@ import { Log } from "../../db";
 import { COLORS, COLORS_CB, getDateFromLog, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
 import { YESTERDAY_BACKLOG } from "../../data";
-import StreakBadge from "./StreakBadge";
+import StreakBadge from "../Streaks/StreakBadge";
 
 interface Props {
     logs: Log[],
@@ -91,7 +91,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 <p className="first-journal">Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <div className="br"></div>
             </div>);
-            els.push(<StreakBadge logs={logs} key="streakbadge" />);
+            els.push(<StreakBadge key="streakbadge" />);
             els.push(createLocator(todayDT));
             firstLogs = 0;
             streakIndicatorAdded = true;
@@ -117,7 +117,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 if (top) {
                     prevTopDate = getDateFromLog(top);
                     if (!streakIndicatorAdded) {
-                        els.push(<StreakBadge logs={logs} key="streakbadge" />);
+                        els.push(<StreakBadge key="streakbadge" />);
                         streakIndicatorAdded = true;
                     }
 
@@ -152,6 +152,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         // Add final information
         els.push(...today);
         if (top) {
+            if (!streakIndicatorAdded) els.push(<StreakBadge key="streakbadge" />);
             prevTopDate = getDateFromLog(top);
             els.push(createLocator(prevTopDate));
         }
