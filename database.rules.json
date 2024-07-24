@@ -59,7 +59,7 @@
         ".read": "auth != null && auth.uid == $uid",
         "streak": {
           ".write": "auth != null && auth.uid == $uid",
-          ".validate": "newData.isNumber() && newData.val() > 0"
+          ".validate": "newData.isNumber() && newData.val() == now"
         }
       }
     }
