@@ -6,12 +6,13 @@ import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
-import { auth, signOutAndCleanUp } from "../firebase";
+import { auth, db, signOutAndCleanUp } from "../firebase";
 import { goBackSafely, toast } from "../helpers";
 import history from "../history";
 import { DateTime } from "luxon";
 import ldb from "../db";
 import * as Sentry from "@sentry/react";
+import { ref, remove } from "firebase/database";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
@@ -23,7 +24,7 @@ const Settings = () => {
 
     const addFakeData = useCallback(() => {
         let date = DateTime.now().minus({ days: 2 });
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 28; i++) {
             ldb.logs.add({
                 timestamp: date.toMillis(),
                 month: date.month,
@@ -42,6 +43,14 @@ const Settings = () => {
 
         toast("Added fake data!");
     }, []);
+
+    const clearJournalPrompt = useCallback(() => {
+        if (!user) return;
+        
+        remove(ref(db, `${user.uid}/prompts/streak`)).then(() => {
+            toast("Cleared journal prompt from DB!");
+        });
+    }, [user]);
 
     return <div className="container">
         { !doingAsyncTask && <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
@@ -87,8 +96,9 @@ const Settings = () => {
                 </p>
             </div>
             <IonButton style={{"display": "none"}} mode="ios" onClick={addFakeData}>Add Local Fake Data For WIR</IonButton>
+            { user && <IonButton style={{"display": "none"}} mode="ios" onClick={clearJournalPrompt}>Clear Journal Prompt from DB</IonButton> }
         </div>
-        <IonAlert 
+        <IonAlert
             isOpen={deleteAlert}
             onDidDismiss={() => setDeleteAlert(false)}
             header="Are you sure?"
@@ -111,7 +121,7 @@ const Settings = () => {
                         toast("Sign in again now to delete your account.");
                     }
                 }
-            ]}         
+            ]}
         />
         <KeyboardSpacer />
         <EndSpacer />
