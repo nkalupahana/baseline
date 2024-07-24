@@ -1,10 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
-import { get, ref } from "firebase/database";
+import { get, ref, serverTimestamp, set } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import StreakContext from "./StreakContext";
 import Dialog from "../Dialog";
 import StreakBadge from "./StreakBadge";
+import { DateTime } from "luxon";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
+import { toast } from "../../helpers";
 
 enum OpenDialog {
     NONE,
@@ -14,43 +18,89 @@ enum OpenDialog {
 
 const StreakDialog = () => {
     const streak = useContext(StreakContext);
-    const [shownStreak, setShownStreak] = useState<number | undefined>(undefined);
+    const [shownStreakTime, setShownStreakTime] = useState<number | undefined>(undefined);
     const [user] = useAuthState(auth);
     const [openDialog, setOpenDialog] = useState(OpenDialog.NONE);
+
+    const dismissDialog = () => {
+        setOpenDialog(OpenDialog.NONE);
+    };
+
+    const share = async () => {
+        let text;
+        if (streak === 1) {
+            text = "I just started journaling with baseline, a free non-profit journaling app! Try it out and join me. https://getbaseline.app";
+        } else {
+            text = `I just got to a ${streak}-day journaling streak on baseline! Try it out and join me. https://getbaseline.app`;
+        }
+
+        if (Capacitor.getPlatform() === "web") {
+            navigator.clipboard.writeText(text);
+            toast("Copied to clipboard!");
+        } else {
+            try {
+                Share.share({ text });
+            } catch {}
+        }
+    }
+
+    const bottomButtons = <>
+        <div className="finish-button" onClick={share} style={{"backgroundColor": "var(--dark-action)", "marginBottom": "8px"}}>Share my progress!</div>
+        <div className="finish-button margin-bottom-12" onClick={dismissDialog}>Close</div>
+    </>
 
     useEffect(() => {
         if (!user) return;
         get(ref(db, `/${user.uid}/prompts/streak`)).then(snap => {
             const data = snap.val() ?? 0;
-            setShownStreak(data);
+            setShownStreakTime(data);
         });
     }, [user]);
 
     useEffect(() => {
-        if (shownStreak === undefined || !user) return;
-        let newShownStreak = null;
+        if (shownStreakTime === undefined || !user) return;
+        let newShownStreak = false;
 
-        if (streak > 0 && streak > shownStreak) {
+        // If we have a streak, and it's been a week since we last showed a streak message
+        if (streak > 0 && shownStreakTime < DateTime.now().minus({ days: 7 }).toMillis()) {
             if (streak === 1) {
                 console.log("Starting streak message");
-                newShownStreak = 1;
+                newShownStreak = true;
                 setOpenDialog(OpenDialog.FIRST_DAY);
             } else if (streak % 10 === 0) {
                 console.log("Streak is a multiple of 10 message");
-                newShownStreak = streak;
+                newShownStreak = true;
                 setOpenDialog(OpenDialog.CONTINUING);
             }
         }
 
         if (newShownStreak) {
-            //set(ref(db, `/${user.uid}/prompts/streak`), newShownStreak);
+            set(ref(db, `/${user.uid}/prompts/streak`), serverTimestamp());
         }
-    }, [user, streak, shownStreak]);
+    }, [user, streak, shownStreakTime]);
 
     return <>
         { openDialog === OpenDialog.FIRST_DAY && <Dialog title="Great work getting started.">
+            <div className="br" />
             <StreakBadge />
-            <p>It's the first day of your streak. Keep it up!</p>
+            <p className="text-center">
+                This is the start of your journaling streak, and the first step in 
+                taking charge of your mental health. 
+            </p>
+            <p className="text-center">
+                Journal every day to keep your streak going, and to keep improving
+                your mental health!
+            </p>
+            { bottomButtons }
+        </Dialog> }
+        { openDialog === OpenDialog.CONTINUING && <Dialog title="Streak milestone!">
+            <div className="br" />
+            <StreakBadge />
+            <p className="text-center">
+                Great work keeping your streak going by journaling for { streak } days
+                in a row!
+            </p>
+            { bottomButtons }
         </Dialog> }
     </>;
 };

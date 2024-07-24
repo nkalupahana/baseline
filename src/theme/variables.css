@@ -14,6 +14,9 @@ http://ionicframework.com/docs/theming/ */
     --ion-item-color: black;
     --ion-item-background: white;
 
+    --ion-text-color: #121212;
+    --ion-text-color-rgb: 18, 18, 18;
+
     --ion-color-light: #f4f5f8;
     --ion-color-light-rgb: 244, 245, 248;
     --ion-color-light-contrast: #000000;
@@ -24,7 +27,7 @@ http://ionicframework.com/docs/theming/ */
     --background-color-inverted: black;
 
     --card-background: rgb(235, 235, 235);
-    --dark-action: black;
+    --dark-action: rgb(32, 32, 32);
     --graph-label: black;
     --border-lines: rgb(221, 221, 221);
     --graph-primary-background: 214, 214, 214;
