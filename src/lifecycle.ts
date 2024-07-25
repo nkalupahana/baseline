@@ -34,10 +34,11 @@ document.addEventListener("visibilitychange", () => {
 });
 
 window.addEventListener("unhandledrejection", (event) => {
+    event.preventDefault();
     if (event.reason.message.toLowerCase().includes("refresh")) {
-        console.log("Unhandled rejection, refreshing. (1)");
+        console.log(`Unhandled rejection, refreshing. (1) ${event.reason.message}`);
         Sentry.addBreadcrumb({
-            message: "Unhandled rejection, refreshing. (2)"
+            message: `Unhandled rejection, refreshing. (2) ${event.reason.message}`
         });
         Sentry.flush(1000).then(() => window.location.reload());
     }
