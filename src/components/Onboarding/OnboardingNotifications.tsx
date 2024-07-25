@@ -7,6 +7,7 @@ import { makeRequest } from "../../helpers";
 import history from "../../history";
 import Notifications from "../../pages/Notifications";
 import { Capacitor } from "@capacitor/core";
+import * as Sentry from "@sentry/react";
 
 const OnboardingNotifications = ({ user } : { user: User }) => {
     const [loadingFlow, setLoadingFlow] = useState(false);
@@ -16,10 +17,16 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
         try {
             const platform = Capacitor.getPlatform();
             await FirebaseMessaging.requestPermissions();
-            const token = await FirebaseMessaging.getToken();
+            let token;
+            try {
+                token = await FirebaseMessaging.getToken();
+            } catch (e) {
+                Sentry.captureException(e, { extra: { handled: true } });
+            }
+
             await makeRequest("accounts/sync", user, {
                 offset: DateTime.now().offset,
-                fcmToken: token.token,
+                fcmToken: token?.token,
                 deviceId: (await Device.getId()).identifier,
                 platform
             });

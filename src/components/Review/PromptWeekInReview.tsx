@@ -10,6 +10,7 @@ import history from "../../history";
 import { Device } from "@capacitor/device";
 import "./PromptWeekInReview.css";
 import { Capacitor } from "@capacitor/core";
+import * as Sentry from "@sentry/react";
 
 const PromptWeekInReview = () => {
     const [user] = useAuthState(auth);
@@ -62,10 +63,14 @@ const PromptWeekInReview = () => {
                 platform
             };
 
-            if (platform !== "web") {
-                const token = await FirebaseMessaging.getToken();
-                data["fcmToken"] = token.token;
-                data["deviceId"] = (await Device.getId()).identifier;
+            try {
+                if (platform !== "web") {
+                    const token = await FirebaseMessaging.getToken();
+                    data["fcmToken"] = token.token;
+                    data["deviceId"] = (await Device.getId()).identifier;
+                }
+            } catch (e) {
+                Sentry.captureException(e, { extra: { handled: true } });
             }
             await makeRequest("accounts/sync", user, data, undefined, true);
         })();
