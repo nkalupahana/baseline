@@ -149,9 +149,9 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const visibleKey = random({length: 32, type: "url-safe"});
-    const encryptedKeyVisible = random({length: 32, type: "url-safe"});
-    const encryptedKey = AES.encrypt(encryptedKeyVisible, process.env.KEY_ENCRYPTION_KEY).toString();
+    let visibleKey = random({length: 32, type: "url-safe"});
+    let encryptedKeyVisible = random({length: 32, type: "url-safe"});
+    let encryptedKey = AES.encrypt(encryptedKeyVisible, process.env.KEY_ENCRYPTION_KEY).toString();
     let id: string = "";
 
     if (body.credential.providerId === "google.com") {
@@ -185,40 +185,48 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
 
         id = respData["id"];
     } else if (body.credential.providerId === "apple.com") {
-        const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
-        const response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({
-                operations: [{
-                    operationType: "forceReplace",
-                    record: {
-                        recordType: "Keys",
-                        recordName: "Keys",
-                        fields: {
-                            visibleKey: {
-                                value: visibleKey,
-                                recordType: "STRING"
-                            },
-                            encryptedKey: {
-                                value: encryptedKey,
-                                recordType: "STRING"
+        if (body.visibleKey && body.encryptedKey) {
+            // If the keys are provided (happens when an iCloud account is deleted 
+            // and re-created on an iOS device) use those as the keys
+            visibleKey = body.visibleKey;
+            encryptedKey = body.encryptedKey;
+            encryptedKeyVisible = AES.decrypt(body.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8);
+        } else {
+            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    operations: [{
+                        operationType: "forceReplace",
+                        record: {
+                            recordType: "Keys",
+                            recordName: "Keys",
+                            fields: {
+                                visibleKey: {
+                                    value: visibleKey,
+                                    recordType: "STRING"
+                                },
+                                encryptedKey: {
+                                    value: encryptedKey,
+                                    recordType: "STRING"
+                                }
                             }
                         }
-                    }
-                }]
-            })
-        }).catch(e => {
-            console.log(JSON.stringify(body));
-            console.log(url);
-            throw e;
-        });
+                    }]
+                })
+            }).catch(e => {
+                console.log(JSON.stringify(body));
+                console.log(url);
+                throw e;
+            });
 
-        const respData = await response.json();
-        if (("serverErrorCode" in respData) || ("serverErrorCode" in respData["records"][0])) {
-            console.log("KEY SET FAIL");
-            console.log(JSON.stringify(respData));
-            res.send(406);
-            return;
+            const respData = await response.json();
+            if (("serverErrorCode" in respData) || ("serverErrorCode" in respData["records"][0])) {
+                console.log("KEY SET FAIL");
+                console.log(JSON.stringify(respData));
+                res.send(406);
+                return;
+            }
         }
 
         id = "Keys";
