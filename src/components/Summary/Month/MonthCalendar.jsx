@@ -55,8 +55,11 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 element = element.parentElement;
             }
 
-            // No logs? Don't highlight.
-            if (!element || element.childElementCount < 2) return;
+            if (!element) return;
+            // If it doesn't have a corresponding locator in the
+            // log list, don't request it
+            const requestedElementId = "i" + element.id.slice(1);
+            if (!document.getElementById(requestedElementId)) return;
 
             setRequestedDate({
                 ...requestedDate,
