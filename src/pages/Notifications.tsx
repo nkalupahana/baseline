@@ -93,7 +93,6 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
     }, [globalEditing]);
 
     return (
-    <>
         <div className="container">
             { page && <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon> }
             <div className={`container ${page ? "center-journal" : "center-notifications"}`}>
@@ -103,7 +102,7 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
                 { Capacitor.getPlatform() !== "web" && notificationsEnabled !== NotificationsAllowed.DENIED && 
                     <>
                         { notificationList(notificationData, globalEditing, setGlobalEditing) }
-                        { !globalEditing && <div onClick={async () => {
+                        { !globalEditing && !loadingFlow && <div onClick={async () => {
                             if (notificationsEnabled === NotificationsAllowed.NEED_TO_ASK) {
                                 const { display } = await LocalNotifications.requestPermissions();
                                 if (display === "denied") {
@@ -136,8 +135,7 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
                 </div>
             </> }
             { page && <EndSpacer /> }
-        </div>
-    </>)
+        </div>)
 };
 
 export default Notifications;
