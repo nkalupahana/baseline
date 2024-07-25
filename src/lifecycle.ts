@@ -35,6 +35,7 @@ document.addEventListener("visibilitychange", () => {
 
 window.addEventListener("unhandledrejection", (event) => {
     event.preventDefault();
+    Sentry.captureException(event.reason);
     if (event.reason.message.toLowerCase().includes("refresh")) {
         console.log(`Unhandled rejection, refreshing. (1) ${event.reason.message}`);
         Sentry.addBreadcrumb({
