@@ -21,7 +21,7 @@ const UnlockCmp = ({ unlock, getter, setter } : { unlock: (e: SyntheticEvent) =>
                     Submit
                 </div>
                 <div className="br"></div>
-                <p className="margin-bottom-0">Forgot your passphrase? Email us { user && <>from { user.email }</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
+                <p className="margin-bottom-0">Forgot your passphrase? Email us { user?.email && <>from { user.email }</> } at <a href="mailto:security@getbaseline.app">security@getbaseline.app</a>.</p>
                 { user && <p style={{"fontSize": "12px"}}>UID: { user.uid }</p> }
         </div>
     </>;
