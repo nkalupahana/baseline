@@ -56,8 +56,8 @@ const Summary = () => {
     useEffect(() => {
         const platform = Capacitor.getPlatform();
         if (platform !== "web") {
-            FirebaseMessaging.subscribeToTopic({ topic: "all" });
-            FirebaseMessaging.subscribeToTopic({ topic: platform });
+            FirebaseMessaging.subscribeToTopic({ topic: "all" }).catch(() => {});
+            FirebaseMessaging.subscribeToTopic({ topic: platform }).catch(() => {});
         }
         const keys = checkKeys();
         if (!keys) {

@@ -30,8 +30,10 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
                 deviceId: (await Device.getId()).identifier,
                 platform
             });
-            await FirebaseMessaging.subscribeToTopic({ topic: "all" });
-            await FirebaseMessaging.subscribeToTopic({ topic: platform });
+            
+            // Retried on native layer, so ignore failures
+            FirebaseMessaging.subscribeToTopic({ topic: "all" }).catch(() => {});
+            FirebaseMessaging.subscribeToTopic({ topic: platform }).catch(() => {});
         } catch {}
         if (localStorage.getItem("onboarding")) {
             localStorage.setItem("onboarding", "howto");

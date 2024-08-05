@@ -7,6 +7,7 @@ import Dialog from "../Dialog";
 import StreakBadge from "./StreakBadge";
 import { DateTime } from "luxon";
 import { share } from "./helpers";
+import { parseSettings, setSettings } from "../../helpers";
 
 enum OpenDialog {
     NONE,
@@ -21,6 +22,7 @@ const StreakDialog = () => {
     const [openDialog, setOpenDialog] = useState(OpenDialog.NONE);
 
     const dismissDialog = () => {
+        setSettings("streakDialog", OpenDialog.NONE);
         setOpenDialog(OpenDialog.NONE);
     };
 
@@ -41,6 +43,13 @@ const StreakDialog = () => {
     </>
 
     useEffect(() => {
+        const settings = parseSettings();
+        if ([OpenDialog.FIRST_DAY, OpenDialog.CONTINUING].includes(settings.streakDialog)) {
+            setOpenDialog(settings.streakDialog);
+        }
+    }, []);
+
+    useEffect(() => {
         if (!user) return;
         get(ref(db, `/${user.uid}/prompts/streak`)).then(snap => {
             const data = snap.val() ?? 0;
@@ -58,11 +67,12 @@ const StreakDialog = () => {
             if (streak === 1 && shownStreakTime === 0) {
                 newShownStreak = true;
                 setOpenDialog(OpenDialog.FIRST_DAY);
+                setSettings("streakDialog", OpenDialog.FIRST_DAY);
             } else if (streak % 10 === 0) {
                 // Show every ten consecutive days
-                console.log("Streak is a multiple of 10 message");
                 newShownStreak = true;
                 setOpenDialog(OpenDialog.CONTINUING);
+                setSettings("streakDialog", OpenDialog.CONTINUING);
             }
         }
 
