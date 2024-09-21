@@ -76,7 +76,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
             const respData = await response.json();
             if ("error" in respData || !("properties" in respData)) {
                 console.log(1);
-                console.log(respData);
+                console.log(JSON.stringify(respData));
                 const message = respData.error?.message?.toLowerCase();
                 if (message && message.includes("insufficient") && message.includes("scopes")) {
                     res.send(428);
@@ -177,7 +177,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
 
         if ("error" in respData || !("id" in respData)) {
             console.log(2);
-            console.log(respData);
+            console.log(JSON.stringify(respData));
             const message = respData.error?.message?.toLowerCase();
             if (message && message.includes("insufficient") && message.includes("scopes")) {
                 res.send(428);
