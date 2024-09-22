@@ -1,5 +1,5 @@
 diff --git a/node_modules/@capacitor-firebase/authentication/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/authentication/handlers/GoogleAuthProviderHandler.java b/node_modules/@capacitor-firebase/authentication/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/authentication/handlers/GoogleAuthProviderHandler.java
-index 6cfac45..999b39e 100644
+index 6cfac45..5573dcf 100644
 --- a/node_modules/@capacitor-firebase/authentication/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/authentication/handlers/GoogleAuthProviderHandler.java
 +++ b/node_modules/@capacitor-firebase/authentication/android/src/main/java/io/capawesome/capacitorjs/plugins/firebase/authentication/handlers/GoogleAuthProviderHandler.java
 @@ -22,6 +22,7 @@ import io.capawesome.capacitorjs.plugins.firebase.authentication.FirebaseAuthent
@@ -10,7 +10,7 @@ index 6cfac45..999b39e 100644
  import java.util.List;
  import org.json.JSONException;
  
-@@ -63,9 +64,26 @@ public class GoogleAuthProviderHandler {
+@@ -63,9 +64,25 @@ public class GoogleAuthProviderHandler {
              new Thread(
                  () -> {
                      String accessToken = null;
@@ -31,7 +31,6 @@ index 6cfac45..999b39e 100644
 +                    }
 +
                      try {
-+                        Log.e("SDKLFJKLDS", String.join(" ", scopes));
                          accessToken =
 -                            GoogleAuthUtil.getToken(mGoogleSignInClient.getApplicationContext(), account.getAccount(), "oauth2:email");
 +                            GoogleAuthUtil.getToken(mGoogleSignInClient.getApplicationContext(), account.getAccount(), String.join(" ", scopes));
