@@ -185,14 +185,6 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                             <p style={{"marginBottom": "8px"}}>Provided by</p>
                             <img style={{height: "40px"}} src={logo} alt="Spotify Logo" />
                         </div> }
-                        { results.length > 0 && 
-                            <div 
-                                className="fake-button spotify-link" 
-                                onClick={() => window.open(`https://open.spotify.com/search/${encodeURIComponent(searchValue)}/tracks`, "_blank")}>
-                                <img src={icon} alt="Spotify icon" />
-                                <span><b>OPEN SPOTIFY</b></span>
-                            </div>
-                        }
                     </Content>
                     <Footer className="rss-footer">
                     </Footer>
