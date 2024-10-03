@@ -6,8 +6,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm install --build-from-source sharp@0.32.6
-RUN npm ci
+RUN npm ci && \
+    npm install --build-from-source sharp@0.32.6
 COPY . ./
 ENV NODE_ENV=production
 
