@@ -1,7 +1,7 @@
 FROM node:18-slim
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y g++ libvips libvips-dev make pkg-config && \
+    apt-get install -y g++ libheif1 libvips libvips-dev make pkg-config && \
     apt-get clean
 
 WORKDIR /usr/src/app
