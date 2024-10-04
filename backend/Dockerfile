@@ -3,7 +3,8 @@ FROM node:18-slim
 RUN DEBIAN_FRONTEND=noninteractive sed -i 's/bookworm/trixie/g' /etc/apt/sources.list.d/debian.sources \
     && apt-get update \
     && apt-get install -y g++ libvips-dev=8.15.3-1 make python3 \
-    && apt-get clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 COPY package*.json ./
