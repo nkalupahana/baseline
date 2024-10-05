@@ -124,7 +124,32 @@ describe("Mobile Flow", () => {
             .trigger('mousedown', { which: 1 })
             .trigger('mousemove', { clientX: 200, clientY: 0, pageX: 200, pageY: 0, screenX: 200, screenY: 0 })
             .trigger('mouseup', { force: true })
+    })
 
+    it("Image Attachment", () => {
+        cy.contains("3 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.heic", { force: true })
+        cy.contains("image.heic").should("exist")
+        cy.contains("2 left").should("exist")
+
+        cy.get("ion-icon.secondary-icon").click()
+        cy.contains("3 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.heic", { force: true })
+        cy.contains("image.heic").should("exist")
+        cy.contains("2 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.png", { force: true })
+        cy.contains("image.png").should("exist")
+        cy.contains("1 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.webp", { force: true })
+        cy.contains("image.webp").should("exist")
+        cy.contains("Attach A Photo").should("not.exist")
+    })
+
+    it("Submit Mood Log", () => {
         cy.contains("Done!").should("exist").click()
         cy.get(".loader").should("exist")
         cy.get("canvas").should("exist")
@@ -140,6 +165,13 @@ describe("Mobile Flow", () => {
         cy.get(".dialog").should("not.exist")
 
         cy.contains("Hello world!").should("exist")
+        cy.get("img").should("not.exist")
+        cy.get("ion-icon.close-btn").should("have.length", 2).first().click()
+        cy.get("img").should("exist")
+        cy.get(".dot").should("have.length", 3)
+        cy.get("ion-icon.close-btn").should("have.length", 2).first().click()
+        cy.get("img").should("not.exist")
+        
         cy.get(".sb-badge").contains("1").should("exist")
         cy.get("div.toastify").invoke("remove")
         
@@ -248,10 +280,10 @@ describe("Mobile Flow", () => {
         cy.get("No Results").should("not.exist")
         cy.get("#search-num-results").should("have.text", "14 entries")
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
+        cy.contains("1 entry").should("exist")
 
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
+        cy.contains("1 entry").should("not.exist")
 
         cy.get(".top-corner").click()
         cy.contains("week has been looking").should("exist")
@@ -462,11 +494,10 @@ describe("Desktop Flow", () => {
     it("Test Search and Filter", () => {
         cy.get("#search-num-results").should("have.text", "18 entries")
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
-        cy.get("#search-num-results").should("have.text", "0 entries")
+        cy.get("#search-num-results").should("have.text", "1 entry")
         
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
+        cy.contains("1 entry").should("not.exist")
     })
 
     it("Verify Notifications Page", () => {
