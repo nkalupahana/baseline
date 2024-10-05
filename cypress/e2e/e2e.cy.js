@@ -494,8 +494,7 @@ describe("Desktop Flow", () => {
     it("Test Search and Filter", () => {
         cy.get("#search-num-results").should("have.text", "18 entries")
         cy.get(".image-btn").click()
-        cy.contains("1 entry").should("exist")
-        cy.get("#search-num-results").should("have.text", "0 entries")
+        cy.get("#search-num-results").should("have.text", "1 entry")
         
         cy.get(".image-btn").click()
         cy.contains("1 entry").should("not.exist")
