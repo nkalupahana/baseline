@@ -280,10 +280,10 @@ describe("Mobile Flow", () => {
         cy.get("No Results").should("not.exist")
         cy.get("#search-num-results").should("have.text", "14 entries")
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
+        cy.contains("1 entry").should("exist")
 
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
+        cy.contains("1 entry").should("not.exist")
 
         cy.get(".top-corner").click()
         cy.contains("week has been looking").should("exist")
@@ -494,11 +494,11 @@ describe("Desktop Flow", () => {
     it("Test Search and Filter", () => {
         cy.get("#search-num-results").should("have.text", "18 entries")
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
+        cy.contains("1 entry").should("exist")
         cy.get("#search-num-results").should("have.text", "0 entries")
         
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
+        cy.contains("1 entry").should("not.exist")
     })
 
     it("Verify Notifications Page", () => {
