@@ -4,7 +4,6 @@ import { Sheet, Header, Content, Footer, detents, Portal } from "react-sheet-sli
 import "react-sheet-slide/style.css";
 import "./SearchSpotify.css";
 import logo from "./spotify.png";
-import icon from "./spotify-icon.png";
 import { SearchbarInputEventDetail } from "@ionic/core";
 import { throttle } from "lodash";
 import { BASE_URL, toast } from "../../helpers";
@@ -46,7 +45,6 @@ type SearchbarEvent = CustomEvent<SearchbarInputEventDetail>;
 
 const SearchSpotify = ({ user, song, setSong } : Props) => {
     const [open, setOpen] = useState(false);
-    const [searchValue, setSearchValue] = useState("");
     const [results, setResults] = useState<SpotifyTrack[]>([]);
     const [loading, setLoading] = useState<number | null>(null);
     const _search = useCallback(async (e: SearchbarEvent) => {
@@ -75,7 +73,6 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
         if (response?.ok) {
             const data = await response.json();
             setResults(data.tracks.items);
-            setSearchValue(val);
             setLoading(prevLoading => {
                 if (prevLoading && throttleStart > prevLoading) return null;
                 return prevLoading;
@@ -89,7 +86,6 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
     const loggedThrottledSearch = useCallback((e: SearchbarEvent) => {
         if (!e.detail.value || e.detail.value?.trim() === "") {
             setResults([]);
-            setSearchValue("");
             setLoading(null);
             _throttledSearch.cancel();
             return;
@@ -107,7 +103,6 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
 
     useEffect(() => {
         setResults([]);
-        setSearchValue("");
         setLoading(null);
 
         if (!open && Capacitor.getPlatform() !== "web") {
@@ -185,14 +180,6 @@ const SearchSpotify = ({ user, song, setSong } : Props) => {
                             <p style={{"marginBottom": "8px"}}>Provided by</p>
                             <img style={{height: "40px"}} src={logo} alt="Spotify Logo" />
                         </div> }
-                        { results.length > 0 && 
-                            <div 
-                                className="fake-button spotify-link" 
-                                onClick={() => window.open(`https://open.spotify.com/search/${encodeURIComponent(searchValue)}/tracks`, "_blank")}>
-                                <img src={icon} alt="Spotify icon" />
-                                <span><b>OPEN SPOTIFY</b></span>
-                            </div>
-                        }
                     </Content>
                     <Footer className="rss-footer">
                     </Footer>
