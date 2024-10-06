@@ -135,7 +135,6 @@ jobs:
       run: |
         cd android
         chmod +x gradlew
-        ./gradlew build
         ./gradlew bundleDebug
     - name: Send to DeployGate
       env:
