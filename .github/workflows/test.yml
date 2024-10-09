@@ -150,7 +150,6 @@ jobs:
       env:
         ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-        ANDROID KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
     - name: Send to Artifacts
       uses: actions/upload-artifact@v4
       with:
