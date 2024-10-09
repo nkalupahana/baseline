@@ -145,7 +145,7 @@ jobs:
       run: |
         echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
         cd android
-        ./gradlew bundleRelease --stacktrace --debug
+        ./gradlew bundleRelease --stacktrace
       env:
         ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}

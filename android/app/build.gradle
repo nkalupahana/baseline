@@ -26,7 +26,7 @@ android {
             storeFile file("release-ci.keystore")
             storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
             keyAlias "android"
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            keyPassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
         }
     }
 
