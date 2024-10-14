@@ -135,18 +135,26 @@ jobs:
       run: |
         cd android
         chmod +x gradlew
-        ./gradlew build
         ./gradlew bundleDebug
-    - name: Send to Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: outputs
-        path: android/app/build/outputs
     - name: Send to DeployGate
       env:
         token: ${{ secrets.DEPLOYGATE_TOKEN }}
         COMMIT_MSG: ${{ github.event.commits[0].message }}
       run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}, msg ${COMMIT_MSG}" https://deploygate.com/api/users/nkalupahana/apps
+    - name: Build Release Artifact
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
+        cd android
+        ./gradlew bundleRelease
+      env:
+        ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+    - name: Send to Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: outputs
+        path: android/app/build/outputs
 
   ios:
     needs: frontend
