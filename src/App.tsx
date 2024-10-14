@@ -30,7 +30,6 @@ import history from "./history";
 import { Capacitor } from "@capacitor/core";
 import "./lifecycle";
 
-import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Preloader from "./pages/Preloader";
