@@ -20,9 +20,15 @@ class WrappedSummary extends React.Component<Props, State> {
     }
 
     componentDidCatch(error: any, errorInfo: any) {
-        console.log("Error, likely from fetching data from Dexie (caught).");
+        console.log("Error, likely from fetching data from Dexie (caught). WRAPPED");
         console.error(error);
-        console.error(errorInfo);
+        try {
+            console.error(JSON.stringify(errorInfo));
+        } catch {
+            console.error("Error info could not be stringified.");
+            console.error(errorInfo);
+        }
+        
         Sentry.captureException(error, {tags: {caught: true}, extra: errorInfo});
 
         setTimeout(async () => {
@@ -33,6 +39,11 @@ class WrappedSummary extends React.Component<Props, State> {
             await Sentry.flush();
             window.location.reload();
         }, 2000);
+
+        Sentry.addBreadcrumb({
+            category: "IndexedDB",
+            message: "Scheduled timeout"
+        });
     }
 
     render() {
