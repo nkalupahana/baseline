@@ -2,7 +2,6 @@ import express from "express";
 import { initializeApp } from "firebase-admin/app";
 import cors from "cors";
 import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 import { checkQuota, UserRequest, validateAuth } from "./helpers.js";
 import { changePDPpassphrase, disablePDP, enablePDP } from "./pdp.js";
 import { deleteAccount, getOrCreateKeys, sync } from "./accounts.js";
@@ -22,8 +21,7 @@ initializeApp({
 Sentry.init({
     dsn: "https://4fb379f6ae1a4e569ae826f066adf8ba@o4504179120472064.ingest.sentry.io/4504179121717248",
     integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new Tracing.Integrations.Express({ app }),
+        ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
     ],
     tracesSampleRate: 1.0,
 });
