@@ -21,29 +21,20 @@ class WrappedSummary extends React.Component<Props, State> {
 
     componentDidCatch(error: any, errorInfo: any) {
         console.log("Error, likely from fetching data from Dexie (caught). WRAPPED");
-        console.error(error);
+        let info = "";
         try {
-            console.error(JSON.stringify(errorInfo));
+            info += JSON.stringify(errorInfo);
         } catch {
-            console.error("Error info could not be stringified.");
-            console.error(errorInfo);
+            info += `Error info could not be stringified. ${errorInfo}`;
         }
-        
-        Sentry.captureException(error, {tags: {caught: true}, extra: errorInfo});
 
-        setTimeout(async () => {
-            Sentry.addBreadcrumb({
-                category: "IndexedDB",
-                message: "Attempting to flush and reload"
-            });
-            await Sentry.flush();
-            window.location.reload();
-        }, 2000);
+        alert(`IndexedDB error, refreshing. ${info}`);
 
         Sentry.addBreadcrumb({
             category: "IndexedDB",
-            message: "Scheduled timeout"
+            message: "Error, refreshing!"
         });
+        window.location.reload();
     }
 
     render() {
