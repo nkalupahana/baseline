@@ -6,7 +6,6 @@ import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
 import { cleanUpTokens, logReminder, removeUserNotifications, sendCleanUpMessage } from "./messaging.js";
 import { AnyMap } from "./helpers.js";
 import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 import { audioDeadLetter, processAudio } from "./audio.js";
 
 initializeApp({
@@ -19,8 +18,7 @@ const app = express();
 Sentry.init({
     dsn: "https://6e656f8deb434639a0bc75e5093b6f3c@o4504179120472064.ingest.sentry.io/4504348672196608",
     integrations: [
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Tracing.Integrations.Express({ app }),
+      ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
     ],
     tracesSampleRate: 1.0,
 });
