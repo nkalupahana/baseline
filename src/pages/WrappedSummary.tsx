@@ -19,13 +19,13 @@ class WrappedSummary extends React.Component<Props, State> {
         return { hasError: true };
     }
 
-    componentDidCatch(error: any, errorInfo: any) {
+    componentDidCatch(error: Error) {
         console.log("Error, likely from fetching data from Dexie (caught). WRAPPED");
         let info = "";
         try {
-            info += JSON.stringify(errorInfo);
+            info += `name: ${error.name}, message: ${error.message}`;
         } catch {
-            info += `Error info could not be stringified. ${errorInfo}`;
+            info += `Could not get error data. ${error}`;
         }
 
         alert(`IndexedDB error, refreshing. ${info}`);
