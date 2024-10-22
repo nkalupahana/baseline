@@ -30,7 +30,6 @@ import history from "./history";
 import { Capacitor } from "@capacitor/core";
 import "./lifecycle";
 
-import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Preloader from "./pages/Preloader";
@@ -49,6 +48,7 @@ import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
 import * as Sentry from "@sentry/react";
 import { DateTime } from "luxon";
+import WrappedSummary from "./pages/WrappedSummary";
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -98,7 +98,7 @@ const App = () => {
     const routes = [
         { path: "/journal", Component: Journal },
         { path: "/unlock", Component: Unlock },
-        { path: "/summary", Component: Summary },
+        { path: "/summary", Component: WrappedSummary },
         { path: "/notifications", Component: Notifications },
         { path: "/gap", Component: GapFund },
         { path: "/donate", Component: Donate },
