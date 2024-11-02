@@ -13,7 +13,7 @@ PODS:
     - Capacitor
   - CapacitorCommunityInAppReview (6.0.0):
     - Capacitor
-  - CapacitorCommunityMedia (6.0.0):
+  - CapacitorCommunityMedia (7.0.0):
     - Capacitor
     - SDWebImage
   - CapacitorCordova (6.1.0)
@@ -280,7 +280,7 @@ SPEC CHECKSUMS:
   CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
   CapacitorCloudkit: a8242b6f83b10564ef6f46b0169a0573436a3d80
   CapacitorCommunityInAppReview: c69a9392f39a10f28092d823cfa979637f4fa079
-  CapacitorCommunityMedia: 51cc6c8782b92cf622d9644cac37ae024fafb377
+  CapacitorCommunityMedia: 538138898dab7bee12323720c60f27602f358a80
   CapacitorCordova: be703980ca797f847c3356f78fa175d21c8330c2
   CapacitorDevice: f8fd88f9edd1261c55a109f32015b09bbbfdc4a0
   CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
@@ -317,4 +317,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: cd2022b404aefcad8ecbdb74b45acb77cb0cddcb
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

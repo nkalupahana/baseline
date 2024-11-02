@@ -17,7 +17,6 @@ enum OpenDialog {
 
 const StreakDialog = () => {
     const streak = useContext(StreakContext);
-    const [shownStreakTime, setShownStreakTime] = useState<number | undefined>(undefined);
     const [user] = useAuthState(auth);
     const [openDialog, setOpenDialog] = useState(OpenDialog.NONE);
 
@@ -43,43 +42,44 @@ const StreakDialog = () => {
     </>
 
     useEffect(() => {
+        // Don't show anything if streak isn't loaded yet / is zero
+        if (streak === 0) return;
+
+        // This is used to restore the streak dialog in case
+        // it was shown but not acknowledged (removed from settings when
+        // user clicks the close button)
         const settings = parseSettings();
         if ([OpenDialog.FIRST_DAY, OpenDialog.CONTINUING].includes(settings.streakDialog)) {
             setOpenDialog(settings.streakDialog);
         }
-    }, []);
+    }, [streak]);
 
     useEffect(() => {
         if (!user) return;
         get(ref(db, `/${user.uid}/prompts/streak`)).then(snap => {
-            const data = snap.val() ?? 0;
-            setShownStreakTime(data);
-        });
-    }, [user]);
+            const shownStreakTime = snap.val() ?? 0;
+            let newShownStreak = false;
 
-    useEffect(() => {
-        if (shownStreakTime === undefined || !user) return;
-        let newShownStreak = false;
-
-        // If we have a streak, and it's been a week since we last showed a streak message
-        if (streak > 0 && shownStreakTime < DateTime.now().minus({ days: 7 }).toMillis()) {
-            // Only ever show the first journaling message once
-            if (streak === 1 && shownStreakTime === 0) {
-                newShownStreak = true;
-                setOpenDialog(OpenDialog.FIRST_DAY);
-                setSettings("streakDialog", OpenDialog.FIRST_DAY);
-            } else if (streak % 10 === 0) {
-                // Show every ten consecutive days
-                newShownStreak = true;
-                setOpenDialog(OpenDialog.CONTINUING);
-                setSettings("streakDialog", OpenDialog.CONTINUING);
+            // If we have a streak, and it's been a week since we last showed a streak message
+            if (streak > 0 && shownStreakTime < DateTime.now().minus({ days: 7 }).toMillis()) {
+                // Only ever show the first journaling message once
+                if (streak === 1 && shownStreakTime === 0) {
+                    newShownStreak = true;
+                    setOpenDialog(OpenDialog.FIRST_DAY);
+                    setSettings("streakDialog", OpenDialog.FIRST_DAY);
+                } else if (streak % 10 === 0) {
+                    // Show every ten consecutive days
+                    newShownStreak = true;
+                    setOpenDialog(OpenDialog.CONTINUING);
+                    setSettings("streakDialog", OpenDialog.CONTINUING);
+                }
             }
-        }
 
-        if (newShownStreak) {
-            set(ref(db, `/${user.uid}/prompts/streak`), serverTimestamp());
-        }
-    }, [user, streak, shownStreakTime]);
+            if (newShownStreak) {
+                set(ref(db, `/${user.uid}/prompts/streak`), serverTimestamp());
+            }
+        });
+    }, [user, streak]);
 
     return <>
         { openDialog === OpenDialog.FIRST_DAY && <Dialog title="Great work getting started.">
@@ -95,7 +95,7 @@ const StreakDialog = () => {
             </p>
             { bottomButtons }
         </Dialog> }
-        { openDialog === OpenDialog.CONTINUING && <Dialog title="Streak milestone!">
+        { openDialog === OpenDialog.CONTINUING && streak > 1 && <Dialog title="Streak milestone!">
             <div className="br" />
             <StreakBadge />
             <p className="text-center">
