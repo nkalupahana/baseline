@@ -110,6 +110,9 @@ jobs:
   android:
     needs: frontend
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js 18
@@ -142,7 +145,7 @@ jobs:
         COMMIT_MSG: ${{ github.event.commits[0].message }}
       run: curl -F "token=${token}" -F "file=@android/app/build/outputs/bundle/debug/app-debug.aab" -F "message=Upload from GitHub Actions, ref ${GITHUB_REF}, sha ${GITHUB_SHA}, msg ${COMMIT_MSG}" https://deploygate.com/api/users/nkalupahana/apps
     - name: Build Release Artifact
-      if: github.ref == 'refs/heads/main'
+      # if: github.ref == 'refs/heads/main'
       run: |
         echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
         cd android
@@ -150,6 +153,11 @@ jobs:
       env:
         ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+    - name: Attest Release Artifact
+      # if: github.ref == 'refs/heads/main'
+      uses: actions/attest@v1
+      with:
+        subject-path: "android/app/build/outputs/bundle/release/app-release.aab"
     - name: Send to Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -159,6 +167,9 @@ jobs:
   ios:
     needs: frontend
     runs-on: macos-14
+    permissions:
+      id-token: write
+      attestations: write
     concurrency:
       group: "ios"
       cancel-in-progress: true
@@ -189,3 +200,8 @@ jobs:
         MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
         APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
         COMMIT_MSG: ${{ github.event.commits[0].message }}
+    - name: Attest Build
+      # if: github.ref == 'refs/heads/main'
+      uses: actions/attest@v1
+      with:
+        subject-path: "/Users/runner/work/baseline/baseline/ios/App/baseline.ipa"
