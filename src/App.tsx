@@ -49,6 +49,8 @@ import Onboarding from "./pages/Onboarding";
 import * as Sentry from "@sentry/react";
 import { DateTime } from "luxon";
 import WrappedSummary from "./pages/WrappedSummary";
+import { WidgetsBridgePlugin } from "capacitor-widgetsbridge-plugin"
+
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -67,6 +69,17 @@ const App = () => {
 
     useEffect(() => {
         if (!user) return;
+
+        // Send refresh token to UserDefaults so iOS
+        // widgets can call baseline API to get up-to-date streak info
+        if (Capacitor.getPlatform() === "ios") {
+            WidgetsBridgePlugin.setItem({
+                key: "refreshToken",
+                group: "app.getbaseline.userdefaults",
+                value: user.stsTokenManager.refreshToken
+            });
+        }
+
         Sentry.setUser({
             id: user.uid
         });
