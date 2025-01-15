@@ -84,7 +84,7 @@ const MoodLogCard = ({ log, setInFullscreen, reduceMotion, LOCATOR_OFFSET, color
 
                 { grow && 
                 <>
-                    { (log.files || log.audio || log.song) && !window.navigator.onLine && <p className="pad-left"><i>Internet connection required to load media.</i></p> }
+                    { ((log.files && log.files.length > 0) || log.audio || log.song) && !window.navigator.onLine && <p className="pad-left"><i>Internet connection required to load media.</i></p> }
                     { window.navigator.onLine && <>
                         { log.song && <div className="spotify-embed-box">
                             <Spotify className="spotify-embed" wide={true} link={"https://open.spotify.com/track/" + log.song.split(":")[2]} />
