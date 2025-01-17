@@ -13,7 +13,13 @@ export const calculateStreak = async (req: UserRequest, res: Response) => {
     const encryptionKey = await validateKeys(data.keys, db, req.user!.user_id);
 
     if (!encryptionKey) {
-        res.send(400);
+        res.sendStatus(400);
+        return;
+    }
+
+    const today = DateTime.fromISO(data.currentDate);
+    if (!data.currentDate || typeof data.currentDate !== "string" || !today.isValid) {
+        res.sendStatus(400);
         return;
     }
 
@@ -24,7 +30,6 @@ export const calculateStreak = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const today = DateTime.fromISO(data.currentDate);
     let latestLog: AnyMap = JSON.parse(AES.decrypt(logs[Object.keys(logs).at(-1)!].data, encryptionKey).toString(aesutf8));
     let top = DateTime.fromObject({ year: latestLog.year, month: latestLog.month, day: latestLog.day });
 
@@ -56,7 +61,7 @@ export const calculateStreak = async (req: UserRequest, res: Response) => {
             }
         }
 
-        // If the streak is going and we've run out of logs, try fetch more
+        // If the streak is going and we've run out of logs, try to fetch more
         if (running) {
             logs = await (await logRef.endBefore(Object.keys(logs)[0]).limitToLast(FETCH_LIMIT).get()).val();
         }
