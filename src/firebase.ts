@@ -6,6 +6,7 @@ import ldb from './db';
 import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { WidgetsBridgePlugin } from 'capacitor-widgetsbridge-plugin';
 
 /*
 FIREBASE DB DEBUG
@@ -49,6 +50,15 @@ export const signOutAndCleanUp = () => {
     localStorage.removeItem("offline");
     localStorage.removeItem("onboarding");
     sessionStorage.removeItem("pwd");
+    // Remove user-specific data from UserDefaults
+    WidgetsBridgePlugin.removeItem({
+        key: "keys",
+        group: "group.app.getbaseline.baseline"
+    })
+    WidgetsBridgePlugin.removeItem({
+        key: "refreshToken",
+        group: "group.app.getbaseline.baseline"
+    })
     // Sign out of Firebase
     FirebaseAuthentication.signOut();
     signOut(auth);

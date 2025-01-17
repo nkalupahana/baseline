@@ -101,6 +101,13 @@ const App = () => {
             });
             signOutAndCleanUp();
         } else {
+            if (typeof keys === "object" && Capacitor.getPlatform() === "ios") {
+                WidgetsBridgePlugin.setItem({
+                    key: "keys",
+                    group: "group.app.getbaseline.baseline",
+                    value: JSON.stringify(keys)
+                });
+            }
             const onboarding = localStorage.getItem("onboarding");
             if (onboarding) {
                 history.replace(`/onboarding/${onboarding}`);
