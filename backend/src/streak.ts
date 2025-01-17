@@ -67,6 +67,5 @@ export const calculateStreak = async (req: UserRequest, res: Response) => {
         }
     }
 
-
     res.send({ streak, danger });
 };
