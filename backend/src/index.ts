@@ -11,6 +11,7 @@ import { beacon } from "./analytics.js";
 import { graniteLink } from "./granite.js";
 import { search } from "./spotify.js";
 import { getAudio, getImage } from "./storage.js";
+import { calculateStreak } from "./streak.js";
 
 const app = express();
 initializeApp({
@@ -69,6 +70,7 @@ app.post("/getImage", getImage);
 app.post("/getAudio", getAudio);
 
 app.post("/gap", gapFund);
+app.post("/streak", calculateStreak);
 app.post("/spotify/search", search);
 
 app.use(Sentry.Handlers.errorHandler());
