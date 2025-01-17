@@ -70,12 +70,12 @@ const App = () => {
     useEffect(() => {
         if (!user) return;
 
-        // Send refresh token to UserDefaults so iOS
+        // Send refresh token to App Group UserDefaults so iOS
         // widgets can call baseline API to get up-to-date streak info
         if (Capacitor.getPlatform() === "ios") {
             WidgetsBridgePlugin.setItem({
                 key: "refreshToken",
-                group: "app.getbaseline.userdefaults",
+                group: "group.app.getbaseline.baseline",
                 value: user.stsTokenManager.refreshToken
             });
         }
