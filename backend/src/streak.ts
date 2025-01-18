@@ -7,6 +7,13 @@ import aesutf8 from "crypto-js/enc-utf8.js";
 
 const FETCH_LIMIT = 100;
 
+enum Danger {
+    JOURNALED_TODAY = 0,
+    JOURNALED_YESTERDAY = 1,
+    JOURNALED_TWO_DAYS_AGO = 2,
+    NO_RECOVERY = 3
+}
+
 export const calculateStreak = async (req: UserRequest, res: Response) => {
     const db = getDatabase();
     const data = req.body;
@@ -26,20 +33,28 @@ export const calculateStreak = async (req: UserRequest, res: Response) => {
     const logRef = db.ref(req.user!.user_id + "/logs").orderByKey();
     let logs: AnyMap = await (await logRef.limitToLast(FETCH_LIMIT).get()).val();
     if (!logs || Object.keys(logs).length === 0) {
-        res.send({ streak: 0, danger: false });
+        res.send({ streak: 0, danger: Danger.NO_RECOVERY });
         return;
     }
 
     let latestLog: AnyMap = JSON.parse(AES.decrypt(logs[Object.keys(logs).at(-1)!].data, encryptionKey).toString(aesutf8));
     let top = DateTime.fromObject({ year: latestLog.year, month: latestLog.month, day: latestLog.day });
 
-    // If the top log is not today or yesterday, the streak is 0
-    if (top.toISODate() !== today.toISODate() && top.toISODate() !== today.minus({ days: 1 }).toISODate()) {
-        res.send({ streak: 0, danger: false });
+    const topISO = top.toISODate();
+    let danger = Danger.NO_RECOVERY;
+    if (topISO === today.toISODate()) {
+        danger = Danger.JOURNALED_TODAY;
+    } else if (topISO === today.minus({ days: 1 }).toISODate()) {
+        danger = Danger.JOURNALED_YESTERDAY;
+    } else if (topISO === today.minus({ days: 2 }).toISODate()) {
+        danger = Danger.JOURNALED_TWO_DAYS_AGO;
+    }  
+
+    // If the top log is not in the last two days, the streak is 0 and cannot be recovered
+    if (danger === Danger.NO_RECOVERY) {
+        res.send({ streak: 0, danger: Danger.NO_RECOVERY });
         return;
     }
-    // If the top log is yesterday, the user is in danger of losing their streak.
-    let danger = top.toISODate() === today.minus({ days: 1 }).toISODate();
 
     let streak = 1;
     let running = true;
