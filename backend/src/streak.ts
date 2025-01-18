@@ -40,12 +40,13 @@ export const calculateStreak = async (req: UserRequest, res: Response) => {
     let latestLog: AnyMap = JSON.parse(AES.decrypt(logs[Object.keys(logs).at(-1)!].data, encryptionKey).toString(aesutf8));
     let top = DateTime.fromObject({ year: latestLog.year, month: latestLog.month, day: latestLog.day });
 
+    const topISO = top.toISODate();
     let danger = Danger.NO_RECOVERY;
-    if (top.toISODate() === today.toISODate()) {
+    if (topISO === today.toISODate()) {
         danger = Danger.JOURNALED_TODAY;
-    } else if (top.toISODate() === today.minus({ days: 1 }).toISODate()) {
+    } else if (topISO === today.minus({ days: 1 }).toISODate()) {
         danger = Danger.JOURNALED_YESTERDAY;
-    } else if (top.toISODate() === today.minus({ days: 2 }).toISODate()) {
+    } else if (topISO === today.minus({ days: 2 }).toISODate()) {
         danger = Danger.JOURNALED_TWO_DAYS_AGO;
     }  
 
