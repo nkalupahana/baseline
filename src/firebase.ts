@@ -51,14 +51,16 @@ export const signOutAndCleanUp = () => {
     localStorage.removeItem("onboarding");
     sessionStorage.removeItem("pwd");
     // Remove user-specific data from UserDefaults
-    WidgetsBridgePlugin.removeItem({
-        key: "keys",
-        group: "group.app.getbaseline.baseline"
-    })
-    WidgetsBridgePlugin.removeItem({
-        key: "refreshToken",
-        group: "group.app.getbaseline.baseline"
-    })
+    if (Capacitor.getPlatform() === "ios") {
+        WidgetsBridgePlugin.removeItem({
+            key: "keys",
+            group: "group.app.getbaseline.baseline"
+        })
+        WidgetsBridgePlugin.removeItem({
+            key: "refreshToken",
+            group: "group.app.getbaseline.baseline"
+        })
+    }
     // Sign out of Firebase
     FirebaseAuthentication.signOut();
     signOut(auth);
