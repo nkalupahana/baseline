@@ -22,7 +22,6 @@ import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import StreakDialog from "../components/Streaks/StreakDialog";
 import { calculateStreak } from "../components/Streaks/helpers";
 import * as Sentry from "@sentry/react";
-import { WidgetsBridgePlugin } from "capacitor-widgetsbridge-plugin";
 
 // Add timestamp to data object, and decrypt as needed
 const processNewData = (newData, keys) => {
@@ -112,7 +111,6 @@ const Summary = () => {
             }
 
             console.log("Updating...");
-            WidgetsBridgePlugin.reloadAllTimelines();
             window.location.hash = "#update";
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey(), startAfter(String(lastUpdated))))).val();
 
