@@ -24,6 +24,17 @@ struct StreakResponse: Decodable {
     let danger: Danger
 }
 
+struct Entry: TimelineEntry {
+    let date: Date
+    let streak: Int
+    let danger: Danger
+    let error: Bool
+
+    static func errorEntry() -> Entry {
+        return Entry(date: Date(), streak: 0, danger: .noRecovery, error: true)
+    }
+}
+
 struct Provider: TimelineProvider {
     let userDefaults = UserDefaults.init(suiteName: "group.app.getbaseline.baseline")!
 
@@ -134,10 +145,11 @@ struct Provider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> Entry {
-        Entry(date: Date(), streak: 25, danger: Danger.noRecovery, error: false)
+        Entry(date: Date(), streak: 25, danger: Danger.journaledToday, error: false)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
+        print("GETTING DATA")
         if context.isPreview {
             completion(placeholder(in: context))
         } else {
@@ -172,17 +184,6 @@ struct Provider: TimelineProvider {
             let timeline = Timeline(entries: entries, policy: .after(refreshDate))
             completion(timeline)
         }
-    }
-}
-
-struct Entry: TimelineEntry {
-    let date: Date
-    let streak: Int
-    let danger: Danger
-    let error: Bool
-
-    static func errorEntry() -> Entry {
-        return Entry(date: Date(), streak: 0, danger: .noRecovery, error: true)
     }
 }
 
