@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,7 +23,6 @@
 		F4E7D2122D39E92800BED379 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4E7D2112D39E92800BED379 /* SwiftUI.framework */; };
 		F4E7D21D2D39E92B00BED379 /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F4E7D20E2D39E92800BED379 /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F4E7D22A2D39EA4B00BED379 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4E7D2252D39EA4B00BED379 /* Assets.xcassets */; };
-		F4E7D22C2D39EA4B00BED379 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E7D2272D39EA4B00BED379 /* StreakWidget.swift */; };
 		F4E7D22D2D39EA4B00BED379 /* WidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E7D2282D39EA4B00BED379 /* WidgetsBundle.swift */; };
 		F4E7D22F2D3A0AB300BED379 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F43DAABF27C57A7C00566D61 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
@@ -76,12 +75,15 @@
 		F4E7D2112D39E92800BED379 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F4E7D2252D39EA4B00BED379 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4E7D2262D39EA4B00BED379 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F4E7D2272D39EA4B00BED379 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		F4E7D2282D39EA4B00BED379 /* WidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsBundle.swift; sourceTree = "<group>"; };
 		F4E7D22E2D39EE7200BED379 /* WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetsExtension.entitlements; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 		FE6B42F1849A2895643B62CC /* Pods-baseline.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baseline.release.xcconfig"; path = "Pods/Target Support Files/Pods-baseline/Pods-baseline.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F4D482B92D43AEF200263EA9 /* StreakWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = StreakWidget; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		504EC3011FED79650016851F /* Frameworks */ = {
@@ -173,9 +175,9 @@
 		F4E7D2292D39EA4B00BED379 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				F4D482B92D43AEF200263EA9 /* StreakWidget */,
 				F4E7D2252D39EA4B00BED379 /* Assets.xcassets */,
 				F4E7D2262D39EA4B00BED379 /* Info.plist */,
-				F4E7D2272D39EA4B00BED379 /* StreakWidget.swift */,
 				F4E7D2282D39EA4B00BED379 /* WidgetsBundle.swift */,
 			);
 			path = Widgets;
@@ -219,6 +221,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F4D482B92D43AEF200263EA9 /* StreakWidget */,
 			);
 			name = WidgetsExtension;
 			packageProductDependencies = (
@@ -362,7 +367,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4E7D22C2D39EA4B00BED379 /* StreakWidget.swift in Sources */,
 				F4E7D22D2D39EA4B00BED379 /* WidgetsBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -499,7 +503,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -516,7 +521,10 @@
 				DEVELOPMENT_TEAM = FC733RM99L;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.6.3;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = app.getbaseline.baseline;
@@ -539,7 +547,10 @@
 				DEVELOPMENT_TEAM = FC733RM99L;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = app.getbaseline.baseline;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -575,7 +586,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -618,7 +633,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
