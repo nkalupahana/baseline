@@ -22,6 +22,7 @@ struct TokenResponse: Decodable {
 struct StreakResponse: Decodable {
     let streak: Int
     let danger: Danger
+    let entriesToday: Int
 }
 
 struct Entry: TimelineEntry {
@@ -29,9 +30,10 @@ struct Entry: TimelineEntry {
     let streak: Int
     let danger: Danger
     let error: Bool
+    let entriesToday: Int
 
     static func errorEntry() -> Entry {
-        return Entry(date: Date(), streak: 0, danger: .noRecovery, error: true)
+        return Entry(date: Date(), streak: 0, danger: .noRecovery, error: true, entriesToday: 0)
     }
 }
 
@@ -145,11 +147,10 @@ struct Provider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> Entry {
-        Entry(date: Date(), streak: 25, danger: Danger.journaledToday, error: false)
+        Entry(date: Date(), streak: 25, danger: Danger.journaledToday, error: false, entriesToday: 1)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
-        print("GETTING DATA")
         if context.isPreview {
             completion(placeholder(in: context))
         } else {
@@ -160,7 +161,7 @@ struct Provider: TimelineProvider {
                         switch result {
                         case .success(let response):
                             completion(
-                                Entry(date: Date(), streak: response.streak, danger: response.danger, error: false))
+                                Entry(date: Date(), streak: response.streak, danger: response.danger, error: false, entriesToday: response.entriesToday))
                         case .failure(let error):
                             print(error)
                             completion(Entry.errorEntry())
@@ -178,7 +179,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         var entries: [Entry] = []
         let currentDate = Date()
-        let refreshDate = Calendar.current.date(byAdding: .minute, value: 30, to: currentDate)!
+        let refreshDate = Calendar.current.date(byAdding: .minute, value: 45, to: currentDate)!
         getSnapshot(in: context) { entry in
             entries.append(entry)
             let timeline = Timeline(entries: entries, policy: .after(refreshDate))
@@ -189,15 +190,25 @@ struct Provider: TimelineProvider {
 
 struct StreakWidgetEntryView: View {
     var entry: Provider.Entry
+    @Environment(\.widgetFamily) var widgetFamily
 
     var body: some View {
         VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
+            switch widgetFamily {
+            case .systemSmall, .systemMedium:
+                Text("Time:")
+                Text(entry.date, style: .time)
 
-            Text("Streak:")
-            Text("\(entry.streak) (\(entry.danger))")
-        }
+                Text("Streak:")
+                Text("\(entry.streak) (\(entry.entriesToday)) (\(entry.danger))")
+            case .accessoryCircular:
+                StreakCircularAccessory(entry: entry)
+            case .accessoryInline:
+                StreakInlineAccessory(entry: entry)
+            default:
+                Text("ERROR")
+            }
+        }.containerBackground(.fill.tertiary, for: .widget)
     }
 }
 
@@ -206,24 +217,16 @@ struct StreakWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                StreakWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                StreakWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
+            StreakWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .accessoryCircular, .accessoryInline])
     }
 }
 
 #Preview(as: .systemSmall) {
     StreakWidget()
 } timeline: {
-    Entry(date: Date(), streak: 25, danger: .noRecovery, error: false)
+    Entry(date: Date(), streak: 25, danger: .noRecovery, error: false, entriesToday: 1)
 }
-
