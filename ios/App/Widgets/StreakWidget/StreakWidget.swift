@@ -37,6 +37,13 @@ struct Entry: TimelineEntry {
     }
 }
 
+let dangerMapping: [Danger: (icon: String, count: Int, color: Color)] = [
+        .journaledToday: ("flame.fill", 1, Color(red: 245/255, green: 124/255, blue: 0)),
+        .journaledYesterday: ("pencil.tip.crop.circle.fill", 1, Color(red: 3/255, green: 169/266, blue: 244/255)),
+        .noRecovery: ("pencil.tip.crop.circle.fill", 1, Color(red: 3/255, green: 169/266, blue: 244/255)),
+        .journaledTwoDaysAgo: ("exclamationmark.triangle.fill", 2, Color(red: 1, green: 179/255, blue: 0))
+    ]
+
 struct Provider: TimelineProvider {
     let userDefaults = UserDefaults.init(suiteName: "group.app.getbaseline.baseline")!
 
@@ -195,12 +202,8 @@ struct StreakWidgetEntryView: View {
     var body: some View {
         VStack {
             switch widgetFamily {
-            case .systemSmall, .systemMedium:
-                Text("Time:")
-                Text(entry.date, style: .time)
-
-                Text("Streak:")
-                Text("\(entry.streak) (\(entry.entriesToday)) (\(entry.danger))")
+            case .systemSmall:
+                StreakSystemWidget(entry: entry)
             case .accessoryCircular:
                 StreakCircularAccessory(entry: entry)
             case .accessoryInline:
@@ -219,14 +222,8 @@ struct StreakWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StreakWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
-        .supportedFamilies([.systemSmall, .systemMedium, .accessoryCircular, .accessoryInline])
+        .configurationDisplayName("Daily Streak")
+        .description("This widget shows your journaling streak on baseline!")
+        .supportedFamilies([.accessoryCircular, .accessoryInline, .systemSmall])
     }
-}
-
-#Preview(as: .systemSmall) {
-    StreakWidget()
-} timeline: {
-    Entry(date: Date(), streak: 25, danger: .noRecovery, error: false, entriesToday: 1)
 }
