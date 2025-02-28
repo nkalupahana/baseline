@@ -31,22 +31,24 @@ struct Entry: TimelineEntry {
     let danger: Danger
     let error: Bool
     let entriesToday: Int
-
+    
     static func errorEntry() -> Entry {
+        // Icon of .noRecovery is used in error state of several widgets,
+        // so beware of side effects from changes
         return Entry(date: Date(), streak: 0, danger: .noRecovery, error: true, entriesToday: 0)
     }
 }
 
 let dangerMapping: [Danger: (icon: String, count: Int, color: Color)] = [
-        .journaledToday: ("flame.fill", 1, Color(red: 245/255, green: 124/255, blue: 0)),
-        .journaledYesterday: ("pencil.tip.crop.circle.fill", 1, Color(red: 3/255, green: 169/266, blue: 244/255)),
-        .noRecovery: ("pencil.tip.crop.circle.fill", 1, Color(red: 3/255, green: 169/266, blue: 244/255)),
-        .journaledTwoDaysAgo: ("exclamationmark.triangle.fill", 2, Color(red: 1, green: 179/255, blue: 0))
-    ]
+    .journaledToday: ("flame.fill", 1, Color(red: 245/255, green: 124/255, blue: 0)),
+    .journaledYesterday: ("pencil.tip.crop.circle.fill", 1, Color(red: 3/255, green: 169/266, blue: 244/255)),
+    .noRecovery: ("pencil.tip.crop.circle.fill", 1, Color(red: 3/255, green: 169/266, blue: 244/255)),
+    .journaledTwoDaysAgo: ("exclamationmark.triangle.fill", 2, Color(red: 1, green: 179/255, blue: 0))
+]
 
 struct Provider: TimelineProvider {
     let userDefaults = UserDefaults.init(suiteName: "group.app.getbaseline.baseline")!
-
+    
     func getAPIKey() -> String? {
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
             if let plistContent = NSDictionary(contentsOfFile: path) as? [String: Any] {
@@ -55,37 +57,37 @@ struct Provider: TimelineProvider {
         }
         return nil
     }
-
+    
     func getIdToken(completion: @escaping (Result<TokenResponse, Error>) -> Void) {
         guard let apiKey = getAPIKey() else {
             completion(.failure(NSError(domain: "NoApiKey", code: -4)))
             return
         }
-
+        
         let url = URL(string: "https://securetoken.googleapis.com/v1/token?key=\(apiKey)")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-
+        
         guard let refreshToken = userDefaults.string(forKey: "refreshToken") else {
             completion(.failure(NSError(domain: "NoData", code: -3)))
             return
         }
-
+        
         let bodyData = "grant_type=refresh_token&refresh_token=\(refreshToken)"
         request.httpBody = bodyData.data(using: .utf8)
-
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-
+            
             guard let data = data else {
                 completion(.failure(NSError(domain: "NoData", code: -2)))
                 return
             }
-
+            
             do {
                 let response = try JSONDecoder().decode(TokenResponse.self, from: data)
                 completion(.success(response))
@@ -94,51 +96,51 @@ struct Provider: TimelineProvider {
                 return
             }
         }
-
+        
         task.resume()
     }
-
+    
     func getISODate() -> String {
         let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         dateFormatter.timeZone = TimeZone.current
         let isoDateString = dateFormatter.string(from: currentDate)
-
+        
         return isoDateString
     }
-
+    
     func postStreakRequest(idToken: String, completion: @escaping (Result<StreakResponse, Error>) -> Void) {
         var request = URLRequest(url: URL(string: "https://api.getbaseline.app/streak")!)
         request.httpMethod = "POST"
-
+        
         // Add the Authorization header
         request.setValue("Bearer \(idToken)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         guard let keys = userDefaults.string(forKey: "keys") else {
             completion(.failure(NSError(domain: "NoKeys", code: -14)))
             return
         }
-
+        
         let body: [String: String] = [
             "currentDate": getISODate(),
             "keys": keys,
         ]
-
+        
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
         } catch {
             completion(.failure(NSError(domain: "JSON serialization error: \(error)", code: -13)))
             return
         }
-
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(NSError(domain: "Error making POST request: \(error)", code: -12)))
                 return
             }
-
+            
             if let data = data {
                 do {
                     let response = try JSONDecoder().decode(StreakResponse.self, from: data)
@@ -149,14 +151,14 @@ struct Provider: TimelineProvider {
                 }
             }
         }
-
+        
         task.resume()
     }
-
+    
     func placeholder(in context: Context) -> Entry {
-        Entry(date: Date(), streak: 25, danger: Danger.journaledToday, error: false, entriesToday: 1)
+        Entry(date: Date(), streak: 25, danger: .journaledToday, error: false, entriesToday: 1)
     }
-
+    
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
         if context.isPreview {
             completion(placeholder(in: context))
@@ -173,7 +175,7 @@ struct Provider: TimelineProvider {
                             print(error)
                             completion(Entry.errorEntry())
                         }
-
+                        
                     }
                 case .failure(let error):
                     print(error)
@@ -182,7 +184,7 @@ struct Provider: TimelineProvider {
             }
         }
     }
-
+    
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         var entries: [Entry] = []
         let currentDate = Date()
@@ -198,7 +200,7 @@ struct Provider: TimelineProvider {
 struct StreakWidgetEntryView: View {
     var entry: Provider.Entry
     @Environment(\.widgetFamily) var widgetFamily
-
+    
     var body: some View {
         VStack {
             switch widgetFamily {
@@ -217,7 +219,7 @@ struct StreakWidgetEntryView: View {
 
 struct StreakWidget: Widget {
     let kind: String = "StreakWidget"
-
+    
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StreakWidgetEntryView(entry: entry)

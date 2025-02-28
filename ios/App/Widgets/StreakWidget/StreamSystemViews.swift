@@ -10,7 +10,7 @@ import WidgetKit
 
 struct StreakSystemWidget: View {
     var entry: Entry
-        
+    
     var body: some View {
         if let mapping = dangerMapping[entry.danger] {
             HStack(alignment: .top) {

@@ -10,11 +10,14 @@ import WidgetKit
 
 struct StreakCircularAccessory: View {
     var entry: Entry
-        
+    
     var body: some View {
-            ZStack {
-                AccessoryWidgetBackground()
-                VStack {
+        ZStack {
+            AccessoryWidgetBackground()
+            VStack {
+                if (entry.error) {
+                    Image(systemName: "pencil.tip.crop.circle.fill").imageScale(.medium)
+                } else {
                     HStack(spacing: 0) {
                         if let mapping = dangerMapping[entry.danger] {
                             ForEach(0..<mapping.count, id: \ .self) { _ in
@@ -26,6 +29,7 @@ struct StreakCircularAccessory: View {
                 }
             }
         }
+    }
 }
 
 #Preview(as: .accessoryCircular) {
@@ -42,7 +46,15 @@ struct StreakInlineAccessory: View {
     
     var body: some View {
         Image(systemName: dangerMapping[entry.danger]!.icon).imageScale(.small)
-        Text("\(entry.streak) day streak")
+        if (!entry.error) {
+            if (entry.danger == .journaledTwoDaysAgo) {
+                Text("Save your streak!")
+            } else {
+                Text("\(entry.streak) day streak")
+            }
+        } else {
+            Text("What's happening?")
+        }
     }
 }
 
