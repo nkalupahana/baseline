@@ -34,6 +34,7 @@ struct Entry: TimelineEntry {
     
     static func errorEntry() -> Entry {
         // Icon of .noRecovery is used in error state of several widgets,
+        // and error + no recovery state are shared in widgets,
         // so beware of side effects from changes
         return Entry(date: Date(), streak: 0, danger: .noRecovery, error: true, entriesToday: 0)
     }
@@ -227,5 +228,6 @@ struct StreakWidget: Widget {
         .configurationDisplayName("Daily Streak")
         .description("This widget shows your journaling streak on baseline!")
         .supportedFamilies([.accessoryCircular, .accessoryInline, .systemSmall])
+        .contentMarginsDisabled()
     }
 }

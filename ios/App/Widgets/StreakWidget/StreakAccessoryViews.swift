@@ -15,9 +15,7 @@ struct StreakCircularAccessory: View {
         ZStack {
             AccessoryWidgetBackground()
             VStack {
-                if (entry.error) {
-                    Image(systemName: "pencil.tip.crop.circle.fill").imageScale(.medium)
-                } else {
+                if (entry.danger != .noRecovery) {
                     HStack(spacing: 0) {
                         if let mapping = dangerMapping[entry.danger] {
                             ForEach(0..<mapping.count, id: \ .self) { _ in
@@ -26,6 +24,8 @@ struct StreakCircularAccessory: View {
                         }
                     }
                     Text("\(entry.streak)").fontWeight(.bold).font(.title)
+                } else {
+                    Image(systemName: "pencil.tip.crop.circle.fill").scaleEffect(2)
                 }
             }
         }
@@ -39,6 +39,7 @@ struct StreakCircularAccessory: View {
     Entry(date: Date(), streak: 25, danger: .journaledYesterday, error: false, entriesToday: 0)
     Entry(date: Date(), streak: 25, danger: .journaledTwoDaysAgo, error: false, entriesToday: 0)
     Entry(date: Date(), streak: 0, danger: .noRecovery, error: false, entriesToday: 0)
+    Entry.errorEntry()
 }
 
 struct StreakInlineAccessory: View {
@@ -46,14 +47,12 @@ struct StreakInlineAccessory: View {
     
     var body: some View {
         Image(systemName: dangerMapping[entry.danger]!.icon).imageScale(.small)
-        if (!entry.error) {
-            if (entry.danger == .journaledTwoDaysAgo) {
-                Text("Save your streak!")
-            } else {
-                Text("\(entry.streak) day streak")
-            }
-        } else {
+        if (entry.danger == .journaledTwoDaysAgo) {
+            Text("Save your streak!")
+        } else if (entry.danger == .noRecovery) {
             Text("What's happening?")
+        } else {
+            Text("\(entry.streak) day streak")
         }
     }
 }
@@ -64,4 +63,6 @@ struct StreakInlineAccessory: View {
     Entry(date: Date(), streak: 125, danger: .journaledToday, error: false, entriesToday: 1)
     Entry(date: Date(), streak: 125, danger: .journaledYesterday, error: false, entriesToday: 0)
     Entry(date: Date(), streak: 125, danger: .journaledTwoDaysAgo, error: false, entriesToday: 0)
+    Entry(date: Date(), streak: 0, danger: .noRecovery, error: false, entriesToday: 0)
+    Entry.errorEntry()
 }

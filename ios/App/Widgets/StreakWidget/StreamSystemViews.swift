@@ -22,24 +22,26 @@ struct StreakSystemWidget: View {
                         .foregroundColor(mapping.color)
                     Spacer()
                     
-                    VStack(alignment: .leading, spacing: -3) {
+                    VStack(alignment: .leading) {
                         if (entry.danger == .journaledTwoDaysAgo) {
-                            Text("Save your")
-                            Text("streak!")
+                            Text("Save your\nstreak!")
+                                .font(Font.custom("Lato", size: 22))
+                                .padding(.bottom, 2)
                         } else if (entry.danger == .noRecovery) {
-                            Group {
-                                Text("What's")
-                                Text("happening?")
-                            }.font(Font.custom("Lato", size: 22))
+                            Text("What's\nhappening?")
+                                .font(Font.custom("Lato", size: 22))
+                                .padding(.bottom, 2)
                         } else {
-                            Text("\(entry.streak) day")
-                            Text("streak")
+                            Text("\(entry.streak) day\nstreak")
                         }
                     }.font(Font.custom("Lato", size: 24))
                         .fontWeight(.bold)
+                        .lineLimit(2)
+                        .environment(\._lineHeightMultiple, 0.9)
+                        .minimumScaleFactor(0.5)
                 }
                 Spacer()
-            }
+            }.padding(.top, 18).padding(.horizontal, 16).padding(.bottom, 11)
         }
     }
 }
@@ -47,9 +49,10 @@ struct StreakSystemWidget: View {
 #Preview(as: .systemSmall) {
     StreakWidget()
 } timeline: {
-    Entry(date: Date(), streak: 25, danger: .journaledToday, error: false, entriesToday: 1)
+    Entry(date: Date(), streak: 66, danger: .journaledToday, error: false, entriesToday: 1)
     Entry(date: Date(), streak: 25, danger: .journaledYesterday, error: false, entriesToday: 0)
     Entry(date: Date(), streak: 0, danger: .noRecovery, error: false, entriesToday: 0)
     Entry(date: Date(), streak: 25, danger: .journaledTwoDaysAgo, error: false, entriesToday: 0)
+    Entry.errorEntry()
 }
 
