@@ -8,6 +8,9 @@
         "baseline-links": [
           "baseline-links"
         ],
+        "baseline-api": [
+          "baseline-api"
+        ],
         "getbaselineapp": [
           "getbaselineapp"
         ]
