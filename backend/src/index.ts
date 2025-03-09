@@ -12,7 +12,6 @@ import { graniteLink } from "./granite.js";
 import { search } from "./spotify.js";
 import { getAudio, getImage } from "./storage.js";
 import { calculateStreak } from "./streak.js";
-import fs from "fs";
 
 const app = express();
 initializeApp({
@@ -32,7 +31,7 @@ app.use(cors());
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 app.use(async (req: UserRequest, res, next) => {
-    if (req.path.startsWith("/analytics/") || req.path.startsWith("/.well-known/")) return next();
+    if (req.path.startsWith("/analytics/")) return next();
     
     await validateAuth(req, res);
     if (req.user && await checkQuota(req, res)) {
@@ -73,12 +72,6 @@ app.post("/getAudio", getAudio);
 app.post("/gap", gapFund);
 app.post("/streak", calculateStreak);
 app.post("/spotify/search", search);
-
-// Temporary for Firebase validation
-app.get("/.well-known/acme-challenge/7SEDeeKnZNW6hxkq8Jr4fKMMobyB9mpZNbaDyzOfSrC7tNM9V5U1Wt8PXJ_E8yFH", (_, res) => {
-    fs.writeFileSync("/tmp/7SEDeeKnZNW6hxkq8Jr4fKMMobyB9mpZNbaDyzOfSrC7tNM9V5U1Wt8PXJ_E8yFH", "7SEDeeKnZNW6hxkq8Jr4fKMMobyB9mpZNbaDyzOfSrC7tNM9V5U1Wt8PXJ_E8yFH.M0-GObbb5ePi63ASQsPKBrDqfgayGnOWpyrEF0nHqug");
-    res.status(200).sendFile("/tmp/7SEDeeKnZNW6hxkq8Jr4fKMMobyB9mpZNbaDyzOfSrC7tNM9V5U1Wt8PXJ_E8yFH")
-});
 
 app.use(Sentry.Handlers.errorHandler());
 
