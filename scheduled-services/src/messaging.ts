@@ -164,7 +164,6 @@ export const logReminder = async (req: Request, res: Response) => {
         const chunkedAssociations = _.chunk(userMessageAssociation, 100);
         for (let i = 0; i < chunkedMessages.length; ++i) {
             const messagingResult = await getMessaging().sendEach(chunkedMessages[i]);
-            console.log(JSON.stringify(messagingResult));
             makeInternalRequest(req, "messaging/cleanUpTokens", {
                 userMessageAssociation: chunkedAssociations[i],
                 messagingResult: messagingResult.responses
