@@ -20,7 +20,7 @@ const getInfoForUID = async (db: Database, dbdata: AnyMap, uid: string) => {
         }
         return;
     } catch (error) {
-        console.log(uid);
+        console.warn(uid);
         throw error;
     }
 }
@@ -110,6 +110,7 @@ export const loadBasicBIData = async () => {
     // Get account data
     let accounts: string[] = [];
     let usersToCreationTime: DateTimeMap = {};
+    let usersToProviderId: AnyMap = {};
     const getAllUsers = async (nextPageToken?: string) => {
         try {
             const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
@@ -118,6 +119,7 @@ export const loadBasicBIData = async () => {
                     const email = userRecord.providerData[0].email ?? userRecord.email ?? "";
                     const dt = DateTime.fromRFC2822(userRecord.metadata.creationTime);
                     usersToCreationTime[userRecord.uid] = dt;
+                    usersToProviderId[userRecord.uid] = userRecord.providerData[0].providerId;
                     accounts.push(`${userRecord.uid},${email},${dt.toMillis()}`);
                 }
             });
@@ -135,7 +137,7 @@ export const loadBasicBIData = async () => {
 
     // Go through all users, and add data to CSVs
     for (let userId in db) {
-        if (!("encryption" in db[userId]) || db[userId]["encryption"]["id"] === "anonymous") continue;
+        if (!usersToProviderId[userId]) continue;
         addUser(
             userId,
             db[userId]["lastUpdated"],
