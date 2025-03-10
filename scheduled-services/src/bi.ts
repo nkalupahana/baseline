@@ -38,6 +38,8 @@ const getSimplifiedDB = async () => {
     // Get all UIDs in database
     const allUsers = await fetch(`https://getbaselineapp-default-rtdb.firebaseio.com/.json?shallow=true&access_token=${accessToken}`)
     const uids = Object.keys(await allUsers.json());
+
+    // Pull info and lastUpdates and construct skeleton of DB
     const database = getDatabase();
     const db = {};
     const queue = new PQueue({ concurrency: 20 });
@@ -50,7 +52,8 @@ const getSimplifiedDB = async () => {
 
 export const loadBasicBIData = async () => {
     let db: AnyMap = {};
-    const simplifiedBI = (new Date()).getHours() !== 0;
+    // Run full BI once per day (scheduler runs every other hour)
+    const simplifiedBI = ![0, 1].includes((new Date()).getHours());
     console.log("Simplified BI:", simplifiedBI);
 
     if (simplifiedBI) {
