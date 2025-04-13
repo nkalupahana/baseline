@@ -7,3 +7,12 @@ const InfoBadge: React.FC = ({ children }) => {
 }
 
 export default InfoBadge;
+
+export const getInfoBadge = (editTimestamp: number | null, addFlag: string | null) => {
+    if (editTimestamp !== null) {
+        return <InfoBadge>Editing saved journal</InfoBadge>
+    } else if (addFlag?.startsWith("summary")) {
+        return <InfoBadge>Summary journal for yesterday</InfoBadge>
+    }
+    return null;
+}
