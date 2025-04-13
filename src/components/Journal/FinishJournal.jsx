@@ -21,6 +21,7 @@ import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
 import SearchSpotify from "./SearchSpotify";
 import * as Sentry from "@sentry/react";
+import InfoBadge from "./InfoBadge";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -311,6 +312,7 @@ const FinishJournal = props => {
                             <div className="title">
                                 Let's summarize.
                             </div>
+                            { props.editTimestamp && <div style={{ marginBottom: "-10px" }}><InfoBadge>Editing saved journal</InfoBadge></div> }
                             <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
                             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
                             <div className="br"></div>
@@ -341,7 +343,6 @@ const FinishJournal = props => {
                             </span>
 
                             <div className="br"></div><div className="br"></div>
-
                             <p id="average-segment-desc" style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
                             <div className="container">
                                 <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>

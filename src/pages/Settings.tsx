@@ -59,12 +59,6 @@ const Settings = () => {
             <div className="title">Settings</div>
             <div className="br"></div>
             <div style={{"maxWidth": "600px"}}>
-                { user && <SettingsBox
-                    attr="introQuestions"
-                    title="Practice Prompts"
-                    description="Not comfortable writing about yourself this much yet? Enable practice prompts for a few weeks. (Coming soon)"
-                    syncWithFirebase={`${user.uid}/onboarding/questions`}
-                /> }
                 <SettingsBox
                     title="Reduce Motion"
                     attr="reduceMotion"

@@ -8,7 +8,6 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { db } from "../../firebase";
 import history from "../../history";
-import SettingsBox from "../Settings/SettingsBox";
 import StaticMoodLogCard, { SimpleLog } from "../Summary/StaticMoodLogCard";
 import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 
@@ -170,14 +169,6 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
                     <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
                     <p className="onboard-text">Good luck! You're going to do great.</p>
-                    { user && <div style={{"textAlign": "initial"}}>
-                        <SettingsBox
-                            attr="introQuestions"
-                            title="Not comfortable writing about yourself this much yet?"
-                            description="Get started with some practice prompts for the first few weeks. (Coming soon)"
-                            syncWithFirebase={`${user.uid}/onboarding/questions`}
-                        ></SettingsBox>
-                    </div> }
                 </div>
                 
                 <div className="finish-button onboarding-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
