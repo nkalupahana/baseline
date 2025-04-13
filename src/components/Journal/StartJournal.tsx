@@ -6,6 +6,7 @@ import { IonIcon } from "@ionic/react";
 import { encrypt } from "../../helpers";
 import WriteJournal from "./WriteJournal";
 import RecordJournal from "./RecordJournal";
+import InfoBadge from "./InfoBadge";
 
 interface Props {
     setMoodRead: (mood: number) => void;
@@ -42,14 +43,12 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
     }, [text, editTimestamp, addFlag]);
 
     let title = "What's happening?";
-    if (addFlag?.startsWith("summary")) {
+    const summaryJournal = addFlag?.startsWith("summary");
+    if (summaryJournal) {
         title = "What happened?";
     }
 
     let subtitle = "What have you been doing, how have you been feeling, and why might you be feeling that way?";
-    if (addFlag?.startsWith("summary")) {
-        subtitle = "Yesterday, what happened, how did you feel, and why might you have felt that way?";
-    }
 
     return (
         <div className="container">
@@ -57,11 +56,13 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
             <div className="center-journal">
                 { !editTimestamp && <>
                     <div className="title">{ title }</div>
-                    <p className="text-center bold max-width-600 margin-top-8">{ subtitle }</p>
+                    { !summaryJournal && <p className="text-center bold max-width-600 margin-top-8">{ subtitle }</p> }
+                    { summaryJournal && <InfoBadge>Summary journal for yesterday</InfoBadge>}
                 </> }
                 { !!editTimestamp && 
                     <>
-                        <div className="title">Edit Journal</div> 
+                        <div className="title">What's happening?</div> 
+                        <InfoBadge>Editing saved journal</InfoBadge>
                         <div className="br"></div>
                     </>
                 }
