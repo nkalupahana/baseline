@@ -699,6 +699,7 @@ describe("Test Streaks", () => {
         cy.get("textarea").type("Yesterday's journal")
 
         cy.contains("Continue").click()
+        cy.contains("Summary journal for yesterday").should("exist")
         cy.contains("Done!").click()
 
         cy.url().should("include", "/summary")
