@@ -8,13 +8,21 @@ import StreakBadge from "./StreakBadge";
 import { DateTime } from "luxon";
 import { share } from "./helpers";
 import { parseSettings, setSettings } from "../../helpers";
+import { Capacitor } from "@capacitor/core";
+import widgetImage from "./widgets.png"
 
 enum OpenDialog {
     NONE,
     FIRST_DAY,
-    CONTINUING
+    CONTINUING,
+    WIDGETS
 }
 
+/**
+ * TODO: This component manages all dialogs on the summary page, because
+ * they need to be mutually exclusive. The name should eventually be refactored,
+ * but it doesn't really matter.
+ */
 const StreakDialog = () => {
     const streak = useContext(StreakContext);
     const [user] = useAuthState(auth);
@@ -49,15 +57,16 @@ const StreakDialog = () => {
         // it was shown but not acknowledged (removed from settings when
         // user clicks the close button)
         const settings = parseSettings();
-        if ([OpenDialog.FIRST_DAY, OpenDialog.CONTINUING].includes(settings.streakDialog)) {
+        if (settings.streakDialog !== OpenDialog.NONE) {
             setOpenDialog(settings.streakDialog);
         }
     }, [streak]);
 
     useEffect(() => {
         if (!user) return;
-        get(ref(db, `/${user.uid}/prompts/streak`)).then(snap => {
-            const shownStreakTime = snap.val() ?? 0;
+        get(ref(db, `/${user.uid}/prompts`)).then(snap => {
+            const promptTimes = snap.val() ?? {};
+            const shownStreakTime = promptTimes.streak ?? 0;
             let newShownStreak = false;
 
             // If we have a streak, and it's been a week since we last showed a streak message
@@ -77,6 +86,10 @@ const StreakDialog = () => {
 
             if (newShownStreak) {
                 set(ref(db, `/${user.uid}/prompts/streak`), serverTimestamp());
+            } else if (!promptTimes.widgets && Capacitor.getPlatform() === "ios") {
+                set(ref(db, `/${user.uid}/prompts/widgets`), serverTimestamp());
+                setOpenDialog(OpenDialog.WIDGETS);
+                setSettings("streakDialog", OpenDialog.WIDGETS);
             }
         });
     }, [user, streak]);
@@ -103,6 +116,11 @@ const StreakDialog = () => {
                 in a row!
             </p>
             { bottomButtons }
+        </Dialog> }
+        { openDialog === OpenDialog.WIDGETS && <Dialog title="Try our new widgets!">
+            <img alt="Two panels. Left panel shows two baseline widgets on the lock screen, showing a streak of 110 days both above and below the clock. Right panel shows a baseline widget on the home screen, showing a streak of 110 days with a fire icon." src={widgetImage} style={{marginTop: "24px", borderRadius: "8px"}} />
+            <p className="text-center">Available on both the Lock and Home Screen, these widgets will make sure you never forget to journal. (Plus, we think they look pretty great.) We hope you try them out!</p>
+            <div className="finish-button" onClick={dismissDialog} style={{"marginBottom": "12px"}}>Close</div>
         </Dialog> }
     </>;
 };

@@ -60,6 +60,10 @@
         "streak": {
           ".write": "auth != null && auth.uid == $uid",
           ".validate": "newData.isNumber() && newData.val() == now"
+        },
+        "widgets": {
+          ".write": "auth != null && auth.uid == $uid",
+          ".validate": "newData.isNumber() && newData.val() == now"
         }
       }
     }
