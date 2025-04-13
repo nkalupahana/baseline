@@ -44,9 +44,7 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
 
     let title = "What's happening?";
     const summaryJournal = addFlag?.startsWith("summary");
-    if (summaryJournal) {
-        title = "What happened?";
-    }
+    if (summaryJournal) title = "What happened?";
 
     let subtitle = "What have you been doing, how have you been feeling, and why might you be feeling that way?";
 
@@ -54,18 +52,12 @@ const StartJournal = ({ setMoodRead, moodWrite, text, setText, editTimestamp, au
         <div className="container">
             <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
             <div className="center-journal">
+                <div className="title">{ title }</div>
                 { !editTimestamp && <>
-                    <div className="title">{ title }</div>
                     { !summaryJournal && <p className="text-center bold max-width-600 margin-top-8">{ subtitle }</p> }
-                    { summaryJournal && <InfoBadge>Summary journal for yesterday</InfoBadge>}
+                    { summaryJournal && <InfoBadge>Summary journal for yesterday</InfoBadge> }
                 </> }
-                { !!editTimestamp && 
-                    <>
-                        <div className="title">What's happening?</div> 
-                        <InfoBadge>Editing saved journal</InfoBadge>
-                        <div className="br"></div>
-                    </>
-                }
+                { !!editTimestamp && <InfoBadge>Editing saved journal</InfoBadge> }
                 { !audioView && <WriteJournal 
                     text={text} 
                     setText={setText} 
