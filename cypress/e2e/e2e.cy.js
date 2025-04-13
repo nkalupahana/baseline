@@ -10,15 +10,14 @@ import { dataOptionsObjArr } from "../../src/components/MyData/constants"
 // everything is okay before continuing
 const WAIT_FOR_CONSISTENCY = 4000;
 
-const NUM_TOGGLES = 4;
+const NUM_TOGGLES = 3;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
 const NUM_EXPORTED_JOURNALS = 47;
 
 // Toggle indices
-const PRACTICE_PROMPTS = 0;
-const REDUCE_MOTION = 1;
-const COLORBLIND_COLORS = 2;
-const SKIP_WIR = 3;
+const REDUCE_MOTION = 0;
+const COLORBLIND_COLORS = 1;
+const SKIP_WIR = 2;
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -66,12 +65,7 @@ describe("Mobile Flow", () => {
         cy.get(".finish-button").should("exist").click()
 
         cy.contains("Don't forget").should("exist")
-        cy.get("ion-toggle").should("have.length", 1).should("not.have.class", "toggle-checked")
         cy.get("body").happoScreenshot()
-        cy.get("ion-toggle").click()
-        cy.get("ion-toggle").should("have.class", "toggle-checked")
-        cy.get("ion-toggle").click()
-        cy.get("ion-toggle").should("not.have.class", "toggle-checked")
         cy.get(".finish-button").should("exist").click()
         
         cy.url().should("include", "/journal")
@@ -187,11 +181,12 @@ describe("Mobile Flow", () => {
         cy.get(".mood-edit-btn").should("exist").click()
 
         cy.url().should("include", "/journal")
-        cy.contains("Edit Journal").should("exist")
+        cy.contains("Editing saved journal").should("exist")
         cy.get("textarea").type("!!")
         cy.contains("Continue").should("exist").click()
 
         cy.url().should("include", "/journal/finish")
+        cy.contains("Editing saved journal").should("exist")
         cy.contains("Edit!").should("exist").click()
 
         cy.contains("Hello world!!!").should("exist")
@@ -212,23 +207,6 @@ describe("Mobile Flow", () => {
         cy.contains("Done!").should("exist").click()
         cy.url().should("include", "/summary")
         cy.contains(`Bad beginner`).should("exist")
-    })
-
-    it("Ensure Practice Prompts Exist", () => {
-        cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Settings").should("exist").click()
-        cy.get("ion-menu").should("not.exist")
-        cy.get("ion-toggle").should("have.length", NUM_TOGGLES)
-        cy.get(".settings-box-grid").eq(PRACTICE_PROMPTS).happoScreenshot()
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).click()
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).click()
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("not.have.class", "toggle-checked")
-
-        cy.get(".top-corner").should("have.length", 1).click()
-        cy.url().should("include", "/summary")
-        cy.reload()
     })
 
     it("Log a Few More Times and test FinishJournal Dialogs", () => {
@@ -720,7 +698,7 @@ describe("Test Streaks", () => {
         cy.contains("Missed a day").click({ force: true })
 
         cy.url().should("include", "/journal")
-        cy.contains("Yesterday").should("exist")
+        cy.contains("Summary journal for yesterday").should("exist")
         cy.get("textarea").type("Yesterday's journal")
 
         cy.contains("Continue").click()
