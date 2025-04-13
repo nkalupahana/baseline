@@ -173,7 +173,9 @@ describe("Mobile Flow", () => {
         cy.get("img").should("not.exist")
         
         cy.get(".sb-badge").contains("1").should("exist")
-        cy.get("div.toastify").invoke("remove")
+        if (Cypress.$("div.toastify").length) {
+            cy.get("div.toastify").invoke("remove")
+        }
         
         // This is due to the segment button not resetting.
         // How does this happen? No idea.
