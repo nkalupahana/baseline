@@ -167,9 +167,6 @@ describe("Mobile Flow", () => {
         cy.get("img").should("not.exist")
         
         cy.get(".sb-badge").contains("1").should("exist")
-        if (Cypress.$("div.toastify").length) {
-            cy.get("div.toastify").invoke("remove")
-        }
         
         // This is due to the segment button not resetting.
         // How does this happen? No idea.
@@ -702,6 +699,7 @@ describe("Test Streaks", () => {
         cy.get("textarea").type("Yesterday's journal")
 
         cy.contains("Continue").click()
+        cy.contains("Summary journal for yesterday").should("exist")
         cy.contains("Done!").click()
 
         cy.url().should("include", "/summary")

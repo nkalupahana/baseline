@@ -21,7 +21,7 @@ import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
 import SearchSpotify from "./SearchSpotify";
 import * as Sentry from "@sentry/react";
-import InfoBadge from "./InfoBadge";
+import { getInfoBadge } from "./InfoBadge";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
@@ -247,6 +247,8 @@ const FinishJournal = props => {
         props.setFiles(props.files.filter(file => fileDesc(file) !== desc));
     }
 
+    const infoBadge = getInfoBadge(props.editTimestamp, props.addFlag);
+
     return (
         <div className="outer-noscroll rss-backdrop">
             { firstTimer && <Joyride 
@@ -312,7 +314,7 @@ const FinishJournal = props => {
                             <div className="title">
                                 Let's summarize.
                             </div>
-                            { props.editTimestamp && <div style={{ marginBottom: "-10px" }}><InfoBadge>Editing saved journal</InfoBadge></div> }
+                            { infoBadge && <div style={{ marginBottom: "-12px" }}>{ infoBadge }</div> }
                             <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
                             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
                             <div className="br"></div>
