@@ -65,7 +65,7 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
     let streak = 1;
     let entriesToday = 0;
     let running = true;
-    while (running && Object.keys(logs).length > 0) {
+    while (running && logs && Object.keys(logs).length > 0) {
         // Same general logic as `calculateStreak` in the frontend
         // (max change of one day to continue streak)
         const logKeys = Object.keys(logs).reverse();
