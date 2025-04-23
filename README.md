@@ -1,7 +1,6 @@
 # baseline
 [![DeepScan grade](https://deepscan.io/api/teams/15815/projects/20905/branches/583898/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=15815&pid=20905&bid=583898)
 [![CodeFactor](https://www.codefactor.io/repository/github/nkalupahana/baseline/badge)](https://www.codefactor.io/repository/github/nkalupahana/baseline)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnkalupahana%2Fmoody?ref=badge_small)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=baseline&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=baseline)
 [![Cypress.io](https://img.shields.io/badge/tested%20with-Cypress-04C38E.svg)](https://www.cypress.io/)
 
