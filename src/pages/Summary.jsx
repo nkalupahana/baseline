@@ -166,6 +166,7 @@ const Summary = () => {
     }, [user]);
 
     useEffect(() => {
+        let unsortedLogs;
         if (parseSettings()["pdp"] && logsQuery) {
             const pwd = sessionStorage.getItem("pwd");
             if (!sessionStorage.getItem("pwd")) {
@@ -181,10 +182,12 @@ const Summary = () => {
                 }
             }
 
-            setLogs(l);
+            unsortedLogs = l;
         } else {
-            setLogs(logsQuery);
+            unsortedLogs = logsQuery;
         }
+        const sorted = unsortedLogs?.toSorted((a, b) => b.year - a.year || b.month - a.month || b.day - a.day || b.timestamp - a.timestamp);
+        setLogs(sorted);
     }, [logsQuery]);
 
     return (

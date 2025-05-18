@@ -30,7 +30,7 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
         return;
     }
 
-    const today = DateTime.fromISO(data.currentDate);
+    let today = DateTime.fromISO(data.currentDate);
     if (!data.currentDate || typeof data.currentDate !== "string" || !today.isValid) {
         res.sendStatus(400);
         return;
@@ -45,6 +45,11 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
 
     let latestLog: AnyMap = JSON.parse(AES.decrypt(logs[Object.keys(logs).at(-1)!].data, encryptionKey).toString(aesutf8));
     let top = DateTime.fromObject({ year: latestLog.year, month: latestLog.month, day: latestLog.day });
+    // If the first log is in the future, mark that as
+    // the starting date ("today") for the sake of streak calculation.
+    if (top > today) {
+        today = top;
+    }
 
     const topISO = top.toISODate();
     let danger = Danger.NO_RECOVERY;
