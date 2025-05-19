@@ -25,6 +25,7 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
     const db = getDatabase();
     const data = req.body;
     const encryptionKey = await validateKeys(data.keys, db, req.user!.user_id);
+    console.log(req.user!.user_id)
 
     if (!encryptionKey) {
         res.sendStatus(400);
@@ -79,8 +80,9 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
     let streak = 1;
     let entriesToday = 0;
     let i = 0;
-    let running = true;
-    while (running) {
+    while (true) {
+        let running = true;
+        console.log("Running", i, checkableKeys, decryptedLogs.length);
         // Same general logic as `calculateStreak` in the frontend
         // (max change of one day to continue streak)
         while (i < checkableKeys) {
@@ -105,6 +107,7 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
         // If the streak is going and we've run out of logs, but we know there are more
         // (in the additional segment), try to fetch more
         if (running && decryptedLogs[checkableKeys]) {
+            console.log("More!", checkableKeys, decryptedLogs[checkableKeys].length);
             const newLogs = await (await logRef.endBefore(decryptedLogs.at(-1).timestamp).limitToLast(FETCH_LIMIT).get()).val();
             // If there are no new logs, run the search on the entire log list
             if (!newLogs || Object.keys(newLogs).length === 0) {
