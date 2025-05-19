@@ -998,6 +998,8 @@ describe("Test Improper Journal Order Scenarios", () => {
             cy.viewport(viewport)
             cy.visit("/summary")
             cy.get(".mood-card-log").should("have.length", 2)
+            // TODO: Technically this should exist, but
+            // it doesn't in the current implementation.
             cy.get(".first-journal").should("not.exist")
             cy.get("[data-cy=yesterday-backlog]").should("not.exist")
             cy.get(".sb-badge").should("contain.text", "1")
