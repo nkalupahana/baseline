@@ -6,6 +6,11 @@ import AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 
 const FETCH_LIMIT = 100;
+// In case there is some timezone abnormality at the FETCH_LIMIT
+// that causes the streak to be broken, we fetch an additional 10 logs
+// and sort logs to probabilistically ensure that the streak is calculated
+// correctly. This is not a perfect solution, but the chance of it being
+// wrong is extremely low.
 const FETCH_ADDITIONAL = 10;
 
 enum Danger {

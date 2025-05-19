@@ -39,7 +39,7 @@ export const RESILIENCE_EXP = <>
 </>;
 
 export const YESTERDAY_BACKLOG = () => {
-    return <div className="text-center" key="yesterday1">
+    return <div data-cy="yesterday-backlog" className="text-center" key="yesterday1">
         <p className="fake-link" style={{textDecoration: "underline"}} onClick={() => {
             localStorage.setItem("addFlag", "summary:" + DateTime.now().minus({ days: 1 }).toISODate());
             history.push("/journal");

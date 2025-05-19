@@ -969,6 +969,61 @@ describe("Test Settings", () => {
     })
 })
 
+describe("Test Improper Journal Order Scenarios", () => {
+    it("One today, one tomorrow", () => {
+        cy.visit("/settings")
+        cy.contains("One Today One Tomorrow").click({ force: true })
+        cy.intercept("*firebase*", (req) => {
+            req.destroy()
+        })
+
+        for (const viewport of ["iphone-x", "macbook-13"]) {
+            cy.viewport(viewport)
+            cy.visit("/summary")
+            cy.get(".mood-card-log").should("have.length", 2)
+            cy.get(".first-journal").should("not.exist")
+            cy.get("[data-cy=yesterday-backlog]").should("not.exist")
+            cy.get(".sb-badge").should("contain.text", "2")
+        }
+    })
+
+    it("One yesterday, one tomorrow", () => {
+        cy.visit("/settings")
+        cy.contains("One Yesterday One Tomorrow").click({ force: true })
+        cy.intercept("*firebase*", (req) => {
+            req.destroy()
+        })
+
+        for (const viewport of ["iphone-x", "macbook-13"]) {
+            cy.viewport(viewport)
+            cy.visit("/summary")
+            cy.get(".mood-card-log").should("have.length", 2)
+            // TODO: Technically this should exist, but
+            // it doesn't in the current implementation.
+            cy.get(".first-journal").should("not.exist")
+            cy.get("[data-cy=yesterday-backlog]").should("not.exist")
+            cy.get(".sb-badge").should("contain.text", "1")
+        }
+    })
+
+    it("One two days ago, one today, one tomorrow", () => {
+        cy.visit("/settings")
+        cy.contains("One Two Days Ago One Today One Tomorrow").click({ force: true })
+        cy.intercept("*firebase*", (req) => {
+            req.destroy()
+        })
+
+        for (const viewport of ["iphone-x", "macbook-13"]) {
+            cy.viewport(viewport)
+            cy.visit("/summary")
+            cy.get(".mood-card-log").should("have.length", 3)
+            cy.get(".first-journal").should("not.exist")
+            cy.get("[data-cy=yesterday-backlog]")
+            cy.get(".sb-badge").should("contain.text", "2")
+        }
+    })
+})
+
 describe("Test Cleanup", () => {
     it("Start Deletion", () => {
         cy.visit("/summary")

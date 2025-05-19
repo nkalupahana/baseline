@@ -1,6 +1,5 @@
-import { Auth, getAuth, signOut } from 'firebase/auth';
+import { Auth, getAuth, signOut, initializeAuth, indexedDBLocalPersistence } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, indexedDBLocalPersistence } from 'firebase/auth';
 import { Capacitor } from '@capacitor/core';
 import ldb from './db';
 import { getStorage } from 'firebase/storage';
@@ -33,8 +32,8 @@ if (Capacitor.isNativePlatform()) {
     auth = getAuth();
 }
 
-export let storage = getStorage();
-export let db = getDatabase();
+export const storage = getStorage();
+export const db = getDatabase();
 
 export const signOutAndCleanUp = () => {
     console.log("SIGN OUT");
