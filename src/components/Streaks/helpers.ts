@@ -16,8 +16,13 @@ export const share = (text: string) => {
 export function calculateStreak(logs: Log[]) {
     if (!logs || logs.length === 0) return 0;
     
-    const today = DateTime.now();
+    let today = DateTime.now().startOf("day");
     let top = getDateFromLog(logs[0]);
+    // If the first log is in the future, mark that as
+    // the starting date ("today") for the sake of streak calculation.
+    if (top > today) {
+        today = top;
+    }
     if (top.toISODate() !== today.toISODate() && top.toISODate() !== today.minus({ days: 1 }).toISODate()) return 0;
     
     let streak = 1;

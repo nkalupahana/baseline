@@ -78,16 +78,18 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         let checkInsertYesterday = false;
         let streakIndicatorAdded = false;
 
-        /*
-         * If the first log is not today, add a message
+        /**
+         * NOTE: Due to timezones, the first log could be today,
+         * tomorrow, or any day in the past.
+         * If the first log is before today, add a message
          * to write the first log for the day.
          * If the first log is not yesterday, add a message
          * to add a backlog for yesterday.
-         * If the first log is from today, set a flag
+         * If the first log is today or after today, set a flag
          * to check if we need to add a backlog for yesterday
          * in the primary log loop.
          */
-        if (!filtered && first.toISODate() !== todayDT.toISODate()) {
+        if (!filtered && first < todayDT) {
             els.push(<div className="text-center" key="end1">
                 <p className="first-journal">Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
                 <div className="br"></div>
@@ -125,12 +127,16 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                     els.push(createLocator(prevTopDate));
 
                     // If we've passed the first day (today), check to see if
-                    // we need to add a backlog message for yesterday
-                    if (checkInsertYesterday && !filtered && getDateFromLog(log).toISODate() !== yesterdayDT.toISODate()) {
+                    // we need to add a backlog message for yesterday.
+                    // NOTE: Special case for if the first log happened tomorrow due
+                    // to timezone differences -- in that case, check backlog on
+                    // next date change
+                    const logDate = getDateFromLog(log).toISODate();
+                    if (checkInsertYesterday && !filtered && logDate !== yesterdayDT.toISODate() && logDate !== todayDT.toISODate()) {
                         els.push(YESTERDAY_BACKLOG());
                         els.push(createLocator(yesterdayDT));
                     }
-                    checkInsertYesterday = false;
+                    if (logDate !== todayDT.toISODate()) checkInsertYesterday = false;
                 }
 
                 today = [];
