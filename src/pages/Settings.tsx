@@ -1,18 +1,15 @@
-import { IonAlert, IonButton, IonIcon, IonSpinner } from "@ionic/react";
+import { IonAlert, IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
-import { auth, db, signOutAndCleanUp } from "../firebase";
+import { auth, signOutAndCleanUp } from "../firebase";
 import { goBackSafely, toast } from "../helpers";
 import history from "../history";
-import { DateTime } from "luxon";
-import ldb from "../db";
 import * as Sentry from "@sentry/react";
-import { ref, remove } from "firebase/database";
 import DebugButtons from "../components/Settings/DebugButtons";
 
 const Settings = () => {
