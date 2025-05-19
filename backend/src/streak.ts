@@ -6,6 +6,7 @@ import AES from "crypto-js/aes.js";
 import aesutf8 from "crypto-js/enc-utf8.js";
 
 const FETCH_LIMIT = 100;
+const FETCH_ADDITIONAL = 10;
 
 enum Danger {
     JOURNALED_TODAY = 0,
@@ -37,7 +38,7 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
     }
 
     const logRef = db.ref(req.user!.user_id + "/logs").orderByKey();
-    let logs: AnyMap = await (await logRef.limitToLast(FETCH_LIMIT).get()).val();
+    const logs: AnyMap = await (await logRef.limitToLast(FETCH_LIMIT + FETCH_ADDITIONAL).get()).val();
     if (!logs || Object.keys(logs).length === 0) {
         res.send({ streak: 0, danger: Danger.NO_RECOVERY, entriesToday: 0 });
         return;
@@ -67,15 +68,23 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
         return;
     }
 
+    const decryptedLogs = [];
+    let checkableKeys = Object.keys(logs).length < FETCH_LIMIT ? Object.keys(logs).length : FETCH_LIMIT
+    for (const key of Object.keys(logs)) {
+        const log = JSON.parse(AES.decrypt(logs[key].data, encryptionKey).toString(aesutf8));
+        decryptedLogs.push({ ...log, timestamp: Number(key) });
+    }
+    decryptedLogs.sort((a, b) => b.year - a.year || b.month - a.month || b.day - a.day || b.timestamp - a.timestamp);
+
     let streak = 1;
     let entriesToday = 0;
+    let i = 0;
     let running = true;
-    while (running && logs && Object.keys(logs).length > 0) {
+    while (running) {
         // Same general logic as `calculateStreak` in the frontend
         // (max change of one day to continue streak)
-        const logKeys = Object.keys(logs).reverse();
-        for (const key of logKeys) {
-            const log = JSON.parse(AES.decrypt(logs[key].data, encryptionKey).toString(aesutf8));
+        while (i < checkableKeys) {
+            const log = decryptedLogs[i];
             if (streak === 1 && today.day === log.day && today.month === log.month && today.year === log.year) {
                 ++entriesToday;
             }
@@ -90,12 +99,27 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
                     break;
                 }
             }
+            ++i;
         }
 
-        // If the streak is going and we've run out of logs, try to fetch more
-        if (running) {
-            logs = await (await logRef.endBefore(Object.keys(logs)[0]).limitToLast(FETCH_LIMIT).get()).val();
-        }
+        // If the streak is going and we've run out of logs, but we know there are more
+        // (in the additional segment), try to fetch more
+        if (running && decryptedLogs[checkableKeys]) {
+            const newLogs = await (await logRef.endBefore(decryptedLogs.at(-1).timestamp).limitToLast(FETCH_LIMIT).get()).val();
+            // If there are no new logs, run the search on the entire log list
+            if (!newLogs || Object.keys(newLogs).length === 0) {
+                checkableKeys = decryptedLogs.length;
+            } else {
+                // Otherwise, decrypt the new logs, add them to the list, sort, and run again
+                for (const key of Object.keys(newLogs)) {
+                    const log = JSON.parse(AES.decrypt(newLogs[key].data, encryptionKey).toString(aesutf8));
+                    decryptedLogs.push({ ...log, timestamp: Number(key) });
+                }
+                decryptedLogs.sort((a, b) => b.year - a.year || b.month - a.month || b.day - a.day || b.timestamp - a.timestamp);
+                checkableKeys += FETCH_ADDITIONAL;
+                checkableKeys += Object.keys(newLogs).length < (FETCH_LIMIT - FETCH_ADDITIONAL) ? Object.keys(newLogs).length : (FETCH_LIMIT - FETCH_ADDITIONAL);
+            }
+        } else break;
     }
 
     res.send({ streak, danger, entriesToday });
