@@ -108,12 +108,13 @@ export const calculateStreak = async (req: UserRequest, res: Response<StreakResp
         // (in the additional segment), try to fetch more
         if (running && decryptedLogs[checkableKeys]) {
             console.log("More!");
-            const newLogs: AnyMap = await (await logRef.endBefore(String(decryptedLogs.at(-1).timestamp)).limitToLast(FETCH_LIMIT).get()).val();
+            // + 1 required because endBefore messes with the limit for some reason
+            const newLogs: AnyMap = await (await logRef.endBefore(String(decryptedLogs.at(-1).timestamp)).limitToLast(FETCH_LIMIT + 1).get()).val();
             // If there are no new logs, run the search on the entire log list
             if (!newLogs || Object.keys(newLogs).length === 0) {
                 checkableKeys = decryptedLogs.length;
             } else {
-                // Otherwise, decrypt the new logs, add them to the list, sort, and run again
+                // Otherwise, decrypt the new logs, add them to the list, and sort
                 for (const key of Object.keys(newLogs)) {
                     const log = JSON.parse(AES.decrypt(newLogs[key].data, encryptionKey).toString(aesutf8));
                     decryptedLogs.push({ ...log, timestamp: Number(key) });
