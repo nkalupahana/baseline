@@ -13,6 +13,7 @@ import { DateTime } from "luxon";
 import ldb from "../db";
 import * as Sentry from "@sentry/react";
 import { ref, remove } from "firebase/database";
+import DebugButtons from "../components/Settings/DebugButtons";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
@@ -21,36 +22,6 @@ const Settings = () => {
     useEffect(() => {
         if (localStorage.getItem("ekeys") && !sessionStorage.getItem("pwd")) history.replace("/unlock");
     }, []);
-
-    const addFakeData = useCallback(() => {
-        let date = DateTime.now().minus({ days: 2 });
-        for (let i = 0; i < 28; i++) {
-            ldb.logs.add({
-                timestamp: date.toMillis(),
-                month: date.month,
-                day: date.day,
-                year: date.year,
-                time: "1:00",
-                zone: date.zoneName,
-                average: "average",
-                mood: Math.round((Math.random() * 10) - 5),
-                journal: "fake",
-                files: []
-            })
-            
-            date = date.minus({ days: 1 });
-        }
-
-        toast("Added fake data!");
-    }, []);
-
-    const clearJournalPrompt = useCallback(() => {
-        if (!user) return;
-        
-        remove(ref(db, `${user.uid}/prompts/streak`)).then(() => {
-            toast("Cleared journal prompt from DB!");
-        });
-    }, [user]);
 
     return <div className="container">
         { !doingAsyncTask && <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
@@ -89,8 +60,7 @@ const Settings = () => {
                     If you'd like to delete your account, <span className="fake-link" onClick={() => setDeleteAlert(true)}>click here.</span> You'll be prompted to sign in again to confirm.
                 </p>
             </div>
-            <IonButton style={{"display": "none"}} mode="ios" onClick={addFakeData}>Add Local Fake Data For WIR</IonButton>
-            { user && <IonButton style={{"display": "none"}} mode="ios" onClick={clearJournalPrompt}>Clear Journal Prompt from DB</IonButton> }
+            <DebugButtons />
         </div>
         <IonAlert
             isOpen={deleteAlert}
