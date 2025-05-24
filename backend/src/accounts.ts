@@ -307,6 +307,7 @@ export const sync = async (req: UserRequest, res: Response) => {
         }
     };
     checkToken();
+    console.log(req.rawHeaders, req.headers)
 
     // Broad geolocation
     try {
