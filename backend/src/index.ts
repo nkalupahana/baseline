@@ -8,7 +8,6 @@ import { deleteAccount, getOrCreateKeys, sync } from "./accounts.js";
 import { moodLog, survey } from "./main.js";
 import { gapFund } from "./gap.js";
 import { beacon } from "./analytics.js";
-import { graniteLink } from "./granite.js";
 import { search } from "./spotify.js";
 import { getAudio, getImage } from "./storage.js";
 import { calculateStreak } from "./streak.js";
@@ -58,7 +57,6 @@ app.post("/pdp/change", changePDPpassphrase);
 app.post("/accounts/delete", deleteAccount);
 app.post("/accounts/sync", sync);
 app.post("/accounts/getOrCreateKeys", getOrCreateKeys);
-app.post("/accounts/granite/link", graniteLink);
 
 // First-Party Anayltics
 app.post("/analytics/beacon", beacon);

@@ -1,4 +1,4 @@
-import { UserRequest } from "./helpers.js";
+import { getClientIp, UserRequest } from "./helpers.js";
 import { Response } from "express";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
@@ -310,7 +310,7 @@ export const sync = async (req: UserRequest, res: Response) => {
 
     // Broad geolocation
     try {
-        const geo = await (await fetch(`http://ip-api.com/json/${req.get("X-Forwarded-For")}`)).json();
+        const geo = await (await fetch(`http://ip-api.com/json/${getClientIp(req)}`)).json();
         if (geo.status === "success") {
             update["country"] = geo["country"];
             update["region"] = geo["regionName"];

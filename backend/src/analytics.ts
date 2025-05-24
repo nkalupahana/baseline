@@ -3,6 +3,7 @@ import * as murmur from "murmurhash-js";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore"; 
 import { randomUUID } from "crypto";
 import { getDatabase } from "firebase-admin/database";
+import { getClientIp } from "./helpers.js";
 
 interface ConversionData {
     utm_source: string;
@@ -48,7 +49,7 @@ export const beacon = async (req: Request, res: Response) => {
         return;
     }
 
-    const fingerprint = String(murmur.murmur3(req.get("X-Forwarded-For") + body.fingerprint, 283794322));
+    const fingerprint = String(murmur.murmur3(getClientIp(req) + body.fingerprint, 283794322));
     const fsdb = getFirestore();
     const doc = fsdb.collection(`conversions`).doc(fingerprint);
 
