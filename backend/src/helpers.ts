@@ -104,7 +104,6 @@ export const validateKeys = async (keys_: string, db: Database, user_id: string)
 
 export const getClientIp = (req: UserRequest): string => {
     const fastlyClientIp = req.get("fastly-client-ip");
-    console.log("fastly-client-ip", fastlyClientIp);
     if (fastlyClientIp) return fastlyClientIp;
     const xForwardedFor = req.get("x-forwarded-for");
     if (xForwardedFor) {
