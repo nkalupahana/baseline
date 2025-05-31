@@ -204,12 +204,28 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     let globalNow = DateTime.utc();
 
     if (data.addFlag) {
-        if (typeof data.addFlag !== "string" || !data.addFlag.startsWith("summary:")) {
+        if (typeof data.addFlag !== "string") {
             res.send(400);
             return;
         }
 
-        globalNow = DateTime.fromISO(data.addFlag.split(":")[1], { zone: data.timezone });
+        if (data.addFlag.startsWith("summary:")){
+            const timestamp = data.addFlag.split("summary:")[1].split(" ")[0];
+            if (!timestamp || isNaN(Date.parse(timestamp))) {
+                res.send(400);
+                return;
+            }
+            globalNow = DateTime.fromISO(data.addFlag.split("summary:")[1], {
+                zone: data.timezone,
+            });
+        } else if (data.addFlag.contains("offlineSync:")) {
+            let timestamp = data.addFlag.split("offlineSync:")[1];
+            if (!timestamp || isNaN(Number(timestamp)) || Number(timestamp) < 0) {
+                res.send(400);
+                return;
+            }
+            globalNow = DateTime.fromMillis(Number(timestamp));
+        }
 
         if (!globalNow.isValid) {
             res.send(400);
@@ -361,14 +377,14 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             }
         }
 
-        if (data.addFlag.endsWith("offlineSync")) {
-            console.log("Adding offline sync flag");
-            if (lastUpdated && lastUpdated > globalNow.toMillis()) {
-                setLastUpdated = false;
-            }
-            promises.push(
-              db.ref(`/${req.user!.user_id}/offline`).set(Math.random())
-            );
+        if (data.addFlag && data.addFlag.includes("offlineSync:")) {
+          console.log("Adding offline sync flag");
+          if (lastUpdated && lastUpdated > globalNow.toMillis()) {
+            setLastUpdated = false;
+          }
+          promises.push(
+            db.ref(`/${req.user!.user_id}/offline`).set(Math.random())
+          );
         }
 
         // maybe use addFlag to determine if unsynced + update offline
