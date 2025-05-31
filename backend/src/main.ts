@@ -361,7 +361,6 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             }
         }
 
-        console.log("hiiii")
         if (data.addFlag.endsWith("offlineSync")) {
             console.log("Adding offline sync flag");
             if (lastUpdated && lastUpdated > globalNow.toMillis()) {
