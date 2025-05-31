@@ -137,6 +137,7 @@ export const survey = async (req: UserRequest, res: Response) => {
 }
 
 export const moodLog = async (req: UserRequest, res: Response) => {
+    console.log("hello")
     const MEGABYTE = 1024 * 1024;
     let { data, files } : any = await new Promise(resolve => {
         formidable({ keepExtensions: true, multiples: true, maxFileSize: (500 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
@@ -345,18 +346,33 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             logData.audio = "inprogress";
         }
 
+        const lastUpdated = (
+          await db.ref(`/${req.user!.user_id}/lastUpdated`).get()
+        ).val();
         if (data.addFlag && data.addFlag.startsWith("summary:")) {
             logData.time = "12:00 PM";
             logData.zone = "local";
             logData.addFlag = "summary";
             logData.timeLogged = DateTime.utc().toMillis();
 
-            const lastUpdated = (await db.ref(`/${req.user!.user_id}/lastUpdated`).get()).val();
             if (lastUpdated && lastUpdated > globalNow.toMillis()) {
                 setLastUpdated = false;
                 promises.push(db.ref(`/${req.user!.user_id}/offline`).set(Math.random()));
             }
         }
+
+        console.log("hiiii")
+        if (data.addFlag.endsWith("offlineSync")) {
+            console.log("Adding offline sync flag");
+            if (lastUpdated && lastUpdated > globalNow.toMillis()) {
+                setLastUpdated = false;
+            }
+            promises.push(
+              db.ref(`/${req.user!.user_id}/offline`).set(Math.random())
+            );
+        }
+
+        // maybe use addFlag to determine if unsynced + update offline
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
         if (!logData) {
