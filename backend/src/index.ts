@@ -30,11 +30,10 @@ app.use(Sentry.Handlers.tracingHandler());
 app.use(async (req: UserRequest, res, next) => {
   if (req.path.startsWith("/analytics/")) return next();
 
-  // await validateAuth(req, res);
-  // if (req.user && await checkQuota(req, res)) {
-  //     next();
-  // }
-  next();
+  await validateAuth(req, res);
+  if (req.user && await checkQuota(req, res)) {
+      next();
+  }
 });
 
 app.use(
