@@ -181,7 +181,26 @@ const FinishJournal = props => {
             });
         } catch (e) {
             if (networkFailure(e.message)) {
-                toast(`We can't reach our servers. Check your internet connection and try again.${props.files.length > 0 ? " Your images might also be too big." : ""}`);
+                ldb.logs.add({
+                    timestamp: DateTime.local().toMillis(),
+                    year: DateTime.local().year,
+                    month: DateTime.local().month,
+                    day: DateTime.local().day,
+                    time: DateTime.local().toFormat("h:mm a"),
+                    zone: DateTime.local().zoneName,
+                    mood: props.moodWrite,
+                    journal: props.text,
+                    average: props.average,
+                    audio: props.audioChunks.current.length > 0 ? props.audioChunks.current : null,
+                    song: props.song,
+                    files: props.files,
+                    addFlag: props.addFlag,
+                    timeLogged: DateTime.local().toMillis(),
+                    unsynced: 1,
+                }).then(() => {
+                    toast("Mood log saved locally! We'll try to send it when you have internet again.");
+                    setSubmitted(true);
+                });
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }

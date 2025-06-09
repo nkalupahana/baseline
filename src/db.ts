@@ -2,17 +2,18 @@ import Dexie from "dexie";
 
 export interface Log {
     timestamp: number;
-    year: number,
-    month: number,
-    day: number,
-    time: string,
-    zone: string,
-    mood: number,
-    journal?: string,
-    ejournal?: string,
-    average: string,
-    files?: string[],
-    efiles?: string
+    year: number;
+    month: number;
+    day: number;
+    time: string;
+    zone: string;
+    mood: number;
+    unsynced?: number;
+    journal?: string;
+    ejournal?: string;
+    average: string;
+    files?: string[];
+    efiles?: string;
     song?: string;
     audio?: string;
     addFlag?: string;
@@ -26,6 +27,10 @@ interface DB extends Dexie {
 const ldb = new Dexie("ldb");
 ldb.version(1).stores({
     logs: `&timestamp, year, month, day, time, zone, mood, average`,
+});
+
+ldb.version(2).stores({
+    logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced`,
 });
 
 ldb.on("close", () => console.log("db was forcibly closed"));
