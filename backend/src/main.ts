@@ -145,7 +145,6 @@ export const survey = async (req: UserRequest, res: Response) => {
 }
 
 export const moodLog = async (req: UserRequest, res: Response) => {
-    console.log("hello")
     const MEGABYTE = 1024 * 1024;
     let { data, files } : any = await new Promise(resolve => {
         formidable({ keepExtensions: true, multiples: true, maxFileSize: (500 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
