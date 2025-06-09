@@ -173,7 +173,6 @@ const Summary = () => {
         if (!user) return;
         const uploadUnsyncedData = async () => {
             const unsyncedLogs = await ldb.logs.where("unsynced").equals(1).toArray();
-            console.log("Unsynced logs:", unsyncedLogs);
             if (unsyncedLogs.length === 0) return;
 
             const keys = checkKeys();
@@ -186,13 +185,8 @@ const Summary = () => {
                 data.append("journal", log.journal);
                 data.append("average", log.average);
                 data.append("keys", JSON.stringify(checkKeys()));
-                data.append("addFlag", log.addFlag ? log.addFlag + " offlineSync:" + log.timestamp : " offlineSync" + log.timestamp);
+                data.append("addFlag", log.addFlag ? log.addFlag + " offlineSync:" + log.timestamp : " offlineSync:" + log.timestamp);
                 data.append("song", log.song || "");
-                if (log.editTimestamp) {
-                    data.append("editTimestamp", log.editTimestamp);
-                } else {
-                    data.append("editTimestamp", "null");
-                }
                 if (log.files && log.files.length > 0) {
                     for (let file of log.files) {
                         data.append("files", file);
@@ -210,7 +204,6 @@ const Summary = () => {
                     });
                     // delete the unsynced log from the local database
                     await ldb.logs.where("timestamp").equals(log.timestamp).delete();
-                    console.log("Successfully uploaded unsynced log:", log.timestamp);
                 } catch (error) {
                     console.error("Error uploading unsynced data:", error);
                     return;
@@ -221,7 +214,14 @@ const Summary = () => {
                 }
             }
         };
+
+        window.addEventListener("online", uploadUnsyncedData);
+
         uploadUnsyncedData();
+
+        return () => {
+            window.removeEventListener("online", uploadUnsyncedData);
+        }
     }, [user]);
 
     useEffect(() => {
