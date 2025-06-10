@@ -19,6 +19,38 @@ const REDUCE_MOTION = 0;
 const COLORBLIND_COLORS = 1;
 const SKIP_WIR = 2;
 
+const goOffline = () => {
+    Cypress.automation("remote:debugger:protocol", {
+        command: "Network.enable",
+    }).then(() => {
+      return Cypress.automation("remote:debugger:protocol", {
+        command: "Network.emulateNetworkConditions",
+        params: {
+          offline: true,
+          latency: -1,
+          downloadThroughput: -1,
+          uploadThroughput: -1,
+        },
+      });
+    });
+};
+
+const goOnline = () => {
+    Cypress.automation("remote:debugger:protocol", {
+        command: "Network.emulateNetworkConditions",
+        params: {
+          offline: false,
+          latency: -1,
+          downloadThroughput: -1,
+          uploadThroughput: -1,
+        },
+      }).then(() => {
+      return Cypress.automation("remote:debugger:protocol", {
+        command: "Network.disable",
+      });
+    });
+};
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -1022,6 +1054,30 @@ describe("Test Improper Journal Order Scenarios", () => {
             cy.get(".sb-badge").should("contain.text", "2")
         }
     })
+})
+
+describe("Test Offline Mode", () => {
+  it("Journal Offline Mode", () => {
+    goOffline();
+    cy.wait(WAIT_FOR_CONSISTENCY);
+    cy.get(".fab-button-close-active").should("exist").click();
+    cy.contains("What's happening").should("exist");
+    cy.get("textarea").should("exist").focus();
+    cy.get("textarea").type("This is an offline test");
+    cy.contains("Continue").should("exist").click();
+    cy.contains("Done!").should("exist").click();
+
+    cy.url().should("include", "/summary");
+    cy.get(".mood-card-log").first().contains("This is an offline test");
+    cy.get(".mood-card").first().find("#cloudOffline").should("exist");
+  });
+
+  it("Should upload logs when back online", () => {
+    goOnline();
+    cy.get(".mood-card-log").first().contains("This is an offline test");
+    // check that cloud offline icon is gone
+    cy.get(".mood-card").first().find("#cloudOffline").should("not.exist");
+  });
 })
 
 describe("Test Cleanup", () => {
