@@ -102,7 +102,7 @@ const MoodLogCard = ({
             >
                 {displayedTime}
                 {log.unsynced && (
-                    <IonIcon className="close-btn" icon={cloudOfflineOutline} />
+                    <IonIcon className="close-btn" icon={cloudOfflineOutline} id="cloudOffline" />
                 )}
             </span>
             <span
