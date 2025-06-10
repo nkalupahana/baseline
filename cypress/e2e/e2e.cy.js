@@ -20,20 +20,37 @@ const COLORBLIND_COLORS = 1;
 const SKIP_WIR = 2;
 
 const goOffline = () => {
-    Cypress.automation("remote:debugger:protocol", {
-        command: "Network.enable",
-    }).then(() => {
-      return Cypress.automation("remote:debugger:protocol", {
-        command: "Network.emulateNetworkConditions",
-        params: {
-          offline: true,
-          latency: -1,
-          downloadThroughput: -1,
-          uploadThroughput: -1,
-        },
-      });
+  return Cypress.automation("remote:debugger:protocol", {
+    command: "Network.enable",
+  }).then(() => {
+    return Cypress.automation("remote:debugger:protocol", {
+      command: "Network.emulateNetworkConditions",
+      params: {
+        offline: true,
+        latency: 0,
+        downloadThroughput: 0,
+        uploadThroughput: 0,
+      },
     });
+  });
 };
+
+const goOnline = () => {
+  return Cypress.automation("remote:debugger:protocol", {
+    command: "Network.emulateNetworkConditions",
+    params: {
+      offline: false,
+      latency: 0,
+      downloadThroughput: -1,
+      uploadThroughput: -1,
+    },
+  }).then(() => {
+    return Cypress.automation("remote:debugger:protocol", {
+      command: "Network.disable", // disable after restoring connection
+    });
+  });
+};
+
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -987,39 +1004,26 @@ describe("Test Settings", () => {
 
 describe("Test Offline Mode", () => {
   it("Journal Offline Mode", () => {
-    goOffline();
-    cy.wait(WAIT_FOR_CONSISTENCY);
-    cy.get(".fab-button-close-active").should("exist").click();
-    cy.contains("What's happening").should("exist");
-    cy.get("textarea").should("exist").focus();
-    cy.get("textarea").type("This is an offline test");
-    cy.contains("Continue").should("exist").click();
-    cy.contains("Done!").should("exist").click();
+    goOffline().then(() => {
+        cy.get(".fab-button-close-active").should("exist").click();
+        cy.contains("What's happening").should("exist");
+        cy.get("textarea").should("exist").focus();
+        cy.get("textarea").type("This is an offline test");
+        cy.contains("Continue").should("exist").click();
+        cy.contains("Done!").should("exist").click();
 
-    cy.url().should("include", "/summary");
-    cy.get(".mood-card-log").last().contains("This is an offline test");
-    cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+        cy.url().should("include", "/summary");
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+    });
   });
 
   it("Should upload logs when back online", () => {
-    cy.wait(WAIT_FOR_CONSISTENCY);
-    Cypress.automation("remote:debugger:protocol", {
-      command: "Network.emulateNetworkConditions",
-      params: {
-        offline: false,
-        latency: -1,
-        downloadThroughput: -1,
-        uploadThroughput: -1,
-      },
-    }).then(() => {
-      return Cypress.automation("remote:debugger:protocol", {
-        command: "Network.disable",
-      });
+    goOnline().then(() => {
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        // check that cloud offline icon is gone
+        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
     });
-    cy.wait(WAIT_FOR_CONSISTENCY);
-    cy.get(".mood-card-log").last().contains("This is an offline test");
-    // check that cloud offline icon is gone
-    cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
   });
 });
 
