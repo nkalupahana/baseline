@@ -1,7 +1,7 @@
 import { IonContent, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonMenu } from "@ionic/react";
 import { useEffect, useRef, useState, useMemo } from "react";
 import ldb from "../db";
-import { ref, get, query, startAfter, orderByKey, onValue, off, set } from "firebase/database";
+import { ref, get, query, startAfter, orderByKey, onValue, off } from "firebase/database";
 import { auth, db, signOutAndCleanUp } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { analytics, bookOutline, cashOutline, cogOutline, fileTrayFull, heartCircleOutline, helpBuoyOutline, menuOutline, notifications, pencil } from "ionicons/icons";
