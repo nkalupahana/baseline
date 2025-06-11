@@ -19,39 +19,6 @@ const REDUCE_MOTION = 0;
 const COLORBLIND_COLORS = 1;
 const SKIP_WIR = 2;
 
-const goOffline = () => {
-  return Cypress.automation("remote:debugger:protocol", {
-    command: "Network.enable",
-  }).then(() => {
-    return Cypress.automation("remote:debugger:protocol", {
-      command: "Network.emulateNetworkConditions",
-      params: {
-        offline: true,
-        latency: 0,
-        downloadThroughput: 0,
-        uploadThroughput: 0,
-      },
-    });
-  });
-};
-
-const goOnline = () => {
-  return Cypress.automation("remote:debugger:protocol", {
-    command: "Network.emulateNetworkConditions",
-    params: {
-      offline: false,
-      latency: 0,
-      downloadThroughput: -1,
-      uploadThroughput: -1,
-    },
-  }).then(() => {
-    return Cypress.automation("remote:debugger:protocol", {
-      command: "Network.disable", // disable after restoring connection
-    });
-  });
-};
-
-
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -452,7 +419,7 @@ describe("Test Offline Mode with Navigation", () => {
         cy.contains("Done!").should("exist").click();
 
         cy.window().then((win) => {
-            expect(win.navigator.onLine).to.be.false;
+            expect(win.navigator.onLine).to.be(false);
         });
 
         cy.url().should("include", "/summary");
