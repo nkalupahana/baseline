@@ -3,9 +3,9 @@ name: Deploy Backend
 on:
   push:
     branches:
-      - main
-    paths:
-      - "backend/**"
+      - burgess/pipeline
+    # paths:
+    #   - "backend/**"
   workflow_dispatch:
 
 jobs:
