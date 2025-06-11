@@ -26,8 +26,8 @@ interface DB extends Dexie {
 
 const ldb = new Dexie("ldb");
 
-ldb.version(2).stores({
-    logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced`,
+ldb.version(3).stores({
+    logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced, audio`,
 });
 
 ldb.on("close", () => console.log("db was forcibly closed"));

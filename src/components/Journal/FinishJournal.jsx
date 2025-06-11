@@ -151,9 +151,10 @@ const FinishJournal = props => {
         data.append("keys", JSON.stringify(checkKeys()));
         if (props.editTimestamp) data.append("editTimestamp", props.editTimestamp);
         if (props.addFlag) data.append("addFlag", props.addFlag);
+        let audioBlob = null;
 
         if (props.audioChunks.current.length > 0) {
-            const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
+            audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
             if (audioBlob.size === 0) {
                 const type = Capacitor.getPlatform() === "web" ? "browser" : "device";
                 toast(`Your audio journal has no data. Please try recording again. If you continue to see this message, you will not be able to make audio recordings on this ${type}.`, "top", 8000);
@@ -191,7 +192,7 @@ const FinishJournal = props => {
                     mood: props.moodWrite,
                     journal: props.text,
                     average: props.average,
-                    audio: props.audioChunks.current.length > 0 ? props.audioChunks.current : null,
+                    audio: audioBlob,
                     song: props.song,
                     files: props.files,
                     addFlag: props.addFlag,

@@ -186,12 +186,13 @@ const Summary = () => {
                 data.append("average", log.average);
                 data.append("keys", JSON.stringify(checkKeys()));
                 data.append("addFlag", log.addFlag ? log.addFlag + " offlineSync:" + log.timestamp : " offlineSync:" + log.timestamp);
-                data.append("song", log.song || "");
+                data.append("song", log.song?.uri || "");
                 if (log.files && log.files.length > 0) {
                     for (let file of log.files) {
-                        data.append("files", file);
+                        data.append("file", file);
                     }
                 }
+                data.append("audio", log.audio);
 
                 let response;
                 try {
