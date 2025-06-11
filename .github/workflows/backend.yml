@@ -41,11 +41,11 @@ jobs:
       run:
         working-directory: .
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Use Node.js 18
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: "18.x"
         cache: "npm"
@@ -70,13 +70,13 @@ jobs:
         REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
     - name: Upload Test Video
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-video
         path: cypress/videos
     - name: Upload Test Screenshots
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-screenshots
         path: cypress/screenshots
@@ -87,7 +87,7 @@ jobs:
       run:
         working-directory: .
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Increase Traffic
