@@ -431,6 +431,52 @@ describe("Mobile Flow", () => {
     })
 })
 
+describe("Test Offline Mode with Navigation", () => {
+    it("Journal Offline Mode and Upload When Back Online", () => {
+        let onlineStub;
+
+        Cypress.on('window:before:load', (win) => {
+            onlineStub = cy.stub(win.navigator, 'onLine').value(false);
+        });
+
+        cy.intercept("POST", "/moodLog", {
+            forceNetworkError: true,
+        }).as("postJournal");
+
+        cy.visit("/journal");
+
+        cy.contains("What's happening").should("exist");
+        cy.get("textarea").should("exist").focus();
+        cy.get("textarea").type("This is an offline test");
+        cy.contains("Continue").should("exist").click();
+        cy.contains("Done!").should("exist").click();
+
+        cy.window().then((win) => {
+            expect(win.navigator.onLine).to.be.false;
+        });
+
+        cy.url().should("include", "/summary");
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+
+        cy.intercept("POST", "/moodLog", (req) => {
+            req.continue();
+        });
+        cy.then(() => {
+            onlineStub.value(true);
+            cy.window().then((win) => {
+                win.dispatchEvent(new Event('online'));
+            });
+        });
+
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        // Verify sync happened
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
+    });
+});
+
 describe("Desktop Flow", () => {
     beforeEach(() => {
         cy.viewport("macbook-13")
@@ -1001,31 +1047,6 @@ describe("Test Settings", () => {
         cy.contains("Test 0")
     })
 })
-
-describe("Test Offline Mode", () => {
-  it("Journal Offline Mode", () => {
-    goOffline().then(() => {
-        cy.get(".fab-button-close-active").should("exist").click();
-        cy.contains("What's happening").should("exist");
-        cy.get("textarea").should("exist").focus();
-        cy.get("textarea").type("This is an offline test");
-        cy.contains("Continue").should("exist").click();
-        cy.contains("Done!").should("exist").click();
-
-        cy.url().should("include", "/summary");
-        cy.get(".mood-card-log").last().contains("This is an offline test");
-        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
-    });
-  });
-
-  it("Should upload logs when back online", () => {
-    goOnline().then(() => {
-        cy.get(".mood-card-log").last().contains("This is an offline test");
-        // check that cloud offline icon is gone
-        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
-    });
-  });
-});
 
 describe("Test Improper Journal Order Scenarios", () => {
     it("One today, one tomorrow", () => {
