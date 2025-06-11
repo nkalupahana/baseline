@@ -616,8 +616,8 @@ describe("Desktop Flow", () => {
 
     it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
         const ldb = new Dexie('ldb')
-        ldb.version(2).stores({
-            logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced`,
+        ldb.version(3).stores({
+            logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced, audio`,
         });
         
         let date = DateTime.now().minus({ days: 1 });
