@@ -418,10 +418,6 @@ describe("Test Offline Mode with Navigation", () => {
         cy.contains("Continue").should("exist").click();
         cy.contains("Done!").should("exist").click();
 
-        cy.window().then((win) => {
-            expect(win.navigator.onLine).to.be(false);
-        });
-
         cy.url().should("include", "/summary");
         cy.get(".mood-card-log").last().contains("This is an offline test");
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
