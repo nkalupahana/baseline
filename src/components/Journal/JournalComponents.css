@@ -95,6 +95,10 @@
     line-height: 21px;
 }
 
+.input-sizer.sizing-only {
+    display: block;
+}
+
 @media only screen and (min-width: 800px) {
     .input-sizer {
         width: 80%;
@@ -107,13 +111,15 @@
 
 .input-sizer.stacked::after,
 .input-sizer.stacked input,
-.input-sizer.stacked textarea {
+.input-sizer.stacked textarea,
+.input-sizer.stacked div {
     grid-area: 2/1;
 }
 
 .input-sizer::after,
 .input-sizer input,
-.input-sizer textarea {
+.input-sizer textarea,
+.input-sizer div {
     width: auto;
     min-width: 1em;
     grid-area: 1/2;
@@ -145,6 +151,7 @@
     border-radius: 10px;
     margin-top: 15px;
     color: white;
+    cursor: pointer;
 }
 
 .text-center {
@@ -178,10 +185,24 @@
     color: white;
     margin: 0 auto;
     border-radius: 10px;
+
+    cursor: pointer;
 }
 
 .finish-button:active {
     background-color: #2e6cfc;
+}
+
+.outline-button {
+    border: #4b7ef7 2px solid;
+    border-radius: 4px;
+    margin-left: 8px;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.outline-button:hover {
+    border: #2e6cfc 2px solid;
 }
 
 .loader {
@@ -212,4 +233,31 @@ input[type=file]#files {
     100% {
         transform: scale(1);
     }
+}
+
+ion-segment-button > ion-label {
+    text-overflow: unset !important;
+    max-width: unset !important;
+}
+
+.journal-additions-icon {
+    font-size: 25px;
+    transform: translateY(6px);
+}
+
+.secondary-icon {
+    font-size: 20px;
+    transform: translateY(5px);
+    cursor: pointer;
+}
+
+.jc-faked-input {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.jc-faked-container {
+    position: absolute;
+    visibility: hidden;
+    top: 0px;
 }

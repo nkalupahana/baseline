@@ -1,5 +1,5 @@
 import { Capacitor } from "@capacitor/core";
-import { set, ref } from "@firebase/database";
+import { set, ref } from "firebase/database";
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "swiper";
@@ -8,8 +8,8 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { db } from "../../firebase";
 import history from "../../history";
-import SettingsBox from "../Settings/SettingsBox";
 import StaticMoodLogCard, { SimpleLog } from "../Summary/StaticMoodLogCard";
+import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 
 const good: SimpleLog[] = [
     {
@@ -56,7 +56,7 @@ const bad: SimpleLog[] = [
 const generateNumber = (num: number) => {
     return <><svg width="40" height="40" style={{"verticalAlign": "middle"}}>
         <circle cx="20" cy="20" r="18" stroke="var(--background-color-inverted)" strokeWidth="2" fill="var(--background-color-inverted)" />
-        <text fill="var(--ion-background-color)" x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="20">{ num }</text>
+        <text fill="var(--ion-background-color)" x="50%" y="66%" textAnchor="middle" fontSize="20">{ num }</text>
     </svg>&nbsp;</>
 }
 
@@ -77,6 +77,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
         if (!user || !submitting) return;
         (async () => {
             await set(ref(db, `${user.uid}/onboarding/onboarded`), true);
+            if (Capacitor.getPlatform() !== "web") await FirebaseAnalytics.logEvent({ name: "onboard_complete" });
             localStorage.removeItem("onboarding");
             history.replace("/journal");
         })();
@@ -97,7 +98,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     and there's no one right way to do it.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.STEPS)}>Okay!</div>
-                { onboarding ? <p>step 3 of 5</p> : <br /> }
+                { onboarding ? <p>step 3 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.STEPS && <>
                 <p className="onboard-text margin-bottom-0" style={{"textAlign": "left"}}>Every journal entry you write should aim to capture three things:</p>
@@ -111,7 +112,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     writing with these questions in mind isn't much harder, and it's so much more rewarding.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.GOOD)}>Makes sense.</div>
-                { onboarding ? <p>step 3 of 5</p> : <br /> }
+                { onboarding ? <p>step 3 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.GOOD && <>
                 <p className="onboard-text">Here are some examples of good entries:</p>
@@ -133,7 +134,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     and some deeper reflection as needed.
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.BAD)}>Got it!</div>
-                { onboarding ? <p>step 4 of 5</p> : <br /> }
+                { onboarding ? <p>step 4 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.BAD && <>
                 <p className="onboard-text">And here are some entries that could use a little more work:</p>
@@ -159,7 +160,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     context you add, the more you'll be able to remember when you look back on your entries!
                 </p>
                 <div className="finish-button onboarding-button" onClick={() => setScreen(Screens.OUTRO)}>Alright, I think I'm ready.</div>
-                { onboarding ? <p>step 5 of 5</p> : <br /> }
+                { onboarding ? <p>step 5 of 5</p> : <div className="br"></div> }
             </> }
             { screen === Screens.OUTRO && <>
                 <div className="align-box">
@@ -168,18 +169,10 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                     <p className="onboard-text margin-bottom-0 indent-number">{ generateNumber(2) } How have you been feeling?</p>
                     <p className="onboard-text indent-number">{ generateNumber(3) } Why might you be feeling that way?</p>
                     <p className="onboard-text">Good luck! You're going to do great.</p>
-                    { user && <div style={{"textAlign": "initial"}}>
-                        <SettingsBox
-                            attr="introQuestions"
-                            title="Not comfortable writing about yourself this much yet?"
-                            description="Get started with some practice prompts for the first few weeks. (Coming soon)"
-                            syncWithFirebase={`${user.uid}/onboarding/questions`}
-                        ></SettingsBox>
-                    </div> }
                 </div>
                 
                 <div className="finish-button onboarding-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
-                <br />
+                <div className="br"></div>
             </> }
         </>;
 }

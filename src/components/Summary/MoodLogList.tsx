@@ -1,9 +1,11 @@
 import { IonSpinner } from "@ionic/react";
 import { DateTime } from "luxon";
-import { Ref, useEffect, useState } from "react";
+import { Ref, useEffect, useMemo, useState } from "react";
 import { Log } from "../../db";
 import { COLORS, COLORS_CB, getDateFromLog, parseSettings } from "../../helpers";
 import MoodLogCard from "./MoodLogCard";
+import { YESTERDAY_BACKLOG } from "../../data";
+import StreakBadge from "../Streaks/StreakBadge";
 
 interface Props {
     logs: Log[],
@@ -30,7 +32,6 @@ const createEmptyLocator = (t: DateTime) => {
 }
 
 const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requestedDate, aHeight, filtered, LOCATOR_OFFSET } : Props) => {
-    const [els, setEls] = useState<JSX.Element[]>([]);
     const [updating, setUpdating] = useState(window.location.hash === "#update");
     const settings = parseSettings();
 
@@ -45,22 +46,23 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
         };
     }, []);
 
-    useEffect(() => {
+    const els = useMemo(() => {
         let els = [];
         let top: Log | undefined = undefined;
         const zone = DateTime.now().zone.name;
+        const nowTimestamp = DateTime.now().toMillis();
+        const streakBadge = <StreakBadge shareOnClick={true} key="streakbadge" />;
     
         let firstLogs = 0;
         if (logs.length === 0) {
-            setEls([<div key="top-spacer-no-results" style={{"width": "100%", "height": "90px"}}></div>, <p key="no-results" className="text-center">No Results</p>]);
-            return;
+            return [<div key="top-spacer-no-results" style={{"width": "100%", "height": "120px"}}></div>, <p key="no-results" className="text-center">No Results</p>];
         }
-        
-        const first = getDateFromLog(logs[0]);
         
         let prevTopDate;
         let today = [];
         const colors = parseSettings()["colorblind"] ? COLORS_CB : COLORS;
+
+        const first = getDateFromLog(logs[0]);
 
         // Count number of first day logs, for bottom spacing for calendar
         for (let log of logs) {
@@ -69,6 +71,40 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             } else {
                 break;
             }
+        }
+
+        const todayDT = DateTime.now().startOf("day");
+        const yesterdayDT = todayDT.minus({ days: 1 });
+        let checkInsertYesterday = false;
+        let streakIndicatorAdded = false;
+
+        /**
+         * NOTE: Due to timezones, the first log could be today,
+         * tomorrow, or any day in the past.
+         * If the first log is before today, add a message
+         * to write the first log for the day.
+         * If the first log is not yesterday, add a message
+         * to add a backlog for yesterday.
+         * If the first log is today or after today, set a flag
+         * to check if we need to add a backlog for yesterday
+         * in the primary log loop.
+         */
+        if (!filtered && first < todayDT) {
+            els.push(<div className="text-center" key="end1">
+                <p className="first-journal">Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
+                <div className="br"></div>
+            </div>);
+            els.push(streakBadge);
+            els.push(createLocator(todayDT));
+            firstLogs = 0;
+            streakIndicatorAdded = true;
+
+            if (first.toISODate() !== yesterdayDT.toISODate()) {
+                els.push(YESTERDAY_BACKLOG());
+                els.push(createLocator(yesterdayDT));
+            }
+        } else {
+            checkInsertYesterday = true;
         }
 
         for (let log of logs) {
@@ -83,8 +119,26 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
                 els.push(...today);
                 if (top) {
                     prevTopDate = getDateFromLog(top);
+                    if (!streakIndicatorAdded) {
+                        els.push(streakBadge);
+                        streakIndicatorAdded = true;
+                    }
+
                     els.push(createLocator(prevTopDate));
+
+                    // If we've passed the first day (today), check to see if
+                    // we need to add a backlog message for yesterday.
+                    // NOTE: Special case for if the first log happened tomorrow due
+                    // to timezone differences -- in that case, check backlog on
+                    // next date change
+                    const logDate = getDateFromLog(log).toISODate();
+                    if (checkInsertYesterday && !filtered && logDate !== yesterdayDT.toISODate() && logDate !== todayDT.toISODate()) {
+                        els.push(YESTERDAY_BACKLOG());
+                        els.push(createLocator(yesterdayDT));
+                    }
+                    if (logDate !== todayDT.toISODate()) checkInsertYesterday = false;
                 }
+
                 today = [];
                 top = log;
             }
@@ -96,36 +150,27 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             if (log.zone !== zone) {
                 if (!prevTopDate) prevTopDate = getDateFromLog(top);
                 const addZone = prevTopDate.setZone(log.zone).zone.offsetName(prevTopDate.toMillis(), { format: "short" });
-                if (!log.time.includes(addZone)) log.time += " " + addZone;
+                if (!log.time.endsWith(addZone) && log.addFlag !== "summary") log.time += " " + addZone;
             }
     
-            today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} />);
+            today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} now={nowTimestamp} />);
         }
     
         // Add final information
         els.push(...today);
         if (top) {
+            if (!streakIndicatorAdded) els.push(streakBadge);
             prevTopDate = getDateFromLog(top);
             els.push(createLocator(prevTopDate));
         }
         els.push(<div key={filtered ? "top-br-filtered" : "top-br"} style={{"width": "100%", "height": `${LOCATOR_OFFSET}px`}}></div>);
-    
+
         // Reverse for display
         els.reverse();
-
-        const now = DateTime.now().startOf("day");
-        if ((now.day !== first.day || now.month !== first.month || now.year !== first.year) && !filtered) {
-            els.push(createLocator(now));
-            els.push(<div className="text-center" key="end1">
-                <p>Write your first mood log for the day &mdash; or scroll up to see your old logs.</p>
-                <br />
-            </div>);
-            firstLogs = 0;
-        }
     
         els.push(<div className="text-center" key="data-incoming-spinner">{ updating && <IonSpinner className="loader" name="crescent" /> }</div>);
         els.push(<div className="reversed-list-spacer" style={{"height": `calc(${aHeight} - ${(95 * firstLogs)}px)`}} key="spacer"></div>);
-        setEls(els);
+        return els;
     }, [logs, setInFullscreen, settings.reduceMotion, aHeight, updating, filtered, LOCATOR_OFFSET]);
     
     // Scroll to last log item on load

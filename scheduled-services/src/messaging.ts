@@ -5,6 +5,7 @@ import { sample } from "underscore";
 import { makeInternalRequest } from "./index.js";
 import { Request, Response } from "express";
 import { getDatabase } from "firebase-admin/database";
+import _ from "lodash";
 
 interface AnyMap {
     [key: string]: any;
@@ -139,7 +140,10 @@ export const logReminder = async (req: Request, res: Response) => {
                 notification: sample(MESSAGES[messageCtx.tag]),
                 token: messageCtx.user.fcm[deviceId].token,
                 android: {
-                    collapseKey: "standarduserretention"
+                    collapseKey: "standarduserretention",
+                    notification: {
+                        tag: "standarduserretention"
+                    }
                 },
                 apns: {
                     headers: {
@@ -156,12 +160,15 @@ export const logReminder = async (req: Request, res: Response) => {
     }
     
     if (messages.length > 0) {
-        const messagingResult = await getMessaging().sendAll(messages);
-        console.log(JSON.stringify(messagingResult));
-        makeInternalRequest(req, "messaging/cleanUpTokens", {
-            userMessageAssociation,
-            messagingResult: messagingResult.responses
-        });
+        const chunkedMessages = _.chunk(messages, 100);
+        const chunkedAssociations = _.chunk(userMessageAssociation, 100);
+        for (let i = 0; i < chunkedMessages.length; ++i) {
+            const messagingResult = await getMessaging().sendEach(chunkedMessages[i]);
+            makeInternalRequest(req, "messaging/cleanUpTokens", {
+                userMessageAssociation: chunkedAssociations[i],
+                messagingResult: messagingResult.responses
+            });
+        }
     }
 
     res.send(200);
@@ -180,7 +187,7 @@ export const cleanUpTokens = async (req: Request, res: Response) => {
             if (messagingResult[i].error.code === "messaging/registration-token-not-registered") {
                 promises.push(db.ref(`${userMessageAssociation[i].userId}/info/fcm/${userMessageAssociation[i].deviceId}`).remove());
             } else {
-                console.warn("Unknown error code", messagingResult[i].error.code);
+                console.warn("Unknown messaging error code", messagingResult[i].error.code, messagingResult[i].error.message);
             }
         }
     }

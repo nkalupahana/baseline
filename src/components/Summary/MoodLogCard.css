@@ -11,7 +11,8 @@
     grid-template-rows: auto;
     grid-template-areas: 
       "time labels"
-      "log log";
+      "log log"
+      "bottom bottom";
 
     position: relative;
 }
@@ -50,6 +51,10 @@
     min-height: 100px;
 }
 
+.carousel-mods:not(.is-fullscreen) {
+    margin-top: 12px;
+}
+
 .carousel-mods.is-fullscreen > div > div > div {
     height: 100%;
     width: 100%;
@@ -83,4 +88,30 @@ div.flickity-enabled.is-fullscreen > .flickity-download-button {
     display: inline-block;
     margin-right: 4px;
     margin-bottom: 1.5px;
+}
+
+.spotify-embed-box {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.spotify-embed {
+    border-radius: 14px !important;
+}
+
+.rj-audio-element {
+    margin-left: 4px;
+    width: 100%;
+    margin-top: 8px;
+    padding-right: 8px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.rj-audio-element.rj-audio-loading {
+    margin-left: 8px;
+}
+
+.pad-left {
+    padding-left: 8px;
 }

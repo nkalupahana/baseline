@@ -1,5 +1,5 @@
 import { IonDatetime, IonIcon } from "@ionic/react";
-import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { checkmarkOutline, closeOutline, pencil, trashOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import "./NotificationEditor.css";
@@ -94,7 +94,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
                 promises.push(LocalNotifications.schedule({
                     notifications: [
                         {
-                            id: Math.round(Math.random() * 10000000000),
+                            id: Math.round(Math.random() * 1_000_000_000),
                             title: "What's happening?",
                             body: "Take a minute to journal.",
                             threadIdentifier: "reminder",

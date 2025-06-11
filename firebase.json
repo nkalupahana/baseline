@@ -1,11 +1,4 @@
 {
-  "functions": {
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ],
-    "source": "functions"
-  },
   "hosting": [{
     "public": "build",
     "target": "getbaselineapp",
@@ -55,69 +48,15 @@
       }
     ]
   }, {
-    "target": "baseline-landing",
-    "public": "docs/_site",
-    "cleanUrls": true,
-    "ignore": [
-      "Gemfile",
-      "Gemfile.lock"
-    ],
-    "headers": [
+    "target": "baseline-api",
+    "rewrites": [
       {
         "source": "**",
-        "headers": [
-          {
-            "key": "X-Frame-Options",
-            "value": "deny"
-          }
-        ]
-      }
-    ],
-    "redirects": [
-      {
-        "source": "/mmd",
-        "destination": "/?utm_source=mm&utm_campaign=mm_discord",
-        "type": 302
-      },
-      {
-        "source": "/op",
-        "destination": "/?utm_source=op&utm_campaign=op1",
-        "type": 302
-      },
-      {
-        "source": "/nick",
-        "destination": "/?utm_source=hub&utm_campaign=hub1",
-        "type": 302
-      },
-      {
-        "source": "/hub",
-        "destination": "/?utm_source=hub&utm_campaign=hub2",
-        "type": 302
-      },
-      {
-        "source": "/join",
-        "destination": "/?utm_source=hub&utm_campaign=hub3",
-        "type": 302
-      },
-      {
-        "source": "/ttp",
-        "destination": "/?utm_source=tt&utm_campaign=tt_profile",
-        "type": 302
-      },
-      {
-        "source": "/tt1",
-        "destination": "/?utm_source=tt&utm_campaign=tt_ad1",
-        "type": 302
-      },
-      {
-        "source": "/tt2",
-        "destination": "/?utm_source=tt&utm_campaign=tt_ad2",
-        "type": 302
-      },
-      {
-        "source": "/ig",
-        "destination": "/?utm_source=ig&utm_campaign=ig_profile",
-        "type": 302
+        "run": {
+          "serviceId": "baseline-backend",
+          "region": "us-central1",
+          "pinTag": false
+        }
       }
     ]
   }],

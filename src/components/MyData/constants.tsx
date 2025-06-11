@@ -1,38 +1,45 @@
+import { Log } from "../../db";
+
 export interface DataOption {
     value: string;
     description: string;
-    getEntryAttribute: (entry: any) => any;
+    getEntryAttribute: (entry: Log) => any;
 }
 
 export const dataOptionsObjArr: DataOption[] = [
     {
         value: "timestamp",
         description: "Timestamp",
-        getEntryAttribute: (entry: any) => entry.timestamp
+        getEntryAttribute: entry => entry.timestamp
     },
     {
         value: "journal",
         description: "Journal Text",
-        getEntryAttribute: (entry: any) => entry.journal
+        getEntryAttribute: entry => entry.journal
     },
     {
         value: "mood",
         description: "Mood Score",
-        getEntryAttribute: (entry: any) => entry.mood
+        getEntryAttribute: entry => entry.mood
     },
     {
         value: "average",
         description: "Below/At/Above Average",
-        getEntryAttribute: (entry: any) => entry.average
+        getEntryAttribute: entry => entry.average
     },
     {
         value: "zone",
         description: "Time Zone",
-        getEntryAttribute: (entry: any) => entry.zone
+        getEntryAttribute: entry => entry.zone
+    },
+    {
+        value: "song",
+        description: "Attached Song",
+        getEntryAttribute: entry => entry.song ?? null
     },
     {
         value: "files",
         description: "File Paths",
-        getEntryAttribute: (entry: any) => entry.files
-    }
+        getEntryAttribute: entry => entry.files
+    },
 ]

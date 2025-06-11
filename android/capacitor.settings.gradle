@@ -2,11 +2,20 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
 
-include ':byteowls-capacitor-oauth2'
-project(':byteowls-capacitor-oauth2').projectDir = new File('../node_modules/@byteowls/capacitor-oauth2/android')
+include ':capacitor-community-in-app-review'
+project(':capacitor-community-in-app-review').projectDir = new File('../node_modules/@capacitor-community/in-app-review/android')
+
+include ':capacitor-community-media'
+project(':capacitor-community-media').projectDir = new File('../node_modules/@capacitor-community/media/android')
+
+include ':capacitor-firebase-analytics'
+project(':capacitor-firebase-analytics').projectDir = new File('../node_modules/@capacitor-firebase/analytics/android')
 
 include ':capacitor-firebase-authentication'
 project(':capacitor-firebase-authentication').projectDir = new File('../node_modules/@capacitor-firebase/authentication/android')
+
+include ':capacitor-firebase-messaging'
+project(':capacitor-firebase-messaging').projectDir = new File('../node_modules/@capacitor-firebase/messaging/android')
 
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/@capacitor/app/android')
@@ -23,23 +32,14 @@ project(':capacitor-haptics').projectDir = new File('../node_modules/@capacitor/
 include ':capacitor-keyboard'
 project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor/keyboard/android')
 
+include ':capacitor-local-notifications'
+project(':capacitor-local-notifications').projectDir = new File('../node_modules/@capacitor/local-notifications/android')
+
 include ':capacitor-share'
 project(':capacitor-share').projectDir = new File('../node_modules/@capacitor/share/android')
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
-include ':getbaseline-capacitor-community-media'
-project(':getbaseline-capacitor-community-media').projectDir = new File('../node_modules/@getbaseline/capacitor-community-media/android')
-
-include ':getbaseline-capacitor-firebase-messaging'
-project(':getbaseline-capacitor-firebase-messaging').projectDir = new File('../node_modules/@getbaseline/capacitor-firebase-messaging/android')
-
-include ':getbaseline-capacitor-local-notifications'
-project(':getbaseline-capacitor-local-notifications').projectDir = new File('../node_modules/@getbaseline/capacitor-local-notifications/android')
-
 include ':capacitor-cloudkit'
 project(':capacitor-cloudkit').projectDir = new File('../node_modules/capacitor-cloudkit/android')
-
-include ':capacitor-rate-app'
-project(':capacitor-rate-app').projectDir = new File('../node_modules/capacitor-rate-app/android')

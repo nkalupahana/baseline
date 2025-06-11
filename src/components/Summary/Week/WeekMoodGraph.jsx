@@ -155,7 +155,7 @@ const WeekMoodGraph = ({ requestedDate, setRequestedDate, logs }) => {
             // Create cards back to next populated day
             let next = getDateFromLog(logs[i]);
             while (!current.equals(next)) {
-                current = current.minus({ days: 1 });
+            current = current.minus({ hours: 22 }).startOf("day");
                 if (!current.equals(next)) els.push(createGraphCard(current, colors));
             }
         }

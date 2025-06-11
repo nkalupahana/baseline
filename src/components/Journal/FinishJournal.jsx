@@ -1,38 +1,56 @@
 import "./JournalComponents.css";
 import CircularSlider from "@nkalupahana/react-circular-slider";
 import { IonSegment, IonSegmentButton, IonLabel, IonTextarea, IonSpinner, IonIcon } from "@ionic/react";
-import { getIdToken } from "@firebase/auth";
+import { getIdToken } from "firebase/auth"
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DateTime } from "luxon";
 import { Capacitor } from "@capacitor/core";
 import history from "../../history";
-import { attach, closeOutline, trashOutline } from "ionicons/icons";
-import { LocalNotifications } from "@getbaseline/capacitor-local-notifications";
+import { attach, closeCircleOutline, closeOutline } from "ionicons/icons";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { Route } from "react-router";
 import Negative5 from "./Negative5";
-import { BASE_URL, checkKeys, networkFailure, toast } from "../../helpers";
+import { BASE_URL, checkKeys, networkFailure, timeToString, toast } from "../../helpers";
 import ldb from "../../db";
-import { RateApp } from "capacitor-rate-app";
+import { InAppReview } from '@capacitor-community/in-app-review';
 import Confetti from "react-confetti";
 import Dialog, { checkPromptAllowed } from "../Dialog";
-import { useLiveQuery } from "dexie-react-hooks";
 import { Dialogs } from "./JournalTypes";
 import Joyride from "react-joyride";
+import SearchSpotify from "./SearchSpotify";
+import * as Sentry from "@sentry/react";
+import { getInfoBadge } from "./InfoBadge";
 
 const FinishJournal = props => {
     const [user] = useAuthState(auth);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [dialog, setDialog] = useState(undefined);
-    const lastLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().limit(1).toArray());
-    const lastAverageLogs = useLiveQuery(() => ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray());
+    const [lastLogs, setLastLogs] = useState(undefined);
+    const [lastAverageLogs, setLastAverageLogs] = useState(undefined);
     const [firstTimer, setFirstTimer] = useState(false);
 
     const dismissDialog = () => {
         setDialog(undefined);
     };
+    
+    useEffect(() => {
+        (async () => {
+            try {
+                const logs = await ldb.logs.orderBy("timestamp").reverse().limit(1).toArray();
+                setLastLogs(logs);
+
+                const averageLogs = await ldb.logs.orderBy("timestamp").reverse().filter(x => x.average === "average").limit(10).toArray();
+                setLastAverageLogs(averageLogs);
+            } catch (e) {
+                console.log("Error fetching data from Dexie (caught).");
+                console.error(e);
+                Sentry.captureException(e, {tags: {caught: true}});
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         // Refresh ID token in the background to speed up submission
@@ -60,7 +78,7 @@ const FinishJournal = props => {
             placement: "top"
         }, {
             target: "#review-textarea",
-            content: `Journals can't be edited, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
+            content: `Journals can't be edited for long, so ${Capacitor.getPlatform() === "web" ? 'click' : 'tap'} below if you want to make any final edits. Otherwise, click done!`,
             disableBeacon: true,
             placement: "top-start",
             styles: {
@@ -73,10 +91,16 @@ const FinishJournal = props => {
                 hideArrow: true
             }
         }
-    ]
+    ];
+
+    // Display text
+    const displayText = useMemo(() => {
+        if (props.elapsedTime === 0) return props.text;
+        return `Audio journal (${timeToString(props.elapsedTime)})`;
+    }, [props.text, props.elapsedTime])
     
     useEffect(() => {
-        if (!lastLogs || !lastAverageLogs) return;
+        if (!lastLogs || !lastAverageLogs || props.editTimestamp || props.elapsedTime > 0) return;
         const lastLog = lastLogs[0];
        
         // Check if user isn't writing enough
@@ -100,7 +124,7 @@ const FinishJournal = props => {
             }
         }
 
-    }, [lastLogs, lastAverageLogs, props.text]);
+    }, [lastLogs, lastAverageLogs, props.text, props.editTimestamp, props.elapsedTime]);
 
     useEffect(() => {
         if (submitted) {
@@ -112,7 +136,7 @@ const FinishJournal = props => {
 
     const submit = async () => {
         if (submitting) return;
-        if (props.moodWrite === -5) history.push("/journal/finish/neg");
+        if (props.moodWrite === -5 && !props.editTimestamp) history.push("/journal/finish/neg");
         if (!user) {
             toast("No internet connectivity -- please try again.");
             return;
@@ -125,6 +149,23 @@ const FinishJournal = props => {
         data.append("journal", props.text);
         data.append("average", props.average);
         data.append("keys", JSON.stringify(checkKeys()));
+        if (props.editTimestamp) data.append("editTimestamp", props.editTimestamp);
+        if (props.addFlag) data.append("addFlag", props.addFlag);
+
+        if (props.audioChunks.current.length > 0) {
+            const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
+            if (audioBlob.size === 0) {
+                const type = Capacitor.getPlatform() === "web" ? "browser" : "device";
+                toast(`Your audio journal has no data. Please try recording again. If you continue to see this message, you will not be able to make audio recordings on this ${type}.`, "top", 8000);
+                Sentry.captureException(new Error(`Empty audio blob, ${navigator.userAgent}`));
+                setSubmitting(false);
+                return;
+            }
+
+            data.append("audio", audioBlob);
+        }
+
+        if (props.song) data.append("song", props.song.uri);
         for (let file of props.files) {
             data.append("file", file);
         }
@@ -153,9 +194,10 @@ const FinishJournal = props => {
                 if (Capacitor.getPlatform() !== "web") {
                     LocalNotifications.removeAllDeliveredNotifications();
                     ldb.logs.count().then(count => {
-                        if (count > 10 && props.average === "above") RateApp.requestReview();
+                        if (count > 8 && props.average === "above") InAppReview.requestReview();
                     });
                 }
+                if (props.editTimestamp) ldb.logs.delete(props.editTimestamp);
                 toast("Mood log saved!", "bottom");
                 // Delay for some confetti!
                 if (props.moodWrite === 5) await new Promise(res => setTimeout(res, 700));
@@ -205,8 +247,10 @@ const FinishJournal = props => {
         props.setFiles(props.files.filter(file => fileDesc(file) !== desc));
     }
 
+    const infoBadge = getInfoBadge(props.editTimestamp, props.addFlag);
+
     return (
-        <div className="outer-noscroll">
+        <div className="outer-noscroll rss-backdrop">
             { firstTimer && <Joyride 
                 locale={{last: "Close"}} 
                 disableOverlay={true} 
@@ -244,7 +288,7 @@ const FinishJournal = props => {
                     you own, but "average" journal entries should generally be clustered around 0.
                 </p>
                 <div className="finish-button" onClick={dismissDialog}>Sounds good!</div>
-                <br />
+                <div className="br"></div>
             </Dialog> }
             { dialog === Dialogs.NO_WRITING && <Dialog title="One second!">
                 <p className="margin-top-12 margin-bottom-24 text-center">
@@ -254,7 +298,7 @@ const FinishJournal = props => {
                     might be feeling that way</b>. By doing this and writing more,
                     you'll get more out of journaling, and you'll have more 
                     context when you look back on your entries later!
-                    <br /><br />
+                    <div className="br"></div><div className="br"></div>
                     For more tips, check out our <span onClick={() => history.push("/onboarding/howto")} className="fake-link">How to 
                     Journal guide now</span> or later in the main menu.
                 </p>
@@ -264,15 +308,16 @@ const FinishJournal = props => {
             { props.moodWrite === 5 && submitting && <Confetti gravity={0.5} /> }
             <div className="container">
                 <div className="inner-scroll">
-                    <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
+                    <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon>
                     <div className="center-journal">
                         <Route exact path="/journal/finish">
                             <div className="title">
                                 Let's summarize.
                             </div>
+                            { infoBadge && <div style={{ marginBottom: "-12px" }}>{ infoBadge }</div> }
                             <p className="line1 text-center">On a scale from -5 to 5, how are you?</p>
                             <p className="line2 text-center">Try not to think too hard about this — just give your gut instinct.</p>
-                            <br />
+                            <div className="br"></div>
                             <span className="bold" id="react-circular-slider">
                                 <CircularSlider
                                     width={190}
@@ -299,8 +344,7 @@ const FinishJournal = props => {
                                 />
                             </span>
 
-                            <br /><br />
-
+                            <div className="br"></div><div className="br"></div>
                             <p id="average-segment-desc" style={{"fontWeight": "normal", "marginTop": "0px"}} className="text-center">And would you say that you're feeling:</p>
                             <div className="container">
                                 <IonSegment mode="ios" value={props.average} onIonChange={e => props.setAverage(e.detail.value)} disabled={submitting}>
@@ -315,21 +359,23 @@ const FinishJournal = props => {
                                     </IonSegmentButton>
                                 </IonSegment>
                             </div>
-                            <br /><br />
-                            { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}><IonIcon onClick={() => {removeFile(fileDesc(file))}} style={{"fontSize": "18px", "transform": "translateY(3px)"}} icon={trashOutline}></IonIcon> {truncate(file.name)}</span>)}
-                            { props.files.length < 3 && 
+                            <div className="br"></div><div className="br"></div>
+                            { props.files.length < 3 && !props.editTimestamp &&
                                 <>
-                                    <label htmlFor="files">
-                                        <IonIcon icon={attach} style={{"fontSize": "25px", "transform": "translateY(6px)"}}></IonIcon>Attach A Photo ({3 - props.files.length} left)
+                                    <label htmlFor="files" style={{"cursor": "pointer"}}>
+                                        <IonIcon icon={attach} className="journal-additions-icon"></IonIcon>Attach A Photo ({3 - props.files.length} left)
                                     </label>
                                     <input onClick={beginAttachFiles} disabled={submitting} id="files" type="file" multiple accept="image/*" onChange={attachFiles} />
                                 </>
                             }
+                            { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}>{truncate(file.name)} <IonIcon onClick={() => {removeFile(fileDesc(file))}} className="secondary-icon" icon={closeCircleOutline}></IonIcon></span>)}
+                            { !props.editTimestamp && <SearchSpotify user={user} song={props.song} setSong={props.setSong} /> }
                             <div style={{"height": "200px"}}></div>
                             <div className="bottom-bar">
-                                <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={props.text} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
+                                <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={displayText} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
                                 <div onClick={submit} className="finish-button">
-                                    { !submitting && "Done!" }
+                                    { !submitting && props.editTimestamp === null && "Done!" }
+                                    { !submitting && props.editTimestamp !== null && "Edit!" }
                                     { submitting && <IonSpinner className="loader" name="crescent" /> }
                                 </div>
                             </div>
@@ -337,12 +383,12 @@ const FinishJournal = props => {
                         <Route exact path="/journal/finish/neg">
                             <div className="container-desktop">
                                 <Negative5 />
-                                <br />
+                                <div className="br"></div>
                                 { !submitted && props.moodWrite === -5 && <div onClick={submit} className="finish-button">
                                     { !submitting && "Save Mood Log" }
                                     { submitting && <IonSpinner className="loader" name="crescent" /> }
                                 </div> }
-                                <br />
+                                <div className="br"></div>
                             </div>
                         </Route>
                     </div>

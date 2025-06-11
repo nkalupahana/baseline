@@ -6,16 +6,18 @@ import { useEffect, useState } from "react";
 import ldb from '../db';
 import { AuthCredential, FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { Capacitor } from "@capacitor/core";
-import { BASE_URL, fingerprint, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
+import { AnyMap, BASE_URL, fingerprint, makeRequest, networkFailure, setEkeys, setSettings, toast } from "../helpers";
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
 import { get, ref } from "firebase/database";
 import hash from "crypto-js/sha512";
 import "./Login.css";
-import { logoApple, logoGoogle } from "ionicons/icons";
+import { lockClosed, logoApple, logoGoogle } from "ionicons/icons";
 import history from "../history";
 import { DateTime } from "luxon";
+import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
+import * as Sentry from "@sentry/react";
 
 enum LoginStates {
     START,
@@ -48,6 +50,7 @@ let flow = Math.random();
 const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [loginState, setLoginState] = useState<LoginStates>(LoginStates.START);
     const [storedCredential, setStoredCredential] = useState<AuthCredential | null>(null);
+    const [storedAdditionalData, setStoredAdditionalData] = useState<AnyMap>({});
     const [passphrase, setPassphrase] = useState("");
     const [deleting, setDeleting] = useState(false);
 
@@ -61,6 +64,10 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         setLoggingIn(false);
         setLoginState(LoginStates.START);
         setPassphrase("");
+        Sentry.addBreadcrumb({
+            category: "Login.tsx resetFlow",
+            message: "Sign Out"
+        });
         signOutAndCleanUp();
     }
 
@@ -69,6 +76,7 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         flow = flowVal;
         setLoggingIn(true);
         setLoginState(LoginStates.LOGGING_IN);
+        setStoredAdditionalData({});
         let credential: AuthCredential | null | undefined;
         try {
             credential = await signInFunc(flowVal);
@@ -86,6 +94,26 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         // Second round of auth needed on apple devices
         if (credential.providerId === "apple.com") {
             if (flowVal !== flow) return;
+            if (Capacitor.getPlatform() === "ios") {
+                let record = {};
+                try {
+                    record = await CloudKit.fetchRecord({
+                        containerIdentifier: "iCloud.baseline.getbaseline.app",
+                        database: "private",
+                        by: "recordName",
+                        recordName: "Keys"
+                    })
+                } catch {}
+
+                if ("visibleKey" in record && "encryptedKey" in record) {
+                    if (flowVal !== flow) return;
+                    await continueLoginFlow(credential, flowVal, {
+                        visibleKey: record["visibleKey"],
+                        encryptedKey: record["encryptedKey"]
+                    });
+                    return;
+                }
+            }
             setLoginState(LoginStates.CLOUDKIT_NEEDED);
             return;
         }
@@ -110,13 +138,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         await continueLoginFlow(credential, flowVal);
     }
 
-    const continueLoginFlow = async (credential: AuthCredential, flowVal: number) => {
+    const continueLoginFlow = async (credential: AuthCredential, flowVal: number, additionalData={}) => {
         setLoginState(LoginStates.GETTING_KEYS);
         if (flowVal !== flow) return;
 
         const method = await (await get(ref(db, `/${auth.currentUser?.uid}/pdp/method`))).val();
         if (flowVal !== flow) return;
         if (method && !passphrase) {
+            setStoredCredential(credential);
+            setStoredAdditionalData(additionalData);
             setLoginState(LoginStates.UNLOCK);
             return;
         }
@@ -134,7 +164,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 body: JSON.stringify({
                     credential,
                     platform: Capacitor.getPlatform(),
-                    passphrase
+                    passphrase,
+                    ...additionalData
                 })
             });
             
@@ -191,18 +222,12 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 });
 
                 if (additionalData.introQuestions) setSettings("introQuestions", additionalData.introQuestions);
-
-                if (Capacitor.getPlatform() === "web") {
-                    await makeRequest("accounts/sync", auth.currentUser!, {
-                        offset: DateTime.now().offset,
-                        platform
-                    });
-                }
+                if (platform !== "web") await FirebaseAnalytics.logEvent({ name: "sign_in"});
 
                 if (!additionalData.onboarded) {
                     localStorage.setItem("onboarding", "start");
                     history.replace("/onboarding/start");
-                } else if (Capacitor.getPlatform() === "web") {
+                } else if (platform === "web") {
                     history.replace("/journal");
                 } else {
                     history.replace("/onboarding/notifications");
@@ -298,6 +323,9 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
                 <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                <div style={{"maxWidth": "400px"}}>
+                    <p><IonIcon icon={lockClosed} /> Your data is private: we're a non-profit, and we have no interest in using your data for anything.</p>
+                </div>
                 <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
                     <span className="line">By logging in, you agree 
                     to</span> <span className="line">our <a target="_blank" rel="noreferrer" href="https://getbaseline.app/terms">Terms 
@@ -307,8 +335,9 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             </> }
             { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
                 <Preloader spacing={false} message="Logging in, please wait." />
-                <br />
-                <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+                <div className="br"></div>
+                <p style={{"marginBottom": "4px"}}>Been stuck here for over a minute?</p>
+                <div className="fake-link" onClick={resetFlow}>Click here to try again.</div>
             </> }
             { loginState === LoginStates.CLOUDKIT_NEEDED && <div style={{"maxWidth": "500px"}}>
                 <div className="title">One more time!</div>
@@ -319,14 +348,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
             { loginState === LoginStates.UNLOCK && <>
                 <UnlockCmp unlock={e => {
                     e.preventDefault();
-                    continueLoginFlow(storedCredential!, flow);
+                    continueLoginFlow(storedCredential!, flow, storedAdditionalData);
                 }} getter={passphrase} setter={setPassphrase} />
                 <p>Stuck? <span className="fake-link" onClick={resetFlow}>Click here to start over.</span></p>
             </> }
             { loginState === LoginStates.GETTING_KEYS && <>
                 <Preloader spacing={false} message="One moment! We're getting your encryption keys." />
-                <br />
-                <p>Been stuck here for over a minute?<br /><span className="fake-link" onClick={resetFlow}>Click here to try again.</span></p>
+                <div className="br"></div>
+                <p style={{"marginBottom": "4px"}}>Been stuck here for over a minute?</p>
+                <div className="fake-link" onClick={resetFlow}>Click here to try again.</div>
             </> }
             { loginState === LoginStates.DELETE_ACCOUNT && <div style={{"maxWidth": "500px"}}>
                 <div className="title">Delete Account?</div>

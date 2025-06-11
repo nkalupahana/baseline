@@ -1,8 +1,8 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { ref, serverTimestamp, set } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
-import { AnyMap, PullDataStates, BASELINE_GRAPH_CONFIG, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
+import { AnyMap, PullDataStates, calculateBaseline, parseSurveyHistory, toast } from "../../helpers";
 import history from "../../history";
 import Screener, { Priority } from "../../screeners/screener";
 import SwiperType, { Pagination } from "swiper";
@@ -11,8 +11,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
 import { useAuthState } from "react-firebase-hooks/auth";
-import SurveyGraph from "./SurveyGraph";
 import BaselineDescription from "./BaselineDescription";
+import BaselineGraph from "../graphs/BaselineGraph";
 
 interface Props {
     primary: Screener,
@@ -26,6 +26,7 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     const [user] = useAuthState(auth);
     const [surveyHistory, setSurveyHistory] = useState<AnyMap | PullDataStates>(PullDataStates.NOT_STARTED);
     const [baselineGraph, setBaselineGraph] = useState<AnyMap[] | PullDataStates>(PullDataStates.NOT_STARTED);
+    const [swiperProgress, setSwiperProgress] = useState(0);
 
     useEffect(() => {
         if (!user) return;
@@ -46,11 +47,26 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
         }
     };
 
-    const screeners = [primary, secondary]
-        .filter(screener => screener.getPriority() !== Priority.DO_NOT_SHOW)
-        .sort((a, b) => {
-            return b.getPriority() - a.getPriority();
+    const screenerData = useMemo(() => {
+        let selected = [primary, secondary]
+            .filter(screener => screener.getPriority() !== Priority.DO_NOT_SHOW)
+            .sort((a, b) => {
+                return b.getPriority() - a.getPriority();
+            });
+
+        let processedData = selected.map(screener => {
+            if (!screener.processDataForGraph) return null;
+            if (typeof surveyHistory !== "object") return null;
+            return screener.processDataForGraph(surveyHistory);
         });
+
+        let ret = [];
+        for (let i = 0; i < selected.length; i++) {
+            ret.push({ screener: selected[i], data: processedData[i] });
+        }
+
+        return ret;
+    }, [primary, secondary, surveyHistory]);
 
     useEffect(() => {
         parseSurveyHistory(user, setSurveyHistory);
@@ -61,13 +77,16 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
     }, []);
     
     return <div className="center-summary container">
-            <br />
+            <div className="br"></div>
             <Swiper 
                 modules={[Pagination]}
                 navigation={true}
                 pagination={true}
                 onSwiper={swiper => setSwiper(swiper)}
                 className="swiper-container-mod"
+                onSlideChange={s => {
+                    setSwiperProgress(s.progress);
+                }}
             >
                 <SwiperSlide style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}>
                     <div>
@@ -75,19 +94,20 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                         <p className="text-center">Let's go over your results.</p>
                     </div>
                 </SwiperSlide>
-                { screeners.map(screener => {
+                { screenerData.map(({ screener, data }) => {
                     return <SwiperSlide key={screener._key}>
                         <div className="title">Results</div>
                         <div className="text-center screener-slide">
-                            { screener.graphConfig && typeof surveyHistory === "object" && 
-                                screener.processDataForGraph && 
-                                <SurveyGraph data={screener.processDataForGraph(surveyHistory)} graphConfig={screener.graphConfig} /> }
+                            { data && screener.graph && 
+                                <div className="swiper-no-swiping">
+                                    <screener.graph data={data} sync={false} />
+                                </div> }
                             { screener.getRecommendation() }
                             <p style={{"fontSize": "9px"}}>
                                 If you want to discuss these results with a 
                                 professional, show them this: { screener.getClinicalInformation() }
                             </p>
-                            <br />
+                            <div className="br"></div>
                         </div>
                     </SwiperSlide>
                 }) }
@@ -95,7 +115,12 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                     <div className="title">Your baseline</div>
                     <div className="text-center screener-slide">
                         { typeof baselineGraph === "object" && <>
-                            <SurveyGraph data={baselineGraph} graphConfig={BASELINE_GRAPH_CONFIG} />
+                            <div className="swiper-no-swiping">
+                                <BaselineGraph
+                                    data={baselineGraph}
+                                    sync={false}
+                                />
+                            </div>
                             <BaselineDescription />
                         </> }
                         { typeof baselineGraph === "number" && <p>
@@ -106,13 +131,13 @@ const WeekInReviewReview = ({ primary, secondary, update }: Props) => {
                             { !loading && <>Finish</> }
                             { loading && <IonSpinner className="loader" name="crescent" /> }
                         </div>
-                        <br />
+                        <div className="br"></div>
                     </div>
                 </SwiperSlide>
             </Swiper>
             <div className="swiper-pagniation-controls">
-                <IonIcon onClick={() => swiper?.slidePrev()} icon={chevronBackOutline} />
-                <IonIcon onClick={() => swiper?.slideNext()} icon={chevronForwardOutline} />
+                <IonIcon onClick={() => swiper?.slidePrev()} icon={chevronBackOutline} style={swiperProgress === 0 ? {color: "grey"} : {}} />
+                <IonIcon onClick={() => swiper?.slideNext()} icon={chevronForwardOutline} style={swiperProgress === 1 ? {color: "grey"} : {}}/>
             </div>
         </div>;
 }

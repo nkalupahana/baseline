@@ -2,7 +2,7 @@ import { IonIcon, IonSpinner } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import history from "../history";
-import { LocalNotifications, Schedule } from "@getbaseline/capacitor-local-notifications";
+import { LocalNotifications, Schedule } from "@capacitor/local-notifications";
 import { Capacitor } from "@capacitor/core";
 import NotificationEditor from "../components/Settings/NotificationEditor";
 import EndSpacer from "../components/EndSpacer";
@@ -93,9 +93,8 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
     }, [globalEditing]);
 
     return (
-    <>
         <div className="container">
-            { page && <IonIcon class="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon> }
+            { page && <IonIcon className="top-corner x" icon={closeOutline} onClick={() => history.push("/summary")}></IonIcon> }
             <div className={`container ${page ? "center-journal" : "center-notifications"}`}>
                 <div className="title">Notifications</div>
                 <p className="text-center margin-bottom-0">Notifications are a great way to ensure you mood log consistently, so you can build up an accurate picture of your mood over time.</p>
@@ -103,7 +102,7 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
                 { Capacitor.getPlatform() !== "web" && notificationsEnabled !== NotificationsAllowed.DENIED && 
                     <>
                         { notificationList(notificationData, globalEditing, setGlobalEditing) }
-                        { !globalEditing && <div onClick={async () => {
+                        { !globalEditing && !loadingFlow && <div onClick={async () => {
                             if (notificationsEnabled === NotificationsAllowed.NEED_TO_ASK) {
                                 const { display } = await LocalNotifications.requestPermissions();
                                 if (display === "denied") {
@@ -129,15 +128,14 @@ const Notifications = ({ page=true, continueFlow, loadingFlow } : { page?: boole
                     Once you've changed it, <span onClick={() => setReloadAllowed(Math.random())} className="fake-link">click here to reload.</span></p> }
             </div>
             { !page && !globalEditing && <>
-                <br />
+                <div className="br"></div>
                 <div onClick={continueFlow} className="finish-button" style={{"backgroundColor": "var(--dark-action)"}}>
                     { !loadingFlow && <>All done!</> }
                     { loadingFlow && <IonSpinner className="loader" name="crescent" /> }
                 </div>
             </> }
             { page && <EndSpacer /> }
-        </div>
-    </>)
+        </div>)
 };
 
 export default Notifications;

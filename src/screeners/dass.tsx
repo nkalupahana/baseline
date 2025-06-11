@@ -1,20 +1,19 @@
-import { DateTime } from "luxon";
+import DASSGraph from "../components/graphs/DASSGraph";
+import { generateScreenerRanges, normalizeRange } from "./helpers";
 import Screener, { Priority } from "./screener"
 
 export default function DASS(): Screener {
-    const generateScreenerRanges = (config: number[]): string[] => {
-        let ret: string[] = [];
-        let labels = ["normal", "mild", "moderate", "severe", "extremely severe"];
-        for (let i = 0; i < config.length; ++i) {
-            ret = ret.concat(Array(config[i]).fill(labels[i]));
-        }
     
-        return ret;
+    let labels = ["normal", "mild", "moderate", "severe", "extremely severe"];
+    const ranges = {
+        d: [5, 2, 4, 3, 8],
+        a: [4, 2, 2, 2, 12],
+        s: [8, 2, 3, 4, 5]
     };
 
-    const dRange = generateScreenerRanges([5, 2, 4, 3, 8]);
-    const aRange = generateScreenerRanges([4, 2, 2, 2, 12]);
-    const sRange = generateScreenerRanges([8, 2, 3, 4, 5]);
+    const dRange = generateScreenerRanges(ranges["d"], labels);
+    const aRange = generateScreenerRanges(ranges["a"], labels);
+    const sRange = generateScreenerRanges(ranges["s"], labels);
 
     const getProblemFlag = function(results: any) {
         let d = dRange[results.d];
@@ -184,31 +183,31 @@ export default function DASS(): Screener {
             return getProblemFlag(this._results) ? Priority.HIGH : Priority.LOW;
         },
         processDataForGraph: function(data) {
-            let d = [];
+            let ret = [];
             for (let key in data) {
                 if (data[key]["key"] !== this._key) continue;
-                d.push({
-                    date: DateTime.fromMillis(Number(key)).toFormat("LLL d"),
-                    Depression: data[key]["results"]["d"],
-                    Anxiety: data[key]["results"]["a"],
-                    Stress: data[key]["results"]["s"]
+                let d = normalizeRange(data[key]["results"]["d"], ranges["d"]);
+                let a = normalizeRange(data[key]["results"]["a"], ranges["a"]);
+                let s = normalizeRange(data[key]["results"]["s"], ranges["s"]);
+
+                if (d === a || d === s) {
+                    d += 0.03;
+                }
+
+                if (s === a || s === d) {
+                    s -= 0.03;
+                }
+
+                ret.push({
+                    timestamp: Number(key),
+                    d,
+                    a,
+                    s
                 });
             }
 
-            return d;
+            return ret;
         },
-        graphConfig: {
-            yAxisLabel: "Score (lower is better)",
-            lines: [{
-                key: "Depression",
-                color: "#003f5c"
-            }, {
-                key: "Anxiety",
-                color: "#bc5090"
-            }, {
-                key: "Stress",
-                color: "#ffa600"
-            }]
-        }
+        graph: DASSGraph
     }
 }

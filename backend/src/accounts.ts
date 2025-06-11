@@ -1,4 +1,4 @@
-import { UserRequest } from "./helpers.js";
+import { getClientIp, UserRequest } from "./helpers.js";
 import { Response } from "express";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
@@ -23,7 +23,12 @@ const CLOUDKIT: any = {
 
 export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
     const body = req.body;
-    if (typeof body.credential !== "object" || typeof body.credential.providerId !== "string" || typeof body.credential.accessToken !== "string") {
+    if (typeof body.credential !== "object" || typeof body.credential.providerId !== "string") {
+        res.send(400);
+        return;
+    }
+
+    if ((typeof body.credential.accessToken !== "string") && (typeof body.visibleKey !== "string" || typeof body.encryptedKey !== "string")) {
         res.send(400);
         return;
     }
@@ -70,6 +75,8 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
 
             const respData = await response.json();
             if ("error" in respData || !("properties" in respData)) {
+                console.log(1);
+                console.log(JSON.stringify(respData));
                 const message = respData.error?.message?.toLowerCase();
                 if (message && message.includes("insufficient") && message.includes("scopes")) {
                     res.send(428);
@@ -82,30 +89,38 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
             keys = respData["properties"];
             keys["encryptedKeyVisible"] = AES.decrypt(keys["encryptedKey"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8);
         } else if (body.credential.providerId === "apple.com") {
-            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
-            const response = await fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    "records": {
-                        "recordName": "Keys",
-                        "desiredFields": ["encryptedKey", "visibleKey"]
-                    }
-                })
-            });
-            let respData = await response.json();
-            if ("serverErrorCode" in respData || !("records" in respData) || "serverErrorCode" in respData["records"][0]) {
-                console.log("KEY GET FAIL");
-                console.log(JSON.stringify(respData));
-                res.send(406);
-                return;
+            if (typeof body.credential.accessToken === "string") {
+                const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/lookup?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "records": {
+                            "recordName": "Keys",
+                            "desiredFields": ["encryptedKey", "visibleKey"]
+                        }
+                    })
+                });
+                let respData = await response.json();
+                if ("serverErrorCode" in respData || !("records" in respData) || "serverErrorCode" in respData["records"][0]) {
+                    console.log("KEY GET FAIL");
+                    console.log(JSON.stringify(respData));
+                    res.send(406);
+                    return;
+                }
+    
+                respData = respData["records"][0]["fields"];
+                keys = {
+                    encryptedKey: respData["encryptedKey"]["value"],
+                    visibleKey: respData["visibleKey"]["value"],
+                    encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
+                };
+            } else {
+                keys = {
+                    encryptedKey: body.encryptedKey,
+                    visibleKey: body.visibleKey,
+                    encryptedKeyVisible: AES.decrypt(body.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
+                };
             }
-
-            respData = respData["records"][0]["fields"];
-            keys = {
-                encryptedKey: respData["encryptedKey"]["value"],
-                visibleKey: respData["visibleKey"]["value"],
-                encryptedKeyVisible: AES.decrypt(respData["encryptedKey"]["value"], process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
-            };
         } else if (body.credential.providerId === "anonymous") {
             // Anonymous users shouldn't be signing in again!
             res.send(400);
@@ -136,9 +151,9 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const visibleKey = random({length: 32, type: "url-safe"});
-    const encryptedKeyVisible = random({length: 32, type: "url-safe"});
-    const encryptedKey = AES.encrypt(encryptedKeyVisible, process.env.KEY_ENCRYPTION_KEY).toString();
+    let visibleKey = random({length: 32, type: "url-safe"});
+    let encryptedKeyVisible = random({length: 32, type: "url-safe"});
+    let encryptedKey = AES.encrypt(encryptedKeyVisible, process.env.KEY_ENCRYPTION_KEY).toString();
     let id: string = "";
 
     if (body.credential.providerId === "google.com") {
@@ -161,6 +176,8 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         const respData = await response.json();
 
         if ("error" in respData || !("id" in respData)) {
+            console.log(2);
+            console.log(JSON.stringify(respData));
             const message = respData.error?.message?.toLowerCase();
             if (message && message.includes("insufficient") && message.includes("scopes")) {
                 res.send(428);
@@ -172,36 +189,48 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
 
         id = respData["id"];
     } else if (body.credential.providerId === "apple.com") {
-        const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
-        const response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({
-                operations: [{
-                    operationType: "forceReplace",
-                    record: {
-                        recordType: "Keys",
-                        recordName: "Keys",
-                        fields: {
-                            visibleKey: {
-                                value: visibleKey,
-                                recordType: "STRING"
-                            },
-                            encryptedKey: {
-                                value: encryptedKey,
-                                recordType: "STRING"
+        if (body.visibleKey && body.encryptedKey) {
+            // If the keys are provided (happens when an iCloud account is deleted 
+            // and re-created on an iOS device) use those as the keys
+            visibleKey = body.visibleKey;
+            encryptedKey = body.encryptedKey;
+            encryptedKeyVisible = AES.decrypt(body.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8);
+        } else {
+            const url = `${CLOUDKIT.BASE}/database/1/${CLOUDKIT.ID}/${CLOUDKIT.ENV}/private/records/modify?ckAPIToken=${TOKENS[body.platform]}&ckWebAuthToken=${body.credential.accessToken}`;
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    operations: [{
+                        operationType: "forceReplace",
+                        record: {
+                            recordType: "Keys",
+                            recordName: "Keys",
+                            fields: {
+                                visibleKey: {
+                                    value: visibleKey,
+                                    recordType: "STRING"
+                                },
+                                encryptedKey: {
+                                    value: encryptedKey,
+                                    recordType: "STRING"
+                                }
                             }
                         }
-                    }
-                }]
-            })
-        });
+                    }]
+                })
+            }).catch(e => {
+                console.log(JSON.stringify(body));
+                console.log(url);
+                throw e;
+            });
 
-        const respData = await response.json();
-        if (("serverErrorCode" in respData) || ("serverErrorCode" in respData["records"][0])) {
-            console.log("KEY SET FAIL");
-            console.log(JSON.stringify(respData));
-            res.send(406);
-            return;
+            const respData = await response.json();
+            if (("serverErrorCode" in respData) || ("serverErrorCode" in respData["records"][0])) {
+                console.log("KEY SET FAIL");
+                console.log(JSON.stringify(respData));
+                res.send(406);
+                return;
+            }
         }
 
         id = "Keys";
@@ -280,10 +309,14 @@ export const sync = async (req: UserRequest, res: Response) => {
     checkToken();
 
     // Broad geolocation
-    const geo = await (await fetch(`http://ip-api.com/json/${req.get("X-Forwarded-For")}`)).json();
-    if (geo.status === "success") {
-        update["country"] = geo["country"];
-        update["region"] = geo["regionName"];
+    try {
+        const geo = await (await fetch(`http://ip-api.com/json/${getClientIp(req)}`)).json();
+        if (geo.status === "success") {
+            update["country"] = geo["country"];
+            update["region"] = geo["regionName"];
+        }
+    } catch (e) {
+        console.warn("Failed to get geolocation data.");
     }
 
     const ref = getDatabase().ref(`${req.user!.user_id}/info`);

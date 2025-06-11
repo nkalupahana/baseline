@@ -1,0 +1,103 @@
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml b/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml
+index 04e785d..43a25e0 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml
++++ b/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml
+@@ -13,6 +13,14 @@
+                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+             </intent-filter>
+         </receiver>
++        <receiver
++            android:name="com.capacitorjs.plugins.localnotifications.LocalNotificationTimezoneReceiver"
++            android:enabled="true"
++            android:exported="true">
++            <intent-filter>
++                <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
++            </intent-filter>
++        </receiver>
+     </application>
+     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationTimezoneReceiver.java b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationTimezoneReceiver.java
+new file mode 100644
+index 0000000..7420fd0
+--- /dev/null
++++ b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationTimezoneReceiver.java
+@@ -0,0 +1,37 @@
++package com.capacitorjs.plugins.localnotifications;
++
++import android.app.AlarmManager;
++import android.app.Notification;
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.util.Log;
++
++import com.getcapacitor.CapConfig;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class LocalNotificationTimezoneReceiver extends BroadcastReceiver {
++
++    @Override
++    public void onReceive(Context context, Intent intent) {
++        if (intent.getAction() == null || !intent.getAction().equals("android.intent.action.TIMEZONE_CHANGED")) return;
++
++        NotificationStorage storage = new NotificationStorage(context);
++
++        // Reschedule all baseline scheduled notifications (uses ON param) to new timezone
++        List<String> ids = storage.getSavedNotificationIds();
++        ArrayList<LocalNotification> toReschedule = new ArrayList<>();
++        for (String id : ids) {
++            LocalNotification notification = storage.getSavedNotification(id);
++             if (notification.getSchedule().getOn() != null) {
++                 toReschedule.add(notification);
++             }
++        }
++
++        CapConfig config = CapConfig.loadDefault(context);
++        LocalNotificationManager localNotificationManager = new LocalNotificationManager(storage, null, context, config);
++        localNotificationManager.schedule(null, toReschedule);
++    }
++}
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java
+index 0a5c0ad..1e1b269 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java
++++ b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.java
+@@ -46,6 +46,7 @@ public class TimedNotificationPublisher extends BroadcastReceiver {
+         NotificationStorage storage = new NotificationStorage(context);
+         JSObject notificationJson = storage.getSavedNotificationAsJSObject(Integer.toString(id));
+         LocalNotificationsPlugin.fireReceived(notificationJson);
++        notificationManager.cancelAll();
+         notificationManager.notify(id, notification);
+         if (!rescheduleNotificationIfNeeded(context, intent, id)) {
+             storage.deleteNotification(Integer.toString(id));
+@@ -76,9 +77,9 @@ public class TimedNotificationPublisher extends BroadcastReceiver {
+                     "Capacitor/LocalNotification",
+                     "Exact alarms not allowed in user settings.  Notification scheduled with non-exact alarm."
+                 );
+-                alarmManager.set(AlarmManager.RTC, trigger, pendingIntent);
++                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, pendingIntent);
+             } else {
+-                alarmManager.setExact(AlarmManager.RTC, trigger, pendingIntent);
++                alarmManager.setExact(AlarmManager.RTC_WAKEUP, trigger, pendingIntent);
+             }
+             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+             Logger.debug(Logger.tags("LN"), "notification " + id + " will next fire at " + sdf.format(new Date(trigger)));
+diff --git a/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift b/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
+index 463be9a..c45fb99 100644
+--- a/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
++++ b/node_modules/@capacitor/local-notifications/ios/Sources/LocalNotificationsPlugin/LocalNotificationsPlugin.swift
+@@ -267,6 +267,12 @@ public class LocalNotificationsPlugin: CAPPlugin, CAPBridgedPlugin {
+             content.attachments = try makeAttachments(attachments)
+         }
+ 
++        if #available(iOS 15.0, *), let timeSensitive = notification["timeSensitive"] as? Bool {
++            if timeSensitive {
++                content.interruptionLevel = .timeSensitive
++            }
++        }
++
+         return content
+     }
+ 

@@ -1,12 +1,11 @@
 import express from "express";
 import { initializeApp } from "firebase-admin/app";
-import { getDatabase } from "firebase-admin/database";
-import { loadBasicBIData } from "./bi.js";
 import { cleanUpAnonymous, cleanUpQuotas } from "./cleanup.js";
 import { cleanUpTokens, logReminder, removeUserNotifications, sendCleanUpMessage } from "./messaging.js";
 import { AnyMap } from "./helpers.js";
 import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
+import { audioDeadLetter, processAudio } from "./audio.js";
+import { loadBasicBIData } from "./bi.js";
 
 initializeApp({
     databaseURL: "https://getbaselineapp-default-rtdb.firebaseio.com/",
@@ -18,8 +17,7 @@ const app = express();
 Sentry.init({
     dsn: "https://6e656f8deb434639a0bc75e5093b6f3c@o4504179120472064.ingest.sentry.io/4504348672196608",
     integrations: [
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Tracing.Integrations.Express({ app }),
+        ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
     ],
     tracesSampleRate: 1.0,
 });
@@ -43,14 +41,15 @@ export const makeInternalRequest = (req: express.Request, path: string, data?: A
 app.post("/", (_, res) => {
     res.send(200);
 });
+  
 
 app.post("/bi", async (req, res) => {
-    const db = (await getDatabase().ref("/").get()).val();
-    await loadBasicBIData(db);
+    await loadBasicBIData();
 
     // Now that data's been loaded,
     // kick off requests based on that
     makeInternalRequest(req, "messaging/logReminder");
+
     res.send(200);
 });
 
@@ -64,6 +63,9 @@ app.post("/messaging/cleanup", async (_, res) => {
 app.post("/messaging/removeUserNotifications", removeUserNotifications);
 
 app.post("/messaging/cleanUpTokens", cleanUpTokens);
+
+app.post("/audio/process", processAudio);
+app.post("/audio/dl", audioDeadLetter);
 
 app.post("/cleanup/anonymous", async (_, res) => {
     await cleanUpAnonymous();

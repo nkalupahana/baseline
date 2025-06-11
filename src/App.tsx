@@ -25,13 +25,11 @@ import "./theme/variables.css";
 import { auth, signOutAndCleanUp } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import { checkKeys } from "./helpers";
+import { AnyMap, checkKeys, makeRequest } from "./helpers";
 import history from "./history";
 import { Capacitor } from "@capacitor/core";
 import "./lifecycle";
-import smoothscroll from "smoothscroll-polyfill";
 
-import Summary from "./pages/Summary";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Preloader from "./pages/Preloader";
@@ -49,7 +47,10 @@ import { CSSTransition } from "react-transition-group";
 import LastWeekInReview from "./pages/LastWeekInReview";
 import Onboarding from "./pages/Onboarding";
 import * as Sentry from "@sentry/react";
-import GraniteCallback from "./components/Settings/GraniteCallback";
+import { DateTime } from "luxon";
+import WrappedSummary from "./pages/WrappedSummary";
+import { WidgetsBridgePlugin } from "capacitor-widgetsbridge-plugin"
+
 
 setupIonicReact({
     mode: Capacitor.getPlatform() === "android" ? "md" : "ios",
@@ -68,16 +69,45 @@ const App = () => {
 
     useEffect(() => {
         if (!user) return;
+
+        // Send refresh token to App Group UserDefaults so iOS
+        // widgets can call baseline API to get up-to-date streak info
+        if (Capacitor.getPlatform() === "ios") {
+            WidgetsBridgePlugin.setItem({
+                key: "refreshToken",
+                group: "group.app.getbaseline.baseline",
+                value: user.stsTokenManager.refreshToken
+            });
+        }
+
         Sentry.setUser({
             id: user.uid
         });
+
+        // Sync basic information whenever app is opened
+        const platform = Capacitor.getPlatform();
+        let data: AnyMap = {
+            offset: DateTime.now().offset,
+            platform
+        };
+        makeRequest("accounts/sync", user, data, undefined, true);
     }, [user]);
 
     useEffect(() => {
-        smoothscroll.polyfill();
         if (!keys) {
+            Sentry.addBreadcrumb({
+                category: "App.tsx",
+                message: "Sign Out"
+            });
             signOutAndCleanUp();
         } else {
+            if (typeof keys === "object" && Capacitor.getPlatform() === "ios") {
+                WidgetsBridgePlugin.setItem({
+                    key: "keys",
+                    group: "group.app.getbaseline.baseline",
+                    value: JSON.stringify(keys)
+                });
+            }
             const onboarding = localStorage.getItem("onboarding");
             if (onboarding) {
                 history.replace(`/onboarding/${onboarding}`);
@@ -88,7 +118,7 @@ const App = () => {
     const routes = [
         { path: "/journal", Component: Journal },
         { path: "/unlock", Component: Unlock },
-        { path: "/summary", Component: Summary },
+        { path: "/summary", Component: WrappedSummary },
         { path: "/notifications", Component: Notifications },
         { path: "/gap", Component: GapFund },
         { path: "/donate", Component: Donate },
@@ -99,7 +129,6 @@ const App = () => {
         { path: "/rsummary", Component: RSummary },
         { path: "/surveys", Component: SurveyResults },
         { path: "/onboarding", Component: Onboarding },
-        { path: "/granite/callback", Component: GraniteCallback },
         { path: "/mydata", Component: MyData }
     ];
 
@@ -118,7 +147,7 @@ const App = () => {
                         a way better experience than this website &mdash; in fact, the web 
                         version will likely have issues running on a mobile 
                         device. <a href="https://getbaseline.app">Check out 
-                        our website to install the app!</a> <br /><br/>
+                        our website to install the app!</a> <div className="br"></div><div className="br"></div>
                         Or, click <span className="fake-link" onClick={overrideWeb}>here</span> to 
                         continue to the web version anyways.
                     </p>

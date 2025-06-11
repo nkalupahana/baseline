@@ -55,8 +55,11 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
                 element = element.parentElement;
             }
 
-            // No logs? Don't highlight.
-            if (!element || element.childElementCount < 2) return;
+            if (!element) return;
+            // If it doesn't have a corresponding locator in the
+            // log list, don't request it
+            const requestedElementId = "i" + element.id.slice(1);
+            if (!document.getElementById(requestedElementId)) return;
 
             setRequestedDate({
                 ...requestedDate,
@@ -145,7 +148,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             // Create cards back to next populated day
             let next = getDateFromLog(logs[i]);
             while (!current.equals(next)) {
-                current = current.minus({ days: 1 });
+                current = current.minus({ hours: 22 }).startOf("day");
                 if (!current.equals(next)) els.push(createCalendarCard(current, colors));
             }
         }
@@ -176,7 +179,7 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
             if (el) {
                 el.classList.remove("less-highlight-day");
             }
-            document.querySelector(`#${requestedDate.el.replace("i", "g")}`).children[0].classList.add("less-highlight-day");
+            document.querySelector(`#${requestedDate.el.replace("i", "g")}`)?.children[0]?.classList.add("less-highlight-day");
         }
     }, [requestedDate, rows]);
 

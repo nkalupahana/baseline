@@ -101,3 +101,17 @@ export const validateKeys = async (keys_: string, db: Database, user_id: string)
 
     return `${keys.visibleKey}${keys.encryptedKeyVisible}`;
 }
+
+export const getClientIp = (req: UserRequest): string => {
+    const fastlyClientIp = req.get("fastly-client-ip");
+    if (fastlyClientIp) return fastlyClientIp;
+    const xForwardedFor = req.get("x-forwarded-for");
+    if (xForwardedFor) {
+        const ips = xForwardedFor.split(",");
+        if (ips.length > 0) {
+            return ips[0].trim();
+        }
+    }
+    console.warn("No IP found in request!");
+    return req.ip ?? "";
+}

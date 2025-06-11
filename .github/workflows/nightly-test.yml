@@ -9,18 +9,18 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Use Node.js 16
-      uses: actions/setup-node@v3
+    - name: Use Node.js 18
+      uses: actions/setup-node@v4
       with:
-        node-version: "16.x"
+        node-version: "18.x"
         cache: "npm"
     - run: npm ci
     - name: Build Tests
       run: |
-        npm install -g ionic
+        npm install -g @ionic/cli
         npm run build
         ionic cap sync
       env:
@@ -36,11 +36,11 @@ jobs:
       run:
         working-directory: ./backend
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Use Node.js 18
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: "18.x"
         cache: "npm"
@@ -52,11 +52,11 @@ jobs:
       run:
         working-directory: ./scheduled-services
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Use Node.js 18
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: "18.x"
         cache: "npm"

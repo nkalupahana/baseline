@@ -23,9 +23,9 @@ const WeekInReviewInitial = ({ incrementStage } : { incrementStage: () => void }
                 Since you have a password set, try not to close this while doing Week In 
                 Review &mdash; for your safety, you'll have to start over.
             </p> }
-            <br />
+            <div className="br"></div>
             <div className="finish-button" onClick={incrementStage}>Start Surveys</div>
-            <br /><br /><br /><br />
+            <div className="br"></div><div className="br"></div><div className="br"></div><div className="br"></div>
         </div>
     </div>
 };

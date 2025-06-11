@@ -1,6 +1,7 @@
 import Dexie from "dexie"
 import { DateTime } from "luxon"
-import { parse } from "csv-parse/lib/sync"
+import { parse } from "csv-parse/sync"
+import { dataOptionsObjArr } from "../../src/components/MyData/constants"
 
 /* global cy */
 
@@ -8,13 +9,15 @@ import { parse } from "csv-parse/lib/sync"
 // and views are inconsistent, so this just ensures
 // everything is okay before continuing
 const WAIT_FOR_CONSISTENCY = 4000;
-const NUM_TOGGLES = 4;
+
+const NUM_TOGGLES = 3;
+const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
+const NUM_EXPORTED_JOURNALS = 47;
 
 // Toggle indices
-const PRACTICE_PROMPTS = 0;
-const REDUCE_MOTION = 1;
-const COLORBLIND_COLORS = 2;
-const SKIP_WIR = 3;
+const REDUCE_MOTION = 0;
+const COLORBLIND_COLORS = 1;
+const SKIP_WIR = 2;
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -62,12 +65,7 @@ describe("Mobile Flow", () => {
         cy.get(".finish-button").should("exist").click()
 
         cy.contains("Don't forget").should("exist")
-        cy.get("ion-toggle").should("have.length", 1).should("not.have.class", "toggle-checked")
         cy.get("body").happoScreenshot()
-        cy.get("ion-toggle").click()
-        cy.get("ion-toggle").should("have.class", "toggle-checked")
-        cy.get("ion-toggle").click()
-        cy.get("ion-toggle").should("not.have.class", "toggle-checked")
         cy.get(".finish-button").should("exist").click()
         
         cy.url().should("include", "/journal")
@@ -120,7 +118,32 @@ describe("Mobile Flow", () => {
             .trigger('mousedown', { which: 1 })
             .trigger('mousemove', { clientX: 200, clientY: 0, pageX: 200, pageY: 0, screenX: 200, screenY: 0 })
             .trigger('mouseup', { force: true })
+    })
 
+    it("Image Attachment", () => {
+        cy.contains("3 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.heic", { force: true })
+        cy.contains("image.heic").should("exist")
+        cy.contains("2 left").should("exist")
+
+        cy.get("ion-icon.secondary-icon").click()
+        cy.contains("3 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.heic", { force: true })
+        cy.contains("image.heic").should("exist")
+        cy.contains("2 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.png", { force: true })
+        cy.contains("image.png").should("exist")
+        cy.contains("1 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.webp", { force: true })
+        cy.contains("image.webp").should("exist")
+        cy.contains("Attach A Photo").should("not.exist")
+    })
+
+    it("Submit Mood Log", () => {
         cy.contains("Done!").should("exist").click()
         cy.get(".loader").should("exist")
         cy.get("canvas").should("exist")
@@ -130,11 +153,40 @@ describe("Mobile Flow", () => {
     })
 
     it("Verify Mood Log on Summary", () => {
+        cy.get(".dialog").should("exist")
+        cy.get(".dialog").happoScreenshot()
+        cy.contains("Close").click()
+        cy.get(".dialog").should("not.exist")
+
         cy.contains("Hello world!").should("exist")
-        cy.get("div.toastify").invoke("remove")
+        cy.get("img").should("not.exist")
+        cy.get("ion-icon.close-btn").should("have.length", 2).first().click()
+        cy.get("img").should("exist")
+        cy.get(".dot").should("have.length", 3)
+        cy.get("ion-icon.close-btn").should("have.length", 2).first().click()
+        cy.get("img").should("not.exist")
+        
+        cy.get(".sb-badge").contains("1").should("exist")
         
         // This is due to the segment button not resetting.
         // How does this happen? No idea.
+        cy.wait(WAIT_FOR_CONSISTENCY)
+    })
+
+    it("Test Editing", () => {
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.get(".mood-edit-btn").should("exist").click()
+
+        cy.url().should("include", "/journal")
+        cy.contains("Editing saved journal").should("exist")
+        cy.get("textarea").type("!!")
+        cy.contains("Continue").should("exist").click()
+
+        cy.url().should("include", "/journal/finish")
+        cy.contains("Editing saved journal").should("exist")
+        cy.contains("Edit!").should("exist").click()
+
+        cy.contains("Hello world!!!").should("exist")
         cy.wait(WAIT_FOR_CONSISTENCY)
     })
 
@@ -152,23 +204,6 @@ describe("Mobile Flow", () => {
         cy.contains("Done!").should("exist").click()
         cy.url().should("include", "/summary")
         cy.contains(`Bad beginner`).should("exist")
-    })
-
-    it("Ensure Practice Prompts Exist", () => {
-        cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Settings").should("exist").click()
-        cy.get("ion-menu").should("not.exist")
-        cy.get("ion-toggle").should("have.length", NUM_TOGGLES)
-        cy.get(".settings-box-grid").eq(PRACTICE_PROMPTS).happoScreenshot()
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("not.have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).click()
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("have.class", "toggle-checked")
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).click()
-        cy.get("ion-toggle").eq(PRACTICE_PROMPTS).should("not.have.class", "toggle-checked")
-
-        cy.get(".top-corner").should("have.length", 1).click()
-        cy.url().should("include", "/summary")
-        cy.reload()
     })
 
     it("Log a Few More Times and test FinishJournal Dialogs", () => {
@@ -190,9 +225,9 @@ describe("Mobile Flow", () => {
                 .trigger('mouseup', { force: true })
 
             cy.contains("Done!").should("exist").click()
+            cy.get("div.toastify").invoke("remove")
             cy.url().should("include", "/summary")
             cy.contains(`Test ${i}`).should("exist")
-            cy.get("div.toastify").invoke("remove")
         }
     })
 
@@ -222,16 +257,115 @@ describe("Mobile Flow", () => {
         cy.get("No Results").should("not.exist")
         cy.get("#search-num-results").should("have.text", "14 entries")
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
+        cy.contains("1 entry").should("exist")
 
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
+        cy.contains("1 entry").should("not.exist")
 
         cy.get(".top-corner").click()
         cy.contains("week has been looking").should("exist")
     })
 
+    it("Add Music", () => {
+        cy.get(".fab-button-close-active").should("exist").click()
+        cy.contains("What's happening").should("exist")
+        cy.get("textarea").should("exist").focus().type(`Add a song!`).should("have.value", `Add a song!`)
+        cy.contains("Continue").should("exist").click()
+
+        // Add song
+        cy.get(".rss-content").should("not.exist")
+        cy.contains("Add Music").click()
+        cy.get(".rss-content").should("be.visible")
+        cy.contains("Search for Music")
+        cy.get(".rss-content").find("input").should("be.focused")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.get("body").happoScreenshot()
+
+        cy.get(".rss-content").find("input").type("False Alarms")
+        cy.get(".spotify-search-loading").should("exist")
+
+        cy.get(".spotify-track").should("exist")
+        cy.get(".rss-content").find("input").clear({ force: true })
+        cy.get(".spotify-track").should("not.exist")
+
+        cy.get(".rss-content").find("input").type("False Alarms")
+        cy.get(".spotify-track").should("exist")
+        cy.get(".spotify-search-loading").should("not.exist")
+
+        cy.get("body").happoScreenshot()
+        cy.contains("Jon Bellion").click()
+        cy.get(".rss-content").should("not.exist")
+
+        // Edit song
+        cy.contains("Add Music").should("not.exist")
+        cy.contains("False Alarms").click()
+        cy.get(".rss-content").should("be.visible")
+        cy.get(".rss-header").find("ion-icon").click()
+        cy.get(".rss-content").should("not.exist")
+        cy.contains("False Alarms").should("exist")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        // Remove song
+        cy.contains("False Alarms").find("ion-icon").click()
+        cy.contains("False Alarms").should("not.exist")
+        cy.contains("Add Music").click()
+
+        // Add song again
+        cy.get(".rss-content").find("input").type("False Alarms")
+        cy.get(".spotify-search-loading").should("exist")
+        cy.get(".spotify-search-loading").should("not.exist")
+
+        cy.contains("Jon Bellion").click()
+        cy.get(".rss-content").should("not.exist")
+        cy.contains("False Alarms").should("exist")
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        // Finish
+        cy.contains("Done!").click()
+        cy.url().should("include", "/summary")
+
+        // Verify
+        cy.contains("Add a song!").parent().find("iframe").should("not.exist")
+        cy.contains("Add a song!").click()
+        cy.contains("Add a song!").parent().find("iframe").should("exist")
+    })
+
+    it("Test Audio Journaling", () => {
+        cy.get(".fab-button-close-active").should("exist").click()
+        cy.contains("What's happening").should("exist")
+        cy.contains("Switch to Audio Journal").click()
+
+        cy.get(".toastify").should("not.exist")
+
+        cy.contains("00:00").should("exist")
+        cy.get(".rj-close").should("not.exist")
+        cy.get("body").happoScreenshot()
+
+        cy.contains("Record").click()
+        cy.contains("Stop Recording").should("exist")
+        cy.get("body").happoScreenshot()
+
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        cy.contains("Stop Recording").click()
+        cy.contains("Record").should("exist")
+        
+        cy.contains("00:00").should("not.exist")
+        cy.get(".rj-close").click()
+        cy.contains("00:00").should("exist")
+
+        cy.contains("Record").click()
+        cy.wait(WAIT_FOR_CONSISTENCY)
+        cy.contains("Stop Recording").click()
+
+        cy.contains("Continue").click()
+        cy.contains("Done!").should("exist").click()
+        cy.url().should("include", "/summary")
+        cy.get(".audio-btn").should("exist")
+    })
+
     it("Test -5 Warning Behavior", () => {
+        cy.wait(WAIT_FOR_CONSISTENCY)
         cy.get(".fab-button-close-active").should("exist").click()
         cy.contains("What's happening").should("exist")
         cy.get("textarea").should("exist").focus().type(`-5`).should("have.value", `-5`)
@@ -269,11 +403,20 @@ describe("Desktop Flow", () => {
         cy.viewport("macbook-13")
     })
 
-    it("Write Mood Log", () => {
+    it("Write Mood Log and test Autoscroll", () => {
+        // Autoscroll
         cy.visit("/")
         cy.contains("What's happening").should("exist")
         cy.get("textarea").type("Hello desktop world!{enter}Multi-line journal{enter}Valid,ation")
         cy.get("body").happoScreenshot()
+        cy.get("textarea").type("{enter}".repeat(40))
+        cy.contains("Continue").should("be.visible")
+
+        // Autofocus to end of text
+        cy.visit("/")
+        cy.contains("What's happening").should("exist")
+        cy.contains("Continue").should("be.visible")
+        cy.get("textarea").type("{backspace}".repeat(40))
         cy.contains("Continue").should("exist").click()
     })
 
@@ -326,13 +469,12 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get("#search-num-results").should("have.text", "16 entries")
+        cy.get("#search-num-results").should("have.text", "18 entries")
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("exist")
-        cy.get("#search-num-results").should("have.text", "0 entries")
+        cy.get("#search-num-results").should("have.text", "1 entry")
         
         cy.get(".image-btn").click()
-        cy.contains("No Results").should("not.exist")
+        cy.contains("1 entry").should("not.exist")
     })
 
     it("Verify Notifications Page", () => {
@@ -379,7 +521,7 @@ describe("Desktop Flow", () => {
 
     it("Test WIR Button on Survey Results", () => {
         cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Surveys").should("exist").click()
+        cy.contains("Week In Review").should("exist").click()
         cy.get("ion-menu").should("not.exist")
         
         cy.contains("Last Week").should("not.exist")
@@ -393,14 +535,14 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "/summary")
     })
 
-    it("Makes User Eligible (Week In Review, Gap Fund)", () => {
+    it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
         const ldb = new Dexie('ldb')
         ldb.version(1).stores({
             logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
         })
         
-        let date =  DateTime.now()
-        for (let i = 0; i < 14; i++) {
+        let date = DateTime.now().minus({ days: 1 });
+        for (let i = 0; i < 21; i++) {
             date = date.minus({ days: 1 })
             ldb.logs.add({
                 timestamp: date.toMillis(),
@@ -426,7 +568,7 @@ describe("Desktop Flow", () => {
     it("Test Skip WIR", () => {
         cy.contains("Skip").should("not.exist")
         cy.contains("Later").click()
-        cy.contains("Week In Review").should("not.exist")
+        cy.contains("Week In Review").should("not.be.visible")
 
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
@@ -480,6 +622,29 @@ describe("Desktop Flow", () => {
         cy.url().should("include", "summary")
     })
 
+    it("Test WIR Results", () => {
+        cy.get(".fab-button-small").should("exist").click()
+        cy.contains("Week In Review").should("exist").click()
+        cy.get("ion-menu").should("not.exist")
+
+        cy.get("canvas").should("have.length.at.least", 2)
+        cy.contains("baseline score").should("exist")
+
+        cy.contains("Last Week").should("exist").click()
+        cy.url().should("include", "/lastreview")
+        cy.contains("Hi there").should("exist")
+        cy.get("ion-icon").eq(1).click()
+        cy.contains("Results").should("exist")
+        cy.contains("d=0, a=0, s=0").should("exist")
+        cy.get("ion-icon").eq(1).click()
+        cy.get("ion-icon").eq(1).click()
+        cy.contains("Finish").should("exist").click()
+        cy.url().should("include", "/surveys")
+
+        cy.get(".top-corner").should("have.length", 1).click()
+        cy.url().should("include", "/summary")
+    })
+
     it("Attempts Gap Fund Request", () => {
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Gap Fund").should("exist").click()
@@ -524,6 +689,50 @@ describe("Desktop Flow", () => {
     })
 })
 
+describe("Test Streaks", () => {
+    it("Test Summary Logging", () => {
+        cy.visit("/summary")
+        cy.contains("Missed a day").click({ force: true })
+
+        cy.url().should("include", "/journal")
+        cy.contains("Summary journal for yesterday").should("exist")
+        cy.get("textarea").type("Yesterday's journal")
+
+        cy.contains("Continue").click()
+        cy.contains("Summary journal for yesterday").should("exist")
+        cy.contains("Done!").click()
+
+        cy.url().should("include", "/summary")
+
+        const moodCard = () => cy.contains("Yesterday's journal").parent(".mood-card");
+        moodCard().should("exist")
+        moodCard().find(".mood-edit-btn").should("exist")
+        moodCard().contains("Summary").should("exist")
+
+        cy.contains("Missed a day").should("not.exist")
+    })
+
+    it("Load Fake Data", () => {
+        cy.visit("/settings")
+        cy.contains("Add Local Fake Data").click({ force: true })
+        cy.contains("Clear Journal Prompt").click({ force: true })
+        cy.get(".toastify").should("have.length", 2)
+    })
+
+    it("Test Streak Dialog", () => {
+        cy.visit("/summary")
+        cy.get(".dialog").should("exist")
+        cy.contains("30 days").should("exist")
+        cy.get(".dialog").happoScreenshot()
+
+        cy.contains("Close").click()
+        cy.get(".dialog").should("not.exist")
+
+        cy.get(".sb-badge").contains("30").should("exist")
+    })
+})
+
+
 describe("Test My Data", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -540,17 +749,17 @@ describe("Test My Data", () => {
         cy.get("#timestamp").should("have.class", "checkbox-checked")
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(30)
+            expect(json).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of json) {
-                expect(Object.keys(record)).to.have.length(6)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
         })
         cy.contains("Export Journal Data as CSV").should("exist").click()
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(30)
+            expect(data).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of data) {
-                expect(Object.keys(record)).to.have.length(6)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS)
             }
         })
 
@@ -559,9 +768,9 @@ describe("Test My Data", () => {
         cy.contains("Export Journal Data as JSON").should("exist").click()
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.json").then(json => {
-            expect(json).to.have.length(30)
+            expect(json).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of json) {
-                expect(Object.keys(record)).to.have.length(5)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
             }
         })
@@ -569,9 +778,9 @@ describe("Test My Data", () => {
         cy.wait(WAIT_FOR_CONSISTENCY)
         cy.readFile("cypress/downloads/journal-data.csv").then(csv => {
             const data = parse(csv, {columns: true});
-            expect(data).to.have.length(30)
+            expect(data).to.have.length(NUM_EXPORTED_JOURNALS)
             for (let record of data) {
-                expect(Object.keys(record)).to.have.length(5)
+                expect(Object.keys(record)).to.have.length(NUM_EXPORT_FIELDS - 1)
                 expect(record).to.not.have.property("timestamp")
             }
         })
@@ -758,38 +967,75 @@ describe("Test Settings", () => {
         cy.url().should("include", "/summary")
         cy.contains("Test 0")
     })
+})
 
-    it("Test Survey Results", () => {
-        cy.get(".fab-button-small").should("exist").click()
-        cy.contains("Surveys").should("exist").click()
-        cy.get("ion-menu").should("not.exist")
+describe("Test Improper Journal Order Scenarios", () => {
+    it("One today, one tomorrow", () => {
+        cy.visit("/settings")
+        cy.contains("One Today One Tomorrow").click({ force: true })
+        cy.intercept("*firebase*", (req) => {
+            req.destroy()
+        })
 
-        cy.contains("have enough data").should("exist")
-        cy.get(".recharts-responsive-container").should("have.length", 2)
-
-        cy.contains("Last Week").should("exist").click()
-        cy.url().should("include", "/lastreview")
-        cy.contains("Hi there").should("exist")
-        cy.get("ion-icon").eq(1).click()
-        cy.contains("Results").should("exist")
-        cy.contains("d=0, a=0, s=0").should("exist")
-        cy.get("ion-icon").eq(1).click()
-        cy.get("ion-icon").eq(1).click()
-        cy.contains("Finish").should("exist").click()
-        cy.url().should("include", "/surveys")
-
-        cy.get(".top-corner").should("have.length", 1).click()
-        cy.url().should("include", "/summary")
+        for (const viewport of ["iphone-x", "macbook-13"]) {
+            cy.viewport(viewport)
+            cy.visit("/summary")
+            cy.get(".mood-card-log").should("have.length", 2)
+            cy.get(".first-journal").should("not.exist")
+            cy.get("[data-cy=yesterday-backlog]").should("not.exist")
+            cy.get(".sb-badge").should("contain.text", "2")
+        }
     })
 
+    it("One yesterday, one tomorrow", () => {
+        cy.visit("/settings")
+        cy.contains("One Yesterday One Tomorrow").click({ force: true })
+        cy.intercept("*firebase*", (req) => {
+            req.destroy()
+        })
+
+        for (const viewport of ["iphone-x", "macbook-13"]) {
+            cy.viewport(viewport)
+            cy.visit("/summary")
+            cy.get(".mood-card-log").should("have.length", 2)
+            // TODO: Technically this should exist, but
+            // it doesn't in the current implementation.
+            cy.get(".first-journal").should("not.exist")
+            cy.get("[data-cy=yesterday-backlog]").should("not.exist")
+            cy.get(".sb-badge").should("contain.text", "1")
+        }
+    })
+
+    it("One two days ago, one today, one tomorrow", () => {
+        cy.visit("/settings")
+        cy.contains("One Two Days Ago One Today One Tomorrow").click({ force: true })
+        cy.intercept("*firebase*", (req) => {
+            req.destroy()
+        })
+
+        for (const viewport of ["iphone-x", "macbook-13"]) {
+            cy.viewport(viewport)
+            cy.visit("/summary")
+            cy.get(".mood-card-log").should("have.length", 3)
+            cy.get(".first-journal").should("not.exist")
+            cy.get("[data-cy=yesterday-backlog]")
+            cy.get(".sb-badge").should("contain.text", "2")
+        }
+    })
+})
+
+describe("Test Cleanup", () => {
     it("Start Deletion", () => {
+        cy.visit("/summary")
+
         cy.get(".fab-button-small").should("exist").click()
         cy.contains("Settings").should("exist").click()
         cy.contains("Settings").should("exist")
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")
         cy.get("button").eq(0).click()
-        cy.get("ion-alert").should("not.exist")
+        cy.get("ion-alert").should("not.be.visible")
+        cy.wait(WAIT_FOR_CONSISTENCY)
 
         cy.contains("click here").click()
         cy.get("ion-alert").should("be.visible")

@@ -8,10 +8,11 @@ import aesutf8 from "crypto-js/enc-utf8";
 import hash from "crypto-js/sha512";
 import { getIdToken, User } from "firebase/auth";
 import { get, orderByKey, query, ref } from "firebase/database";
-import { GraphConfig } from "./screeners/screener";
 import Fuse from "fuse.js";
 import { murmurhash3_32_gc } from "./murmurhash3_gc";
 import UAParser from "ua-parser-js";
+import * as Sentry from "@sentry/react";
+
 export interface AnyMap {
     [key: string]: any;
 }
@@ -28,15 +29,6 @@ export function getTime() {
 export function getDateFromLog(log: Log) {
     return DateTime.fromObject({year: log.year, month: log.month, day: log.day});
 }
-
-export const BASELINE_GRAPH_CONFIG: GraphConfig = {
-    yAxisLabel: "baseline (-5 to 5 scale)",
-    lines: [{
-        key: "Mood",
-        color: "#955196"
-    }],
-    yAxisWidth: 60
-};
 
 const SECONDS_IN_DAY = 86400;
 // https://materializecss.com/color
@@ -129,6 +121,10 @@ export function checkKeys() {
                 const ekeys = decrypt(JSON.parse(localStorage.getItem("ekeys") ?? "{}")["keys"], pwd);
                 if (!ekeys) {
                     toast("Something went wrong, please sign in again.");
+                    Sentry.addBreadcrumb({
+                        category: "checkKeys",
+                        message: "Sign Out"
+                    });
                     signOutAndCleanUp();
                     return;
                 }
@@ -235,11 +231,11 @@ export function checkPassphrase(passphrase: string): boolean {
     }
 }
 
-export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting?: (_: boolean) => void) {
+export async function makeRequest(route: string, user: User, body: AnyMap, setSubmitting?: (_: boolean) => void, failSilently?: boolean) {
     let response;
-    let toasted = false;
+    let toasted = failSilently ?? false;
     try {
-        response = await fetch(`${BASE_URL}/${route}`,{
+        response = await fetch(`${BASE_URL}/${route}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${await getIdToken(user)}`,
@@ -248,21 +244,23 @@ export async function makeRequest(route: string, user: User, body: AnyMap, setSu
             body: JSON.stringify(body)
         });
     } catch (e: any) {
-        if (networkFailure(e.message)) {
-            toast(`We can't reach our servers. Check your internet connection and try again.`);
-        } else {
-            toast(`Something went wrong, please try again! \nError: ${e.message}`);
+        if (!toasted) {
+            if (networkFailure(e.message)) {
+                toast(`We can't reach our servers. Check your internet connection and try again.`);
+            } else {
+                toast(`Something went wrong, please try again! \nError: ${e.message}`);
+            }
+            toasted = true;
         }
-        toasted = true;
     }
 
-    if (response && !toasted) {
+    if (response) {
         if (!response.ok) {
-            toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
+            if (!toasted) toast(`Something went wrong, please try again! \nError: ${await response.text()}`);
         } else {
             return true;
         }
-    } else {
+    } else if (!toasted) {
         toast(`Something went wrong, please try again!`);
     }
 
@@ -275,6 +273,10 @@ export function encrypt(data: string, key: string) {
         return AES.encrypt(data, key).toString();
     } catch {
         toast("Data encryption failed, so as a security precaution, we ask that you sign in again.");
+        Sentry.addBreadcrumb({
+            category: "encrypt",
+            message: "Sign Out"
+        });
         signOutAndCleanUp();
         return "";
     }
@@ -285,6 +287,10 @@ export function decrypt(data: string, key: string, signOut=true) {
         return AES.decrypt(data, key).toString(aesutf8);
     } catch {
         if (signOut) {
+            Sentry.addBreadcrumb({
+                category: "decrypt",
+                message: "Sign Out"
+            });
             toast("Data decryption failed, so as a security precaution, we ask that you sign in again.");
             signOutAndCleanUp();
         }
@@ -314,7 +320,7 @@ export async function parseSurveyHistory(user: User, setSurveyHistory: (_: (AnyM
 
 const BASELINE_DAYS = 14;
 export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDataStates) => void) {
-    const logs = await ldb.logs.where("timestamp").above(DateTime.now().minus({ years: 1 }).toMillis()).toArray();
+    const logs = await ldb.logs.orderBy("timestamp").toArray();
     if (!logs.length) {
         setBaselineGraph(PullDataStates.NOT_ENOUGH_DATA);
         return;
@@ -324,6 +330,7 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     let ptr = 0;
     let perDayDates = [];
     let perDayAverages = [];
+    let perDayCount = [];
     const now = DateTime.local();
     // Aggregate average mood data per day
     while (currentDate < now) {
@@ -337,15 +344,15 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         ) {
             if (logs[ptr].average === "average") {
                 todaySum += logs[ptr].mood;
-                ++ctr;
             } else {
                 todaySum += logs[ptr].mood * 0.4;
-                ++ctr;
             }
+            ++ctr;
             ++ptr;
         }
+        perDayDates.push(currentDate.toMillis())
         perDayAverages.push(ctr === 0 ? 0 : todaySum / ctr);
-        perDayDates.push(currentDate.toFormat("LLL d"))
+        perDayCount.push(ctr);
         currentDate = currentDate.plus({"days": 1});
     }
 
@@ -356,9 +363,11 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
         return;
     }
 
+    let countSum = 0;
     let sum = 0;
     let i = 0;
     while (i < BASELINE_DAYS) {
+        countSum += perDayCount[i];
         sum += perDayAverages[i];
         ++i;
     }
@@ -366,18 +375,31 @@ export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDat
     // Start average with base 14 days
     let baseline = [];
     baseline.push({
-        date: perDayDates[i - 1],
-        Mood: sum / BASELINE_DAYS
+        timestamp: perDayDates[i - 1],
+        value: sum / BASELINE_DAYS
     });
 
     // Calculate rolling average to end of list
     while (i < perDayAverages.length) {
         sum -= perDayAverages[i - BASELINE_DAYS];
         sum += perDayAverages[i];
-        baseline.push({
-            date: perDayDates[i],
-            Mood: sum / BASELINE_DAYS
-        });
+
+        countSum -= perDayCount[i - BASELINE_DAYS];
+        countSum += perDayCount[i];
+
+        // If user hasn't logged in a while,
+        // don't put out baseline for those days
+        if (countSum !== 0) {
+            baseline.push({
+                timestamp: perDayDates[i],
+                value: sum / BASELINE_DAYS
+            });
+        } else {
+            baseline.push({
+                timestamp: perDayDates[i],
+                value: NaN
+            });
+        }
         ++i;
     }
 
@@ -425,4 +447,10 @@ export function fingerprint() {
     fingerprint += `|${new Date().getTimezoneOffset()}`;
     const hash = murmurhash3_32_gc(fingerprint, 921743158);
     return hash;
+}
+
+export function timeToString (time: number) {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 }

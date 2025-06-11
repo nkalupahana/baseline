@@ -41,7 +41,7 @@ export const gapFund = async (req: UserRequest, res: Response) => {
         dates.add(DateTime.fromMillis(Number(timestamp), { zone: body.zone }).toISODate());
     }
 
-    if (dates.size < 14) {
+    if (dates.size < 8) {
         res.status(400).send("Unfortunately, you don't qualify for the Gap Fund yet. Please make sure you've updated baseline, and try again later.");
         return;
     }

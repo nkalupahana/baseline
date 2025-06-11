@@ -1,4 +1,4 @@
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import { get, ref, serverTimestamp, set } from "firebase/database";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import history from "../../history";
 import { Device } from "@capacitor/device";
 import "./PromptWeekInReview.css";
 import { Capacitor } from "@capacitor/core";
+import * as Sentry from "@sentry/react";
 
 const PromptWeekInReview = () => {
     const [user] = useAuthState(auth);
@@ -62,12 +63,16 @@ const PromptWeekInReview = () => {
                 platform
             };
 
-            if (platform !== "web") {
-                const token = await FirebaseMessaging.getToken();
-                data["fcmToken"] = token.token;
-                data["deviceId"] = (await Device.getId()).uuid;
+            try {
+                if (platform !== "web") {
+                    const token = await FirebaseMessaging.getToken();
+                    data["fcmToken"] = token.token;
+                    data["deviceId"] = (await Device.getId()).identifier;
+                }
+            } catch (e) {
+                Sentry.captureException(e, { extra: { handled: true } });
             }
-            await makeRequest("accounts/sync", auth.currentUser!, data);
+            await makeRequest("accounts/sync", user, data, undefined, true);
         })();
     }, [user, show]);
 

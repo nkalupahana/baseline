@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EndSpacer from "../components/EndSpacer";
 import KeyboardSpacer from "../components/KeyboardSpacer";
-import GraniteLink from "../components/Settings/GraniteLink";
 import PDP from "../components/Settings/PDP";
 import SettingsBox from "../components/Settings/SettingsBox";
 import { auth, signOutAndCleanUp } from "../firebase";
 import { goBackSafely, toast } from "../helpers";
 import history from "../history";
+import * as Sentry from "@sentry/react";
+import DebugButtons from "../components/Settings/DebugButtons";
 
 const Settings = () => {
     const [doingAsyncTask, setDoingAsyncTask] = useState(false);
@@ -20,18 +21,12 @@ const Settings = () => {
     }, []);
 
     return <div className="container">
-        { !doingAsyncTask && <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
-        { doingAsyncTask && <IonSpinner class="top-corner x" className="loader" name="crescent" /> }
+        { !doingAsyncTask && <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon> }
+        { doingAsyncTask && <IonSpinner className="top-corner x loader" name="crescent" /> }
         <div className="center-journal container">
             <div className="title">Settings</div>
-            <br />
+            <div className="br"></div>
             <div style={{"maxWidth": "600px"}}>
-                { user && <SettingsBox
-                    attr="introQuestions"
-                    title="Practice Prompts"
-                    description="Not comfortable writing about yourself this much yet? Enable practice prompts for a few weeks. (Coming soon)"
-                    syncWithFirebase={`${user.uid}/onboarding/questions`}
-                /> }
                 <SettingsBox
                     title="Reduce Motion"
                     attr="reduceMotion"
@@ -48,9 +43,7 @@ const Settings = () => {
                     description="Turn this on to get the option to skip Week In Review each week. (We don't recommend turning this on — Week In Review is quite useful, and only takes a few minutes each week.)"
                 />
                 <PDP taskBlock={setDoingAsyncTask} />
-                <p className="bold margin-bottom-0">Partner Connections</p>
-                <GraniteLink />
-                <br /><br />
+                <div className="br"></div>
                 <p className="margin-bottom-0" style={{"alignSelf": "flex-start"}}>Need help? Email us at <a href="mailto:hello@getbaseline.app">hello@getbaseline.app</a>.</p>
                 <p>
                     baseline is an open source, volunteer-driven project. If there's a feature you'd like to see or 
@@ -64,8 +57,9 @@ const Settings = () => {
                     If you'd like to delete your account, <span className="fake-link" onClick={() => setDeleteAlert(true)}>click here.</span> You'll be prompted to sign in again to confirm.
                 </p>
             </div>
+            <DebugButtons />
         </div>
-        <IonAlert 
+        <IonAlert
             isOpen={deleteAlert}
             onDidDismiss={() => setDeleteAlert(false)}
             header="Are you sure?"
@@ -80,11 +74,15 @@ const Settings = () => {
                     role: 'confirm',
                     handler: () => { 
                         sessionStorage.setItem("deleteAccount", user.uid);
+                        Sentry.addBreadcrumb({
+                            category: "Delete Account",
+                            message: "Sign Out"
+                        });
                         signOutAndCleanUp();
                         toast("Sign in again now to delete your account.");
                     }
                 }
-            ]}         
+            ]}
         />
         <KeyboardSpacer />
         <EndSpacer />

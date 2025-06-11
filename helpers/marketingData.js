@@ -3,7 +3,7 @@ const faker = require("faker");
 const admin = require("firebase-admin");
 const { sampleSize, max } = require("lodash")
 
-let time = DateTime.local().minus({ weeks: 30 }).startOf("day");
+let time = DateTime.local().minus({ weeks: 70 }).startOf("day");
 const now = DateTime.local().endOf("day").minus({ days: 1 });
 let logs = {}
 const hours = [9, 13, 16, 19];

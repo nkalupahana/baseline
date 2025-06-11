@@ -1,20 +1,26 @@
 import { Capacitor } from "@capacitor/core";
 import { Keyboard, KeyboardInfo } from "@capacitor/keyboard";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-const KeyboardSpacer = () => {
+interface Props {
+    externalSetter?: Dispatch<SetStateAction<number>>;
+}
+
+const KeyboardSpacer = ({ externalSetter } : Props) => {
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     useEffect(() => {
         if (Capacitor.getPlatform() === "web") return;
         const show = (info: KeyboardInfo) => {
-            setKeyboardHeight(info.keyboardHeight + 10);
+            setKeyboardHeight(info.keyboardHeight);
         };
         
         const hide = () => {
             setKeyboardHeight(0);
         };
 
+        Keyboard.addListener("keyboardWillShow", show);
+        Keyboard.addListener("keyboardWillHide", hide);
         Keyboard.addListener("keyboardDidShow", show);
         Keyboard.addListener("keyboardDidHide", hide);
 
@@ -23,7 +29,12 @@ const KeyboardSpacer = () => {
         };
     }, []);
 
-    return <div style={{"transition": "height 0.5s cubic-bezier(0.64, 0, 0.46, 1) 0s", "height": `${keyboardHeight}px`, width: "100%"}}></div>
+    useEffect(() => {
+        if (!externalSetter) return;
+        externalSetter(keyboardHeight);
+    }, [keyboardHeight, externalSetter]);
+
+    return <div style={{"height": `${keyboardHeight + 50}px`, width: "100%"}}></div>
 }
 
 export default KeyboardSpacer;

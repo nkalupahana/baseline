@@ -1,5 +1,5 @@
 import { Device } from "@capacitor/device";
-import { FirebaseMessaging } from "@getbaseline/capacitor-firebase-messaging";
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import { User } from "firebase/auth";
 import { DateTime } from "luxon";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { makeRequest } from "../../helpers";
 import history from "../../history";
 import Notifications from "../../pages/Notifications";
 import { Capacitor } from "@capacitor/core";
+import * as Sentry from "@sentry/react";
 
 const OnboardingNotifications = ({ user } : { user: User }) => {
     const [loadingFlow, setLoadingFlow] = useState(false);
@@ -16,14 +17,23 @@ const OnboardingNotifications = ({ user } : { user: User }) => {
         try {
             const platform = Capacitor.getPlatform();
             await FirebaseMessaging.requestPermissions();
-            const token = await FirebaseMessaging.getToken();
+            let token;
+            try {
+                token = await FirebaseMessaging.getToken();
+            } catch (e) {
+                Sentry.captureException(e, { extra: { handled: true } });
+            }
+
             await makeRequest("accounts/sync", user, {
                 offset: DateTime.now().offset,
-                fcmToken: token.token,
-                deviceId: (await Device.getId()).uuid,
+                fcmToken: token?.token,
+                deviceId: (await Device.getId()).identifier,
                 platform
             });
-            await FirebaseMessaging.subscribeToTopic({ topic: "all" });
+            
+            // Retried on native layer, so ignore failures
+            FirebaseMessaging.subscribeToTopic({ topic: "all" }).catch(() => {});
+            FirebaseMessaging.subscribeToTopic({ topic: platform }).catch(() => {});
         } catch {}
         if (localStorage.getItem("onboarding")) {
             localStorage.setItem("onboarding", "howto");

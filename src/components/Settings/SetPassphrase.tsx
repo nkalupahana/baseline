@@ -41,12 +41,12 @@ const SetPassphrase = ({ finalize } : { finalize: (_: string) => void }) => {
                 <IonLabel className="ion-text-wrap" position="stacked">Confirm Passphrase</IonLabel>
                 <input autoComplete="new-password" className="invisible-input" value={confirmPassphrase} type="password" onChange={e => setConfirmPassphrase(e.target.value)} />
             </IonItem>
-            <br />
+            <div className="br"></div>
             <div className="finish-button" onClick={submitPassphrase}>
                 { !submitting && <>Set Passphrase</> }
                 { submitting && <IonSpinner className="loader" name="crescent" /> }
             </div>
-            <br />
+            <div className="br"></div>
         </form>
     </div>
 }

@@ -82,14 +82,13 @@ export default function EDE_QS(): Screener {
         },
         getRecommendation: function() {
             if (this._results < 15) {
-                return <p>Based on your answers to this screener, we do not believe you have an eating disorder. If you're worried about 
-                someone you know and their relationship with eating or their body, check out the help resources on the main menu.</p>
+                return <p>This should never appear.</p>
             } else {
                 return <>
                     <p>
                         Your answers have indicated that you likely have an eating disorder. Eating disorders are 
                         often treated in our culture as if they aren't "serious" mental health issues &mdash; but they're 
-                        just as important to address, and often have just as severe consequences. We urge you to talk 
+                        just as important to address, and often have extremely severe consequences. We urge you to talk 
                         to a professional about how you feel about eating and your body, and to get specialized treatment.
                     </p>
                     <p>
@@ -102,7 +101,7 @@ export default function EDE_QS(): Screener {
                         which is ultimately what we recommend moving towards. { FIND_HELP }
                     </p>
                     <p>
-                        If you need financial assistance for any of this, the baseline Gap Fund can help! { GAP_FUND } { GAP_FUND_REFER }
+                        If you need financial assistance for any of this, the baseline Gap Fund can help. { GAP_FUND } { GAP_FUND_REFER }
                     </p>
                 </>;
             }
@@ -111,7 +110,7 @@ export default function EDE_QS(): Screener {
             return `EDE-QS raw score: ${this._results}. Raw scores for each question are not scaled (0 - 3). Cutoff = 15 (validated, doi:10.1186/s12888-020-02565-5).`;
         },
         getPriority: function() {
-            return this._results < 15 ? Priority.LOW : Priority.HIGH;
+            return this._results < 15 ? Priority.DO_NOT_SHOW : Priority.HIGH;
         }
     }
 }

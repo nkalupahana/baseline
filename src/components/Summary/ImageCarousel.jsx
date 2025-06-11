@@ -11,7 +11,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { BASE_URL, checkKeys, toast } from "../../helpers";
 import { getIdToken } from "firebase/auth";
 import { Capacitor } from "@capacitor/core";
-import { Media } from "@getbaseline/capacitor-community-media";
+import { Media } from "@capacitor-community/media";
 
 const ImageCarousel = ({ files, setInFullscreen }) => {
     const [accessURLs, setAccessURLs] = useState([]);
@@ -51,7 +51,7 @@ const ImageCarousel = ({ files, setInFullscreen }) => {
         }
 
         node.on("fullscreenChange", listener);
-        node.nativeDownload = dataurl => {
+        node.nativeDownload = async dataurl => {
             if (Capacitor.getPlatform() === "web") {
                 const link = document.createElement("a");
                 link.href = dataurl;
@@ -59,14 +59,22 @@ const ImageCarousel = ({ files, setInFullscreen }) => {
                 link.click();
             } else {
                 let opts = { path: dataurl };
-                if (Capacitor.getPlatform() === "android") opts["album"] = "baseline";
-                Media.savePhoto(opts).catch(e => {
-                    document.querySelectorAll(".toastify").forEach(node => {
-                        node.remove();
-                    });
+                if (Capacitor.getPlatform() === "android") {
+                    let albums = await Media.getAlbums();
+                    let album = albums.albums.find(x => x.name === "baseline");
+                    if (!album) {
+                        await Media.createAlbum({ name: "baseline" });
+                        albums = await Media.getAlbums();
+                        album = albums.albums.find(x => x.name === "baseline");
+                    }
+                    opts["albumIdentifier"] = album.identifier
+                }
+                try {
+                    await Media.savePhoto(opts);
+                    toast("Image saved!");
+                } catch (e) {
                     toast(e);
-                });
-                toast("Image saved!");
+                }
             }
         };
 

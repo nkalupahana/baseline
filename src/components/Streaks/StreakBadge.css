@@ -1,0 +1,11 @@
+.sb-badge {
+    width: fit-content;
+    border: 1px solid var(--ion-text-color);
+    padding: 4px 6px 4px 4px;
+    border-radius: 8px;
+    margin: -6px auto -1px;
+}
+
+.sb-badge > .sb-icon {
+    transform: translateY(2px);
+}

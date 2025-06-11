@@ -14,6 +14,9 @@ http://ionicframework.com/docs/theming/ */
     --ion-item-color: black;
     --ion-item-background: white;
 
+    --ion-text-color: #121212;
+    --ion-text-color-rgb: 18, 18, 18;
+
     --ion-color-light: #f4f5f8;
     --ion-color-light-rgb: 244, 245, 248;
     --ion-color-light-contrast: #000000;
@@ -24,10 +27,11 @@ http://ionicframework.com/docs/theming/ */
     --background-color-inverted: black;
 
     --card-background: rgb(235, 235, 235);
-    --dark-action: black;
+    --dark-action: rgb(32, 32, 32);
     --graph-label: black;
     --border-lines: rgb(221, 221, 221);
     --graph-primary-background: 214, 214, 214;
+    --graph-grid-color: #bdbdbd;
 
     --circular-slider-label: #020856;
     --circular-slider-knob: #020856;
@@ -74,6 +78,7 @@ http://ionicframework.com/docs/theming/ */
         --dark-action: rgb(32, 32, 32);
         --border-lines: rgb(91, 91, 91);
         --graph-background: 90, 90, 90;
+        --graph-grid-color: #424242;
 
         --circular-slider-label: #e0e0e0;
         --circular-slider-knob: #212121;
@@ -148,4 +153,16 @@ textarea {
 
 .__floater__open {
     transition: opacity 0.4s !important;
+}
+
+.br {
+    height: 19.5px;
+    width: 0px;
+}
+
+/* Search bar adjustments bc Ionic :/ */
+.searchbar-input.sc-ion-searchbar-ios {
+    -webkit-padding-start: 2.1rem !important;
+    padding-inline-start: 2.1rem !important;
+    padding-bottom: 8px;
 }

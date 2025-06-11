@@ -1,4 +1,4 @@
-import { DataSnapshot, off, ref } from "@firebase/database";
+import { DataSnapshot, off, ref } from "firebase/database";
 import { IonIcon, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { get, onValue } from "firebase/database";
 import { closeOutline } from "ionicons/icons";
@@ -13,6 +13,7 @@ import { auth, db, signOutAndCleanUp } from "../firebase";
 import { checkKeys, decrypt, goBackSafely, makeRequest, toast } from "../helpers";
 import history from "../history";
 import Preloader from "./Preloader";
+import * as Sentry from "@sentry/react";
 
 interface GapFundData {
     email: string;
@@ -56,9 +57,9 @@ const GapFund = () => {
                     dates.add(DateTime.fromMillis(log.timestamp).toISODate());
                 }
 
-                // If person has journaled on at least 14 of the last 18 days (dayWindow),
+                // If person has journaled on at least 9 of the last 18 days (dayWindow),
                 // they're eligible
-                if (dates.size >= 14) {
+                if (dates.size >= 9) {
                     setGapFundData(SubmissionState.NO_SUBMISSION);
                 } else {
                     setGapFundData(SubmissionState.NOT_ELIGIBLE);
@@ -66,6 +67,10 @@ const GapFund = () => {
             } else {
                 if ("data" in data) {
                     if (!keys) {
+                        Sentry.addBreadcrumb({
+                            category: "GapFund.tsx",
+                            message: "Sign Out"
+                        });
                         signOutAndCleanUp();
                         return;
                     } else if (typeof keys === "string") {
@@ -119,7 +124,7 @@ const GapFund = () => {
 
     return (
         <div className="container">
-            <IonIcon class="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
+            <IonIcon className="top-corner x" icon={closeOutline} onClick={goBackSafely}></IonIcon>
             <div className="center-journal container">
                 <div className="title">baseline Gap Fund</div>
                 <p className="text-center">
@@ -153,12 +158,12 @@ const GapFund = () => {
                         <p>Make sure you get this right — we'll be sending more information here. If your email is monitored by people
                             you don't want seeing this request, make a burner email, or list a safer contact method above.
                         </p>
-                        <br />
+                        <div className="br"></div>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">What do you need money for?</IonLabel>
                             <Textarea id="need" getter={need} setter={setNeed} placeholder="At least two sentences — the more detail, the better." />
                         </IonItem>
-                        <br />
+                        <div className="br"></div>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">How much money do you need?</IonLabel>
                             <Textarea id="amount" getter={amount} setter={setAmount} />
@@ -166,7 +171,7 @@ const GapFund = () => {
                         <p>We may not be able to give the full amount you need due to financial limitations, 
                             so list multiple amounts if there are different ways we can help you.
                             We'll try our best to complete your full request.</p>
-                        <br />
+                        <div className="br"></div>
                         <IonItem>
                             <IonLabel className="ion-text-wrap" position="stacked">Paypal / Venmo / Cash App / Zelle</IonLabel>
                             <Textarea id="method" getter={method} setter={setMethod} placeholder={"Give the name of the method and your username."} />
@@ -180,7 +185,7 @@ const GapFund = () => {
                             This information is used to match you with any other 
                             services that might be able to help you in your area.
                         </p>
-                        <br />
+                        <div className="br"></div>
                         <div className="finish-button" onClick={submit}>
                             { !submitting && <>Submit</> }
                             { submitting && <IonSpinner className="loader" name="crescent" /> }

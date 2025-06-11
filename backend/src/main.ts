@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { UserRequest, validateKeys } from "./helpers.js";
+import { AnyMap, UserRequest, validateKeys } from "./helpers.js";
 import { getDatabase } from "firebase-admin/database";
 import { getStorage } from "firebase-admin/storage";
 import AES from "crypto-js/aes.js";
@@ -12,45 +12,6 @@ import { v4 as uuidv4 } from "uuid";
 import { PubSub } from "@google-cloud/pubsub";
 
 const pubsub = new PubSub();
-
-export const getImage = async (req: UserRequest, res: Response) => {
-    const db = getDatabase();
-
-    const body = req.body;
-    const encryptionKey = await validateKeys(body.keys, db, req.user!.user_id);
-    if (!encryptionKey) {
-        res.send(400);
-        return;
-    }
-
-    const filename = body.filename;
-    // Max length: 32-char UUID.webp.enc
-    if (typeof filename !== "string" || filename.length > 45) {
-        res.send(400);
-        return;
-    }
-
-    let file;
-    try {
-        file = await getStorage().bucket().file(`user/${req.user!.uid}/${filename}`).download();
-    } catch {
-        // File doesn't exist, fail
-        res.send(400);
-        return;
-    }
-
-    // Null check for type safety
-    if (!file) {
-        res.send(400);
-        return;
-    }
-
-    if (filename.endsWith(".enc")) {
-        res.send(AES.decrypt(file[0].toString("utf8"), encryptionKey).toString(aesutf8));
-    } else {
-        res.send(`data:image/webp;base64,${file[0].toString("base64")}`);
-    }
-}
 
 export const survey = async (req: UserRequest, res: Response) => {
     const body = req.body;
@@ -176,13 +137,15 @@ export const survey = async (req: UserRequest, res: Response) => {
 }
 
 export const moodLog = async (req: UserRequest, res: Response) => {
+    console.log("hello")
     const MEGABYTE = 1024 * 1024;
     let { data, files } : any = await new Promise(resolve => {
-        formidable({ keepExtensions: true, multiples: true, maxFileSize: (8 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
+        formidable({ keepExtensions: true, multiples: true, maxFileSize: (500 * MEGABYTE) }).parse(req, (err: any, data: any, files: any) => {
             if (err) {
                 if (err.httpCode === 413) {
-                    res.status(400).send("Please keep your images under 8MB.");
+                    res.status(400).send("Your images or audio recording are too big. If it's an image, remove it and try again. If it's an audio recording, you may need to make a smaller recording.");
                 } else {
+                    console.warn(err);
                     res.status(400).send("Something's wrong with your images. Please remove them and try again.");
                 }
             }
@@ -211,7 +174,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Journal validation
     const MAX_CHARS = 25000;
     if (typeof data.journal !== "string" || data.journal.length > MAX_CHARS) {
-        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters. You can split up your journal into multiple logs if you need to.`);
+        res.status(400).send(`Please keep journals below ${MAX_CHARS} characters. You can split up your journal into multiple entries if you need to.`);
         return;
     }
 
@@ -222,29 +185,71 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    const globalNow = DateTime.utc();
+    /// Non-now journaling validation
+    // Basic property validation
+    data.editTimestamp = data.editTimestamp ? Number(data.editTimestamp) : null;
+    if (data.editTimestamp) {
+        if (typeof data.editTimestamp !== "number" || isNaN(data.editTimestamp) || data.editTimestamp !== parseInt(data.editTimestamp) || data.editTimestamp < 0) {
+            res.send(400);
+            return;
+        }
+    }
 
-    // Timezone validation
+    if (data.editTimestamp && data.addFlag) {
+        res.send(400);
+        return;
+    }
+
+    // Set globalNow based on sent properties
+    let globalNow = DateTime.utc();
+
+    if (data.addFlag) {
+        if (typeof data.addFlag !== "string" || !data.addFlag.startsWith("summary:")) {
+            res.send(400);
+            return;
+        }
+
+        globalNow = DateTime.fromISO(data.addFlag.split(":")[1], { zone: data.timezone });
+
+        if (!globalNow.isValid) {
+            res.send(400);
+            return;
+        }
+    }
+
+    if (data.editTimestamp) {
+        globalNow = DateTime.fromMillis(data.editTimestamp);
+    }
+
+    // Final timezone validation
     if (typeof data.timezone !== "string" || !globalNow.setZone(data.timezone).isValid) {
         res.send(400);
         return;
     }
 
+    // Song validation
+    if (data.song) {
+        if (typeof data.song !== "string" || !data.song.startsWith("spotify:track:") || data.song.length > 100) {
+            res.send(400);
+            return;
+        }
+    }
+
     let filePaths: string[] = [];
-    files = files["file"];
+    let images = files["file"];
     // If user has screenshots:
-    if (files) {
+    if (images) {
         // If there's only one, they'll be given as just an object,
         // so put them into an array
-        if (!Array.isArray(files)) files = [files];
+        if (!Array.isArray(images)) images = [images];
         // Validate file limit
-        if (files.length > 3) {
+        if (images.length > 3) {
             res.send(400);
             return;
         }
 
         let promises = [];
-        for (const file of files) {
+        for (const file of images) {
             // Convert file to WEBP (with compression), and then save
             // Promises array for parallel processing
             try {
@@ -281,26 +286,122 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
     }
 
-    const userNow = globalNow.setZone(data.timezone);
-    const logData = {
-        year: userNow.year,
-        month: userNow.month,
-        day: userNow.day,
-        time: userNow.toFormat("h:mm a"),
-        zone: userNow.zone.name,
-        mood: data.mood,
-        journal: data.journal,
-        average: data.average,
-        files: filePaths,
-    };
+    let logData: AnyMap = {};
+
+    let promises = [];
+
+    // Audio processing
+    let audio = files["audio"] as formidable.File;
+    let audioData = null;
+    if (audio) {        
+        if (Array.isArray(audio)) {
+            res.send(400);
+            return;
+        }
+
+        if (!audio.mimetype) {
+            res.send(400);
+            return;
+        }
+
+        if (audio.size === 0) {
+            res.status(400).send("Your audio journal has no data. Please try submitting/recording again. If you continue to see this message, your device/browser may not support audio recording.");
+            return;
+        }
+
+        const storagePath = "tmp/" + audio.newFilename;
+        promises.push(getStorage().bucket().file(storagePath).save(fs.readFileSync(audio.filepath), { contentType: audio.mimetype ?? undefined }).then(() => {
+            // Clean up temp file
+            fs.rmSync(audio.filepath);
+        }));
+        audioData = {
+            user: req.user!.user_id,
+            log: globalNow.toMillis(),
+            file: storagePath,
+            encryptionKey: encryptionKey
+        }
+    }
+    
+    let setLastUpdated = true;
+    if (!data.editTimestamp) {
+        const userNow = globalNow.setZone(data.timezone);
+        logData = {
+            year: userNow.year,
+            month: userNow.month,
+            day: userNow.day,
+            time: userNow.toFormat("h:mm a"),
+            zone: userNow.zone.name,
+            mood: data.mood,
+            journal: data.journal,
+            average: data.average,
+            files: filePaths,
+        };
+
+        if (data.song) {
+            logData.song = data.song;
+        }
+
+        if (audioData) {
+            logData.journal = "Audio upload and transcription in progress! Check back in a minute.";
+            logData.audio = "inprogress";
+        }
+
+        const lastUpdated = (
+          await db.ref(`/${req.user!.user_id}/lastUpdated`).get()
+        ).val();
+        if (data.addFlag && data.addFlag.startsWith("summary:")) {
+            logData.time = "12:00 PM";
+            logData.zone = "local";
+            logData.addFlag = "summary";
+            logData.timeLogged = DateTime.utc().toMillis();
+
+            if (lastUpdated && lastUpdated > globalNow.toMillis()) {
+                setLastUpdated = false;
+                promises.push(db.ref(`/${req.user!.user_id}/offline`).set(Math.random()));
+            }
+        }
+
+        console.log("hiiii")
+        if (data.addFlag.endsWith("offlineSync")) {
+            console.log("Adding offline sync flag");
+            if (lastUpdated && lastUpdated > globalNow.toMillis()) {
+                setLastUpdated = false;
+            }
+            promises.push(
+              db.ref(`/${req.user!.user_id}/offline`).set(Math.random())
+            );
+        }
+
+        // maybe use addFlag to determine if unsynced + update offline
+    } else {
+        logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
+        if (!logData) {
+            res.send(400);
+            return;
+        }
+
+        logData = JSON.parse(AES.decrypt(logData.data, encryptionKey).toString(aesutf8));
+        logData.mood = data.mood;
+        logData.journal = data.journal;
+        logData.average = data.average;
+        promises.push(db.ref(`/${req.user!.user_id}/offline`).set(Math.random()));
+    }
+    
 
     const p1 = db.ref(`/${req.user!.user_id}/logs/${globalNow.toMillis()}`).set({
         data: AES.encrypt(JSON.stringify(logData), encryptionKey).toString()
     });
 
-    const p2 = db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis());
-    const p3 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
+    const p2 = pubsub.topic("pubsub-trigger-cleanup").publishMessage({ data: Buffer.from(req.user!.user_id) });
 
-    await Promise.all([p1, p2, p3]);
+    if (setLastUpdated) {
+        promises.push(db.ref(`/${req.user!.user_id}/lastUpdated`).set(globalNow.toMillis()));
+    }
+
+    await Promise.all([p1, p2, ...promises]);
+    if (audioData) {
+        await pubsub.topic("pubsub-audio-processing").publishMessage({ json: audioData });
+    }
+    
     res.sendStatus(200);
 }
