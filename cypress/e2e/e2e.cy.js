@@ -12,7 +12,7 @@ const WAIT_FOR_CONSISTENCY = 4000;
 
 const NUM_TOGGLES = 3;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
-const NUM_EXPORTED_JOURNALS = 47;
+const NUM_EXPORTED_JOURNALS = 49;
 
 // Toggle indices
 const REDUCE_MOTION = 0;
@@ -398,6 +398,48 @@ describe("Mobile Flow", () => {
     })
 })
 
+describe("Test Offline Mode with Navigation", () => {
+    it("Journal Offline Mode and Upload When Back Online", () => {
+        let onlineStub;
+
+        Cypress.on('window:before:load', (win) => {
+            onlineStub = cy.stub(win.navigator, 'onLine').value(false);
+        });
+
+        cy.intercept("POST", "/moodLog", {
+            forceNetworkError: true,
+        }).as("postJournal");
+
+        cy.visit("/journal");
+
+        cy.contains("What's happening").should("exist");
+        cy.get("textarea").should("exist").focus();
+        cy.get("textarea").type("This is an offline test");
+        cy.contains("Continue").should("exist").click();
+        cy.contains("Done!").should("exist").click();
+
+        cy.url().should("include", "/summary");
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+
+        cy.intercept("POST", "/moodLog", (req) => {
+            req.continue();
+        });
+        cy.then(() => {
+            onlineStub.value(true);
+            cy.window().then((win) => {
+                win.dispatchEvent(new Event('online'));
+            });
+        });
+
+        cy.wait(WAIT_FOR_CONSISTENCY)
+
+        // Verify sync happened
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
+    });
+});
+
 describe("Desktop Flow", () => {
     beforeEach(() => {
         cy.viewport("macbook-13")
@@ -469,7 +511,7 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get("#search-num-results").should("have.text", "18 entries")
+        cy.get("#search-num-results").should("have.text", "20 entries")
         cy.get(".image-btn").click()
         cy.get("#search-num-results").should("have.text", "1 entry")
         
@@ -537,9 +579,9 @@ describe("Desktop Flow", () => {
 
     it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
         const ldb = new Dexie('ldb')
-        ldb.version(1).stores({
-            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
-        })
+        ldb.version(3).stores({
+            logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced, audio`,
+        });
         
         let date = DateTime.now().minus({ days: 1 });
         for (let i = 0; i < 21; i++) {
