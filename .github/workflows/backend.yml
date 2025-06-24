@@ -3,9 +3,9 @@ name: Deploy Backend
 on:
   push:
     branches:
-      - main
-    paths:
-      - "backend/**"
+      - burgess/pipeline
+    # paths:
+    #   - "backend/**"
   workflow_dispatch:
 
 jobs:
@@ -30,7 +30,72 @@ jobs:
         echo $GOOGLE_APPLICATION_CREDENTIALS > ~/google-credentials.json
         gcloud auth activate-service-account --key-file ~/google-credentials.json
         echo $SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP > getbaselineapp-svc-email.json
-        npm run deploy
+        npm run deploy -- --ingress=all --no-traffic
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
+        SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP: ${{ secrets.SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP }}
+  test:
+    runs-on: ubuntu-latest
+    needs: deploy
+    defaults:
+      run:
+        working-directory: .
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 18
+      uses: actions/setup-node@v4
+      with:
+        node-version: "18.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Build Tests
+      run: |
+        npm install -g ionic
+        npm run build
+        ionic cap sync
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+    - name: Integration Tests
+      run: |
+        PORT=8100 npx react-scripts -r @cypress/instrument-cra start &
+        sleep 60
+        npm run test:e2e
+      env:
+        HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+        HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+        HAPPO_NONCE: ${{ github.run_id }}
+        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+    - name: Upload Test Video
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-video
+        path: cypress/videos
+    - name: Upload Test Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-screenshots
+        path: cypress/screenshots
+  increase-traffic:
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: .
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Increase Traffic
+      run: |
+        echo $GOOGLE_APPLICATION_CREDENTIALS > ~/google-credentials.json
+        gcloud auth activate-service-account --key-file ~/google-credentials.json
+        gcloud run services update-traffic baseline-backend --project getbaselineapp --to-latest --region us-central1
+        gcloud run services update baseline-backend  --project getbaselineapp --platform managed --ingress internal-and-cloud-load-balancing --region us-central1
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GETBASELINEAPP }}
         SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP: ${{ secrets.SVC_EMAIL_SERVICE_ACCOUNT_GETBASELINEAPP }}
