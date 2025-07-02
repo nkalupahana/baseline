@@ -222,19 +222,20 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             return;
         }
 
-        if (data.addFlag.startsWith("summary:")){
-            const timestamp = data.addFlag.split("summary:")[1].split(" ")[0];
+        if (data.addFlag.startsWith("summary:")) {
+            const timestamp = data.addFlag.split("summary:")[1].split(" ")[0]; // this ignores any further flags such as offlineSync
             if (!timestamp || isNaN(Date.parse(timestamp))) {
                 console.log("Invalid summary timestamp:", timestamp);
                 res.send(400);
                 return;
             }
-            globalNow = DateTime.fromISO(data.addFlag.split("summary:")[1], {
+            globalNow = DateTime.fromISO(timestamp, {
                 zone: data.timezone,
             });
         } else if (data.addFlag.includes("offlineSync:")) {
+            // could be both summary and offlineSync
             let timestamp = data.addFlag.split("offlineSync:")[1];
-            if (!timestamp || isNaN(Number(timestamp)) || Number(timestamp) < 0) {
+            if (!timestamp || isNaN(Number(timestamp)) || Number(timestamp) < 0 || timestamp - Date.now() > 1000 * 60 * 60 * 24 * 30) {
                 console.log("Invalid offlineSync timestamp:", timestamp);
                 res.send(400);
                 return;

@@ -203,6 +203,9 @@ const Summary = () => {
                         },
                         body: data
                     });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     // delete the unsynced log from the local database
                     await ldb.logs.where("timestamp").equals(log.timestamp).delete();
                 } catch (error) {

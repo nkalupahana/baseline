@@ -199,7 +199,7 @@ const FinishJournal = props => {
                     timeLogged: DateTime.local().toMillis(),
                     unsynced: 1,
                 }).then(() => {
-                    toast("Mood log saved locally! We'll try to send it when you have internet again.");
+                    toast("Mood log stored offline! We'll try to sync it again when your Internet connection improves.");
                     setSubmitted(true);
                 });
             } else {
