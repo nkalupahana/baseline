@@ -408,8 +408,6 @@ export const moodLog = async (req: UserRequest, res: Response) => {
                 db.ref(`/${req.user!.user_id}/offline`).set(Math.random())
             );
         }
-
-        // maybe use addFlag to determine if unsynced + update offline
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
         if (!logData) {

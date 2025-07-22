@@ -420,6 +420,9 @@ describe("Test Offline Mode with Navigation", () => {
 
         cy.url().should("include", "/summary");
         cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card-log")
+          .contains("This is an offline test")
+          .should("have.length", 1);
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
 
         cy.intercept("POST", "/moodLog", (req) => {
@@ -432,13 +435,71 @@ describe("Test Offline Mode with Navigation", () => {
             });
         });
 
-        cy.wait(WAIT_FOR_CONSISTENCY)
+        // Verify sync happened
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card-log")
+          .contains("This is an offline test")
+          .should("have.length", 1);
+        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
+    });
+
+    it("Image Attachment", () => {
+        let onlineStub;
+
+        Cypress.on("window:before:load", (win) => {
+            onlineStub = cy.stub(win.navigator, "onLine").value(false);
+        });
+
+        cy.intercept("POST", "/moodLog", {
+          forceNetworkError: true,
+        }).as("postJournal");
+
+        cy.visit("/journal");
+
+        cy.contains("What's happening").should("exist");
+        cy.get("textarea").should("exist").focus();
+        cy.get("textarea").type("This is an offline test with an image");
+        cy.contains("Continue").should("exist").click();
+
+        cy.contains("3 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.heic", { force: true })
+        cy.contains("image.heic").should("exist")
+        cy.contains("2 left").should("exist")
+
+        cy.contains("Done!").should("exist").click();
+
+        cy.url().should("include", "/summary");
+        cy.get(".mood-card-log")
+          .last()
+          .contains("This is an offline test with an image");
+        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+
+        cy.intercept("POST", "/moodLog", (req) => {
+          req.continue();
+        });
+        cy.then(() => {
+          onlineStub.value(true);
+          cy.window().then((win) => {
+            win.dispatchEvent(new Event("online"));
+          });
+        });
 
         // Verify sync happened
         cy.get(".mood-card-log").last().contains("This is an offline test");
         cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
-    });
+
+        cy.wait(WAIT_FOR_CONSISTENCY);
+
+        cy.get("img").should("not.exist");
+        cy.get("ion-icon.close-btn").eq(-2).click();
+        cy.get("img").should("exist");
+        cy.get(".dot").should("have.length", 1);
+        cy.get("ion-icon.close-btn").eq(-2).click();
+        cy.get("img").should("not.exist");
+    })
 });
+
 
 describe("Desktop Flow", () => {
     beforeEach(() => {

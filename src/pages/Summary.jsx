@@ -156,6 +156,13 @@ const Summary = () => {
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey()))).val();
             processNewData(newData, keys);
             await ldb.logs.clear();
+            // make sure unsynced dont get overwritten
+            const unsyncedLogs = await ldb.logs.where("unsynced").equals(1).toArray();
+            if (unsyncedLogs.length > 0) {
+                for (let log of unsyncedLogs) {
+                    newData[log.timestamp] = log;
+                }
+            }
             await ldb.logs.bulkPut(Object.values(newData));
             localStorage.setItem("offline", offlineValue);
         };

@@ -182,26 +182,44 @@ const FinishJournal = props => {
             });
         } catch (e) {
             if (networkFailure(e.message)) {
-                ldb.logs.add({
-                    timestamp: DateTime.local().toMillis(),
-                    year: DateTime.local().year,
-                    month: DateTime.local().month,
-                    day: DateTime.local().day,
-                    time: DateTime.local().toFormat("h:mm a"),
-                    zone: DateTime.local().zoneName,
-                    mood: props.moodWrite,
-                    journal: props.text,
-                    average: props.average,
-                    audio: audioBlob,
-                    song: props.song,
-                    files: props.files,
-                    addFlag: props.addFlag,
-                    timeLogged: DateTime.local().toMillis(),
-                    unsynced: 1,
-                }).then(() => {
-                    toast("Mood log stored offline! We'll try to sync it again when your Internet connection improves.");
-                    setSubmitted(true);
-                });
+                if (props.editTimestamp) {
+                    // edit in ldb
+                    ldb.logs.update(props.editTimestamp, {
+                        mood: props.moodWrite,
+                        journal: props.text,
+                        average: props.average,
+                        audio: audioBlob,
+                        song: props.song,
+                        files: props.files,
+                        addFlag: props.addFlag,
+                        timeLogged: DateTime.local().toMillis(),
+                        unsynced: 1
+                    }).then(() => {
+                        toast("Mood log updated offline! We'll try to sync it again when your Internet connection improves.");
+                        setSubmitted(true);
+                    });
+                } else {
+                    ldb.logs.add({
+                        timestamp: DateTime.local().toMillis(),
+                        year: DateTime.local().year,
+                        month: DateTime.local().month,
+                        day: DateTime.local().day,
+                        time: DateTime.local().toFormat("h:mm a"),
+                        zone: DateTime.local().zoneName,
+                        mood: props.moodWrite,
+                        journal: props.text,
+                        average: props.average,
+                        audio: audioBlob,
+                        song: props.song,
+                        files: props.files,
+                        addFlag: props.addFlag,
+                        timeLogged: DateTime.local().toMillis(),
+                        unsynced: 1,
+                    }).then(() => {
+                        toast("Mood log stored offline! We'll try to sync it again when your Internet connection improves.");
+                        setSubmitted(true);
+                    });
+                }
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }
