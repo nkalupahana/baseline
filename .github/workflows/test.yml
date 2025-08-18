@@ -158,7 +158,6 @@ jobs:
         path: android/app/build/outputs
 
   ios:
-    needs: frontend
     runs-on: macos-15
     concurrency:
       group: "ios"
