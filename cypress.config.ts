@@ -4,6 +4,7 @@ export default defineConfig({
   e2e: {
     testIsolation: false,
     video: true,
+    videoCompression: true,
     setupNodeEvents(on, config) {
       return require("./cypress/plugins/index.js")(on, config);
     },
