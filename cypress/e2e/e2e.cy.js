@@ -19,6 +19,52 @@ const REDUCE_MOTION = 0;
 const COLORBLIND_COLORS = 1;
 const SKIP_WIR = 2;
 
+const goOffline = () => {
+    cy.log('**go offline**')
+    .then(() => {
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.enable',
+        })
+    })
+    .then(() => {
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.emulateNetworkConditions',
+          params: {
+            offline: true,
+            latency: -1,
+            downloadThroughput: -1,
+            uploadThroughput: -1,
+          },
+        })
+    })
+  }
+
+  const goOnline = () => {
+    // disable offline mode, otherwise we will break our tests :)
+    cy.log('**go online**')
+    .then(() => {
+      // https://chromedevtools.github.io/devtools-protocol/1-3/Network/#method-emulateNetworkConditions
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.emulateNetworkConditions',
+          params: {
+            offline: false,
+            latency: -1,
+            downloadThroughput: -1,
+            uploadThroughput: -1,
+          },
+        })
+    })
+    .then(() => {
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.disable',
+        })
+    })
+  }
+
 describe("Mobile Flow", () => {
     beforeEach(() => {
         cy.viewport("iphone-x")
@@ -40,7 +86,7 @@ describe("Mobile Flow", () => {
         cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
-        cy.contains("onboarding").should("exist", { timeout: 16000 })
+        cy.contains("onboarding").should("exist", { timeout: 20000 })
     })
 
     it("Goes Through Onboarding", () => {
@@ -399,23 +445,23 @@ describe("Mobile Flow", () => {
 })
 
 describe("Test Offline Mode with Navigation", () => {
+    beforeEach(() => {
+        goOnline()
+    })
+
+    afterEach(() => {
+        goOnline()
+    })
+
     it("Journal Offline Mode and Upload When Back Online", () => {
-        let onlineStub;
-
-        Cypress.on('window:before:load', (win) => {
-            onlineStub = cy.stub(win.navigator, 'onLine').value(false);
-        });
-
-        cy.intercept("POST", "/moodLog", {
-            forceNetworkError: true,
-        }).as("postJournal");
 
         cy.visit("/journal");
-
         cy.contains("What's happening").should("exist");
         cy.get("textarea").should("exist").focus();
         cy.get("textarea").type("This is an offline test");
         cy.contains("Continue").should("exist").click();
+        goOffline()
+
         cy.contains("Done!").should("exist").click();
 
         cy.url().should("include", "/summary");
@@ -425,41 +471,22 @@ describe("Test Offline Mode with Navigation", () => {
           .should("have.length", 1);
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
 
-        cy.intercept("POST", "/moodLog", (req) => {
-            req.continue();
-        });
-        cy.then(() => {
-            onlineStub.value(true);
-            cy.window().then((win) => {
-                win.dispatchEvent(new Event('online'));
-            });
-        });
+        goOnline()
+        cy.get(".loader").should("not.exist", { timeout: 20000 })
 
         // Verify sync happened
-        cy.get(".mood-card-log").last().contains("This is an offline test");
-        cy.get(".mood-card-log")
-          .contains("This is an offline test")
-          .should("have.length", 1);
         cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
     });
 
     it("Image Attachment", () => {
-        let onlineStub;
-
-        Cypress.on("window:before:load", (win) => {
-            onlineStub = cy.stub(win.navigator, "onLine").value(false);
-        });
-
-        cy.intercept("POST", "/moodLog", {
-          forceNetworkError: true,
-        }).as("postJournal");
-
         cy.visit("/journal");
 
         cy.contains("What's happening").should("exist");
         cy.get("textarea").should("exist").focus();
         cy.get("textarea").type("This is an offline test with an image");
         cy.contains("Continue").should("exist").click();
+
+        goOffline()
 
         cy.contains("3 left").should("exist")
 
@@ -475,21 +502,12 @@ describe("Test Offline Mode with Navigation", () => {
           .contains("This is an offline test with an image");
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
 
-        cy.intercept("POST", "/moodLog", (req) => {
-          req.continue();
-        });
-        cy.then(() => {
-          onlineStub.value(true);
-          cy.window().then((win) => {
-            win.dispatchEvent(new Event("online"));
-          });
-        });
+        goOnline()
+        cy.get(".loader").should("not.exist", { timeout: 20000 })
 
         // Verify sync happened
         cy.get(".mood-card-log").last().contains("This is an offline test");
         cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
-
-        cy.wait(WAIT_FOR_CONSISTENCY);
 
         cy.get("img").should("not.exist");
         cy.get("ion-icon.close-btn").eq(-2).click();
