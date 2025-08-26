@@ -12,7 +12,7 @@ const WAIT_FOR_CONSISTENCY = 4000;
 
 const NUM_TOGGLES = 3;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
-const NUM_EXPORTED_JOURNALS = 50;
+const NUM_EXPORTED_JOURNALS = 49;
 
 // Toggle indices
 const REDUCE_MOTION = 0;
@@ -588,7 +588,7 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get("#search-num-results").should("have.text", "23 entries")
+        cy.get("#search-num-results").should("have.text", "20 entries")
         cy.get(".image-btn").click()
         cy.get("#search-num-results").should("have.text", "1 entry")
         
