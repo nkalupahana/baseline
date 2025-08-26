@@ -506,8 +506,9 @@ describe("Test Offline Mode with Navigation", () => {
         cy.get(".loader", { timeout: 20000 }).should("not.exist")
 
         // Verify sync happened
-        cy.get(".mood-card-log").last().should("contain", "This is an offline test with an image");
         cy.get("#cloudOffline").should("not.exist");
+        cy.get(".loader", { timeout: 20000 }).should("not.exist")
+        cy.get(".mood-card-log", { timeout: 20000 }).last().should("contain", "This is an offline test with an image");
 
         cy.get("img").should("not.exist");
         cy.get(".mood-card-log").last().scrollIntoView()
