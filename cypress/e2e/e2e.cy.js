@@ -510,6 +510,7 @@ describe("Test Offline Mode with Navigation", () => {
         cy.get("#cloudOffline").should("not.exist");
 
         cy.get("img").should("not.exist");
+        cy.get(".mood-card-log").last().scrollIntoView()
         cy.get(".mood-card-log").last().click()
         cy.get("img", { timeout: 20000 }).should("exist");
     })
