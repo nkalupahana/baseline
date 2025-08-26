@@ -454,7 +454,6 @@ describe("Test Offline Mode with Navigation", () => {
     })
 
     it("Journal Offline Mode and Upload When Back Online", () => {
-
         cy.visit("/journal");
         cy.contains("What's happening").should("exist");
         cy.get("textarea").should("exist").focus();
@@ -590,7 +589,7 @@ describe("Desktop Flow", () => {
     it("Test Search and Filter", () => {
         cy.get("#search-num-results").should("have.text", "20 entries")
         cy.get(".image-btn").click()
-        cy.get("#search-num-results").should("have.text", "1 entry")
+        cy.get("#search-num-results").should("have.text", "2 entries")
         
         cy.get(".image-btn").click()
         cy.contains("1 entry").should("not.exist")

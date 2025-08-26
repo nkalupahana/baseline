@@ -3,6 +3,7 @@ import { defineConfig } from "cypress";
 export default defineConfig({
   e2e: {
     testIsolation: false,
+    video: true,
     setupNodeEvents(on, config) {
       return require("./cypress/plugins/index.js")(on, config);
     },
