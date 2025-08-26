@@ -470,7 +470,6 @@ describe("Test Offline Mode with Navigation", () => {
           .contains("This is an offline test")
           .should("have.length", 1);
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
-        cy.get(".mood-card").last().happoScreenshot()
 
         goOnline()
         cy.get(".loader").should("not.exist", { timeout: 20000 })
@@ -503,7 +502,6 @@ describe("Test Offline Mode with Navigation", () => {
           .last()
           .contains("This is an offline test with an image");
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
-        cy.get(".mood-card").last().happoScreenshot()
 
         goOnline()
         cy.get(".loader").should("not.exist", { timeout: 20000 })
