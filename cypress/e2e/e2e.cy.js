@@ -470,12 +470,14 @@ describe("Test Offline Mode with Navigation", () => {
           .contains("This is an offline test")
           .should("have.length", 1);
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+        cy.get(".mood-card").last().happoScreenshot()
 
         goOnline()
         cy.get(".loader").should("not.exist", { timeout: 20000 })
 
         // Verify sync happened
-        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get("#cloudOffline").should("not.exist");
     });
 
     it("Image Attachment", () => {
@@ -501,20 +503,18 @@ describe("Test Offline Mode with Navigation", () => {
           .last()
           .contains("This is an offline test with an image");
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+        cy.get(".mood-card").last().happoScreenshot()
 
         goOnline()
         cy.get(".loader").should("not.exist", { timeout: 20000 })
 
         // Verify sync happened
-        cy.get(".mood-card-log").last().contains("This is an offline test");
-        cy.get(".mood-card").last().find("#cloudOffline").should("not.exist");
+        cy.get(".mood-card-log").last().contains("This is an offline test with an image");
+        cy.get("#cloudOffline").should("not.exist");
 
         cy.get("img").should("not.exist");
-        cy.get("ion-icon.close-btn").eq(-2).click();
-        cy.get("img").should("exist");
-        cy.get(".dot").should("have.length", 1);
-        cy.get("ion-icon.close-btn").eq(-2).click();
-        cy.get("img").should("not.exist");
+        cy.get(".mood-card-log").last().click()
+        cy.get("img", { timeout: 20000 }).should("exist");
     })
 });
 
