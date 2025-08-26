@@ -474,7 +474,7 @@ describe("Test Offline Mode with Navigation", () => {
         cy.get(".loader", { timeout: 20000 }).should("not.exist")
 
         // Verify sync happened
-        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card-log").last().should("contain", "This is an offline test");
         cy.get("#cloudOffline").should("not.exist");
     });
 
@@ -503,10 +503,10 @@ describe("Test Offline Mode with Navigation", () => {
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
 
         goOnline()
-        cy.get(".loader", { timeout: 20000 }).should("not.exist", )
+        cy.get(".loader", { timeout: 20000 }).should("not.exist")
 
         // Verify sync happened
-        cy.get(".mood-card-log").last().contains("This is an offline test with an image");
+        cy.get(".mood-card-log").last().should("contain", "This is an offline test with an image");
         cy.get("#cloudOffline").should("not.exist");
 
         cy.get("img").should("not.exist");
