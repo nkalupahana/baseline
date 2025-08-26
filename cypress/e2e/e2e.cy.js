@@ -86,7 +86,7 @@ describe("Mobile Flow", () => {
         cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
-        cy.contains("onboarding").should("exist", { timeout: 20000 })
+        cy.contains("onboarding", { timeout: 20000 }).should("exist")
     })
 
     it("Goes Through Onboarding", () => {
@@ -472,7 +472,7 @@ describe("Test Offline Mode with Navigation", () => {
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
 
         goOnline()
-        cy.get(".loader").should("not.exist", { timeout: 20000 })
+        cy.get(".loader", { timeout: 20000 }).should("not.exist")
 
         // Verify sync happened
         cy.get(".mood-card-log").last().contains("This is an offline test");
@@ -504,7 +504,7 @@ describe("Test Offline Mode with Navigation", () => {
         cy.get(".mood-card").last().find("#cloudOffline").should("exist");
 
         goOnline()
-        cy.get(".loader").should("not.exist", { timeout: 20000 })
+        cy.get(".loader", { timeout: 20000 }).should("not.exist", )
 
         // Verify sync happened
         cy.get(".mood-card-log").last().contains("This is an offline test with an image");
@@ -719,7 +719,7 @@ describe("Desktop Flow", () => {
         }
 
         cy.get(".loader").should("exist")
-        cy.get(".loader").should("not.exist", { timeout: 10000 })
+        cy.get(".loader", { timeout: 10000 }).should("not.exist")
         cy.contains("Question 1/").should("exist").then(el => {
             let questions = Number(el.text().split("/")[1]);
             if (questions === 5) --questions; // Removes skipped question in asQ
@@ -730,7 +730,7 @@ describe("Desktop Flow", () => {
         })
 
         cy.get(".loader").should("exist")
-        cy.get(".loader").should("not.exist", { timeout: 10000 })
+        cy.get(".loader", { timeout: 10000 }).should("not.exist")
         cy.contains("Hi there").should("exist")
         cy.get("ion-icon").eq(1).click()
         cy.contains("Results").should("exist")
