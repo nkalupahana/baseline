@@ -199,7 +199,9 @@ const Summary = () => {
                         data.append("file", file);
                     }
                 }
-                data.append("audio", log.audio);
+                if (log.audioArrayBuffer) {
+                    data.append("audio", new Blob([log.audioArrayBuffer]));
+                }
 
                 let response;
                 try {

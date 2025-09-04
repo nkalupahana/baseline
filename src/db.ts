@@ -18,6 +18,9 @@ export interface Log {
     audio?: string;
     addFlag?: string;
     timeLogged?: number;
+    // For storing audio captured offline
+    // @see https://stackoverflow.com/questions/64424256/using-indexeddb-to-cache-audio-files-not-recommended
+    audioArrayBuffer?: ArrayBuffer;
 }
 
 interface DB extends Dexie {
@@ -27,7 +30,7 @@ interface DB extends Dexie {
 const ldb = new Dexie("ldb");
 
 ldb.version(3).stores({
-    logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced, audio`,
+    logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced`,
 });
 
 ldb.on("close", () => console.log("db was forcibly closed"));

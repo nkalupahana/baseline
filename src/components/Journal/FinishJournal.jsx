@@ -183,23 +183,20 @@ const FinishJournal = props => {
         } catch (e) {
             if (networkFailure(e.message)) {
                 if (props.editTimestamp) {
-                    // edit in ldb
-                    ldb.logs.update(props.editTimestamp, {
+                    // edit existing entry
+                    await ldb.logs.update(props.editTimestamp, {
                         mood: props.moodWrite,
                         journal: props.text,
                         average: props.average,
-                        audio: audioBlob,
                         song: props.song,
                         files: props.files,
                         addFlag: props.addFlag,
                         timeLogged: DateTime.local().toMillis(),
                         unsynced: 1
-                    }).then(() => {
-                        toast("Mood log updated offline! We'll try to sync it again when your Internet connection improves.");
-                        setSubmitted(true);
-                    });
+                    })
                 } else {
-                    ldb.logs.add({
+                    // add new entry
+                    await ldb.logs.add({
                         timestamp: DateTime.local().toMillis(),
                         year: DateTime.local().year,
                         month: DateTime.local().month,
@@ -209,17 +206,17 @@ const FinishJournal = props => {
                         mood: props.moodWrite,
                         journal: props.text,
                         average: props.average,
-                        audio: audioBlob,
+                        audioArrayBuffer: await audioBlob.arrayBuffer(),
                         song: props.song,
                         files: props.files,
                         addFlag: props.addFlag,
                         timeLogged: DateTime.local().toMillis(),
                         unsynced: 1,
-                    }).then(() => {
-                        toast("Mood log stored offline! We'll try to sync it again when your Internet connection improves.");
-                        setSubmitted(true);
-                    });
+                    })
                 }
+
+                toast("Mood log stored offline! We'll try to sync it again when your Internet connection improves.");
+                setSubmitted(true);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }
