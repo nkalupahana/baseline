@@ -150,7 +150,7 @@ const MoodLogList = ({ logs, container, inFullscreen, setInFullscreen, requested
             if (log.zone !== zone) {
                 if (!prevTopDate) prevTopDate = getDateFromLog(top);
                 const addZone = prevTopDate.setZone(log.zone).zone.offsetName(prevTopDate.toMillis(), { format: "short" });
-                if (!log.time.endsWith(addZone) && log.addFlag !== "summary") log.time += " " + addZone;
+                if (!log.time.endsWith(addZone) && !log.addFlag?.includes("summary")) log.time += " " + addZone;
             }
     
             today.push(<MoodLogCard colors={colors} setInFullscreen={setInFullscreen} key={log.timestamp} log={log} reduceMotion={settings.reduceMotion} LOCATOR_OFFSET={LOCATOR_OFFSET} now={nowTimestamp} />);
