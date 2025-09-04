@@ -159,7 +159,7 @@ const Summary = () => {
             // make sure unsynced dont get overwritten
             const unsyncedLogs = await ldb.logs.where("unsynced").equals(1).toArray();
             if (unsyncedLogs.length > 0) {
-                for (let log of unsyncedLogs) {
+                for (const log of unsyncedLogs) {
                     newData[log.timestamp] = log;
                 }
             }
@@ -185,7 +185,7 @@ const Summary = () => {
             const keys = checkKeys();
             if (keys === "discreet") return;
 
-            for (let log of unsyncedLogs) {
+            for (const log of unsyncedLogs) {
                 let data = new FormData();
                 data.append("timezone", DateTime.local().zoneName);
                 data.append("mood", log.mood);
