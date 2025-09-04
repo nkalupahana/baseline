@@ -88,7 +88,7 @@ const MoodLogCard = ({
         above: caretUpOutline,
     };
 
-    const displayedTime = log.addFlag === "summary" ? "Summary" : log.time;
+    const displayedTime = log.addFlag?.includes("summary") ? "Summary" : log.time;
 
     return (
         <div className="mood-card" ref={card}>

@@ -196,17 +196,25 @@ const FinishJournal = props => {
                     })
                 } else {
                     // add new entry
+                    // if summary journal, add at summary time
+                    let journalLocalTime = DateTime.local()
+                    if (props.addFlag.startsWith("summary:")) {
+                        const isoDate = props.addFlag.split("summary:")[1].split(" ")[0];
+                        journalLocalTime = DateTime.fromISO(`${isoDate}T12:00:00`, {
+                            zone: journalLocalTime.zoneName,
+                        });
+                    }
                     await ldb.logs.add({
-                        timestamp: DateTime.local().toMillis(),
-                        year: DateTime.local().year,
-                        month: DateTime.local().month,
-                        day: DateTime.local().day,
-                        time: DateTime.local().toFormat("h:mm a"),
-                        zone: DateTime.local().zoneName,
+                        timestamp: journalLocalTime.toMillis(),
+                        year: journalLocalTime.year,
+                        month: journalLocalTime.month,
+                        day: journalLocalTime.day,
+                        time: journalLocalTime.toFormat("h:mm a"),
+                        zone: journalLocalTime.zoneName,
                         mood: props.moodWrite,
                         journal: props.text,
                         average: props.average,
-                        audioArrayBuffer: await audioBlob.arrayBuffer(),
+                        audioArrayBuffer: await audioBlob?.arrayBuffer(),
                         song: props.song,
                         files: props.files,
                         addFlag: props.addFlag,

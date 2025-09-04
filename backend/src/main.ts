@@ -215,6 +215,11 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Set globalNow based on sent properties
     let globalNow = DateTime.utc();
 
+    // Allowed addFlag formats:
+    // null
+    // summary:SOME-ISO-DATE
+    // offlineSync:unixtimestamp
+    // summary:SOME-ISO-DATE offlineSync:unixtimestamp
     if (data.addFlag) {
         if (typeof data.addFlag !== "string") {
             console.log("Invalid addFlag:", data.addFlag);
@@ -223,17 +228,19 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         }
 
         if (data.addFlag.startsWith("summary:")) {
-            const timestamp = data.addFlag.split("summary:")[1].split(" ")[0]; // this ignores any further flags such as offlineSync
-            if (!timestamp || isNaN(Date.parse(timestamp))) {
-                console.log("Invalid summary timestamp:", timestamp);
+            // this ignores any further flags such as offlineSync.
+            // with summary journaling, only the summary date matters.
+            const isoDate = data.addFlag.split("summary:")[1].split(" ")[0];
+            if (!isoDate || isNaN(Date.parse(isoDate))) {
+                console.log("Invalid summary timestamp:", isoDate);
                 res.send(400);
                 return;
             }
-            globalNow = DateTime.fromISO(timestamp, {
+            globalNow = DateTime.fromISO(isoDate, {
                 zone: data.timezone,
             });
         } else if (data.addFlag.includes("offlineSync:")) {
-            // could be both summary and offlineSync
+            // get the unix timestamp for offline sync
             let timestamp = data.addFlag.split("offlineSync:")[1];
             if (!timestamp || isNaN(Number(timestamp)) || Number(timestamp) < 0 || timestamp - Date.now() > 1000 * 60 * 60 * 24 * 30) {
                 console.log("Invalid offlineSync timestamp:", timestamp);
