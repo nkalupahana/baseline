@@ -151,9 +151,10 @@ const FinishJournal = props => {
         data.append("keys", JSON.stringify(checkKeys()));
         if (props.editTimestamp) data.append("editTimestamp", props.editTimestamp);
         if (props.addFlag) data.append("addFlag", props.addFlag);
+        let audioBlob = null;
 
         if (props.audioChunks.current.length > 0) {
-            const audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
+            audioBlob = new Blob(props.audioChunks.current, { type: props.audioChunks.current[0].type });
             if (audioBlob.size === 0) {
                 const type = Capacitor.getPlatform() === "web" ? "browser" : "device";
                 toast(`Your audio journal has no data. Please try recording again. If you continue to see this message, you will not be able to make audio recordings on this ${type}.`, "top", 8000);
@@ -181,7 +182,49 @@ const FinishJournal = props => {
             });
         } catch (e) {
             if (networkFailure(e.message)) {
-                toast(`We can't reach our servers. Check your internet connection and try again.${props.files.length > 0 ? " Your images might also be too big." : ""}`);
+                if (props.editTimestamp) {
+                    // edit existing entry
+                    await ldb.logs.update(props.editTimestamp, {
+                        mood: props.moodWrite,
+                        journal: props.text,
+                        average: props.average,
+                        song: props.song,
+                        files: props.files,
+                        addFlag: props.addFlag,
+                        timeLogged: DateTime.local().toMillis(),
+                        unsynced: 1
+                    })
+                } else {
+                    // add new entry
+                    // if summary journal, add at summary time
+                    let journalLocalTime = DateTime.local()
+                    if (props.addFlag?.startsWith("summary:")) {
+                        const isoDate = props.addFlag.split("summary:")[1].split(" ")[0];
+                        journalLocalTime = DateTime.fromISO(`${isoDate}T12:00:00`, {
+                            zone: journalLocalTime.zoneName,
+                        });
+                    }
+                    await ldb.logs.add({
+                        timestamp: journalLocalTime.toMillis(),
+                        year: journalLocalTime.year,
+                        month: journalLocalTime.month,
+                        day: journalLocalTime.day,
+                        time: journalLocalTime.toFormat("h:mm a"),
+                        zone: journalLocalTime.zoneName,
+                        mood: props.moodWrite,
+                        journal: props.text,
+                        average: props.average,
+                        audioArrayBuffer: await audioBlob?.arrayBuffer(),
+                        song: props.song,
+                        files: props.files,
+                        addFlag: props.addFlag,
+                        timeLogged: DateTime.local().toMillis(),
+                        unsynced: 1,
+                    })
+                }
+
+                toast("Mood log stored offline! We'll try to sync it again when your Internet connection improves.");
+                setSubmitted(true);
             } else {
                 toast(`Something went wrong, please try again! \nError: ${e.message}`);
             }

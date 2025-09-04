@@ -12,12 +12,58 @@ const WAIT_FOR_CONSISTENCY = 4000;
 
 const NUM_TOGGLES = 3;
 const NUM_EXPORT_FIELDS = dataOptionsObjArr.length;
-const NUM_EXPORTED_JOURNALS = 47;
+const NUM_EXPORTED_JOURNALS = 49;
 
 // Toggle indices
 const REDUCE_MOTION = 0;
 const COLORBLIND_COLORS = 1;
 const SKIP_WIR = 2;
+
+const goOffline = () => {
+    cy.log('**go offline**')
+    .then(() => {
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.enable',
+        })
+    })
+    .then(() => {
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.emulateNetworkConditions',
+          params: {
+            offline: true,
+            latency: -1,
+            downloadThroughput: -1,
+            uploadThroughput: -1,
+          },
+        })
+    })
+  }
+
+  const goOnline = () => {
+    // disable offline mode, otherwise we will break our tests :)
+    cy.log('**go online**')
+    .then(() => {
+      // https://chromedevtools.github.io/devtools-protocol/1-3/Network/#method-emulateNetworkConditions
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.emulateNetworkConditions',
+          params: {
+            offline: false,
+            latency: -1,
+            downloadThroughput: -1,
+            uploadThroughput: -1,
+          },
+        })
+    })
+    .then(() => {
+      return Cypress.automation('remote:debugger:protocol',
+        {
+          command: 'Network.disable',
+        })
+    })
+  }
 
 describe("Mobile Flow", () => {
     beforeEach(() => {
@@ -40,7 +86,7 @@ describe("Mobile Flow", () => {
         cy.contains("Anonymous").click({ force: true })
         cy.contains("Logging in").should("exist")
         cy.contains("keys").should("exist")
-        cy.contains("onboarding").should("exist", { timeout: 16000 })
+        cy.contains("onboarding", { timeout: 20000 }).should("exist")
     })
 
     it("Goes Through Onboarding", () => {
@@ -398,6 +444,80 @@ describe("Mobile Flow", () => {
     })
 })
 
+describe("Test Offline Mode with Navigation", () => {
+    beforeEach(() => {
+        goOnline()
+    })
+
+    afterEach(() => {
+        goOnline()
+    })
+
+    it("Journal Offline Mode and Upload When Back Online", () => {
+        cy.visit("/journal");
+        cy.contains("What's happening").should("exist");
+        cy.get("textarea").should("exist").focus();
+        cy.get("textarea").type("This is an offline test");
+        cy.contains("Continue").should("exist").click();
+        goOffline()
+
+        cy.contains("Done!").should("exist").click();
+
+        cy.url().should("include", "/summary");
+        cy.get(".mood-card-log").last().contains("This is an offline test");
+        cy.get(".mood-card-log")
+          .contains("This is an offline test")
+          .should("have.length", 1);
+        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+
+        goOnline()
+        cy.get(".loader", { timeout: 20000 }).should("not.exist")
+
+        // Verify sync happened
+        cy.get(".mood-card-log").last().should("contain", "This is an offline test");
+        cy.get("#cloudOffline").should("not.exist");
+    });
+
+    it("Image Attachment", () => {
+        cy.visit("/journal");
+
+        cy.contains("What's happening").should("exist");
+        cy.get("textarea").should("exist").focus();
+        cy.get("textarea").type("This is an offline test with an image");
+        cy.contains("Continue").should("exist").click();
+
+        goOffline()
+
+        cy.contains("3 left").should("exist")
+
+        cy.get("input[type=file]").selectFile("cypress/fixtures/image.heic", { force: true })
+        cy.contains("image.heic").should("exist")
+        cy.contains("2 left").should("exist")
+
+        cy.contains("Done!").should("exist").click();
+
+        cy.url().should("include", "/summary");
+        cy.get(".mood-card-log")
+          .last()
+          .contains("This is an offline test with an image");
+        cy.get(".mood-card").last().find("#cloudOffline").should("exist");
+
+        goOnline()
+        cy.get(".loader", { timeout: 20000 }).should("not.exist")
+
+        // Verify sync happened
+        cy.get("#cloudOffline").should("not.exist");
+        cy.get(".loader", { timeout: 20000 }).should("not.exist")
+        cy.get(".mood-card-log", { timeout: 20000 }).last().should("contain", "This is an offline test with an image");
+
+        cy.get("img").should("not.exist");
+        cy.get(".mood-card-log").last().scrollIntoView()
+        cy.get(".mood-card-log").last().click()
+        cy.get("img", { timeout: 20000 }).should("exist");
+    })
+});
+
+
 describe("Desktop Flow", () => {
     beforeEach(() => {
         cy.viewport("macbook-13")
@@ -469,9 +589,9 @@ describe("Desktop Flow", () => {
     })
 
     it("Test Search and Filter", () => {
-        cy.get("#search-num-results").should("have.text", "18 entries")
+        cy.get("#search-num-results").should("have.text", "20 entries")
         cy.get(".image-btn").click()
-        cy.get("#search-num-results").should("have.text", "1 entry")
+        cy.get("#search-num-results").should("have.text", "2 entries")
         
         cy.get(".image-btn").click()
         cy.contains("1 entry").should("not.exist")
@@ -537,9 +657,9 @@ describe("Desktop Flow", () => {
 
     it("Makes User Eligible (Week In Review, Gap Fund, Summary Log)", () => {
         const ldb = new Dexie('ldb')
-        ldb.version(1).stores({
-            logs: `&timestamp, year, month, day, time, zone, mood, journal, average`
-        })
+        ldb.version(3).stores({
+            logs: `&timestamp, year, month, day, time, zone, mood, average, unsynced, audio`,
+        });
         
         let date = DateTime.now().minus({ days: 1 });
         for (let i = 0; i < 21; i++) {
@@ -600,7 +720,7 @@ describe("Desktop Flow", () => {
         }
 
         cy.get(".loader").should("exist")
-        cy.get(".loader").should("not.exist", { timeout: 10000 })
+        cy.get(".loader", { timeout: 10000 }).should("not.exist")
         cy.contains("Question 1/").should("exist").then(el => {
             let questions = Number(el.text().split("/")[1]);
             if (questions === 5) --questions; // Removes skipped question in asQ
@@ -611,7 +731,7 @@ describe("Desktop Flow", () => {
         })
 
         cy.get(".loader").should("exist")
-        cy.get(".loader").should("not.exist", { timeout: 10000 })
+        cy.get(".loader", { timeout: 10000 }).should("not.exist")
         cy.contains("Hi there").should("exist")
         cy.get("ion-icon").eq(1).click()
         cy.contains("Results").should("exist")

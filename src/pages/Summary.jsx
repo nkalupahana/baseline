@@ -22,6 +22,9 @@ import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import StreakDialog from "../components/Streaks/StreakDialog";
 import { calculateStreak } from "../components/Streaks/helpers";
 import * as Sentry from "@sentry/react";
+import { getIdToken } from "firebase/auth";
+import { BASE_URL } from "../helpers";
+import { DateTime } from "luxon";
 
 // Add timestamp to data object, and decrypt as needed
 const processNewData = (newData, keys) => {
@@ -122,7 +125,6 @@ const Summary = () => {
                     window.location.hash = "";
                     return;
                 }
-
                 processNewData(newData, keys);
                 await ldb.logs.bulkPut(Object.values(newData));
             }
@@ -141,6 +143,7 @@ const Summary = () => {
     useEffect(() => {
         if (!user) return;
         const listener = async snap => {
+            console.log("Checking for offline data...");
             let offlineValue = snap.val();
             if (!offlineValue) return;
             offlineValue = String(offlineValue);
@@ -153,6 +156,13 @@ const Summary = () => {
             let newData = (await get(query(ref(db, `/${user.uid}/logs`), orderByKey()))).val();
             processNewData(newData, keys);
             await ldb.logs.clear();
+            // make sure unsynced dont get overwritten
+            const unsyncedLogs = await ldb.logs.where("unsynced").equals(1).toArray();
+            if (unsyncedLogs.length > 0) {
+                for (const log of unsyncedLogs) {
+                    newData[log.timestamp] = log;
+                }
+            }
             await ldb.logs.bulkPut(Object.values(newData));
             localStorage.setItem("offline", offlineValue);
         };
@@ -163,6 +173,68 @@ const Summary = () => {
         return () => {
             off(offlineRef, "value", listener);
         };
+    }, [user]);
+
+    // Upload unsynced data from local database
+    useEffect(() => {
+        if (!user) return;
+        const uploadUnsyncedData = async () => {
+            const unsyncedLogs = await ldb.logs.where("unsynced").equals(1).toArray();
+            if (unsyncedLogs.length === 0) return;
+
+            const keys = checkKeys();
+            if (keys === "discreet") return;
+
+            for (const log of unsyncedLogs) {
+                let data = new FormData();
+                data.append("timezone", DateTime.local().zoneName);
+                data.append("mood", log.mood);
+                data.append("journal", log.journal);
+                data.append("average", log.average);
+                data.append("keys", JSON.stringify(checkKeys()));
+                data.append("addFlag", log.addFlag ? log.addFlag + " offlineSync:" + log.timestamp : " offlineSync:" + log.timestamp);
+                data.append("song", log.song?.uri || "");
+                if (log.files && log.files.length > 0) {
+                    for (let file of log.files) {
+                        data.append("file", file);
+                    }
+                }
+                if (log.audioArrayBuffer) {
+                    data.append("audio", new Blob([log.audioArrayBuffer]));
+                }
+
+                let response;
+                try {
+                    response = await fetch(`${BASE_URL}/moodLog`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${await getIdToken(user)}`,
+                        },
+                        body: data
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    // delete the unsynced log from the local database
+                    await ldb.logs.where("timestamp").equals(log.timestamp).delete();
+                } catch (error) {
+                    console.error("Error uploading unsynced data:", error);
+                    return;
+                }
+                if (!response.ok) {
+                    console.error("Failed to upload unsynced data:", response.statusText);
+                    return;
+                }
+            }
+        };
+
+        window.addEventListener("online", uploadUnsyncedData);
+
+        uploadUnsyncedData();
+
+        return () => {
+            window.removeEventListener("online", uploadUnsyncedData);
+        }
     }, [user]);
 
     useEffect(() => {

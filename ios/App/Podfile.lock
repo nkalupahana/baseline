@@ -281,23 +281,23 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
-  Capacitor: 187bd7847b6f71467015a20200a1a071be3e5f14
-  CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
-  CapacitorCloudkit: a8242b6f83b10564ef6f46b0169a0573436a3d80
-  CapacitorCommunityInAppReview: c69a9392f39a10f28092d823cfa979637f4fa079
-  CapacitorCommunityMedia: 538138898dab7bee12323720c60f27602f358a80
+  Capacitor: 3aff4dee0552f6badcd04f47ab3174387d71f47d
+  CapacitorApp: 30145f2ea2311e4f3744472119ec87d2ddf4c0a7
+  CapacitorCloudkit: 1b6113beb3cd57b09e44d60b2501ea54ae922ee5
+  CapacitorCommunityInAppReview: e5c93959637a956ce993134734d7df90390ea167
+  CapacitorCommunityMedia: 060b6dac77f3004e3d4de20b4be55c4e1899003e
   CapacitorCordova: be703980ca797f847c3356f78fa175d21c8330c2
-  CapacitorDevice: f8fd88f9edd1261c55a109f32015b09bbbfdc4a0
-  CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
-  CapacitorFirebaseAnalytics: ce6ce6b5f29c7df937d9bb0cbcd1af001e16fd80
-  CapacitorFirebaseAuthentication: 8c75784e96c4106ebab9da2fc022366bca661451
-  CapacitorFirebaseMessaging: 449f81e1fffcee3f3934680200742d148b9f269e
-  CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
-  CapacitorKeyboard: 5f32a712adf41e07a61caafb82cf29fb6d8ba123
-  CapacitorLocalNotifications: 4ab68f0be5f697a579558fadd307d823a9ec1c26
-  CapacitorShare: 02222f2457ff003e642370a9c1ecd101baaa27c8
-  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
-  CapacitorWidgetsbridgePlugin: 384cf6a56ba2a3ee6d199579f5403723e766b958
+  CapacitorDevice: 38ad323d74e3a86b56253680538ac23a2c9b4a68
+  CapacitorFilesystem: 9c2cc1e89d3b8b91503b316e9f6c2915c9bf9419
+  CapacitorFirebaseAnalytics: fdc20877af95d34a12035be740b3c82fc29f471d
+  CapacitorFirebaseAuthentication: 2da52a5316691498b18ec3d72a98bfe441503f4f
+  CapacitorFirebaseMessaging: 30cd90cfca30412f7b261ed42fbede478b9a02f7
+  CapacitorHaptics: 0cea833e6a8bf489dd6acaaebf6d953b90086c59
+  CapacitorKeyboard: f38d730356be5569d72eb87ad9c8166947728c36
+  CapacitorLocalNotifications: d051c73ec8bf38807214f5b905ee6426e13756f8
+  CapacitorShare: ec1bcbc16696696133740ac876192c0480ca3018
+  CapacitorStatusBar: 129c68650d3f950e080e8e7e03d69c3b361dbe52
+  CapacitorWidgetsbridgePlugin: 2b25b0ed502849687a3cd4cc63a4409b94119f25
   FirebaseAnalytics: f9211b719db260cc91aebee8bb539cb367d0dfd1
   FirebaseAppCheckInterop: 0dd062c9926a76332ca5711dbed6f1a9ac540b54
   FirebaseAuth: 77a012b7e08042bf44d0db835ca2e86e6ca7bbd3
@@ -323,4 +323,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b00f201807876af247ad9fb545b7616cc0376034
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

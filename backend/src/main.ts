@@ -19,6 +19,7 @@ export const survey = async (req: UserRequest, res: Response) => {
     const encryptionKey = await validateKeys(body.keys, db, req.user!.user_id);
 
     if (!encryptionKey) {
+        console.log("User does not have encryption keys.");
         res.send(400);
         return;
     }
@@ -63,12 +64,14 @@ export const survey = async (req: UserRequest, res: Response) => {
 
     // Validate survey key (is it one we know about/still accept?)
     if (!("key" in body) || typeof body.key !== "string" || !(body.key in VALIDATION)) {
+        console.log("Invalid survey key:", body.key);
         res.send(400);
         return;
     }
 
     // Validate presence of results of survey
     if (!("results" in body)) {
+        console.log("No results sent for survey:", body.key);
         res.send(400);
         return;
     }
@@ -80,6 +83,7 @@ export const survey = async (req: UserRequest, res: Response) => {
 
         // Validate that result is a number, and that it's within bounds
         if (typeof results !== "number" || isNaN(results) || results < RESULT_VAL.min || results > RESULT_VAL.max) {
+            console.log("Invalid result for survey:", body.key, "Result:", results);
             res.send(400);
             return;
         }
@@ -88,6 +92,7 @@ export const survey = async (req: UserRequest, res: Response) => {
 
         // Validate that result is an object
         if (typeof results !== "object") {
+            console.log("Invalid result type for survey:", body.key, "Result:", results);
             res.send(400);
             return;
         }
@@ -101,6 +106,7 @@ export const survey = async (req: UserRequest, res: Response) => {
         for (const key_ in results) {
             const key = isNaN(Number(key_)) ? key_ : Number(key_);
             if (!keys.includes(key)) {
+                console.log("Invalid key in results for survey:", body.key, "Key:", key);
                 res.send(400);
                 return;
             }
@@ -109,6 +115,7 @@ export const survey = async (req: UserRequest, res: Response) => {
         }
 
         if (keys.length !== 0) {
+            console.log("Missing keys in results for survey:", body.key, "Keys:", keys);
             res.send(400);
             return;
         }
@@ -121,6 +128,7 @@ export const survey = async (req: UserRequest, res: Response) => {
                 results[key] < RESULT_VAL.min[key as number] || 
                 results[key] > RESULT_VAL.max[key as number]
             ) {
+                console.log("Invalid value for key in results for survey:", body.key, "Key:", key, "Value:", results[key]);
                 res.send(400);
                 return;
             }
@@ -159,6 +167,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     const encryptionKey = await validateKeys(data.keys, db, req.user!.user_id);
 
     if (!encryptionKey) {
+        console.log("User does not have encryption keys.");
         res.send(400);
         return;
     }
@@ -166,6 +175,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Mood validation
     data.mood = Number(data.mood);
     if (typeof data.mood !== "number" || isNaN(data.mood) || data.mood < -5 || data.mood > 5 || data.mood !== parseInt(data.mood)) {
+        console.log("Invalid mood:", data.mood);
         res.send(400);
         return;
     }
@@ -180,7 +190,8 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Average validation
     const acceptedAverages = ["below", "average", "above"];
     if (typeof data.average !== "string" || !acceptedAverages.includes(data.average)) {
-        res.send(400);
+        console.log("Invalid average:", data.average);
+        res.status(400);
         return;
     }
 
@@ -189,12 +200,14 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     data.editTimestamp = data.editTimestamp ? Number(data.editTimestamp) : null;
     if (data.editTimestamp) {
         if (typeof data.editTimestamp !== "number" || isNaN(data.editTimestamp) || data.editTimestamp !== parseInt(data.editTimestamp) || data.editTimestamp < 0) {
+            console.log("Invalid editTimestamp:", data.editTimestamp);
             res.send(400);
             return;
         }
     }
 
     if (data.editTimestamp && data.addFlag) {
+        console.log("Cannot have both editTimestamp and addFlag");
         res.send(400);
         return;
     }
@@ -202,15 +215,43 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Set globalNow based on sent properties
     let globalNow = DateTime.utc();
 
+    // Allowed addFlag formats:
+    // null
+    // summary:SOME-ISO-DATE
+    // offlineSync:unixtimestamp
+    // summary:SOME-ISO-DATE offlineSync:unixtimestamp
     if (data.addFlag) {
-        if (typeof data.addFlag !== "string" || !data.addFlag.startsWith("summary:")) {
+        if (typeof data.addFlag !== "string") {
+            console.log("Invalid addFlag:", data.addFlag);
             res.send(400);
             return;
         }
 
-        globalNow = DateTime.fromISO(data.addFlag.split(":")[1], { zone: data.timezone });
+        if (data.addFlag.startsWith("summary:")) {
+            // this ignores any further flags such as offlineSync.
+            // with summary journaling, only the summary date matters.
+            const isoDate = data.addFlag.split("summary:")[1].split(" ")[0];
+            if (!isoDate || isNaN(Date.parse(isoDate))) {
+                console.log("Invalid summary timestamp:", isoDate);
+                res.send(400);
+                return;
+            }
+            globalNow = DateTime.fromISO(isoDate, {
+                zone: data.timezone,
+            });
+        } else if (data.addFlag.includes("offlineSync:")) {
+            // get the unix timestamp for offline sync
+            let timestamp = data.addFlag.split("offlineSync:")[1];
+            if (!timestamp || isNaN(Number(timestamp)) || Number(timestamp) < 0 || timestamp - Date.now() > 1000 * 60 * 60 * 24 * 30) {
+                console.log("Invalid offlineSync timestamp:", timestamp);
+                res.send(400);
+                return;
+            }
+            globalNow = DateTime.fromMillis(Number(timestamp));
+        }
 
         if (!globalNow.isValid) {
+            console.log("Invalid globalNow:", globalNow);
             res.send(400);
             return;
         }
@@ -222,6 +263,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
 
     // Final timezone validation
     if (typeof data.timezone !== "string" || !globalNow.setZone(data.timezone).isValid) {
+        console.log("Invalid timezone:", data.timezone);
         res.send(400);
         return;
     }
@@ -229,6 +271,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     // Song validation
     if (data.song) {
         if (typeof data.song !== "string" || !data.song.startsWith("spotify:track:") || data.song.length > 100) {
+            console.log("Invalid song:", data.song);
             res.send(400);
             return;
         }
@@ -243,6 +286,7 @@ export const moodLog = async (req: UserRequest, res: Response) => {
         if (!Array.isArray(images)) images = [images];
         // Validate file limit
         if (images.length > 3) {
+            res.status(400).send("You can only upload up to 3 images at a time.");
             res.send(400);
             return;
         }
@@ -294,11 +338,13 @@ export const moodLog = async (req: UserRequest, res: Response) => {
     let audioData = null;
     if (audio) {        
         if (Array.isArray(audio)) {
+            console.log("Multiple audio files sent, but only one is allowed.");
             res.send(400);
             return;
         }
 
         if (!audio.mimetype) {
+            console.log("No audio mimetype sent.");
             res.send(400);
             return;
         }
@@ -345,21 +391,34 @@ export const moodLog = async (req: UserRequest, res: Response) => {
             logData.audio = "inprogress";
         }
 
+        const lastUpdated = (
+          await db.ref(`/${req.user!.user_id}/lastUpdated`).get()
+        ).val();
         if (data.addFlag && data.addFlag.startsWith("summary:")) {
             logData.time = "12:00 PM";
             logData.zone = "local";
             logData.addFlag = "summary";
             logData.timeLogged = DateTime.utc().toMillis();
 
-            const lastUpdated = (await db.ref(`/${req.user!.user_id}/lastUpdated`).get()).val();
             if (lastUpdated && lastUpdated > globalNow.toMillis()) {
                 setLastUpdated = false;
                 promises.push(db.ref(`/${req.user!.user_id}/offline`).set(Math.random()));
             }
         }
+
+        if (data.addFlag && data.addFlag.includes("offlineSync:")) {
+            console.log("Adding offline sync flag");
+            if (lastUpdated && lastUpdated > globalNow.toMillis()) {
+                setLastUpdated = false;
+            }
+            promises.push(
+                db.ref(`/${req.user!.user_id}/offline`).set(Math.random())
+            );
+        }
     } else {
         logData = await (await db.ref(`/${req.user!.user_id}/logs/${data.editTimestamp}`).get()).val();
         if (!logData) {
+            console.log("No log data found for editTimestamp:", data.editTimestamp);
             res.send(400);
             return;
         }
