@@ -48,6 +48,7 @@ const MoodLogCard = ({
                 (log.files && log.files.length > 0) ||
                 log.song ||
                 log.audio ||
+                log.audioArrayBuffer ||
                 logContainer.current?.offsetHeight === NOGROW_HEIGHT
             ) {
                 setGrow(true);
@@ -157,7 +158,7 @@ const MoodLogCard = ({
                                 onClick={toggleGrow}
                             />
                         )}
-                        {log.audio && (
+                        {(log.audio || log.audioArrayBuffer) && (
                             <IonIcon
                                 className="close-btn mood-edit-btn audio-btn"
                                 icon={volumeHigh}
@@ -170,7 +171,7 @@ const MoodLogCard = ({
                 {grow && (
                     <>
                         {((log.files && log.files.length > 0) ||
-                            log.audio ||
+                            log.audio || log.audioArrayBuffer ||
                             log.song) &&
                             !window.navigator.onLine && (
                                 <p className="pad-left">
@@ -213,7 +214,7 @@ const MoodLogCard = ({
                     </>
                 )}
                 {now - (log.timeLogged ?? log.timestamp) < ONE_MINUTE * 15 &&
-                    log.audio !== "inprogress" && (
+                    log.audio !== "inprogress" && !log.audioArrayBuffer && (
                         <IonIcon
                             className="close-btn mood-edit-btn"
                             icon={pencil}
