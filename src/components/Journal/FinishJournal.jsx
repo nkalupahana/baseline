@@ -198,7 +198,7 @@ const FinishJournal = props => {
                     // add new entry
                     // if summary journal, add at summary time
                     let journalLocalTime = DateTime.local()
-                    if (props.addFlag.startsWith("summary:")) {
+                    if (props.addFlag?.startsWith("summary:")) {
                         const isoDate = props.addFlag.split("summary:")[1].split(" ")[0];
                         journalLocalTime = DateTime.fromISO(`${isoDate}T12:00:00`, {
                             zone: journalLocalTime.zoneName,
