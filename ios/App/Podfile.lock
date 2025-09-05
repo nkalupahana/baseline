@@ -9,7 +9,7 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (7.0.2):
     - Capacitor
-  - CapacitorCloudkit (3.0.0):
+  - CapacitorCloudkit (4.0.0):
     - Capacitor
   - CapacitorCommunityInAppReview (7.0.1):
     - Capacitor
@@ -203,7 +203,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
-  - CapacitorCloudkit (from `../../../capacitor-cloudkit`)
+  - CapacitorCloudkit (from `../../node_modules/capacitor-cloudkit`)
   - "CapacitorCommunityInAppReview (from `../../node_modules/@capacitor-community/in-app-review`)"
   - "CapacitorCommunityMedia (from `../../node_modules/@capacitor-community/media`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
@@ -257,7 +257,7 @@ EXTERNAL SOURCES:
   CapacitorApp:
     :path: "../../node_modules/@capacitor/app"
   CapacitorCloudkit:
-    :path: "../../../capacitor-cloudkit"
+    :path: "../../node_modules/capacitor-cloudkit"
   CapacitorCommunityInAppReview:
     :path: "../../node_modules/@capacitor-community/in-app-review"
   CapacitorCommunityMedia:
@@ -291,7 +291,7 @@ SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   Capacitor: 28d6c01026a9a3f7156529498ec1f389a2a28dbc
   CapacitorApp: 1f6922c9c5c8b1c538d7fbe92ebe44a81b34bed3
-  CapacitorCloudkit: 4736e43b3785ae8842727da5822f8006fb02746a
+  CapacitorCloudkit: 20823b4c70faee2216ee98ca554af61a896f77a4
   CapacitorCommunityInAppReview: a8f26c4e48a8ccc9df0acf1c7bca39844c325572
   CapacitorCommunityMedia: d1538b56a3303298e7cf45a18b11e624fbcbdc8e
   CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
@@ -332,6 +332,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   SDWebImage: 9f177d83116802728e122410fb25ad88f5c7608a
 
-PODFILE CHECKSUM: e38a48d2c509e71a87a1c2d1ec20d4ace69c9a4b
+PODFILE CHECKSUM: 9c0e74ce5f08cdbaf7de89ddc0d9b0b5bb246a2a
 
 COCOAPODS: 1.16.2
