@@ -42,4 +42,4 @@ include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
 include ':capacitor-cloudkit'
-project(':capacitor-cloudkit').projectDir = new File('../../capacitor-cloudkit/android')
+project(':capacitor-cloudkit').projectDir = new File('../node_modules/capacitor-cloudkit/android')
