@@ -158,7 +158,7 @@ jobs:
         path: android/app/build/outputs
 
   ios:
-    needs: frontend
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != 'nkalupahana/baseline'
     runs-on: macos-15
     concurrency:
       group: "ios"
