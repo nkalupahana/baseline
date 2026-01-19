@@ -106,7 +106,9 @@ export function toast(message: string, gravity?: Toastify.Options["gravity"], du
 }
 
 export function networkFailure(message: string) {
-    return message === "Load failed" || message.includes("Failed to fetch");
+    return message === "Load failed" || 
+        message.includes("Failed to fetch") || 
+        message.includes("auth/network-request-failed");
 }
 
 export function checkKeys() {
