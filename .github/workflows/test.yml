@@ -62,7 +62,7 @@ jobs:
         HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET  }}
         HAPPO_NONCE: ${{ github.run_id }}
     - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v2.1.1
+      uses: SonarSource/sonarqube-scan-action@v7.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
