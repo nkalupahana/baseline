@@ -1,6 +1,6 @@
 {
   "name": "baseline",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "private": true,
   "dependencies": {
     "@capacitor-community/in-app-review": "^7.0.0",
