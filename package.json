@@ -49,7 +49,7 @@
     "flickity-fullscreen": "github:nkalupahana/flickity-fullscreen#patch-and-new-icons",
     "fuse.js": "^6.6.2",
     "ionicons": "^5.4.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "luxon": "^2.5.2",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
