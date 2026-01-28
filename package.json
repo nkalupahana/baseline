@@ -111,7 +111,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@capacitor/cli": "^7.0.0",
+    "@capacitor/cli": "^8.0.2",
     "@cypress/code-coverage": "^3.10.0",
     "@cypress/instrument-cra": "^1.4.0",
     "@types/crypto-js": "^4.1.1",
