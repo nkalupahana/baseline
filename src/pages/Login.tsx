@@ -65,7 +65,6 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [passphrase, setPassphrase] = useState("");
     const [deleting, setDeleting] = useState(false);
     const [showNextcloudModal, setShowNextcloudModal] = useState(false);
-    const [nextcloudConfig, setNextcloudConfig] = useState<NCConfig | null>(null);
 
     useEffect(() => {
         ldb.logs.clear();

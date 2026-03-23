@@ -51,7 +51,7 @@ export function useNextcloudSync(options: UseNextcloudSyncOptions = {}) {
     }, []);
 
     // Sync data to Nextcloud
-    const sync = useCallback(async () => {
+    const sync = useCallback(async (): Promise<void> => {
         if (!token || status.isSyncing) return;
 
         setStatus(prev => ({ ...prev, isSyncing: true, error: null }));
@@ -96,7 +96,11 @@ export function useNextcloudSync(options: UseNextcloudSyncOptions = {}) {
     }, [token, status.isSyncing]);
 
     // Load data from Nextcloud
-    const loadFromCloud = useCallback(async () => {
+    const loadFromCloud = useCallback(async (): Promise<{
+        journals: any[];
+        mood: any[];
+        settings: any;
+    } | null> => {
         if (!token) return null;
 
         try {
