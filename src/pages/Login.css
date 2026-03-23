@@ -32,6 +32,15 @@
     background-color: var(--dark-action);
 }
 
+.login-button.nextcloud {
+    background-color: #0082c9;
+    border: 1px solid #0066a9;
+}
+
+.login-button.nextcloud:hover {
+    background-color: #0072b3;
+}
+
 .login-button > ion-icon {
     font-size: 1.3em;
     margin-right: 8px;

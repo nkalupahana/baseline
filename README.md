@@ -6,6 +6,24 @@
 
 A better, universal, journaling and mood tracking platform.
 
+## Features
+
+- **Multiple Sign-In Options**: Apple, Google, and Nextcloud authentication
+- **Nextcloud Integration**: Sync your data to your own Nextcloud server for complete privacy control
+- **Self-Hosting**: Users can self-host their data on their own infrastructure
+- **Cross-Platform**: Works on web, iOS, and Android
+- **End-to-End Encryption**: Your data is encrypted before it leaves your device
+
+## Nextcloud Integration
+
+baseline now supports Nextcloud integration, allowing users to:
+
+1. **Sign in with Nextcloud**: Use your Nextcloud account as an authentication provider
+2. **Self-host your data**: Store all your journals and mood data on your own Nextcloud server
+3. **Privacy first**: Complete control over where your data is stored
+
+See [docs/NEXTCLOUD_INTEGRATION.md](docs/NEXTCLOUD_INTEGRATION.md) for detailed setup instructions.
+
 ## Contribute
 
 ```
@@ -19,7 +37,7 @@ ionic cap open [ios|android] # Open iOS/Android project for development
 ### Project Overview
 - `android/` - Android project for baseline (open in Android Studio)
 - `cypress/` - Cypress E2E and Component test suite (run with npm test commands in `package.json`)
-- `docs/` - Jekyll site for `getbaseline.app` (run with `bundle exec jekyll serve`)
+- `docs/` - Jekyll site for `getbaseline.app` (run with `bundle exec jekyll serve`) and documentation
 - `empty/` - Empty directory for `link.getbaseline.app` to deploy off of
 - `backend/` - Source for baseline backend API
 - `scheduled-services/` - Source for baseline internal services (scheduled or asynchronous from other services)

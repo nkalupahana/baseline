@@ -33,7 +33,7 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         return;
     }
 
-    if (!["google.com", "apple.com", "anonymous"].includes(body.credential.providerId)) {
+    if (!["google.com", "apple.com", "anonymous", "nextcloud.com"].includes(body.credential.providerId)) {
         res.send(400);
         return;
     }
@@ -120,6 +120,19 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
                     visibleKey: body.visibleKey,
                     encryptedKeyVisible: AES.decrypt(body.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
                 };
+            }
+        } else if (body.credential.providerId === "nextcloud.com") {
+            // For Nextcloud, keys are stored in Firebase Database
+            const keyData = await (await db.ref(`/${req.user!.user_id}/nextcloud_keys`).get()).val();
+            if (keyData) {
+                keys = {
+                    encryptedKey: keyData.encryptedKey,
+                    visibleKey: keyData.visibleKey,
+                    encryptedKeyVisible: AES.decrypt(keyData.encryptedKey, process.env.KEY_ENCRYPTION_KEY).toString(aesutf8)
+                };
+            } else {
+                res.send(400);
+                return;
             }
         } else if (body.credential.providerId === "anonymous") {
             // Anonymous users shouldn't be signing in again!
@@ -234,6 +247,15 @@ export const getOrCreateKeys = async (req: UserRequest, res: Response) => {
         }
 
         id = "Keys";
+    } else if (body.credential.providerId === "nextcloud.com") {
+        // Store keys in Firebase Database for Nextcloud users
+        // The actual data sync will happen via Nextcloud WebDAV
+        await db.ref(`${req.user!.user_id}/nextcloud_keys`).set({
+            visibleKey,
+            encryptedKey,
+            serverUrl: body.credential.serverUrl
+        });
+        id = "nextcloud";
     } else if (body.credential.providerId === "anonymous") {
         // No key storage for anonymous users -- their data is lost after they sign out
         id = "anonymous";

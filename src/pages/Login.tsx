@@ -10,14 +10,25 @@ import { AnyMap, BASE_URL, fingerprint, makeRequest, networkFailure, setEkeys, s
 import { CloudKit, SignInOptions } from "capacitor-cloudkit";
 import Preloader from "./Preloader";
 import UnlockCmp from "../components/Settings/UnlockCmp";
+import NextcloudLogin from "../components/Settings/NextcloudConfig";
 import { get, ref } from "firebase/database";
 import hash from "crypto-js/sha512";
 import "./Login.css";
-import { lockClosed, logoApple, logoGoogle } from "ionicons/icons";
+import { lockClosed, logoApple, logoGoogle, cloudOutline } from "ionicons/icons";
 import history from "../history";
 import { DateTime } from "luxon";
 import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 import * as Sentry from "@sentry/react";
+import { 
+    NextcloudConfig as NCConfig, 
+    getNextcloudAuthUrl, 
+    exchangeNextcloudCode,
+    storeNextcloudToken,
+    getNextcloudToken,
+    NextcloudStorage,
+    syncToNextcloud,
+    loadFromNextcloud
+} from "../nextcloud";
 
 enum LoginStates {
     START,
@@ -53,6 +64,8 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
     const [storedAdditionalData, setStoredAdditionalData] = useState<AnyMap>({});
     const [passphrase, setPassphrase] = useState("");
     const [deleting, setDeleting] = useState(false);
+    const [showNextcloudModal, setShowNextcloudModal] = useState(false);
+    const [nextcloudConfig, setNextcloudConfig] = useState<NCConfig | null>(null);
 
     useEffect(() => {
         ldb.logs.clear();
@@ -305,6 +318,96 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
         };
     }
 
+    // Nextcloud Sign In
+    const signInWithNextcloud = async (config: NCConfig) => {
+        setNextcloudConfig(config);
+        const flowVal = Math.random();
+        flow = flowVal;
+        setLoggingIn(true);
+        setLoginState(LoginStates.LOGGING_IN);
+
+        try {
+            // Generate state for OAuth
+            const state = Math.random().toString(36).substring(7);
+            
+            // Store state for verification
+            sessionStorage.setItem('nextcloud_state', state);
+            sessionStorage.setItem('nextcloud_config', JSON.stringify(config));
+
+            // Build redirect URI
+            const redirectUri = `${window.location.origin}/auth/nextcloud/callback`;
+            
+            // Get authorization URL
+            const authUrl = getNextcloudAuthUrl(config, redirectUri, state);
+            
+            // Open OAuth popup or redirect
+            const popup = window.open(authUrl, 'nextcloud-auth', 'width=600,height=800');
+            
+            if (!popup) {
+                throw new Error('Popup blocked. Please allow popups for Nextcloud login.');
+            }
+
+            // Wait for callback (handled by the callback page)
+            // The callback will post a message back to this window
+            return new Promise((resolve, reject) => {
+                const checkClosed = setInterval(() => {
+                    if (popup.closed) {
+                        clearInterval(checkClosed);
+                        reject(new Error('Authentication cancelled'));
+                    }
+                }, 500);
+
+                const handleMessage = async (event: MessageEvent) => {
+                    if (event.origin !== window.location.origin) return;
+                    
+                    if (event.data.type === 'nextcloud-auth-success') {
+                        clearInterval(checkClosed);
+                        window.removeEventListener('message', handleMessage);
+                        
+                        try {
+                            const code = event.data.code;
+                            const returnedState = event.data.state;
+                            
+                            // Verify state
+                            if (returnedState !== state) {
+                                throw new Error('Invalid state returned');
+                            }
+                            
+                            // Exchange code for token
+                            const token = await exchangeNextcloudCode(config, code, redirectUri);
+                            
+                            // Store token
+                            await storeNextcloudToken(token);
+                            
+                            // Sign in to Firebase with Nextcloud as custom token
+                            // For now, we'll create a custom credential
+                            const credential = {
+                                providerId: 'nextcloud.com',
+                                accessToken: token.access_token,
+                                serverUrl: config.serverUrl,
+                                userId: token.user_id
+                            } as any;
+                            
+                            resolve(credential);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    } else if (event.data.type === 'nextcloud-auth-error') {
+                        clearInterval(checkClosed);
+                        window.removeEventListener('message', handleMessage);
+                        reject(new Error(event.data.error));
+                    }
+                };
+                
+                window.addEventListener('message', handleMessage);
+            });
+        } catch (e: any) {
+            toast(`Nextcloud login failed: ${e.message}`);
+            resetFlow();
+            return null;
+        }
+    };
+
     const deleteAccount = async () => {
         sessionStorage.removeItem("deleteAccount");
         setDeleting(true);
@@ -322,9 +425,15 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                 <div className="title">Welcome to baseline.</div>
                 <p className="margin-top-8 margin-bottom-24">A better journaling and mood tracking app.</p>
                 <div onClick={() => loginFlow(signInWithApple)} className="login-button apple"><IonIcon icon={logoApple} /><span> Sign in with Apple</span></div>
-                <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google margin-bottom-0"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                <div onClick={() => loginFlow(signInWithGoogle)} className="login-button google"><IonIcon icon={logoGoogle} /><span> Sign in with Google</span></div>
+                <div onClick={() => setShowNextcloudModal(true)} className="login-button nextcloud margin-top-8" style={{background: '#0082c9', color: 'white'}}>
+                    <IonIcon icon={cloudOutline} /><span> Sign in with Nextcloud</span>
+                </div>
                 <div style={{"maxWidth": "400px"}}>
                     <p><IonIcon icon={lockClosed} /> Your data is private: we're a non-profit, and we have no interest in using your data for anything.</p>
+                    <p style={{"fontSize": "12px", "color": "#666", "marginTop": "8px"}}>
+                        <IonIcon icon={cloudOutline} /> With Nextcloud, you can self-host your data on your own server for complete control.
+                    </p>
                 </div>
                 <p style={{"fontStyle": "italic", "fontSize": "13px", "marginTop": 0}}>
                     <span className="line">By logging in, you agree 
@@ -332,6 +441,14 @@ const Login = ({ setLoggingIn } : { setLoggingIn: (_: boolean) => void }) => {
                     of Use</a> and <a target="_blank" rel="noreferrer" href="https://getbaseline.app/privacy">Privacy Policy</a></span>
                 </p>
                 <IonButton style={{"display": "none"}} mode="ios" onClick={() => loginFlow(signInWithAnonymous)}>Anonymous (Do Not Use)</IonButton>
+                <NextcloudLogin 
+                    isOpen={showNextcloudModal} 
+                    onClose={() => setShowNextcloudModal(false)}
+                    onLogin={(config) => {
+                        setShowNextcloudModal(false);
+                        loginFlow(() => signInWithNextcloud(config));
+                    }}
+                />
             </> }
             { (loginState === LoginStates.LOGGING_IN || loginState === LoginStates.GETTING_CLOUDKIT)  && <>
                 <Preloader spacing={false} message="Logging in, please wait." />
