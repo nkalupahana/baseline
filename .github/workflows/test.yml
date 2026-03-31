@@ -161,7 +161,7 @@ jobs:
 
   ios:
     needs: frontend
-    runs-on: macos-15
+    runs-on: macos-latest
     concurrency:
       group: "ios"
       cancel-in-progress: true
@@ -185,7 +185,6 @@ jobs:
         brew install fastlane
         cd ios/App
         echo "$APP_STORE_CONNECT_KEY" > authkey.json
-        sudo xcode-select --switch /Applications/Xcode_16.4.app
         fastlane beta
       env:
         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
