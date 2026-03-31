@@ -321,7 +321,7 @@ export async function parseSurveyHistory(user: User, setSurveyHistory: (_: (AnyM
 
 const BASELINE_DAYS = 14;
 export async function calculateBaseline(setBaselineGraph: (_: AnyMap[] | PullDataStates) => void) {
-    let logs = await ldb.logs.orderBy("timestamp").toArray();
+    const logs = await ldb.logs.orderBy("timestamp").toArray();
     logs.sort(
       (a, b) =>
         a.year - b.year ||
