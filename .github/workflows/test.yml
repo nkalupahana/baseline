@@ -161,7 +161,7 @@ jobs:
 
   ios:
     needs: frontend
-    runs-on: macos-latest
+    runs-on: macos-26
     concurrency:
       group: "ios"
       cancel-in-progress: true
