@@ -32,6 +32,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         SceneDelegateProxy.shared.scene(scene, continue: userActivity)
     }
+    
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        clearExcessNotifications(resolve: {})
+    }
 
     func sceneWillResignActive(_ scene: UIScene) {
         if #available(iOS 14.0, *) {
