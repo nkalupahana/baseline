@@ -98,7 +98,7 @@ const NotificationEditor = ({ oldTime, notificationData, globalEditing, setGloba
                             title: "What's happening?",
                             body: "Take a minute to journal.",
                             threadIdentifier: "reminder",
-                            timeSensitive: true,
+                            interruptionLevel: "timeSensitive",
                             schedule: {
                                 allowWhileIdle: true,
                                 on: {

@@ -1,0 +1,104 @@
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml b/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml
+index 0db6893..f50d46c 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml
++++ b/node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml
+@@ -13,6 +13,14 @@
+                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+             </intent-filter>
+         </receiver>
++        <receiver
++            android:name="com.capacitorjs.plugins.localnotifications.LocalNotificationTimezoneReceiver"
++            android:enabled="true"
++            android:exported="true">
++            <intent-filter>
++                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
++            </intent-filter>
++        </receiver>
+         <provider
+             android:name="com.capacitorjs.plugins.localnotifications.LocalNotificationsAssetProvider"
+             android:authorities="${applicationId}.localnotifications.fileprovider"
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/LocalNotificationTimezoneReceiver.kt b/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/LocalNotificationTimezoneReceiver.kt
+new file mode 100644
+index 0000000..9e901c8
+--- /dev/null
++++ b/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/LocalNotificationTimezoneReceiver.kt
+@@ -0,0 +1,33 @@
++package com.capacitorjs.plugins.localnotifications
++
++import android.content.BroadcastReceiver
++import android.content.Context
++import android.content.Intent
++import com.getcapacitor.CapConfig
++
++/**
++ * Rearms `schedule.on` alarms after a timezone change. AlarmManager stores an
++ * absolute timestamp, so a clock-time reminder would otherwise fire at the old
++ * offset. Cancelled perpetual schedules are left alone so a timezone change
++ * cannot resurrect a reminder the user already cancelled.
++ */
++class LocalNotificationTimezoneReceiver : BroadcastReceiver() {
++
++    override fun onReceive(context: Context, intent: Intent) {
++        if (intent.action != Intent.ACTION_TIMEZONE_CHANGED) return
++
++        val storage = NotificationStorage(context)
++        val toReschedule = ArrayList<LocalNotification>()
++        for (id in storage.getSavedNotificationIds()) {
++            val notification = storage.getSavedNotification(id) ?: continue
++            val schedule = notification.schedule ?: continue
++            if (schedule.on == null || notification.cancelled) continue
++            toReschedule.add(notification)
++        }
++        if (toReschedule.isEmpty()) return
++
++        val config = CapConfig.loadDefault(context)
++        val manager = LocalNotificationManager(storage, null, context, config)
++        manager.schedule(null, toReschedule)
++    }
++}
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.kt b/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.kt
+index 52def58..f0263e9 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.kt
++++ b/node_modules/@capacitor/local-notifications/android/src/main/kotlin/com/capacitorjs/plugins/localnotifications/TimedNotificationPublisher.kt
+@@ -38,6 +38,8 @@ class TimedNotificationPublisher : BroadcastReceiver() {
+         val storage = NotificationStorage(context)
+         val notificationJson = storage.getSavedNotificationAsJSObject(id.toString())
+         LocalNotificationsPlugin.fireReceived(notificationJson)
++        // prevent notification stacking
++        notificationManager.cancelAll()
+         notificationManager.notify(id, notification)
+         rescheduleNotificationIfNeeded(context, intent, id)
+         // The notification's record stays in storage after firing (matching the
+@@ -60,15 +62,25 @@ class TimedNotificationPublisher : BroadcastReceiver() {
+             flags = flags or PendingIntent.FLAG_MUTABLE
+         }
+         val pendingIntent = PendingIntent.getBroadcast(context, id, clone, flags)
+-        val storedNotification = NotificationStorage(context).getSavedNotificationAsJSObject(id.toString())
+-        val wantsExact = storedNotification?.getBoolean("isExactNotification", true) ?: true
++        val storedNotification = NotificationStorage(context).getSavedNotification(id.toString())
++        val wantsExact = storedNotification?.isExactNotification ?: true
++        val allowWhileIdle = storedNotification?.schedule?.allowWhileIdle() ?: false
+         val canExact = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
+-        if (wantsExact && canExact) {
+-            alarmManager.setExact(AlarmManager.RTC, trigger, pendingIntent)
+-        } else {
+-            if (wantsExact) {
+-                Logger.warn("Capacitor/LocalNotification", "Exact alarms not allowed in user settings.  Notification scheduled with non-exact alarm.")
++        val useExact = wantsExact && canExact
++        if (wantsExact && !useExact) {
++            Logger.warn("Capacitor/LocalNotification", "Exact alarms not allowed in user settings.  Notification scheduled with non-exact alarm.")
++        }
++        // Match LocalNotificationManager.setExactIfPossible so a repeating
++        // schedule.on alarm keeps the same idle wakeup as its first fire.
++        if (useExact) {
++            if (allowWhileIdle) {
++                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pendingIntent)
++            } else {
++                alarmManager.setExact(AlarmManager.RTC, trigger, pendingIntent)
+             }
++        } else if (allowWhileIdle) {
++            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pendingIntent)
++        } else {
+             alarmManager.set(AlarmManager.RTC, trigger, pendingIntent)
+         }
+         val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
