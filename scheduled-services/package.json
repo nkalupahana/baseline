@@ -27,7 +27,7 @@
     "luxon": "^3.2.1",
     "p-queue": "^8.1.0",
     "typescript": "^4.9.3",
-    "underscore": "^1.13.6",
+    "underscore": "^1.13.8",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
