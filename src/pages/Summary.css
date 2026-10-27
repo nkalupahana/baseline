@@ -1,5 +1,5 @@
 .center-summary {
-    padding-top: calc(max(env(safe-area-inset-top), 20px) + 20px);
+    padding-top: calc(max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 20px) + 20px);
     padding-bottom: 20px;
     display: flex;
     align-items: center;
@@ -22,7 +22,7 @@
 
 .journal-fab {
     bottom: 30px;
-    right: calc(30px + var(--ion-safe-area-right, 0px));
+    right: calc(30px + var(--safe-area-inset-right, env(safe-area-inset-right, 0px)));
     opacity: 1;
     animation: fadeIn 0.8s;
 }
@@ -30,7 +30,7 @@
 @media only screen and (max-width: 800px) {
     .journal-fab {
         bottom: 20px;
-        right: calc(20px + var(--ion-safe-area-right, 0px));
+        right: calc(20px + var(--safe-area-inset-right, env(safe-area-inset-right, 0px)));
     }
 }
 
@@ -73,7 +73,7 @@
 }
 
 .grid-heading.filter-area {
-    height: calc(128px + max(env(safe-area-inset-top), 16px))
+    height: calc(128px + max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 16px))
 }
 
 .filter-selects {
@@ -173,7 +173,7 @@
 }
 
 .invisible-input.searchbar.week {
-    margin: calc(max(env(safe-area-inset-top), 20px) + 7px) auto 0 auto;
+    margin: calc(max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 20px) + 7px) auto 0 auto;
     width: 75%;
 }
 

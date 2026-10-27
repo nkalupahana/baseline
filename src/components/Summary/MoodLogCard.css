@@ -70,11 +70,11 @@
 }
 
 div.flickity-enabled.is-fullscreen > .flickity-fullscreen-button {
-    top: max(env(safe-area-inset-top), 10px);
+    top: max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 10px);
 }
 
 div.flickity-enabled.is-fullscreen > .flickity-download-button {
-    top: max(env(safe-area-inset-top), 10px);
+    top: max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 10px);
 }
 
 .flickity-enabled.is-fullscreen ol.flickity-page-dots {

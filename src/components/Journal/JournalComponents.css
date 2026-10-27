@@ -12,7 +12,7 @@
 }
 
 .center-journal {
-    padding-top: calc(max(env(safe-area-inset-top), 20px) + 10px);
+    padding-top: calc(max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 20px) + 10px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +20,7 @@
 }
 
 .center-journal.center-screener {
-    padding-top: calc(max(env(safe-area-inset-top), 12px) - 5px);
+    padding-top: calc(max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 12px) - 5px);
 }
 
 .center-notifications {
@@ -167,6 +167,7 @@
     border-radius: 10px 10px 0 0;
     height: 148px;
     bottom: 0px;
+    padding-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
 }
 
 @media only screen and (max-width: 800px) {

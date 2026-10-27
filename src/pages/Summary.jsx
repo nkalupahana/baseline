@@ -323,7 +323,7 @@ const Summary = () => {
                 <IonMenu ref={menuRef} disabled={inFullscreen} side="end" contentId="mainContent" menuId="mainMenu">
                     <IonContent>
                         <IonList className="menu">
-                            <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>
+                            <div style={{"height": "max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 10px)", "width": "100%"}}></div>
                             <IonItem onClick={() => history.push("/onboarding/howto")} mode="ios">
                                 <IonIcon icon={bookOutline} slot="start" />
                                 <IonLabel>How To Journal</IonLabel>
