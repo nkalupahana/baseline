@@ -109,6 +109,10 @@
       "last 1 safari version"
     ]
   },
+  "overrides": {
+    "postcss": "8.5.29",
+    "postcss-calc": "11.2.3"
+  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@capacitor/cli": "^8.0.0",
