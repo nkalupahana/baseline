@@ -165,7 +165,7 @@
     width: 65%;
     background-color: var(--card-background);
     border-radius: 10px 10px 0 0;
-    height: 148px;
+    height: 142px;
     bottom: 0px;
     padding-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
 }

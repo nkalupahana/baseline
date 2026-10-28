@@ -13,6 +13,7 @@ import android.webkit.WebSettings;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.webkit.WebViewCompat;
 
