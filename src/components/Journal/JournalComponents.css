@@ -166,7 +166,6 @@
     background-color: var(--card-background);
     border-radius: 10px 10px 0 0;
     bottom: 0px;
-    padding-bottom: calc(max(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)), 6px) + 2px);
 }
 
 @media only screen and (max-width: 800px) {
