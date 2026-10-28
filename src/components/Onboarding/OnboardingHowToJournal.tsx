@@ -174,6 +174,7 @@ const OnboardingHowToJournal = ({ user } : { user: User }) => {
                 <div className="finish-button onboarding-button" onClick={() => setSubmitting(true)}>Start journaling!</div>
                 <div className="br"></div>
             </> }
+            <div style={{"height": "calc(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)))"}}></div>
         </>;
 }
 

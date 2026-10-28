@@ -21,7 +21,7 @@
 }
 
 .journal-fab {
-    bottom: 30px;
+    bottom: calc(30px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
     right: calc(30px + var(--safe-area-inset-right, env(safe-area-inset-right, 0px)));
     opacity: 1;
     animation: fadeIn 0.8s;
@@ -29,7 +29,7 @@
 
 @media only screen and (max-width: 800px) {
     .journal-fab {
-        bottom: 20px;
+        bottom: calc(20px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
         right: calc(20px + var(--safe-area-inset-right, env(safe-area-inset-right, 0px)));
     }
 }

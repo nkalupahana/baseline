@@ -359,7 +359,7 @@ const Summary = () => {
                             <IonItem onClick={signOutAndCleanUp} mode="ios">
                                 <IonLabel>Sign Out</IonLabel>
                             </IonItem>
-                            <div style={{"height": "20px"}}></div>
+                            <div style={{"height": "calc(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)) + 20px)"}}></div>
                         </IonList>
                     </IonContent>
                 </IonMenu>
