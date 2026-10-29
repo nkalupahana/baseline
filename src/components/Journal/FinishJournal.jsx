@@ -418,7 +418,7 @@ const FinishJournal = props => {
                                 className="bottom-bar"
                                 style={{"paddingBottom":
                                     Capacitor.getPlatform() === "ios" ?
-                                        "calc(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)) / 2)" : // we want to fit to the iOS safe area a little unsafely
+                                        "max(calc(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)) / 2), 8px)" : // we want to fit to the iOS safe area a little unsafely
                                         "calc(max(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)), 6px) + 2px)" // on other platforms, actually be safe
                                 }}
                             >
