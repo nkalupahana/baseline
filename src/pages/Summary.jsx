@@ -323,7 +323,7 @@ const Summary = () => {
                 <IonMenu ref={menuRef} disabled={inFullscreen} side="end" contentId="mainContent" menuId="mainMenu">
                     <IonContent>
                         <IonList className="menu">
-                            <div style={{"height": "max(env(safe-area-inset-top), 10px)", "width": "100%"}}></div>
+                            <div style={{"height": "max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 10px)", "width": "100%"}}></div>
                             <IonItem onClick={() => history.push("/onboarding/howto")} mode="ios">
                                 <IonIcon icon={bookOutline} slot="start" />
                                 <IonLabel>How To Journal</IonLabel>
@@ -359,7 +359,7 @@ const Summary = () => {
                             <IonItem onClick={signOutAndCleanUp} mode="ios">
                                 <IonLabel>Sign Out</IonLabel>
                             </IonItem>
-                            <div style={{"height": "20px"}}></div>
+                            <div style={{"height": "calc(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)) + 20px)"}}></div>
                         </IonList>
                     </IonContent>
                 </IonMenu>

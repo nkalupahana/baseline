@@ -98,7 +98,7 @@ export function toast(message: string, gravity?: Toastify.Options["gravity"], du
             "border-radius": "10px",
         },
         offset: {
-            y: (gravity === "bottom") ? "5px" : "max(calc(env(safe-area-inset-top) - 5px), 0px)",
+            y: (gravity === "bottom") ? "5px" : "max(calc(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)) - 5px), 0px)",
             x: 0
         },
         stopOnFocus: false

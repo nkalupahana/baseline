@@ -6,6 +6,9 @@
 		"scheme": "baseline"
 	},
 	"plugins": {
+		"SystemBars": {
+			"insetsHandling": "css"
+		},
 		"FirebaseAuthentication": {
 			"skipNativeAuth": true,
 			"providers": [

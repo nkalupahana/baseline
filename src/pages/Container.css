@@ -35,7 +35,7 @@
 
 .top-corner {
     position: relative;
-    top: calc(max(env(safe-area-inset-top), 20px) + 7px);
+    top: calc(max(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)), 20px) + 7px);
     left: 40px;
     font-size: 30px;
 }

@@ -414,7 +414,14 @@ const FinishJournal = props => {
                             { props.files.map(file => <span key={fileDesc(file)} style={{"textAlign": "center"}}>{truncate(file.name)} <IonIcon onClick={() => {removeFile(fileDesc(file))}} className="secondary-icon" icon={closeCircleOutline}></IonIcon></span>)}
                             { !props.editTimestamp && <SearchSpotify user={user} song={props.song} setSong={props.setSong} /> }
                             <div style={{"height": "200px"}}></div>
-                            <div className="bottom-bar">
+                            <div
+                                className="bottom-bar"
+                                style={{"paddingBottom":
+                                    Capacitor.getPlatform() === "ios" ?
+                                        "max(calc(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)) / 2), 8px)" : // we want to fit to the iOS safe area a little unsafely
+                                        "calc(max(var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)), 6px) + 2px)" // on other platforms, actually be safe
+                                }}
+                            >
                                 <IonTextarea id="review-textarea" readonly rows={2} className="tx tx-display" value={displayText} placeholder="No mood log, tap to add" onClick={() => { if (!submitting) history.replace("/journal") }} />
                                 <div onClick={submit} className="finish-button">
                                     { !submitting && props.editTimestamp === null && "Done!" }
