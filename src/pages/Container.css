@@ -73,6 +73,10 @@
     height: 100%;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;
+
+    /* weird screen (e.g. iPhone Duo) handling */
+    margin-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+    margin-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
 }
 
 .page::-webkit-scrollbar {

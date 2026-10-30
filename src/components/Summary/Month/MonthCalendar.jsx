@@ -185,13 +185,13 @@ const MonthCalendar = ({ logs, requestedDate, setRequestedDate }) => {
 
     return <>
         <div className="calendar-date-strip">
-            <span>Sunday</span>
-            <span>Monday</span>
-            <span>Tuesday</span>
-            <span>Wednesday</span>
-            <span>Thursday</span>
-            <span>Friday</span>
-            <span>Saturday</span>
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
         </div>
         <div ref={calendar} className="month-calendar">{ rows }</div>
     </>
